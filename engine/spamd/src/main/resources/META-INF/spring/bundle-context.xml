@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+	<context:component-scan base-package="org.mxhero.engine.plugin.spamd" />
+
+	<context:annotation-config />
+
+	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="spamdPropertyService">
+	   <osgi:service-properties>
+	     <entry key="service.pid" value="org.mxhero.engine.plugin.spamd"/>
+	   </osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service ref="spamAssassimScan">
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.mail.command.Command</value>
+	  		<value>org.mxhero.engine.plugin.spamd.command.SpamScan</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.spamd.internal.command.SpamAssassimScan"/>
+   		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="spamdPropertyService" class="org.mxhero.engine.plugin.spamd.internal.service.Spamd"/>
+
+	<bean id="spamAssassimScan" class="org.mxhero.engine.plugin.spamd.internal.command.SpamAssassimScan">
+		<property name="spamdProperties" ref="spamdPropertyService"/>
+	</bean>
+</beans>

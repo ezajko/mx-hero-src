@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-list>
+	<domain id="mxhero.com">
+		<alias>mxhero.com</alias>
+		<group name="it">
+			<mail>mmarmol@mxhero.com</mail>
+			<mail>bruno@mxhero.com</mail>
+		</group>
+		<group name="managers">
+			<mail>alex@mxhero.com</mail>
+		</group>
+		<mail-list name="mxHeroTeam">
+			<mail>mmarmol@mxhero.com</mail>
+			<mail>bruno@mxhero.com</mail>
+			<mail>alex@mxhero.com</mail>
+		</mail-list>
+		<user mail="mmarmol@mxhero.com">
+			<mail-list name="witheList">
+				<mail>mmarmol@mxhero.com</mail>
+				<mail>bruno@mxhero.com</mail>
+				<mail>alex@mxhero.com</mail>
+			</mail-list>
+			<mail-list name="blackList">
+				<mail>iamthepipboy@gmail.com</mail>
+			</mail-list>			
+			<alias>mmarmol@mxhero.com</alias>
+		</user>
+		<user mail="bruno@mxhero.com">
+			<mail-list name="witheList">
+				<mail>mmarmol@mxhero.com</mail>
+				<mail>bruno@mxhero.com</mail>
+				<mail>alex@mxhero.com</mail>
+			</mail-list>		
+			<alias>bruno@mxhero.com</alias>
+		</user>
+		<user mail="alex@mxhero.com">
+			<mail-list name="witheList">
+				<mail>mmarmol@mxhero.com</mail>
+				<mail>bruno@mxhero.com</mail>
+				<mail>alex@mxhero.com</mail>
+			</mail-list>		
+			<alias>alex@mxhero.com</alias>
+		</user>
+	</domain>
+</domain-list>

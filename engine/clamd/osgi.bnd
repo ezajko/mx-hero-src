@@ -1,0 +1,9 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: org.slf4j.*;resolution:=optional;provider=paxlogging,*
+
+Export-Package: org.mxhero.engine.plugin.clamd*
+
+Embed-Dependency: mina-core;groupId=org.apache.mina;inline=false

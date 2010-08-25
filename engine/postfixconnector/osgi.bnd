@@ -1,0 +1,13 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: org.slf4j.*;resolution:=optional;provider=paxlogging,*
+
+Export-Package: org.mxhero.engine.plugin.postfixconnector*
+
+Embed-Dependency:\
+ smtp;groupId=org.mailster;inline=false,\
+ mina-core;groupId=org.apache.mina;inline=false,\
+ jcifs;groupId=org.samba.jcifs;inline=false,\
+ 
