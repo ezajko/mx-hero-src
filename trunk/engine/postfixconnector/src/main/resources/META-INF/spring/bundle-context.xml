@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+	<context:component-scan base-package="org.mxhero.engine.plugin.postfixconnector" />
+
+	<context:annotation-config />
+
+	<osgi:reference id="logRecordService" interface="org.mxhero.engine.domain.statistic.LogRecord" cardinality="0..1"/>
+	
+	<osgi:reference id="logStatService" interface="org.mxhero.engine.domain.statistic.LogStat" cardinality="0..1"/>
+
+	<osgi:reference id="inputService" interface="org.mxhero.engine.domain.connector.InputService"/>
+
+	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="postfixConnectorPropertyService">
+	   <osgi:service-properties>
+	     <entry key="service.pid" value="org.mxhero.engine.plugin.postfixconnector"/>
+	   </osgi:service-properties>
+	</osgi:service>
+
+	<bean id="postfixConnectorPropertyService" class="org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector"/>
+
+	<osgi:service ref="connectorOutPutServiceService" >
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.connector.OutputService</value>
+	  		<value>org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.postfixconnector.internal.service.QueuedPostFixConnectorOutputService"/>
+   		</osgi:service-properties>
+	</osgi:service>
+	
+	<bean id="connectorOutPutServiceService" class="org.mxhero.engine.plugin.postfixconnector.internal.service.QueuedPostFixConnectorOutputService"/>
+
+	<bean id="inputPool" class="org.mxhero.engine.plugin.postfixconnector.internal.pool.InputPool"
+	init-method="start" destroy-method="stop">
+		<property name="properties" ref="postfixConnectorPropertyService"/>
+		<property name="service" ref="inputService"/>
+		<property name="logStat" ref="logStatService"/>
+	</bean>
+
+	<bean id="outputPool" class="org.mxhero.engine.plugin.postfixconnector.internal.pool.OutputPool"
+	init-method="start" destroy-method="stop">
+		<property name="properties" ref="postfixConnectorPropertyService"/>
+		<property name="logStat" ref="logStatService"/>
+	</bean>
+
+	<bean id="snmpMessageListener" class="org.mxhero.engine.plugin.postfixconnector.internal.snmp.SMTPMessageListener">
+		<property name="logRecordService" ref="logRecordService"/>
+		<property name="logStatService" ref="logStatService"/>
+		<property name="properties" ref="postfixConnectorPropertyService"/>
+	</bean>
+
+	<bean id="snmpListener" class="org.mxhero.engine.plugin.postfixconnector.internal.snmp.SMTPListener"
+	init-method="start" destroy-method="stop">
+		<constructor-arg ref="snmpMessageListener"/>
+		<property name="properties" ref="postfixConnectorPropertyService"/>
+	</bean>
+
+</beans>

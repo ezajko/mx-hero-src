@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+	<context:component-scan base-package="org.mxhero.engine.plugin.clamd" />
+
+	<context:annotation-config />
+
+	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="clamdPropertyService">
+	   <osgi:service-properties>
+	     <entry key="service.pid" value="org.mxhero.engine.plugin.clamd"/>
+	   </osgi:service-properties>
+	</osgi:service>
+
+	<osgi:service ref="clamAVScan">
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.mail.command.Command</value>
+	  		<value>org.mxhero.engine.plugin.clamd.command.ClamavScan</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.clamd.internal.command.SingleClamavScan"/>
+   		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="clamdPropertyService" class="org.mxhero.engine.plugin.clamd.internal.service.Clamd"/>
+
+	<bean id="clamAVScan" class="org.mxhero.engine.plugin.clamd.internal.command.SingleClamavScan">
+		<property name="properties" ref="clamdPropertyService"/>
+	</bean>
+</beans>

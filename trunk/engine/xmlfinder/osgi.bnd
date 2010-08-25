@@ -1,0 +1,11 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Export-Package: org.mxhero.engine.plugin.xmlfinder*,!*
+
+Import-Package: javax.naming,javax.naming.directory,javax.xml.parsers;version="0.0.0",netscape.ldap;resolution:=optional,org.apache.commons.logging;resolution:=optional;version="0.0.0",org.apache.oro.text.regex;resolution:=optional,org.apache.regexp;resolution:=optional,org.mxhero.engine.domain.mail.business,org.mxhero.engine.domain.mail.finders,org.mxhero.engine.domain.properties,org.mxhero.engine.plugin.xmlfinder.internal.model,org.mxhero.engine.plugin.xmlfinder.internal.service,org.mxhero.engine.plugin.xmlfinder.internal.xml,org.osgi.framework;version="0.0.0",org.osgi.service.cm;version="0.0.0",org.slf4j;resolution:=optional;provider=paxlogging;version="0.0.0",org.w3c.dom;version="0.0.0",org.xml.sax;version="0.0.0",org.xml.sax.helpers;version="0.0.0"
+
+Embed-Dependency:\
+ castor-core;groupId=org.codehaus.castor;inline=false,\
+ castor-xml;groupId=org.codehaus.castor;inline=false

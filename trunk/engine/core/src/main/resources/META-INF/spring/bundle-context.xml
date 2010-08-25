@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+	<context:component-scan base-package="org.mxhero.engine.core" />
+
+	<context:annotation-config />
+
+	<osgi:reference id="logRecordService" interface="org.mxhero.engine.domain.statistic.LogRecord" cardinality="0..1"/>
+	
+	<osgi:reference id="logStatService" interface="org.mxhero.engine.domain.statistic.LogStat" cardinality="0..1"/>
+
+	<osgi:reference id="domainFinder" interface="org.mxhero.engine.domain.mail.finders.DomainFinder" cardinality="0..1"/>
+	
+	<osgi:reference id="userFinder" interface="org.mxhero.engine.domain.mail.finders.UserFinder" cardinality="0..1"/>
+
+	<osgi:reference id="serviceRegistry" interface="org.drools.util.ServiceRegistry"/>
+
+	<osgi:service interface="org.mxhero.engine.domain.connector.InputService" ref="coreInputService">
+		<osgi:service-properties>
+	     <entry key="service.pid" value="org.mxhero.engine.core.internal.service.CoreInputService"/>
+	   </osgi:service-properties>
+	</osgi:service>
+	
+	<bean id="coreInputService" class="org.mxhero.engine.core.internal.service.CoreInputService"/>
+
+	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="corePropertyService">
+	   <osgi:service-properties>
+	     <entry key="service.pid" value="org.mxhero.engine.core"/>
+	   </osgi:service-properties>
+	</osgi:service>
+	
+	<bean id="corePropertyService" class="org.mxhero.engine.core.internal.service.Core"/>
+
+	<bean id="kbbuilder" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseBuilder">
+		<property name="registry" ref="serviceRegistry"/>
+	</bean>
+
+	<bean id="kbloader" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader" init-method="start" destroy-method="stop">
+		<property name="builder" ref="kbbuilder"/>
+		<property name="properties" ref="corePropertyService"/>
+	</bean>
+
+	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller"/>
+	
+	<bean id="drprocessor" class="org.mxhero.engine.core.internal.pool.processor.DefaultRulesProcessor">
+		<property name="properties" ref="corePropertyService"/>
+	</bean>
+	
+	<bean id="rspliter" class="org.mxhero.engine.core.internal.pool.spliter.RecipientSpliter"/>
+
+	<bean id="defaultCommandResolver" class="org.mxhero.engine.core.mail.command.DefaultCommandResolver" init-method="setResolver">
+		<constructor-arg ref="bundleContext"/>
+	</bean>
+
+	<bean id="inputPool" class="org.mxhero.engine.core.internal.pool.InputPool" init-method="start" destroy-method="stop">
+		<property name="userFinderService" ref="userFinder"/>
+		<property name="domainFinderService" ref="domainFinder"/>
+		<property name="filler" ref="psfiller"/>
+		<property name="processor" ref="drprocessor"/>
+		<property name="spliter" ref="rspliter"/>
+		<property name="loader" ref="kbloader"/>
+		<property name="properties" ref="corePropertyService"/>
+		<property name="logRecordService" ref="logRecordService"/>
+		<property name="logStatService" ref="logStatService"/>
+	</bean>
+
+	<bean id="outputPool" class="org.mxhero.engine.core.internal.pool.OutputPool" init-method="start" destroy-method="stop">
+		<constructor-arg ref="bundleContext"/>
+		<property name="properties" ref="corePropertyService"/>
+		<property name="logStatService" ref="logStatService"/>
+	</bean>
+
+</beans>

@@ -1,0 +1,8 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Export-Package: org.mxhero.engine.plugin.basecommands*
+
+Import-Package: org.mxhero.engine.domain.mail.business,org.slf4j.*;resolution:=optional;provider=paxlogging,*
+
