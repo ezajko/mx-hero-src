@@ -6,6 +6,7 @@ import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.queue.OutputQueue;
 import org.mxhero.engine.core.internal.service.Core;
+import org.mxhero.engine.domain.mail.business.MailState;
 import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.mail.MimeMail;
@@ -78,7 +79,11 @@ public final class RecipientRuleTask implements Runnable {
 		try {
 			this.processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);
-			OutputQueue.getInstance().add(mail);
+			if (!mail.getPhase().equals(MailState.DROP)) {
+				OutputQueue.getInstance().add(mail);
+			} else {
+				log.debug("mail droped " + mail);
+			}
 			log.debug("Mail sent to out queue for " + mail);
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
