@@ -81,10 +81,10 @@ public final class RecipientRuleTask implements Runnable {
 					domainFinderService, mail);
 			if (!mail.getStatus().equals(MailState.DROP)) {
 				OutputQueue.getInstance().add(mail);
+				log.debug("Mail sent to out queue for " + mail);
 			} else {
 				log.debug("mail droped " + mail);
 			}
-			log.debug("Mail sent to out queue for " + mail);
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,
