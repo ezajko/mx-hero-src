@@ -39,17 +39,18 @@ public class RecipientSpliter implements Spliter {
 				splitedMail = new MimeMail(mail.getInitialSender(),
 						new ArrayList<String>(mail.getRecipients()),
 						newMessage, mail.getResponseServiceId());
+				splitedMail.setRecipient(recipient);
+				splitedMail.setPhase(RulePhase.RECEIVE);
+				mails.add(splitedMail);
 				log.debug("mail splited " + splitedMail);
 			} catch (MessagingException e) {
 				log.error("Error spliting mail " + mail, e);
 				splitedMail = null;
 				continue;
 			}
-			splitedMail.setRecipient(recipient);
-			splitedMail.setPhase(RulePhase.RECEIVE);
-			mails.add(splitedMail);
-			splitedMail = null;
+
 		}
+		log.debug("all mails are:"+Arrays.toString(mails.toArray()));
 		return mails;
 	}
 

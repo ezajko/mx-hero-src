@@ -1,6 +1,7 @@
 package org.mxhero.engine.core.internal.pool.spliter;
 
 import java.util.Arrays;
+import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
@@ -19,7 +20,7 @@ public class RecipientSpliterTest {
 	@Test
 	public void testSplit() throws MessagingException{
 		RecipientSpliter spliter = new RecipientSpliter();
-		MimeMessage message = new MimeMessage(Session.getDefaultInstance(null));
+		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSubject("test");
 		message.setText("test");
 		message.setSender(new InternetAddress("tes@mail.com"));
