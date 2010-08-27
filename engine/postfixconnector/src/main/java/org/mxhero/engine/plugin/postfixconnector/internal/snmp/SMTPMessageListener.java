@@ -71,6 +71,12 @@ public final class SMTPMessageListener implements MessageListener{
 
 			for(Address address : mail.getMessage().getAllRecipients()){
 				originalRcptsSet.remove(address.toString().trim());
+				for(String original : originalRcptsSet){
+					if(address.toString().trim().matches("*"+original.trim()+"*")){
+						originalRcptsSet.remove(original);
+						break;
+					}
+				}				
 			}	
 			for(String addressString : originalRcptsSet){
 				mail.getMessage().addRecipient(RecipientType.BCC, new InternetAddress(addressString));
