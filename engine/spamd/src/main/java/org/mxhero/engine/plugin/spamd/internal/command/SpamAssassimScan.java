@@ -23,10 +23,11 @@ public class SpamAssassimScan implements SpamScan {
 
 	private static Logger log = LoggerFactory.getLogger(SpamAssassimScan.class);
 
-	private static final int ADD_HEADERS_PARAM_NUMBER = 0;
-	private static final int FLAG_HEADER_PARAM_NUMBER = 1;
-	private static final int STATUS_HEADER_PARAM_NUMBER = 2;
-
+	private static final int CHANGE_SUBJECT_PARAM_NUMBER = 0;
+	private static final int ADD_HEADERS_PARAM_NUMBER = 1;
+	private static final int FLAG_HEADER_PARAM_NUMBER = 2;
+	private static final int STATUS_HEADER_PARAM_NUMBER = 3;
+	
 	private PropertiesService spamdProperties;
 
 	/**
@@ -37,6 +38,7 @@ public class SpamAssassimScan implements SpamScan {
 	public Result exec(MimeMail mail, String... args) {
 		Result result = new Result();
 		result.setResult(false);
+		String prefix = null;
 		boolean addHeaders = true;
 		String statusHeaderName = SpamdScanner.STATUS_MAIL_ATTRIBUTE_NAME;
 		String flagHeaderName = SpamdScanner.FLAG_MAIL_ATTRIBUTE_NAME;
@@ -53,6 +55,11 @@ public class SpamAssassimScan implements SpamScan {
 		}
 
 		if (args != null) {
+			if(args.length>CHANGE_SUBJECT_PARAM_NUMBER
+					&& args[CHANGE_SUBJECT_PARAM_NUMBER]!=null
+					&& !args[CHANGE_SUBJECT_PARAM_NUMBER].trim().isEmpty()){
+				prefix = args[CHANGE_SUBJECT_PARAM_NUMBER];
+			}
 			if (args.length > ADD_HEADERS_PARAM_NUMBER
 					&& args[ADD_HEADERS_PARAM_NUMBER] != null
 					&& !args[ADD_HEADERS_PARAM_NUMBER].isEmpty()
@@ -108,6 +115,9 @@ public class SpamAssassimScan implements SpamScan {
 						flagHeaderName,
 						scanner.getHeadersAsAttribute().get(
 								SpamdScanner.FLAG_MAIL_ATTRIBUTE_NAME));
+			}
+			if(result.isTrue()){
+				mail.getMessage().setSubject(prefix+mail.getMessage().getSubject());
 			}
 			mail.getMessage().saveChanges();
 
