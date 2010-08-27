@@ -12,6 +12,7 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.business.MailState;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.plugin.clamd.command.ClamavScan;
@@ -115,6 +116,8 @@ public class SingleClamavScan implements ClamavScan {
 				result.setResult(true);
 				if (addHeader) {
 					mail.getMessage().setHeader(headerName, STATUS_INFECTED);
+					mail.setStatus(MailState.DROP);
+					mail.setStatusReason(headerName+":"+STATUS_INFECTED);
 				}
 			} else {
 				if (addHeader) {
