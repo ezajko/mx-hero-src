@@ -68,8 +68,8 @@ public final class SMTPMessageListener implements MessageListener{
 			Set<String> originalRcptsSet = new HashSet<String>(Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR)));
 			mail = new MimeMail(from,originalRcpts,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
 			mail.getMessage().setSender(new InternetAddress(from));
-
-			for(Address address : mail.getMessage().getAllRecipients()){
+			log.debug("recipients:");
+/*			for(Address address : mail.getMessage().getAllRecipients()){
 				originalRcptsSet.remove(address.toString().trim());
 				for(String original : originalRcptsSet){
 					if(address.toString().trim().matches("*"+original.trim()+"*")){
@@ -80,7 +80,7 @@ public final class SMTPMessageListener implements MessageListener{
 			}	
 			for(String addressString : originalRcptsSet){
 				mail.getMessage().addRecipient(RecipientType.BCC, new InternetAddress(addressString));
-			}
+			}*/
 
 		} catch (MessagingException e1) {
 			throw new IOException(e1);
