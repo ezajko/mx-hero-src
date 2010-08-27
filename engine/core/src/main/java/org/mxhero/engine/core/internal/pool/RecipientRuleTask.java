@@ -86,6 +86,7 @@ public final class RecipientRuleTask implements Runnable {
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),
 						e.getMessage());
 			}
+			log.error("error while processing rules:",e);
 		}
 	}
 
