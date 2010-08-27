@@ -50,6 +50,7 @@ public class PhaseSessionFiller implements SessionFiller {
 			} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
 				userMail = mail.getRecipient();
 			}
+			log.debug("filling session for user:"+userMail);
 		}
 
 		if (userMail != null) {
