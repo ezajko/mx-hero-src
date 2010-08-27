@@ -6,14 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.mailster.smtp.api.SessionContext;
 import org.mailster.smtp.api.listener.MessageListener;
@@ -65,7 +61,7 @@ public final class SMTPMessageListener implements MessageListener{
 		MimeMail mail;
 		try {
 			Collection<String> originalRcpts = Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR));
-			Set<String> originalRcptsSet = new HashSet<String>(Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR)));
+			//Set<String> originalRcptsSet = new HashSet<String>(Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR)));
 			mail = new MimeMail(from,originalRcpts,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
 			mail.getMessage().setSender(new InternetAddress(from));
 			log.debug("recipients:");
