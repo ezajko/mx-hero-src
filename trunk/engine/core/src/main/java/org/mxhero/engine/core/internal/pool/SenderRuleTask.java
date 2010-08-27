@@ -88,7 +88,7 @@ public final class SenderRuleTask implements Runnable {
 			 * added again into input queue so it gets called for recipient
 			 * processing
 			 */
-			if (!mail.getPhase().equals(MailState.DROP)) {
+			if (!mail.getStatus().equals(MailState.DROP)) {
 				if (spliter == null) {
 					mail.setPhase(RulePhase.RECEIVE);
 					InputQueue.getInstance().add(mail);

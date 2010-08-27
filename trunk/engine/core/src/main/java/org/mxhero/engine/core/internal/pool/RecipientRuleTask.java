@@ -79,7 +79,7 @@ public final class RecipientRuleTask implements Runnable {
 		try {
 			this.processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);
-			if (!mail.getPhase().equals(MailState.DROP)) {
+			if (!mail.getStatus().equals(MailState.DROP)) {
 				OutputQueue.getInstance().add(mail);
 			} else {
 				log.debug("mail droped " + mail);
