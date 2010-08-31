@@ -28,6 +28,10 @@ public final class MimeMail {
 	private String initialSender;
 
 	private String recipient;
+	
+	private String userId;
+	
+	private String domainId;
 
 	private Collection<String> recipients;
 
@@ -213,22 +217,51 @@ public final class MimeMail {
 	public void setStatusReason(String statusReason) {
 		this.statusReason = statusReason;
 	}
+	
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
 
 	/**
-	 * 
+	 * @param userId the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * @return the domainId
+	 */
+	public String getDomainId() {
+		return domainId;
+	}
+
+	/**
+	 * @param domainId the domainId to set
+	 */
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
+	}
+
+	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("MimeMail [sequence=").append(sequence)
-				.append(", time=").append(time).append(", phase=")
-				.append(phase).append(", initialSender=").append(initialSender)
-				.append(", recipient=").append(recipient).append(
+		builder.append("MimeMail [time=").append(time).append(", sequence=")
+				.append(sequence).append(", phase=").append(phase).append(
+						", domainId=").append(domainId).append(", userId=")
+				.append(userId).append(", status=").append(status).append(
+						", initialSender=").append(initialSender).append(
+						", recipient=").append(recipient).append(
 						", recipients=").append(recipients).append(
+						", initialSize=").append(initialSize).append(
 						", responseServiceId=").append(responseServiceId)
-				.append(", status=").append(status).append(", statusReason=")
-				.append(statusReason).append("]");
+				.append(", statusReason=").append(statusReason).append("]");
 		return builder.toString();
 	}
 
