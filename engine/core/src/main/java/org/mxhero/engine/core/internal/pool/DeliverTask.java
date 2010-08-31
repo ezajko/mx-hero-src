@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collection;
 
 import org.mxhero.engine.core.internal.service.Core;
@@ -27,6 +29,7 @@ public final class DeliverTask implements Runnable {
 	private LogStat logStatService;
 	private PropertiesService properties;
 	private Collection<MailFilter> outFilters;
+	private SimpleDateFormat format;
 
 	/**
 	 * @param mail
@@ -59,6 +62,9 @@ public final class DeliverTask implements Runnable {
 				if (service != null) {
 					service.addOutMail(mail);
 					log.debug("Mail sent to connector OutQueue:" + mail);
+					if (getLogStatService() != null) {
+						getLogStatService().log(mail, getProperties().getValue(Core.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
+					}
 				}
 				bc.ungetService(serviceReference);
 				log
@@ -67,13 +73,14 @@ public final class DeliverTask implements Runnable {
 			} else {
 				log.debug("Output Service was not found for mail:" + mail);
 				if (getLogStatService() != null) {
-					getLogStatService().log(mail, Core.CONNECTOR_ERROR_STAT,
-							Core.CONNECTOR_NOT_FAUND_VALUE);
+					getLogStatService().log(mail, 
+							properties.getValue(Core.CONNECTOR_ERROR_STAT),
+							properties.getValue(Core.CONNECTOR_NOT_FAUND_VALUE));
 				}
 			}
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
-				getLogStatService().log(mail, Core.CONNECTOR_ERROR_STAT,
+				getLogStatService().log(mail, properties.getValue(Core.CONNECTOR_ERROR_STAT),
 						e.getMessage());
 			}
 		}
@@ -123,4 +130,17 @@ public final class DeliverTask implements Runnable {
 		this.outFilters = outFilters;
 	}
 
+	/**
+	 * @return the format
+	 */
+	public SimpleDateFormat getFormat() {
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(SimpleDateFormat format) {
+		this.format = format;
+	}
 }

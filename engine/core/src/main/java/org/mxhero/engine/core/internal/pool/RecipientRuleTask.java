@@ -73,9 +73,6 @@ public final class RecipientRuleTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		if (getLogRecordService() != null) {
-			getLogRecordService().log(mail);
-		}
 		try {
 			this.processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);

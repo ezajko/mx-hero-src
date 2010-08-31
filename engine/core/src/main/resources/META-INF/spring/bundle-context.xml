@@ -58,7 +58,11 @@
 		<property name="properties" ref="corePropertyService"/>
 	</bean>
 
-	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller"/>
+	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller">
+		<property name="logRecordService" ref="logRecordService"/>
+		<property name="logStatService" ref="logStatService"/>
+		<property name="properties" ref="corePropertyService"/>
+	</bean>
 	
 	<bean id="drprocessor" class="org.mxhero.engine.core.internal.pool.processor.DefaultRulesProcessor">
 		<property name="properties" ref="corePropertyService"/>

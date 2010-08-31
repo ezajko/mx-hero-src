@@ -1,6 +1,10 @@
 package org.mxhero.engine.core.internal.pool.filler;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.core.mail.AttachmentsVO;
 import org.mxhero.engine.core.mail.BodyVO;
 import org.mxhero.engine.core.mail.HeadersVO;
@@ -18,6 +22,9 @@ import org.mxhero.engine.domain.mail.business.User;
 import org.mxhero.engine.domain.mail.business.UserList;
 import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
+import org.mxhero.engine.domain.properties.PropertiesService;
+import org.mxhero.engine.domain.statistic.LogRecord;
+import org.mxhero.engine.domain.statistic.LogStat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +39,15 @@ public class PhaseSessionFiller implements SessionFiller {
 			.getLogger(PhaseSessionFiller.class);
 
 	private static final char DIV_CHAR = '@';
+	
+	private LogRecord logRecordService;
+	
+	private LogStat logStatService;
+	
+	private PropertiesService properties;
 
+	private SimpleDateFormat format;
+	
 	/**
 	 * @see org.mxhero.engine.core.internal.pool.filler.SessionFiller#fill(org.drools.runtime.StatefulKnowledgeSession, org.mxhero.engine.domain.mail.finders.UserFinder, org.mxhero.engine.domain.mail.finders.DomainFinder, org.mxhero.engine.domain.mail.MimeMail)
 	 */
@@ -53,14 +68,18 @@ public class PhaseSessionFiller implements SessionFiller {
 			log.debug("filling session for user:"+userMail);
 		}
 
+		mail.setUserId(userMail);
+		
 		if (userMail != null) {
 			if (domainFinder != null) {
 
 				String domainId = userMail
 						.substring(userMail.indexOf(DIV_CHAR) + 1);
+				mail.setDomainId(domainId);
 				domain = domainFinder.getDomain(domainId);
 				if (domain != null) {
 					log.debug("domain found " + domain);
+					mail.setDomainId(domain.getId());
 					ksession.insert(domain);
 					if(domain.getGroups()!=null){
 						for (Group group : domain.getGroups()) {
@@ -76,6 +95,7 @@ public class PhaseSessionFiller implements SessionFiller {
 						user = userFinder.getUser(userMail, domainId);
 						if (user != null) {
 							log.debug("user found " + user);
+							mail.setUserId(user.getMail());
 							ksession.insert(user);
 							if(user.getLists()!=null){
 								for (UserList userList : user.getLists()) {
@@ -95,6 +115,16 @@ public class PhaseSessionFiller implements SessionFiller {
 			}
 		}
 
+		if(getLogRecordService()!=null){
+			getLogRecordService().log(mail);
+		}
+		
+		if (getLogStatService() != null) {
+			if (mail.getPhase().equals(RulePhase.SEND)){
+				getLogStatService().log(mail, getProperties().getValue(Core.IN_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
+			}
+		}
+		
 		ksession.insert(new MailVO(mail));
 		ksession.insert(new InitialDataVO(mail));
 		ksession.insert(new HeadersVO(mail));
@@ -110,8 +140,68 @@ public class PhaseSessionFiller implements SessionFiller {
 				log.debug(obj.toString());
 			}
 		}
-
+		
 		return domainAgendaGroup;
 	}
 
+	/**
+	 * @return the logRecordService
+	 */
+	public LogRecord getLogRecordService() {
+		return logRecordService;
+	}
+
+	/**
+	 * @param logRecordService the logRecordService to set
+	 */
+	public void setLogRecordService(LogRecord logRecordService) {
+		this.logRecordService = logRecordService;
+	}
+
+	/**
+	 * @return the logStatService
+	 */
+	public LogStat getLogStatService() {
+		return logStatService;
+	}
+
+	/**
+	 * @param logStatService the logStatService to set
+	 */
+	public void setLogStatService(LogStat logStatService) {
+		this.logStatService = logStatService;
+	}
+
+	/**
+	 * @return the properties
+	 */
+	public PropertiesService getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @param properties the properties to set
+	 */
+	public void setProperties(PropertiesService properties) {
+		this.properties = properties;
+	}
+
+	/**
+	 * @return the format
+	 */
+	public SimpleDateFormat getFormat() {
+		if(format==null){
+			format = new SimpleDateFormat(getProperties().getValue(Core.STATS_TIME_FORMAT));
+		}
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(SimpleDateFormat format) {
+		this.format = format;
+	}
+
 }
+

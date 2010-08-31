@@ -76,10 +76,6 @@ public final class SenderRuleTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		// fill session and process it
-		if (getLogRecordService() != null) {
-			getLogRecordService().log(mail);
-		}
 		try {
 			processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);

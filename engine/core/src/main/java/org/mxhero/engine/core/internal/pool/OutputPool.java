@@ -1,5 +1,6 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import org.mxhero.engine.core.internal.queue.OutputQueue;
@@ -30,6 +31,8 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 	
 	private Collection<MailFilter> outFilters;
 	
+	private SimpleDateFormat format;
+	
 	/**
 	 * @param bc
 	 */
@@ -49,6 +52,7 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 		log.info("INIT");
 		updated();
 		getProperties().addListener(this);
+		format = new SimpleDateFormat(getProperties().getValue(Core.STATS_TIME_FORMAT));
 	}
 	
 	/**
@@ -69,6 +73,7 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 		task.setProperties(getProperties());
 		task.setLogStatService(getLogStatService());
 		task.setOutFilters(getOutFilters());
+		task.setFormat(getFormat());
 		return task;
 		
 	}
@@ -125,6 +130,20 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 	 */
 	public void setOutFilters(Collection<MailFilter> outFilters) {
 		this.outFilters = outFilters;
+	}
+
+	/**
+	 * @return the format
+	 */
+	public SimpleDateFormat getFormat() {
+		return format;
+	}
+
+	/**
+	 * @param format the format to set
+	 */
+	public void setFormat(SimpleDateFormat format) {
+		this.format = format;
 	}
 	
 }
