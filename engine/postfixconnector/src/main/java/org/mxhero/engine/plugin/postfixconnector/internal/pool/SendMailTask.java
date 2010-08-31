@@ -67,9 +67,9 @@ public final class SendMailTask implements Runnable {
 			t.sendMessage(msg, new Address[] { new InternetAddress(mail.getRecipient()) });
 		    t.close();
 		    log.debug("Message sent:"+mail);
-		    getLogStat().log(mail, PostfixConnector.OUT_TIME_STAT, getFormat().format(Calendar.getInstance().getTime()));
+		    getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
 		} catch (MessagingException e) {
-			getLogStat().log(mail, PostfixConnector.DELIVER_ERROR_STAT, e.getMessage());
+			getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.DELIVER_ERROR_STAT), e.getMessage());
 			log.error("Couldnt send the mail:"+mail,e);
 		}	
 	}

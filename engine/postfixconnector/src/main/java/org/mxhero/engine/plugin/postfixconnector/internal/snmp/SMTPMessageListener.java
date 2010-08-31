@@ -61,23 +61,9 @@ public final class SMTPMessageListener implements MessageListener{
 		MimeMail mail;
 		try {
 			Collection<String> originalRcpts = Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR));
-			//Set<String> originalRcptsSet = new HashSet<String>(Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR)));
 			mail = new MimeMail(from,originalRcpts,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
 			mail.getMessage().setSender(new InternetAddress(from));
 			log.debug("recipients:");
-/*			for(Address address : mail.getMessage().getAllRecipients()){
-				originalRcptsSet.remove(address.toString().trim());
-				for(String original : originalRcptsSet){
-					if(address.toString().trim().matches("*"+original.trim()+"*")){
-						originalRcptsSet.remove(original);
-						break;
-					}
-				}				
-			}	
-			for(String addressString : originalRcptsSet){
-				mail.getMessage().addRecipient(RecipientType.BCC, new InternetAddress(addressString));
-			}*/
-
 		} catch (MessagingException e1) {
 			throw new IOException(e1);
 		}
@@ -87,7 +73,7 @@ public final class SMTPMessageListener implements MessageListener{
 				getLogRecordService().log(mail);
 			}
 			if(getLogStatService()!=null){
-				getLogStatService().log(mail, PostfixConnector.IN_TIME_STAT, getFormat().format(Calendar.getInstance().getTime()));
+				getLogStatService().log(mail, getProperties().getValue(PostfixConnector.IN_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
 			}		
 			queue.put(mail);
 			log.debug("Mail added to queue:"+mail);

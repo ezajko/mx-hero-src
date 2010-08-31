@@ -113,7 +113,7 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements Properti
 				InputPool.log.debug("Mail added:"+mail);
 			} catch (Exception e){
 				if(getLogStat()!=null){
-					getLogStat().log(mail, PostfixConnector.CORE_ERROR_STAT, e.getMessage());
+					getLogStat().log(mail, getProperties().getValue(PostfixConnector.CORE_ERROR_STAT), e.getMessage());
 				}
 				InputPool.log.warn("Mail wasnt added, sending to queue again:"+mail,e);
 				InputPool.this.mailQueue.add(mail);
