@@ -7,6 +7,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.business.RulePhase;
 
 /**
  * Utility class to create entities from mails.
@@ -14,6 +15,8 @@ import org.mxhero.engine.domain.mail.MimeMail;
  */
 public final class Utils {
 
+	private static final char DIV_CHAR = '@';
+	
 	/**
 	 * private so it can be instantiated
 	 */
@@ -41,6 +44,23 @@ public final class Utils {
 		record.setCcRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.CC));
 		record.setToRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.TO));
 		record.setNgRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.NEWSGROUPS));
+		
+		if (mail.getUserId()!=null){
+			record.setUserId(mail.getUserId());
+		} else {
+			if (mail.getPhase().equals(RulePhase.SEND)) {
+				record.setUserId(mail.getInitialSender());
+			} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
+				record.setUserId(mail.getRecipient());
+			}		
+		}
+		if(mail.getDomainId()!=null){
+			record.setDomainId(mail.getDomainId());
+		} else {
+			if (record.getUserId()!=null){
+				record.getUserId().substring(record.getUserId().indexOf(DIV_CHAR) + 1);
+			}
+		}
 
 		try {
 			record.setMessageId(mail.getMessage().getMessageID());

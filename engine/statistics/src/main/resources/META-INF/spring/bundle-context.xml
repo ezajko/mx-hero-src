@@ -14,7 +14,7 @@
 	<osgix:cm-properties id="jdbcCmProps"
 		persistent-id="org.mxhero.engine.plugin.statistics.jdbc">
 		<prop key="initial.hibernate.generate_statistics">true</prop>
-		<prop key="initial.hibernate.hbm2ddl.auto">update</prop>
+		<!--<prop key="initial.hibernate.hbm2ddl.auto">update</prop>-->
 		<prop key="initial.hibernate.format_sql">true</prop>
 		<prop key="initial.showSql">true</prop>
 		<prop key="initial.jdbcUrl">jdbc:mysql://127.0.0.1/statistics</prop>
@@ -100,7 +100,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.generate_statistics">${initial.hibernate.generate_statistics}</prop>
-				<prop key="hibernate.hbm2ddl.auto">${initial.hibernate.hbm2ddl.auto}</prop>
+				<!--<prop key="hibernate.hbm2ddl.auto">${initial.hibernate.hbm2ddl.auto}</prop>-->
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory
 				</prop>

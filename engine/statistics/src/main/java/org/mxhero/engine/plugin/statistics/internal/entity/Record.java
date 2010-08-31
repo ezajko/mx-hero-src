@@ -32,9 +32,15 @@ public class Record implements Serializable{
 	@Column(name = "sender", length = 50)
 	private String sender;
 
+	@Column(name = "user_id", length = 50)
+	private String userId;
+	
 	@Column(name = "recipient", length = 50)
 	private String recipient;
 
+	@Column(name = "domain_id", length = 50)
+	private String domainId;
+	
 	@Column(name = "subject")
 	private String subject;
 
@@ -144,6 +150,34 @@ public class Record implements Serializable{
 	 */
 	public void setRecipient(String recipient) {
 		this.recipient = recipient;
+	}
+	
+	/**
+	 * @return the userId
+	 */
+	public String getUserId() {
+		return userId;
+	}
+
+	/**
+	 * @param userId the userId to set
+	 */
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	/**
+	 * @return the domainId
+	 */
+	public String getDomainId() {
+		return domainId;
+	}
+
+	/**
+	 * @param domainId the domainId to set
+	 */
+	public void setDomainId(String domainId) {
+		this.domainId = domainId;
 	}
 
 	/**
