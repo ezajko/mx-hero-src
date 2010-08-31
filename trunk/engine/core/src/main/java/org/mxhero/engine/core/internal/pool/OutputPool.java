@@ -1,7 +1,10 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.Collection;
+
 import org.mxhero.engine.core.internal.queue.OutputQueue;
 import org.mxhero.engine.core.internal.service.Core;
+import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.pool.QueueTaskPool;
 import org.mxhero.engine.domain.properties.PropertiesListener;
 import org.mxhero.engine.domain.properties.PropertiesService;
@@ -24,6 +27,8 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 	private PropertiesService properties;
 	
 	private LogStat logStatService;
+	
+	private Collection<MailFilter> outFilters;
 	
 	/**
 	 * @param bc
@@ -63,6 +68,7 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 		DeliverTask task = new DeliverTask(mail,bc);
 		task.setProperties(getProperties());
 		task.setLogStatService(getLogStatService());
+		task.setOutFilters(getOutFilters());
 		return task;
 		
 	}
@@ -105,6 +111,20 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 	 */
 	public void setLogStatService(LogStat logStatService) {
 		this.logStatService = logStatService;
+	}
+
+	/**
+	 * @return
+	 */
+	public Collection<MailFilter> getOutFilters() {
+		return outFilters;
+	}
+
+	/**
+	 * @param outFilters
+	 */
+	public void setOutFilters(Collection<MailFilter> outFilters) {
+		this.outFilters = outFilters;
 	}
 	
 }
