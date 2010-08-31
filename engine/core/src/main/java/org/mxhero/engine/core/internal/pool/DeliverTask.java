@@ -1,6 +1,9 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.Collection;
+
 import org.mxhero.engine.core.internal.service.Core;
+import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.OutputService;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
@@ -23,6 +26,7 @@ public final class DeliverTask implements Runnable {
 	private BundleContext bc;
 	private LogStat logStatService;
 	private PropertiesService properties;
+	private Collection<MailFilter> outFilters;
 
 	/**
 	 * @param mail
@@ -41,6 +45,11 @@ public final class DeliverTask implements Runnable {
 		ServiceReference serviceReference;
 		OutputService service;
 		try {
+			if(getOutFilters()!=null){
+				for(MailFilter filter : getOutFilters()){
+					filter.process(mail);
+				}
+			}
 			serviceReference = bc.getServiceReference(mail
 					.getResponseServiceId());
 			log.debug("Got this ServiceReference:" + serviceReference);
@@ -98,6 +107,20 @@ public final class DeliverTask implements Runnable {
 	 */
 	public void setProperties(PropertiesService properties) {
 		this.properties = properties;
+	}
+
+	/**
+	 * @return
+	 */
+	public Collection<MailFilter> getOutFilters() {
+		return outFilters;
+	}
+
+	/**
+	 * @param outFilters
+	 */
+	public void setOutFilters(Collection<MailFilter> outFilters) {
+		this.outFilters = outFilters;
 	}
 
 }

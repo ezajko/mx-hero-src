@@ -102,6 +102,9 @@ public final class SenderRuleTask implements Runnable {
 					}
 				}
 			} else {
+				if(getLogRecordService()!=null){
+					getLogRecordService().log(mail);
+				}
 				log.debug("mail droped " + mail);
 			}
 		} catch (Exception e) {

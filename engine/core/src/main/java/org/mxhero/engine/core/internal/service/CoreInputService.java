@@ -1,9 +1,11 @@
 package org.mxhero.engine.core.internal.service;
 
+import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.core.internal.queue.InputQueue;
+import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.InputService;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.slf4j.Logger;
@@ -23,6 +25,8 @@ public final class CoreInputService implements InputService {
 	
 	private BlockingQueue<MimeMail> queue = InputQueue.getInstance();
 	
+	private Collection<MailFilter> inFilters;
+	
 	/**
 	 * @see org.mxhero.engine.domain.connector.InputService#addMail(byte[], java.lang.String)
 	 */
@@ -31,6 +35,12 @@ public final class CoreInputService implements InputService {
 		if (mail==null || mail.getResponseServiceId()==null){
 			throw new IllegalArgumentException("mail:"+mail);
 		}
+		if(getInFilters()!=null){
+			for(MailFilter filter : getInFilters()){
+				filter.process(mail);
+			}
+		}
+		
 		log.debug("Adding email:[rawEmail:"+mail+"],[reponseServiceId:"+mail.getResponseServiceId()+"]");
 		while(keepTrying){
 			try {
@@ -41,6 +51,14 @@ public final class CoreInputService implements InputService {
 			}
 		}
 		log.debug("Mail added to queue:"+mail);
+	}
+
+	public Collection<MailFilter> getInFilters() {
+		return inFilters;
+	}
+
+	public void setInFilters(Collection<MailFilter> inFilters) {
+		this.inFilters = inFilters;
 	}
 
 }

@@ -83,6 +83,9 @@ public final class RecipientRuleTask implements Runnable {
 				OutputQueue.getInstance().add(mail);
 				log.debug("Mail sent to out queue for " + mail);
 			} else {
+				if(getLogRecordService()!=null){
+					getLogRecordService().log(mail);
+				}
 				log.debug("mail droped " + mail);
 			}
 		} catch (Exception e) {
