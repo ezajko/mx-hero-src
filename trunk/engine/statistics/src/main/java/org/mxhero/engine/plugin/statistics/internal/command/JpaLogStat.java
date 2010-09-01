@@ -23,10 +23,10 @@ public class JpaLogStat implements LogStat{
 
 	private static Logger log = LoggerFactory.getLogger(JpaLogStat.class);
 	
-	@Autowired
+	@Autowired(required=true)
 	private StatDao dao;
 	
-	@Autowired
+	@Autowired(required=true)
 	private RecordDao recordDao;
 	
 	/**
