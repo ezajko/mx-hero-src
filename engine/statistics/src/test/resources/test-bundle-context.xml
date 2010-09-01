@@ -30,6 +30,10 @@
 	<bean id="logStatService" class="org.mxhero.engine.plugin.statistics.internal.service.LogStatService"/>
 
 	<bean id="jpaLogStatCommand" class="org.mxhero.engine.plugin.statistics.internal.command.JpaLogStat"/>
+	
+	<bean id="jpaUserBytesPerHour" class="org.mxhero.engine.plugin.statistics.internal.command.JpaUserBytesPerHour"/>
+	
+	<bean id="jpaUserMailsPerHour" class="org.mxhero.engine.plugin.statistics.internal.command.JpaUserMailsPerHour"/>
 
 	<bean
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />

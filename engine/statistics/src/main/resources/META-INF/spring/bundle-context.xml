@@ -75,6 +75,31 @@
 
 	<bean id="jpaLogStatCommand" class="org.mxhero.engine.plugin.statistics.internal.command.JpaLogStat"/>
 
+	<osgi:service ref="jpaUserBytesPerHour">
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.mail.command.Command</value>
+	  		<value>org.mxhero.engine.plugin.statistics.command.UserBytesPerHour</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.statistics.internal.command.JpaUserBytesPerHour"/>
+   		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="jpaUserBytesPerHour" class="org.mxhero.engine.plugin.statistics.internal.command.JpaUserBytesPerHour"/>
+
+	<osgi:service ref="jpaUserMailsPerHour">
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.mail.command.Command</value>
+	  		<value>org.mxhero.engine.plugin.statistics.command.UserMailsPerHour</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.statistics.internal.command.JpaUserMailsPerHour"/>
+   		</osgi:service-properties>
+	</osgi:service>
+	
+	<bean id="jpaUserMailsPerHour" class="org.mxhero.engine.plugin.statistics.internal.command.JpaUserMailsPerHour"/>
+
+
 	<bean
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
