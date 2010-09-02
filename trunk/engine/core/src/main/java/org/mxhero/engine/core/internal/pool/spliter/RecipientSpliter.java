@@ -41,6 +41,8 @@ public class RecipientSpliter implements Spliter {
 						newMessage, mail.getResponseServiceId());
 				splitedMail.setRecipient(recipient);
 				splitedMail.setPhase(RulePhase.RECEIVE);
+				splitedMail.setSenderId(mail.getSenderId());
+				splitedMail.setSenderDomainId(mail.getSenderDomainId());
 				mails.add(splitedMail);
 				log.debug("mail splited " + splitedMail);
 			} catch (MessagingException e) {
