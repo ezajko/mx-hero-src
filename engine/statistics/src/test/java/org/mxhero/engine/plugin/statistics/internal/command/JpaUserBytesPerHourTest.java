@@ -33,6 +33,6 @@ public class JpaUserBytesPerHourTest {
 	@Test
 	public void testCmd(){
 		UserBytesPerHour cmd = (UserBytesPerHour)ctx.getBean("jpaUserBytesPerHour");
-		Assert.assertTrue(cmd.exec(null, "someuserid","send","10").isTrue());
+		Assert.assertTrue(cmd.exec(null, "someuserid","10").isTrue());
 	}
 }

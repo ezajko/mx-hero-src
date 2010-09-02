@@ -32,14 +32,20 @@ public class Record implements Serializable{
 	@Column(name = "sender", length = 50)
 	private String sender;
 
-	@Column(name = "user_id", length = 50)
-	private String userId;
+	@Column(name = "sender_id", length = 50)
+	private String senderId;
 	
 	@Column(name = "recipient", length = 50)
 	private String recipient;
+	
+	@Column(name = "recipient_id", length = 50)
+	private String recipientId;
 
-	@Column(name = "domain_id", length = 50)
-	private String domainId;
+	@Column(name = "sender_domain_id", length = 50)
+	private String senderDomainId;
+	
+	@Column(name = "recipient_domain_id", length = 50)
+	private String recipientDomainId;
 	
 	@Column(name = "subject")
 	private String subject;
@@ -152,32 +158,61 @@ public class Record implements Serializable{
 		this.recipient = recipient;
 	}
 	
+
 	/**
-	 * @return the userId
+	 * @return the senderId
 	 */
-	public String getUserId() {
-		return userId;
+	public String getSenderId() {
+		return senderId;
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param senderId the senderId to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+	
+	/**
+	 * @return the recipientId
+	 */
+	public String getRecipientId() {
+		return recipientId;
 	}
 
 	/**
-	 * @return the domainId
+	 * @param recipientId the recipientId to set
 	 */
-	public String getDomainId() {
-		return domainId;
+	public void setRecipientId(String recipientId) {
+		this.recipientId = recipientId;
 	}
 
 	/**
-	 * @param domainId the domainId to set
+	 * @return the senderDomainId
 	 */
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
+	public String getSenderDomainId() {
+		return senderDomainId;
+	}
+
+	/**
+	 * @param senderDomainId the senderDomainId to set
+	 */
+	public void setSenderDomainId(String senderDomainId) {
+		this.senderDomainId = senderDomainId;
+	}
+	
+	/**
+	 * @return the recipientDomainId
+	 */
+	public String getRecipientDomainId() {
+		return recipientDomainId;
+	}
+
+	/**
+	 * @param recipientDomainId the recipientDomainId to set
+	 */
+	public void setRecipientDomainId(String recipientDomainId) {
+		this.recipientDomainId = recipientDomainId;
 	}
 
 	/**

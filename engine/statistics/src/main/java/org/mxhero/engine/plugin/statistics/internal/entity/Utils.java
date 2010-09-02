@@ -7,7 +7,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.domain.mail.business.RulePhase;
 
 /**
  * Utility class to create entities from mails.
@@ -45,23 +44,37 @@ public final class Utils {
 		record.setToRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.TO));
 		record.setNgRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.NEWSGROUPS));
 		
-		if (mail.getUserId()!=null){
-			record.setUserId(mail.getUserId());
+		if (mail.getSenderId()!=null){
+			record.setSenderId(mail.getSenderId());
 		} else {
-			if (mail.getPhase().equals(RulePhase.SEND)) {
-				record.setUserId(mail.getInitialSender());
-			} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
-				record.setUserId(mail.getRecipient());
-			}		
+			record.setSenderId(mail.getInitialSender());
 		}
-		if(mail.getDomainId()!=null){
-			record.setDomainId(mail.getDomainId());
+		if(mail.getSenderDomainId()!=null){
+			record.setSenderDomainId(mail.getSenderDomainId());
 		} else {
-			if (record.getUserId()!=null){
-				record.getUserId().substring(record.getUserId().indexOf(DIV_CHAR) + 1);
+			if (record.getSenderId()!=null){
+				record.setSenderDomainId(record.getSenderId().substring(record.getSenderId().indexOf(DIV_CHAR) + 1));
+			} else if (mail.getInitialSender()!=null){
+				record.setSenderDomainId(mail.getInitialSender().substring(mail.getInitialSender().indexOf(DIV_CHAR) + 1));
 			}
 		}
 
+		if (mail.getRecipientId()!=null){
+			record.setRecipientId(mail.getRecipientId());
+		} else {
+			record.setRecipientId(mail.getRecipient());
+		}
+		if(mail.getRecipientDomainId()!=null){
+			record.setRecipientDomainId(mail.getRecipientDomainId());
+		} else {
+			if (record.getRecipientId()!=null){
+				record.setRecipientDomainId(record.getRecipientId().substring(record.getRecipientId().indexOf(DIV_CHAR) + 1));
+			} else if (mail.getRecipient()!=null){
+				record.setRecipientDomainId(mail.getRecipient().substring(mail.getRecipient().indexOf(DIV_CHAR) + 1));
+			}
+		}
+		
+		
 		try {
 			record.setMessageId(mail.getMessage().getMessageID());
 		} catch (MessagingException e1) {
