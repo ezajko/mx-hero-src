@@ -133,10 +133,8 @@ public class PhaseSessionFiller implements SessionFiller {
 			getLogRecordService().log(mail);
 		}
 		
-		if (getLogStatService() != null) {
-			if (mail.getPhase().equals(RulePhase.SEND)){
-				getLogStatService().log(mail, getProperties().getValue(Core.IN_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
-			}
+		if (getLogStatService() != null && mail.getPhase().equals(RulePhase.SEND)) {
+			getLogStatService().log(mail, getProperties().getValue(Core.IN_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
 		}
 		
 		ksession.insert(new MailVO(mail));

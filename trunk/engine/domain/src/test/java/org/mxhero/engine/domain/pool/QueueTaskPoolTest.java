@@ -38,7 +38,7 @@ public class QueueTaskPoolTest {
 		pool.setWaitTime("invalid");
 		pool.setWaitTime("1000");
 		pool.setWaitTime("-1000");
-		Thread.sleep(4000);
+		Thread.sleep(6000);
 		pool.stop();
 		Assert.assertEquals(2,results.size());
 		Assert.assertTrue(cleanCalled);
