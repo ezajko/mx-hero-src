@@ -29,10 +29,14 @@ public final class MimeMail {
 
 	private String recipient;
 	
-	private String userId;
+	private String senderId;
 	
-	private String domainId;
+	private String senderDomainId;
 
+	private String recipientId;
+	
+	private String recipientDomainId;
+	
 	private Collection<String> recipients;
 
 	private String responseServiceId;
@@ -217,33 +221,61 @@ public final class MimeMail {
 	public void setStatusReason(String statusReason) {
 		this.statusReason = statusReason;
 	}
-	
+
 	/**
-	 * @return the userId
+	 * @return the senderId
 	 */
-	public String getUserId() {
-		return userId;
+	public String getSenderId() {
+		return senderId;
 	}
 
 	/**
-	 * @param userId the userId to set
+	 * @param senderId the senderId to set
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
 	}
 
 	/**
-	 * @return the domainId
+	 * @return the senderDomainId
 	 */
-	public String getDomainId() {
-		return domainId;
+	public String getSenderDomainId() {
+		return senderDomainId;
 	}
 
 	/**
-	 * @param domainId the domainId to set
+	 * @param senderDomainId the senderDomainId to set
 	 */
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
+	public void setSenderDomainId(String senderDomainId) {
+		this.senderDomainId = senderDomainId;
+	}
+
+	/**
+	 * @return the recipientId
+	 */
+	public String getRecipientId() {
+		return recipientId;
+	}
+
+	/**
+	 * @param recipientId the recipientId to set
+	 */
+	public void setRecipientId(String recipientId) {
+		this.recipientId = recipientId;
+	}
+
+	/**
+	 * @return the recipientDomainId
+	 */
+	public String getRecipientDomainId() {
+		return recipientDomainId;
+	}
+
+	/**
+	 * @param recipientDomainId the recipientDomainId to set
+	 */
+	public void setRecipientDomainId(String recipientDomainId) {
+		this.recipientDomainId = recipientDomainId;
 	}
 
 	/**
@@ -254,14 +286,17 @@ public final class MimeMail {
 		StringBuilder builder = new StringBuilder();
 		builder.append("MimeMail [time=").append(time).append(", sequence=")
 				.append(sequence).append(", phase=").append(phase).append(
-						", domainId=").append(domainId).append(", userId=")
-				.append(userId).append(", status=").append(status).append(
-						", initialSender=").append(initialSender).append(
-						", recipient=").append(recipient).append(
-						", recipients=").append(recipients).append(
+						", status=").append(status).append(", statusReason=")
+				.append(statusReason).append(", initialSender=").append(
+						initialSender).append(", recipient=").append(recipient)
+				.append(", recipients=").append(recipients).append(
 						", initialSize=").append(initialSize).append(
 						", responseServiceId=").append(responseServiceId)
-				.append(", statusReason=").append(statusReason).append("]");
+				.append(", senderId=").append(senderId).append(
+						", senderDomainId=").append(senderDomainId).append(
+						", recipientId=").append(recipientId).append(
+						", recipientDomainId=").append(recipientDomainId)
+				.append("]");
 		return builder.toString();
 	}
 

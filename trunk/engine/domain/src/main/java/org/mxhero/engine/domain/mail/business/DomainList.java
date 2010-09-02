@@ -39,5 +39,16 @@ public class DomainList {
 	public void setMails(Collection<String> mails) {
 		this.mails = mails;
 	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("DomainList [name=").append(name).append(", mails=")
+				.append(mails).append("]");
+		return builder.toString();
+	}
 	
 }
