@@ -48,8 +48,8 @@ public class ServicesTest {
 		message.setSubject("some subject");
 		message.saveChanges();
 		mail = new MimeMail("e@w.c", Arrays.asList(new String[] { "x@s.c" }), message, "");	
-		mail.setDomainId("w.c");
-		mail.setUserId("e@w.c");
+		mail.setSenderDomainId("w.c");
+		mail.setSenderId("e@w.c");
 	}
 	
 	@Test

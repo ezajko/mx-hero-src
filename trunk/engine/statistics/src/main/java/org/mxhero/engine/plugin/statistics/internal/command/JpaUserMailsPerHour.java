@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.plugin.statistics.command.UserMailsPerHour;
 import org.mxhero.engine.plugin.statistics.internal.dao.RecordDao;
@@ -22,11 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class JpaUserMailsPerHour implements UserMailsPerHour {
 	private static final int USER_ID_PARAM_NUMBER = 0;
-	private static final int PHASE_PARAM_NUMBER = 1;
-	private static final int LAST_HOURS_NAME_PARAM_NUMBER = 2;
+	private static final int LAST_HOURS_NAME_PARAM_NUMBER = 1;
 	
 	private static final String WRONG_PARAMS = "wrong parameters";
-	private static final int MIM_PARAMS = 3;
+	private static final int MIM_PARAMS = 2;
 	
 	private static Logger log = LoggerFactory.getLogger(JpaUserBytesPerHour.class);
 	
@@ -51,7 +49,6 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 		}
 		/*check for null parameters*/
 		if (args[USER_ID_PARAM_NUMBER]==null ||
-				args[PHASE_PARAM_NUMBER]==null ||
 				args[LAST_HOURS_NAME_PARAM_NUMBER]==null){
 			result.setText(WRONG_PARAMS);
 			log.warn("null parameters");
@@ -59,22 +56,13 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 		}
 		/*check for empty parameters*/
 		if (args[USER_ID_PARAM_NUMBER].isEmpty() ||
-				args[PHASE_PARAM_NUMBER].isEmpty() ||
 				args[LAST_HOURS_NAME_PARAM_NUMBER].isEmpty()){
 			result.setText(WRONG_PARAMS);
 			log.warn("empty parameters");
 			return result;
 		}
-		/*check for valid phase*/
-		if(!args[PHASE_PARAM_NUMBER].equals(RulePhase.SEND) &&
-				!args[PHASE_PARAM_NUMBER].equals(RulePhase.RECEIVE)){
-			result.setText(WRONG_PARAMS);
-			log.warn("wrong phase");
-			return result;		
-		}
-		
+
 		userId = args[USER_ID_PARAM_NUMBER];
-		phase = args[PHASE_PARAM_NUMBER];
 		try{
 			hours = Integer.parseInt(args[LAST_HOURS_NAME_PARAM_NUMBER]);
 			if(hours<1){
@@ -93,7 +81,7 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 		Timestamp time = new Timestamp(calendar.getTimeInMillis());
 		log.debug("UserId:"+userId+",Phase:"+phase+",Time:"+time.toString());
 		try{
-			Long mailsAmount = getRecordDao().amountOfUserEmailsSince(time, userId, phase);
+			Long mailsAmount = getRecordDao().amountOfUserEmailsSince(time, userId);
 			if(mailsAmount==null){
 				mailsAmount= 0l;
 			}

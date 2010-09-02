@@ -33,6 +33,6 @@ public class JpaUserMailsPerHourTest {
 	@Test
 	public void testCmd(){
 		UserMailsPerHour cmd = (UserMailsPerHour)ctx.getBean("jpaUserMailsPerHour");
-		Assert.assertTrue(cmd.exec(null, "someuserid","send","10").isTrue());
+		Assert.assertTrue(cmd.exec(null, "someuserid","10").isTrue());
 	}
 }
