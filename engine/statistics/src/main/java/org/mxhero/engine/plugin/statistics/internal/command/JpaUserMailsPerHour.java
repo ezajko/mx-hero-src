@@ -39,7 +39,6 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 		Result result = new Result();
 		result.setResult(false);
 		String userId = null;
-		String phase = null;
 		int hours = 0;
 		
 		/*check for wrong size of parameters*/
@@ -79,7 +78,7 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.HOUR_OF_DAY, -hours);
 		Timestamp time = new Timestamp(calendar.getTimeInMillis());
-		log.debug("UserId:"+userId+",Phase:"+phase+",Time:"+time.toString());
+		log.debug("UserId:"+userId+",Time:"+time.toString());
 		try{
 			Long mailsAmount = getRecordDao().amountOfUserEmailsSince(time, userId);
 			if(mailsAmount==null){
