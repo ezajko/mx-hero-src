@@ -55,5 +55,17 @@ public class Group {
 	public void setAliases(Collection<String> aliases) {
 		this.aliases = aliases;
 	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Group [name=").append(name).append(", mails=").append(
+				mails).append(", aliases=").append(aliases).append("]");
+		return builder.toString();
+	}
 	
 }
+

@@ -56,5 +56,16 @@ public class User {
 	public void setAliases(Collection<String> aliases) {
 		this.aliases = aliases;
 	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("User [mail=").append(mail).append(", aliases=").append(
+				aliases).append("]");
+		return builder.toString();
+	}
 	
 }

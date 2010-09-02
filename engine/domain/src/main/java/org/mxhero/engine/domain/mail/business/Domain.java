@@ -73,4 +73,15 @@ public class Domain {
 		this.groups = groups;
 	}
 
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Domain [id=").append(id).append(", aliases=").append(
+				aliases).append("]");
+		return builder.toString();
+	}
+
 }
