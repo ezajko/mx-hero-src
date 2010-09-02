@@ -62,24 +62,34 @@ public class PhaseSessionFiller implements SessionFiller {
 		if (mail != null) {
 			if (mail.getPhase().equals(RulePhase.SEND)) {
 				userMail = mail.getInitialSender();
+				mail.setSenderId(userMail);
 			} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
 				userMail = mail.getRecipient();
+				mail.setRecipientId(userMail);
 			}
 			log.debug("filling session for user:"+userMail);
 		}
 
-		mail.setUserId(userMail);
-		
 		if (userMail != null) {
 			if (domainFinder != null) {
 
 				String domainId = userMail
 						.substring(userMail.indexOf(DIV_CHAR) + 1);
-				mail.setDomainId(domainId);
+				
+				if (mail.getPhase().equals(RulePhase.SEND)) {
+					mail.setSenderDomainId(domainId);
+				} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
+					mail.setRecipientDomainId(domainId);
+				}
+				
 				domain = domainFinder.getDomain(domainId);
 				if (domain != null) {
 					log.debug("domain found " + domain);
-					mail.setDomainId(domain.getId());
+					if (mail.getPhase().equals(RulePhase.SEND)) {
+						mail.setSenderDomainId(domain.getId());
+					} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
+						mail.setRecipientDomainId(domain.getId());
+					}
 					ksession.insert(domain);
 					if(domain.getGroups()!=null){
 						for (Group group : domain.getGroups()) {
@@ -95,7 +105,11 @@ public class PhaseSessionFiller implements SessionFiller {
 						user = userFinder.getUser(userMail, domainId);
 						if (user != null) {
 							log.debug("user found " + user);
-							mail.setUserId(user.getMail());
+							if (mail.getPhase().equals(RulePhase.SEND)) {
+								mail.setSenderId(user.getMail());
+							} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
+								mail.setRecipientId(user.getMail());
+							}
 							ksession.insert(user);
 							if(user.getLists()!=null){
 								for (UserList userList : user.getLists()) {
