@@ -93,44 +93,6 @@
     </plugins>
   </build>
 
-  <repositories>
-    <repository>
-      <id>sourceforge</id>
-      <url>http://oss.sonatype.org/content/groups/sourceforge/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>com.springsource.repository.bundles.release</id>
-      <name>SpringSource Enterprise Bundle Repository - SpringSource
-				Releases</name>
-      <url>http://repository.springsource.com/maven/bundles/release</url>
-    </repository>
-    <repository>
-      <id>com.springsource.repository.bundles.external</id>
-      <name>SpringSource Enterprise Bundle Repository - External Releases</name>
-      <url>http://repository.springsource.com/maven/bundles/external</url>
-    </repository>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <url>http://download.java.net/maven/2/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>drools</id>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <reporting>
     <plugins>
       <plugin>

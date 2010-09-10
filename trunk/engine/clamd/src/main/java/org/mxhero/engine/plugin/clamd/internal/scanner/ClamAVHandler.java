@@ -78,7 +78,7 @@ public class ClamAVHandler extends IoHandlerAdapter{
 				log.warn("wrong format for port:" + answer);
 			}
 		}
-		log.warn("port parsed:" + port);
+		log.debug("port parsed:" + port);
 		return port;
 	}
 }

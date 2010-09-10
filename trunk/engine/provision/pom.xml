@@ -91,9 +91,9 @@
 			<version>3.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.springsource</groupId>
-			<artifactId>com.thoughtworks.xstream</artifactId>
-			<version>1.3.1</version>
+		    <groupId>com.thoughtworks.xstream</groupId>
+		    <artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
+		    <version>1.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.xml.stream</groupId>
@@ -205,9 +205,9 @@
 			<version>3.8.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.springsource</groupId>
-			<artifactId>org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
-			<version>6.0.20.S2-r5956</version>
+		    <groupId>org.apache.jasper.springsource</groupId>
+		    <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+		    <version>6.0.20.S2-r5956</version>
 		</dependency>
 		<dependency>
 			<groupId>org.drools</groupId>
@@ -468,7 +468,7 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>com.springsource.org.aspectj.runtime</artifactId>
-			<version>1.6.9.RELEASE</version>
+			<version>1.6.8.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.joda</groupId>
