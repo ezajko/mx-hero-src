@@ -18,7 +18,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin.clamd</groupId>
 	<artifactId>clamd</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.0.M1</version>
 
 	<developers>
 		<developer>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>org.mxhero.engine</groupId>
 			<artifactId>domain</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.0.M1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
