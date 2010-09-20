@@ -1,112 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!--
+	<!--
 		| put company details here <organization> <name>...</name>
 		<url>http://...</url> </organization>
 	-->
 
-  <!--
+	<!--
 		| put license details here <licenses> <license> <name>...</name>
 		<url>http://...</url> <comments> </comments> </license> </licenses>
 	-->
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mxhero</groupId>
-  <artifactId>engine</artifactId>
-  <version>1.0.0.M1</version>
-  
-  <developers>
-    <developer>
-      <email>mmarmol@mxhero.com</email>
-      <name>Marcelo Angel Marmol</name>
-      <organization>mxHero</organization>
-      <roles>
-        <role>Architect</role>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
-  <description>Open Source Project that provide a platform for implementing rules over e-mails. The hole platform runs in an OSGI environment.</description>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.mxhero</groupId>
+	<artifactId>engine</artifactId>
+	<version>1.0.0.M1</version>
 
-  <name>org.mxhero.engine</name>
+	<developers>
+		<developer>
+			<email>mmarmol@mxhero.com</email>
+			<name>Marcelo Angel Marmol</name>
+			<organization>mxHero</organization>
+			<roles>
+				<role>Architect</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<description>Open Source Project that provide a platform for implementing rules over e-mails. The hole platform runs in an OSGI environment.</description>
+
+	<name>org.mxhero.engine</name>
 
 
-  <properties>
-    <bundles.configuration.location>/home/mxhero/workspaceMxHero/engine/configurations</bundles.configuration.location>
-  </properties>
+	<properties>
+		<bundles.configuration.location>/home/mxhero/workspaceMxHero/engine/configurations</bundles.configuration.location>
+	</properties>
 
-  <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-  <modules>
-    <module>poms</module>
-    <module>provision</module>
-    <module>domain</module>
-    <module>core</module>
-    <module>postfixconnector</module>
-    <module>branding</module>
-    <module>xmlfinder</module>
-    <module>basecommands</module>
-    <module>clamd</module>
-    <module>spamd</module>
-    <module>statistics</module>
-  </modules>
+	<modules>
+		<module>poms</module>
+		<module>provision</module>
+		<module>domain</module>
+		<module>core</module>
+		<module>postfixconnector</module>
+		<module>branding</module>
+		<module>xmlfinder</module>
+		<module>basecommands</module>
+		<module>clamd</module>
+		<module>spamd</module>
+		<module>statistics</module>
+	</modules>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <parallel>classes</parallel>
-          <reportFormat>plain</reportFormat>
-          <reportsDirectory>../target/surefire-reports</reportsDirectory>
-          <testFailureIgnore>true</testFailureIgnore>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.ops4j</groupId>
-        <artifactId>maven-pax-plugin</artifactId>
-        <configuration>
-          <provision>
-            <param>--platform=equinox</param>
-            <param>--systemPackages=sun.misc</param>
-          </provision>
-        </configuration><!--
-        <executions>
-          <execution>
-            <id>ide-support</id>
-            <goals>
-              <goal>eclipse</goal>
-            </goals>
-          </execution>
-        </executions>
-      --></plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>1.0-beta-1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<parallel>classes</parallel>
+					<reportFormat>plain</reportFormat>
+					<reportsDirectory>../target/surefire-reports</reportsDirectory>
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.ops4j</groupId>
+				<artifactId>maven-pax-plugin</artifactId>
+				<configuration>
+					<provision>
+						<param>--platform=equinox</param>
+						<param>--systemPackages=sun.misc</param>
+					</provision>
+				</configuration>
+				<!--
+					<executions> <execution> <id>ide-support</id> <goals>
+					<goal>eclipse</goal> </goals> </execution> </executions>
+				-->
+			</plugin>
+		</plugins>
+	</build>
 
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
-        <configuration>
-          <doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
-          <docletArtifact>
-            <groupId>gr.spinellis</groupId>
-            <artifactId>UmlGraph</artifactId>
-            <version>5.3</version>
-          </docletArtifact>
-          <additionalparam>-views
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<doclet>org.umlgraph.doclet.UmlGraphDoc</doclet>
+					<docletArtifact>
+						<groupId>gr.spinellis</groupId>
+						<artifactId>UmlGraph</artifactId>
+						<version>5.3</version>
+					</docletArtifact>
+					<additionalparam>-views
 						-inferrel
 						-inferdep
 						-collpackages java.util.*
@@ -115,10 +118,10 @@
 						-attributes
 						-types
 						-visibility</additionalparam>
-          <useStandardDocletOptions>true</useStandardDocletOptions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </reporting>
+					<useStandardDocletOptions>true</useStandardDocletOptions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 
 </project>
