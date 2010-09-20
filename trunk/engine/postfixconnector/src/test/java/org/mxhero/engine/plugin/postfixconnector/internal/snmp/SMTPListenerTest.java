@@ -58,7 +58,7 @@ public class SMTPListenerTest {
 		smtpListener.stop();
 	}
 	
-	@Test
+	//@Test
 	public void testSendEmail() throws MessagingException{
         SMTPListener smtpListener = null;
         PropertiesService properties = new PostfixConnector();    
