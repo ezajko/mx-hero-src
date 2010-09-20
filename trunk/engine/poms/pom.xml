@@ -11,6 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.build</groupId>
 	<artifactId>shared-plugin-settings</artifactId>
+	<version>1.0.0</version>
 
 	<name>engine - plugin configuration</name>
 
