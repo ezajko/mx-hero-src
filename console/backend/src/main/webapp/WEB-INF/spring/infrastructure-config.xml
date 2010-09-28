@@ -2,10 +2,83 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:hades="http://schemas.synyx.org/hades"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/jdbc
-        http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+        http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://schemas.synyx.org/hades
+		http://schemas.synyx.org/hades/hades.xsd">
+	
+	<context:property-placeholder location="classpath*:META-INF/jdbc.properties" />
+
+	<hades:dao-config base-package="org.mxhero.console.backend.dao" />
+
+	<bean
+		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="emfb" />
+	</bean>
+
+	<bean id="pum"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="persistenceXmlLocations">
+			<list>
+				<value>classpath*:META-INF/persistence.xml</value>
+			</list>
+		</property>
+		<property name="defaultDataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="emfb"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitManager" ref="pum" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.generate_statistics">${initial.hibernate.generate_statistics}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${initial.hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.format_sql">${initial.hibernate.format_sql}</prop>
+			</props>
+		</property>
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="database" value="MYSQL" />
+				<property name="showSql" value="${initial.showSql}" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+		<property name="targetDataSource">
+			<ref local="mainDataSource" />
+		</property>
+	</bean>
+
+	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="${initial.jdbcUrl}" />
+		<property name="username" value="${initial.username}" />
+		<property name="password" value="${initial.password}" />
+		<property name="idleConnectionTestPeriod" value="${initial.idleConnectionTestPeriod}" />
+		<property name="idleMaxAge" value="${initial.idleMaxAge}" />
+		<property name="maxConnectionsPerPartition" value="${initial.maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${initial.minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${initial.partitionCount}" />
+		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
+		<property name="statementsCacheSize" value="${initial.statementsCacheSize}" />
+		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
+	</bean>
+
 
 </beans>

@@ -24,6 +24,7 @@
     
     <security>
     	<security-constraint id="trusted">
+    		<auth-method>Custom</auth-method>
             <roles>
                 <role>ROLE_DOMAIN_ADMIN</role>
                 <role>ROLE_ADMIN</role>
