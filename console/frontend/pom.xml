@@ -90,6 +90,20 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.spicefactory</groupId>
+			<artifactId>parsley-flex4</artifactId>
+			<version>2.3.1</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.spicefactory</groupId>
+			<artifactId>spicelib-flex</artifactId>
+			<version>2.3.1</version>
+			<type>swc</type>
+		</dependency>
+		
+		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
 			<version>4.0-rc-1</version>
