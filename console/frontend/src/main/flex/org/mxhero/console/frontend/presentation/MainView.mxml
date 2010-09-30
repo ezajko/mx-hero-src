@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  xmlns:parsley="http://www.spicefactory.org/parsley" 
+			  xmlns:presentation="org.mxhero.console.frontend.presentation.*"
+			  addedToStage="dispatchEvent(new Event('configureIOC', true))">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.frontend.application.MainDestinations;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Metadata>
+		[WayPoint]
+	</fx:Metadata>
+	
+	<s:NavigatorContent width="100%" height="100%">
+		<s:layout>
+			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+		</s:layout>
+		<presentation:Login automationName="{MainDestinations.LOGIN}"/>
+	</s:NavigatorContent>
+	
+	
+</mx:ViewStack>
