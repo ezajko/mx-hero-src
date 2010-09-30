@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:VerticalLayout/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			protected function clickHandler(event:MouseEvent):void
+			{
+				if (currentState == 'Forgot')
+					Alert.show(emailTi.text + " Password Sent!");
+				else
+					Alert.show(useridTi.text + " Logged in!");
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<!-- The Application class states property defines the view states.--> 
+	<s:states> 
+		<s:State name="default"/>    
+		<s:State name="forgot"/> 
+	</s:states> 
+	
+	<!-- Define the transition to animate the change of view state. --> 
+	<s:transitions > 
+		<s:Transition fromState="default" toState="forgot"> 
+			<s:Sequence>
+				<s:Fade target="{emailFi}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Parallel duration="500"> 
+					<s:Resize target="{loginPanel}"/>
+					<s:Fade target="{emailFi}" alphaFrom="0" alphaTo="1" startDelay="100"/>
+				</s:Parallel> 
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="forgot" toState="default"> 
+			<s:Sequence>
+				<s:Fade target="{passwordFi}" alphaFrom="1" alphaTo="0" duration="0" />
+				<s:Fade target="{useridFi}" alphaFrom="1" alphaTo="0" duration="0" />		
+				<s:Resize target="{loginPanel}" duration="200"/>
+				<s:Parallel duration="300"> 
+					<s:Fade target="{passwordFi}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{useridFi}" alphaFrom="0" alphaTo="1"/>				
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+		<!-- Set title of the Panel container based on the view state.--> 
+		<s:Panel id="loginPanel"
+				 title="Login" title.forgot="Forgot Password?"> 
+			<s:layout> 
+				<s:VerticalLayout/> 
+			</s:layout>
+			<mx:Form id="loginForm" defaultButton="{submit}" > 
+				<mx:FormItem id="emailFi" label="Email:" includeIn="forgot"> 
+					<s:TextInput id="emailTi" width="100%" /> 
+				</mx:FormItem>
+				<mx:FormItem id="useridFi" label="Username:" includeIn="default"> 
+					<s:TextInput id="useridTi" width="100%"/> 
+				</mx:FormItem> 
+				<mx:FormItem id="passwordFi" label="Password:" includeIn="default" > 
+					<s:TextInput id="passwordTi" displayAsPassword="true" width="100%"/> 
+				</mx:FormItem>
+				<s:Group> 
+					<s:layout>
+						<s:HorizontalLayout/>
+					</s:layout>
+
+					<mx:LinkButton label="Return to Login" color="#F3F7FA"
+								   includeIn="forgot" 
+								   click="currentState=''"/>
+					
+					<mx:LinkButton id="changeLink" color="#F3F7FA"
+								   includeIn="default" 
+								   label="Forgot Password?" 
+								   click="currentState='forgot'"/>
+					<mx:Spacer width="100%"/>
+					
+					<s:Button id="submit" click="clickHandler(event)"
+							  label="Submit"/> 
+				</s:Group> 				
+			</mx:Form> 
+		</s:Panel>
+</s:Group>
