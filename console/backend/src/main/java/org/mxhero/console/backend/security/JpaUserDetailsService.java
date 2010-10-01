@@ -1,4 +1,4 @@
-package org.mxhero.console.backend.service;
+package org.mxhero.console.backend.security;
 
 import org.mxhero.console.backend.dao.ApplicationUserDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
