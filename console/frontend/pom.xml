@@ -102,21 +102,21 @@
 			<version>2.3.1</version>
 			<type>swc</type>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.adobe.cairngorm</groupId>
-			<artifactId>navigationParsley</artifactId>
-			<version>1.1</version>
-			<type>swc</type>
-		</dependency>
-	
+
 		<dependency>
 			<groupId>com.adobe.cairngorm</groupId>
 			<artifactId>navigation</artifactId>
 			<version>1.1</version>
 			<type>swc</type>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.adobe.cairngorm</groupId>
+			<artifactId>navigationParsley</artifactId>
+			<version>1.1</version>
+			<type>swc</type>
+		</dependency>
+
 		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
@@ -124,5 +124,6 @@
 			<type>swc</type>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 </project>

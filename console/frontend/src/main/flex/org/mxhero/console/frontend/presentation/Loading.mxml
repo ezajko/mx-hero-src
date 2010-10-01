@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 width="300"
+		 height="70"
+		 title="Loading">
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			[Inject]
+			[Bindable]
+			public var model:LoadingPM;
+		]]>
+	</fx:Script>
+	
+	<mx:ProgressBar indeterminate="true" width="100%" labelPlacement="center" label="{model.currentLabel}"/>
+		
+</s:Panel>

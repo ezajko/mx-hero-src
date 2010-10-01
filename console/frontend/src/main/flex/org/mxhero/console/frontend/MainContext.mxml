@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fx:Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		xmlns:presentation="org.mxhero.console.frontend.presentation.*" xmlns:cairngorm="http://ns.adobe.com/cairngorm">
+
+	<fx:Script>
+		<![CDATA[
+			
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<presentation:MainViewPM/>
+		<presentation:LoginPM/>
+		<presentation:DashboardPM/>	
+		<presentation:LoadingPM/>
+		
+		<s:RemoteObject
+			id="applicationUserService" 
+			destination="applicationUserService" 
+			showBusyCursor="true"
+			/>
+
+	</fx:Declarations>
+
+</fx:Object>
