@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   minWidth="955" minHeight="600" 
+			   xmlns:presentation="org.mxhero.console.frontend.presentation.*" 
+			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:parsley="http://www.spicefactory.org/parsley">
+	<fx:Declarations>
+		<parsley:ContextBuilder>
+			<cairngorm:CairngormNavigationSupport/>
+			<parsley:FlexConfig type="{MainContext}"/>
+		</parsley:ContextBuilder>
+		<parsley:Configure/>
+		<s:TraceTarget level="{ LogEventLevel.DEBUG }"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.logging.LogEventLevel;
+			import org.mxhero.console.frontend.presentation.MainViewPM;
+			
+			[Inject]
+			[Bindable]
+			public var model:MainViewPM;
+		]]>
+	</fx:Script>
+	
+   <s:layout>
+      <s:VerticalLayout verticalAlign="middle" horizontalAlign="center"/>
+   </s:layout>
+   
+	<presentation:MainView width="100%" height="100%"/>
+   
+</s:Application>
