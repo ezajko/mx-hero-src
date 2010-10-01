@@ -11,12 +11,13 @@
 	<beans:bean id="entryPoint"
 		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
 
+	<beans:bean id="jpaUserDetailsService" class="org.mxhero.console.backend.security.JpaUserDetailsService"/>
+
+	<beans:bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+
 	<authentication-manager>
-		<authentication-provider>
-			<user-service>
-				<user name="admin" password="password" authorities="ROLE_ADMIN" />
-				<user name="domain" password="password" authorities="ROLE_DOMAIN" />
-			</user-service>
+		<authentication-provider user-service-ref="jpaUserDetailsService">
+			<password-encoder hash="md5"/>
 		</authentication-provider>
 	</authentication-manager>
 
