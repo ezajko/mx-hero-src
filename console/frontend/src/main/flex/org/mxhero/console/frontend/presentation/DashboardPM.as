@@ -7,23 +7,5 @@ package org.mxhero.console.frontend.presentation
 	public class DashboardPM
 	{
 
-		[Enter(time="first")]
-		public function firstEnter():void
-		{
-			Alert.show("main.dashboard:First");
-			
-		}
-		
-		[Enter(time="next")]
-		public function enter():void
-		{
-			Alert.show("main.dashboard:Next");
-		}
-		
-		[Exit]
-		public function exit():void
-		{
-			Alert.show("main.dashboard:Exit");
-		}
 	}
 }

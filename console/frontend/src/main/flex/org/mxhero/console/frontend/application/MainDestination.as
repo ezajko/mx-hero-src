@@ -1,4 +1,4 @@
-package org.mxhero.console.frontend.application.destination
+package org.mxhero.console.frontend.application
 {
 	public class MainDestination
 	{

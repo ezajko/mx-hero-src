@@ -3,10 +3,13 @@
 		xmlns:fx="http://ns.adobe.com/mxml/2009"
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
-		xmlns:presentation="org.mxhero.console.frontend.presentation.*" xmlns:cairngorm="http://ns.adobe.com/cairngorm">
+		xmlns:presentation="org.mxhero.console.frontend.presentation.*" xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:parsley="http://www.spicefactory.org/parsley">
 
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.frontend.application.command.LoginCommand;
+			import org.mxhero.console.frontend.application.command.LogoutCommand;
+			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
 			
 		]]>
 	</fx:Script>
@@ -16,6 +19,10 @@
 		<presentation:LoginPM/>
 		<presentation:DashboardPM/>	
 		<presentation:LoadingPM/>
+		
+		<parsley:DynamicCommand type="{ LoginCommand }"/>
+		<parsley:DynamicCommand type="{ LogoutCommand }"/>
+		<parsley:DynamicCommand type="{ RecoverPasswordCommand }"/>
 		
 		<s:RemoteObject
 			id="applicationUserService" 

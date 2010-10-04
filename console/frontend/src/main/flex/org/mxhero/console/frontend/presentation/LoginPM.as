@@ -1,27 +1,41 @@
 package org.mxhero.console.frontend.presentation
 {
 	import mx.controls.Alert;
+	
+	import org.mxhero.console.frontend.application.event.LoginEvent;
+	import org.mxhero.console.frontend.application.event.RecoverPasswordEvent;
+	import org.spicefactory.parsley.core.messaging.command.CommandStatus;
 
 	[Landmark(name="main.login")]
 	public class LoginPM
 	{	
-		[Enter(time="first")]
-		public function firstEnter():void
+		[MessageDispatcher]
+		public var dispatcher:Function;
+		
+		[Bindable]
+		public var username:String="";
+		[Bindable]
+		public var password:String="";
+		[Bindable]
+		public var mail:String="";
+		
+		[Bindable]
+		[CommandStatus(type="org.mxhero.console.frontend.application.event.LoginEvent")]
+		public var isLoging:Boolean = true;
+		
+		public function login():void
 		{
-			Alert.show("main.login:First");
-			
+			dispatcher(new LoginEvent(username,password));
 		}
 		
-		[Enter(time="next")]
-		public function enter():void
-		{
-			Alert.show("main.login:Next");
+		public function recoverPassword():void{
+			dispatcher(new RecoverPasswordEvent(mail));
 		}
 		
-		[Exit]
-		public function exit():void
-		{
-			Alert.show("main.login:Exit");
+		public function clear():void{
+			username="";
+			password="";
+			mail="";
 		}
 	}
 }

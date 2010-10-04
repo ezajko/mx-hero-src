@@ -15,23 +15,5 @@ package org.mxhero.console.frontend.presentation
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}
 		
-		[Enter(time="first")]
-		public function firstEnter():void
-		{
-			Alert.show("main:First");
-			
-		}
-		
-		[Enter(time="next")]
-		public function enter():void
-		{
-			Alert.show("main:Next");
-		}
-		
-		[Exit]
-		public function exit():void
-		{
-			Alert.show("main:Exit");
-		}
 	}
 }

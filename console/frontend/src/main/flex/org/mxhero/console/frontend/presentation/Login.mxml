@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:cairngorm="http://ns.adobe.com/cairngorm"
 		 >
 	<s:layout>
 		<s:VerticalLayout/>
@@ -10,6 +10,20 @@
 	
 	<fx:Declarations>
 		<parsley:Configure/>
+		
+		<cairngorm:ValidatorGroup id="forgotVg">
+			<cairngorm:validators>
+				<mx:EmailValidator id="mailV" required="true" property="text" source="{mailTi}"/>
+			</cairngorm:validators>
+		</cairngorm:ValidatorGroup>
+		
+		<cairngorm:ValidatorGroup id="loginVg">
+			<cairngorm:validators>
+				<mx:StringValidator id="useridV" required="true" property="text" source="{useridTi}" />
+				<mx:StringValidator id="passwordV" required="true" property="text" source="{passwordTi}"/>
+			</cairngorm:validators>
+		</cairngorm:ValidatorGroup>
+		
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -20,16 +34,19 @@
 			[Bindable]
 			public var model:LoginPM;
 			
-			[Inject]
-			[Bindable]
-			public var modelV:MainViewPM;
+			protected function signInClick(event:MouseEvent):void{
+				loginVg.validate();
+				if (loginVg.isValid){
+					model.login();
+				}
+			}
 			
-			protected function clickHandler(event:MouseEvent):void
+			protected function submitClick(event:MouseEvent):void
 			{
-				if (currentState == 'Forgot')
-					Alert.show(emailTi.text + " Password Sent!");
-				else
-					Alert.show(useridTi.text + " Logged in!");
+				forgotVg.validate();
+				if(forgotVg.isValid){
+					model.recoverPassword();
+				}
 			}
 		]]>
 	</fx:Script>
@@ -45,21 +62,21 @@
 	<s:transitions > 
 		<s:Transition fromState="default" toState="forgot"> 
 			<s:Sequence>
-				<s:Fade target="{emailFi}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{mailFi}" alphaFrom="1" alphaTo="0" duration="0"/>
 				<s:Parallel duration="500"> 
 					<s:Resize target="{loginPanel}"/>
-					<s:Fade target="{emailFi}" alphaFrom="0" alphaTo="1" startDelay="100"/>
+					<s:Fade target="{mailFi}" alphaFrom="0" alphaTo="1" startDelay="100"/>
 				</s:Parallel> 
 			</s:Sequence>
 		</s:Transition> 
 		<s:Transition fromState="forgot" toState="default"> 
 			<s:Sequence>
 				<s:Fade target="{passwordFi}" alphaFrom="1" alphaTo="0" duration="0" />
-				<s:Fade target="{useridFi}" alphaFrom="1" alphaTo="0" duration="0" />		
+				<s:Fade target="{useridFi}" alphaFrom="1" alphaTo="0" duration="0" />
 				<s:Resize target="{loginPanel}" duration="200"/>
 				<s:Parallel duration="300"> 
 					<s:Fade target="{passwordFi}" alphaFrom="0" alphaTo="1"/>
-					<s:Fade target="{useridFi}" alphaFrom="0" alphaTo="1"/>				
+					<s:Fade target="{useridFi}" alphaFrom="0" alphaTo="1"/>		
 				</s:Parallel>
 			</s:Sequence>
 		</s:Transition> 
@@ -67,38 +84,44 @@
 	
 		<!-- Set title of the Panel container based on the view state.--> 
 		<s:Panel id="loginPanel"
-				 title="Login" title.forgot="Forgot Password?"> 
+				 title.default="Login" 
+				 title.forgot="Forgot Password?"
+				 enabled="!{model.isLoging}"> 
 			<s:layout> 
 				<s:VerticalLayout/> 
 			</s:layout>
 			<mx:Form id="loginForm" defaultButton="{submit}" > 
-				<mx:FormItem id="emailFi" label="Email:" includeIn="forgot"> 
-					<s:TextInput id="emailTi" width="100%" /> 
+				<mx:FormItem id="mailFi" label="Email:" includeIn="forgot"> 
+					<s:TextInput id="mailTi" text="@{model.mail}" width="140" /> 
 				</mx:FormItem>
 				<mx:FormItem id="useridFi" label="Username:" includeIn="default"> 
-					<s:TextInput id="useridTi" width="100%"/> 
+					<s:TextInput id="useridTi" text="@{model.username}" width="140"/> 
 				</mx:FormItem> 
 				<mx:FormItem id="passwordFi" label="Password:" includeIn="default" > 
-					<s:TextInput id="passwordTi" displayAsPassword="true" width="100%"/> 
+					<s:TextInput id="passwordTi" text="@{model.password}" displayAsPassword="true"  width="140" /> 
 				</mx:FormItem>
-				<s:Group> 
+				<s:Group width="100%"> 
 					<s:layout>
 						<s:HorizontalLayout/>
 					</s:layout>
 
-					<mx:LinkButton label="Return to Login" color="#F3F7FA"
+					<mx:LinkButton label="Return to Login"
 								   includeIn="forgot" 
 								   click="currentState=''"/>
 					
-					<mx:LinkButton id="changeLink" color="#F3F7FA"
+					<mx:LinkButton id="changeLink"
 								   includeIn="default" 
 								   label="Forgot Password?" 
 								   click="currentState='forgot'"/>
 					<mx:Spacer width="100%"/>
 					
-					<s:Button id="submit" click="clickHandler(event)"
-							  label="Submit"/> 
-				</s:Group> 				
+					<s:Button id="submit" 
+							  click.default="signInClick(event)" 
+							  click.forgot="submitClick(event)"
+							  label.default="Sign In" 
+							  label.forgot="Submit"/> 
+				</s:Group>
 			</mx:Form> 
 		</s:Panel>
+
 </s:Group>

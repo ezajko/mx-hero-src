@@ -1,0 +1,15 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+s|Panel
+{
+	corner-radius:6
+}
+
+mx|LinkButton
+{
+	color:#F3F7FA
+}
+
+	
