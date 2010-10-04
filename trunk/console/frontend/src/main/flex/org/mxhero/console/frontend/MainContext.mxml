@@ -28,7 +28,14 @@
 			id="applicationUserService" 
 			destination="applicationUserService" 
 			showBusyCursor="true"
-			/>
+			channelSet="{channelSet}"
+		/>
+
+		<s:ChannelSet id="channelSet">
+			<s:channels>
+				<s:AMFChannel uri="http://localhost:8080/messagebroker/secure-flex-amf"/>
+			</s:channels>
+		</s:ChannelSet>
 
 	</fx:Declarations>
 

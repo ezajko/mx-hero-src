@@ -1,6 +1,7 @@
 package org.mxhero.console.frontend.presentation
 {
 	import mx.controls.Alert;
+	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.frontend.application.event.LoginEvent;
 	import org.mxhero.console.frontend.application.event.RecoverPasswordEvent;
@@ -30,6 +31,11 @@ package org.mxhero.console.frontend.presentation
 		
 		public function recoverPassword():void{
 			dispatcher(new RecoverPasswordEvent(mail));
+		}
+		
+		[CommandError(type="org.mxhero.console.frontend.application.event.LoginEvent")]
+		public function handleResult (fault:FaultEvent, trigger:LoginEvent) : void {
+			Alert.show(fault.fault.faultString);
 		}
 		
 		public function clear():void{
