@@ -8,7 +8,7 @@ package org.mxhero.console.frontend.application.command
 	public class LoginCommand
 	{
 		[Inject(id="applicationUserService")]
-		private var service:RemoteObject;
+		public var service:RemoteObject;
 		
 		public function execute(event:LoginEvent):AsyncToken
 		{
@@ -19,5 +19,6 @@ package org.mxhero.console.frontend.application.command
 		{
 			
 		}
+
 	}
 }
