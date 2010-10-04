@@ -35,7 +35,7 @@ package org.mxhero.console.frontend.presentation
 		
 		[CommandError(type="org.mxhero.console.frontend.application.event.LoginEvent")]
 		public function handleResult (fault:FaultEvent, trigger:LoginEvent) : void {
-			Alert.show(fault.fault.faultString);
+			Alert.show(fault.fault.faultDetail,fault.fault.faultString);
 		}
 		
 		public function clear():void{
