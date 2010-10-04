@@ -118,6 +118,13 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.adobe.cairngorm</groupId>
+			<artifactId>validation</artifactId>
+			<version>1.12</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
 			<version>4.0-rc-1</version>
