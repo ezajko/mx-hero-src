@@ -33,7 +33,7 @@
 
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<s:AMFChannel uri="http://localhost:8081/messagebroker/flex-amf"/>
+				<s:AMFChannel uri="http://localhost:8081/mxhero/messagebroker/flex-amf"/>
 			</s:channels>
 		</s:ChannelSet>
 
