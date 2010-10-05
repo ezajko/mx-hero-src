@@ -7,7 +7,7 @@ import org.synyx.hades.dao.Query;
 
 public interface ApplicationUserDao extends GenericDao<ApplicationUser, Integer>{
 	
-	@Query("From User u WHERE u.userName = :userName")
+	@Query("From ApplicationUser u WHERE u.userName = :userName")
 	ApplicationUser finbByUserName(@Param("userName") String userName);
 	
 }

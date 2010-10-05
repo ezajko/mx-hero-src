@@ -12,7 +12,7 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service("applicationUserService")
-@RemotingDestination(channels={"secure-flex-amf"})
+@RemotingDestination(channels={"flex-amf"})
 public class JpaApplicationUserService implements ApplicationUserService {
 
 	private PasswordEncoder encoder;

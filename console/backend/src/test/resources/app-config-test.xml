@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:flex="http://www.springframework.org/schema/flex"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xmlns:hades="http://schemas.synyx.org/hades"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd
 		http://www.springframework.org/schema/jdbc
         http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
-        http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context-3.0.xsd
-		http://schemas.synyx.org/hades
-		http://schemas.synyx.org/hades/hades.xsd">
-	
+        http://schemas.synyx.org/hades
+		http://schemas.synyx.org/hades/hades.xsd
+		http://www.springframework.org/schema/security 
+		http://www.springframework.org/schema/security/spring-security-3.0.xsd
+		http://www.springframework.org/schema/flex 
+		http://www.springframework.org/schema/flex/spring-flex-1.0.xsd">
+
+	<bean id="jpaUserDetailsService" class="org.mxhero.console.backend.security.JpaUserDetailsService"/>
+
+	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="jpaUserDetailsService">
+			<security:password-encoder hash="md5"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
 	<context:annotation-config />
 	<context:component-scan base-package="org.mxhero.console.backend" />
 	
@@ -82,6 +98,5 @@
 		<property name="statementsCacheSize" value="${initial.statementsCacheSize}" />
 		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
 	</bean>
-
 
 </beans>

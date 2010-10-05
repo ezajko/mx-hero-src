@@ -15,6 +15,9 @@
 
 	<beans:bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 
+	<global-method-security
+		secured-annotations="enabled" jsr250-annotations="enabled" />
+
 	<authentication-manager>
 		<authentication-provider user-service-ref="jpaUserDetailsService">
 			<password-encoder hash="md5"/>
