@@ -10,7 +10,7 @@
  
 	<flex:message-broker>
 		<flex:message-service
-			default-channels="secure-flex-amf" />
+			default-channels="flex-amf" />
 		<flex:secured />
 	</flex:message-broker>
 

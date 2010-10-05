@@ -7,7 +7,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -18,6 +22,7 @@ public class ApplicationUser{
 	private static final long serialVersionUID = 3307754778675036756L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
 	@Column(name="name", length=30)
@@ -29,7 +34,7 @@ public class ApplicationUser{
 	@Column(name="notify_email", length=50)
 	private String notifyEmail;
 	
-	@Column(name="password", nullable=false, length=20)
+	@Column(name="password",  unique=true, nullable=false, length=100)
 	private String password;
 	
 	@Column(name="userName", nullable=false, length=20)
@@ -50,7 +55,12 @@ public class ApplicationUser{
 	@Column(name="enabled", nullable=false)
 	private boolean enabled;
 	
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch=FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
+	@JoinTable(
+        name="app_users_authorities",
+        joinColumns=@JoinColumn(name="app_users_id"),
+        inverseJoinColumns=@JoinColumn(name="authorities_id")
+    )
 	private Set<Authority> authorities;
 	
 	public Calendar getLastLogin() {
