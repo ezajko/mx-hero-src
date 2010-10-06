@@ -4,12 +4,19 @@
 
 s|Panel
 {
-	corner-radius:6
+	corner-radius:6;
 }
 
 mx|LinkButton
 {
-	color:#F3F7FA
+	color:#F3F7FA;
+}
+
+s|Label.Alert
+{
+	font-weight:"bold";
+	color:#FF0000;
+
 }
 
 	
