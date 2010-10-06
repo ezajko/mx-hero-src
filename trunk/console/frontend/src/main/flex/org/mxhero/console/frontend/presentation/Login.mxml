@@ -5,7 +5,7 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:cairngorm="http://ns.adobe.com/cairngorm"
 		 >
 	<s:layout>
-		<s:VerticalLayout/>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 	</s:layout>
 	
 	<fx:Declarations>
@@ -88,7 +88,7 @@
 				 title.forgot="Forgot Password?"
 				 enabled="!{model.isLoging}"> 
 			<s:layout> 
-				<s:VerticalLayout/> 
+				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 			</s:layout>
 			<mx:Form id="loginForm" defaultButton="{submit}" > 
 				<mx:FormItem id="mailFi" label="Email:" includeIn="forgot"> 
@@ -119,9 +119,10 @@
 							  click.default="signInClick(event)" 
 							  click.forgot="submitClick(event)"
 							  label.default="Sign In" 
-							  label.forgot="Submit"/> 
+							  label.forgot="Send"/> 
 				</s:Group>
-			</mx:Form> 
+			</mx:Form>
+			<s:Label styleName="Alert" text="{model.errorMessage}" visible="{model.hasError}" />
 		</s:Panel>
 
 </s:Group>
