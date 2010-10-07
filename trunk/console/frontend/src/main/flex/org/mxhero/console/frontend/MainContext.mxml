@@ -7,7 +7,7 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:task="org.spicefactory.lib.task.*" 
-		xmlns:task1="org.mxhero.console.frontend.application.task.*" xmlns:domain="org.mxhero.console.frontend.domain.*" xmlns:data="com.adobe.cairngorm.integration.data.*">
+		xmlns:task1="org.mxhero.console.frontend.application.task.*" xmlns:domain="org.mxhero.console.frontend.domain.*" xmlns:data="com.adobe.cairngorm.integration.data.*" xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -24,6 +24,7 @@
 		<presentation:LoginPM/>
 		<presentation:DashboardPM/>	
 		<presentation:LoadingPM/>
+		<presentation:ErrorPanelPM/>
 		
 		<parsley:DynamicCommand type="{ LoginCommand }"/>
 		<parsley:DynamicCommand type="{ LogoutCommand }"/>
@@ -36,16 +37,33 @@
 		
 		<fx:Array id="initialTasks">
 			<task1:LoadUserDataTask id="loadUserDataTask"/>
+			<task1:LoadModuleTask moduleData="{policies}"/>
+			<task1:LoadModuleTask moduleData="{reports}"/>
+			<task1:LoadModuleTask moduleData="{configurations}"/>			
 		</fx:Array>
 
+		<infrastructure:ModuleData 
+			id="configurations" 
+			name="Configurations" 
+			path="org\mxhero\console\configurations\Configurations.swf"/>
+		
+		<infrastructure:ModuleData 
+			id="policies" 
+			name="Policies" 
+			path="org\mxhero\console\policies\Policies.swf"/>
+		
+		<infrastructure:ModuleData 
+			id="reports" 
+			name="Reports" 
+			path="org\mxhero\console\reports\Reports.swf"/>
+		
 		<s:RemoteObject
 			id="applicationUserService" 
 			destination="applicationUserService" 
 			showBusyCursor="true"
 			channelSet="{channelSet}"
-			
 			/>
-
+		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
 				<s:AMFChannel uri="http://10.30.2.252:8081/mxhero/messagebroker/flex-amf"/>

@@ -18,5 +18,26 @@ s|Label.Alert
 	color:#FF0000;
 
 }
+s|TextArea.errorPanel
+{
+	contentBackgroundAlpha: 0.0;
+	borderVisible: false;
+	color: #FFFFFF;
+	fontSize: 12;
+	fontStyle: italic;
+	fontWeight: bold;
+}
+s|BorderContainer.errorPanel
+{
+	backgroundColor: #D33737;
+	borderWeight: 2;
+	dropShadowVisible: true;
+	borderStyle: inset;
+}
+global
+{
+	font-size: 14;
+	font-family: Georgia;
+}
 
 	

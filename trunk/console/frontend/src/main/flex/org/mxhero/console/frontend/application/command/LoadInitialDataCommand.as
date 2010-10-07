@@ -1,6 +1,7 @@
 package org.mxhero.console.frontend.application.command
 {
 	import mx.collections.ArrayCollection;
+	import mx.rpc.events.FaultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
@@ -27,5 +28,12 @@ package org.mxhero.console.frontend.application.command
 			return _taskGroup as Task;
 		}
 		
+		public function result():void{
+			_taskGroup.removeAllTasks();
+		}
+		
+		public function error():void{
+			_taskGroup.removeAllTasks();
+		}
 	}
 }

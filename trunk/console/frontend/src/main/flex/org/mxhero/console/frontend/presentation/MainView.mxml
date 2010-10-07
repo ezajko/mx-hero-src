@@ -3,7 +3,10 @@
 			  xmlns:s="library://ns.adobe.com/flex/spark" 
 			  xmlns:mx="library://ns.adobe.com/flex/mx"
 			  xmlns:presentation="org.mxhero.console.frontend.presentation.*" 
-			  xmlns:parsley="http://www.spicefactory.org/parsley">
+			  xmlns:parsley="http://www.spicefactory.org/parsley"
+			  creationPolicy="all"
+			  width="100%"
+			  height="100%">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -27,7 +30,7 @@
 		<s:layout>
 			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" />
 		</s:layout>
-		<presentation:Login />
+		<presentation:Login/>
 	</s:NavigatorContent>
 	
 	<s:NavigatorContent width="100%" height="100%" automationName="{MainDestination.DASHBOARD}">

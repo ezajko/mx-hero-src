@@ -5,12 +5,16 @@ package org.mxhero.console.frontend.presentation
 	import org.mxhero.console.frontend.application.MainDestination;
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
 	import org.mxhero.console.frontend.application.event.LoginEvent;
+	import org.spicefactory.parsley.core.messaging.MessageProcessor;
 	
 	[Landmark(name="main")]
 	public class MainViewPM
 	{	
 		[MessageDispatcher]
 		public var dispatcher:Function
+		
+		[Bindable]
+		public var errorMessage:String;
 		
 		private function navigateTo(destination:String):void
 		{
@@ -23,13 +27,18 @@ package org.mxhero.console.frontend.presentation
 		}
 		
 		[CommandResult]
-		public function loadingResult (result:*, event:LoadInitialDataEvent) : void {
+		public function loadingResult (fault:*, event:LoadInitialDataEvent) : void {
 			navigateTo(MainDestination.DASHBOARD);
 		}
 
-		[CommandError]
-		public function loadingError (fault:*, event:LoadInitialDataEvent) : void {
-			navigateTo(MainDestination.LOGIN);
+		[MessageError]
+		public function handleError (processor:MessageProcessor, error:Error) : void{
+			errorMessage=error.message;
 		}
+		
+		[CommandError]
+		public function handleError2(fault:*,event:*):void{
+			errorMessage="error";
+		} 
 	}
 }
