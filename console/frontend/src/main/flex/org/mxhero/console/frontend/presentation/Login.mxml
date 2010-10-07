@@ -86,7 +86,7 @@
 		<s:Panel id="loginPanel"
 				 title.default="Login" 
 				 title.forgot="Forgot Password?"
-				 enabled="!{model.isLoging}"> 
+				 enabled="{!model.isLoging}"> 
 			<s:layout> 
 				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 			</s:layout>
@@ -122,7 +122,6 @@
 							  label.forgot="Send"/> 
 				</s:Group>
 			</mx:Form>
-			<s:Label styleName="Alert" text="{model.errorMessage}" visible="{model.hasError}" />
 		</s:Panel>
 
 </s:Group>

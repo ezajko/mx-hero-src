@@ -11,11 +11,7 @@ package org.mxhero.console.frontend.presentation
 	{	
 		[MessageDispatcher]
 		public var dispatcher:Function;
-		
-		[Bindable]
-		public var errorMessage:String="";
-		[Bindable]
-		public var hasError:Boolean=false;
+
 		[Bindable]
 		public var username:String="";
 		[Bindable]
@@ -29,33 +25,17 @@ package org.mxhero.console.frontend.presentation
 		
 		public function login():void
 		{
-			hasError=false;
-			errorMessage="";
 			dispatcher(new LoginEvent(username,password));
 		}
 		
 		public function recoverPassword():void{
 			dispatcher(new RecoverPasswordEvent(mail));
 		}
-		
-		[CommandError]
-		public function loginError (fault:FaultEvent, trigger:LoginEvent) : void {
-			this.hasError=true;
-			this.errorMessage=fault.fault.faultCode;
-		}
-		
-		[CommandError]
-		public function loadingError (fault:FaultEvent, event:LoadInitialDataEvent) : void {
-			this.hasError=true;
-			this.errorMessage=fault.fault.faultCode;			
-		}
-		
+
 		[Exit]
 		public function exit():void
 		{
 			this.password="";
-			this.errorMessage="";
-			this.hasError=false;
 			this.mail="";
 		}
 
