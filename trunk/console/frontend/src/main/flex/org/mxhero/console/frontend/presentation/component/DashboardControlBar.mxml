@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="40" borderWeight="2" dropShadowVisible="true" backgroundColor="#696969" xmlns:component="org.mxhero.console.frontend.presentation.component.*" xmlns:parsley="http://www.spicefactory.org/parsley">
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle"/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.frontend.infrastructure.Resources;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.frontend.domain.ApplicationContext;
+			import org.mxhero.console.frontend.presentation.DashboardPM;
+			
+			[Bindable]
+			public var dataProvider:Object;
+			
+			[Inject]
+			[Bindable]
+			public var model:DashboardPM;
+			
+			[Inject]
+			[Bindable]
+			public var applicationContext:ApplicationContext;
+		]]>
+	</fx:Script>
+	
+	<mx:Image source="{Resources.LOGO_IMG}"/>
+	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" styleName="Dashboard"/>
+	<mx:Spacer width="100%"/>
+	<s:Label text="{applicationContext.applicationUser.userName}"/>
+	<component:GlowButton source="{Resources.LOGOUT_ICON}" glowColor="#ff0000" maxGlow="15.0" click="{model.logout()}"/>
+</s:BorderContainer>

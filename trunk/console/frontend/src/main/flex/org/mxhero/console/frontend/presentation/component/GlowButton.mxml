@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Image xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  buttonMode="true"
+		  rollOverEffect="{glowOn}"
+		  rollOutEffect="{glowOff}"
+		  creationComplete="init()">
+	<fx:Declarations>
+		<mx:Glow id="glowOn"
+				 alphaFrom="{minAlpha}"
+				 alphaTo="{maxAlpha}"
+				 blurXFrom="{minGlow}"
+				 blurXTo="{maxGlow}"
+				 blurYFrom="{minGlow}"
+				 blurYTo="{maxGlow}"
+				 color="{glowColor}"
+				 duration="{duration}"/>
+		
+		<mx:Glow id="glowOff"
+				 alphaFrom="{maxAlpha}"
+				 alphaTo="{minAlpha}"
+				 blurXFrom="{maxGlow}"
+				 blurXTo="{minGlow}"
+				 blurYFrom="{maxGlow}"
+				 blurYTo="{minGlow}"
+				 color="{glowColor}"
+				 duration="{duration}"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var glowColor:Number=0xFFFFFF;
+			
+			[Bindable]
+			public var minGlow:Number=5.0;
+			
+			[Bindable]
+			public var maxGlow:Number=20.0;
+			
+			[Bindable]
+			public var minAlpha:Number=0.0;
+			
+			[Bindable]
+			public var maxAlpha:Number=1.0;
+			
+			[Bindable]
+			public var duration:Number=300;
+			
+			private function init():void{
+				glowOff.duration=0;
+				glowOff.play([this]);
+				glowOff.duration=duration;
+			}
+			
+		]]>
+	</fx:Script>
+</mx:Image>
