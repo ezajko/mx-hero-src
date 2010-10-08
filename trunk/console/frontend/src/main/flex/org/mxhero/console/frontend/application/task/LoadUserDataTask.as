@@ -35,7 +35,7 @@ package org.mxhero.console.frontend.application.task
 			dispatcher(new LoadingMessage("Loading User Data"));
 			service.addEventListener(ResultEvent.RESULT,onResult);
 			service.addEventListener(FaultEvent.FAULT,onFault);
-			service.findByUserName((data as LoadInitialDataEvent).username);
+			service.getUser();
 		}
 		
 		public function onResult(result:ResultEvent):void{
