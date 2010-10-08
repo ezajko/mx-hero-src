@@ -32,7 +32,6 @@
 		<parsley:DynamicCommand type="{ LoadInitialDataCommand }" />
 
 		<!--<data:DataCache/>-->
-		
 		<domain:ApplicationContext/>
 		
 		<fx:Array id="initialTasks">
@@ -42,6 +41,8 @@
 			<task1:LoadModuleTask moduleData="{configurations}"/>			
 		</fx:Array>
 
+		<task1:LoadUserDataTask id="initialCheckTask"/>
+		
 		<infrastructure:ModuleData 
 			id="configurations" 
 			name="Configurations" 

@@ -7,8 +7,7 @@ package org.mxhero.console.frontend.presentation
 	[Landmark(name="main.loading")]
 	public class LoadingPM
 	{
-		private var _username:String;
-		
+
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
@@ -19,16 +18,11 @@ package org.mxhero.console.frontend.presentation
 		public function enter():void
 		{
 			currentLabel="Loading";
-		}
-		
-		[CommandResult]
-		public function loginResult (result:*, event:LoginEvent) : void {
-			_username=event.username;
-			dispatcher(new LoadInitialDataEvent(_username));
+			dispatcher(new LoadInitialDataEvent());
 		}
 		
 		[MessageHandler]
-		public function handleLogin (message:LoadingMessage) : void {
+		public function handleLoading (message:LoadingMessage) : void {
 			currentLabel=message.label;
 		}
 	}
