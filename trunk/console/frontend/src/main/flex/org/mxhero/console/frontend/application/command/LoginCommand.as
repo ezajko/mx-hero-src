@@ -17,9 +17,6 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:LoginEvent):AsyncToken
 		{
-			if(service.channelSet.authenticated){
-				service.channelSet.disconnectAll();
-			}
 			return service.channelSet.login(event.username,event.password)as AsyncToken;
 		}
 		
