@@ -2,6 +2,7 @@ package org.mxhero.console.frontend.infrastructure
 {
 	import mx.modules.ModuleLoader;
 
+	[Bindable]
 	public class ModuleData
 	{
 		

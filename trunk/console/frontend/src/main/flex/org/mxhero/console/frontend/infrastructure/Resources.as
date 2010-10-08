@@ -9,5 +9,13 @@ package org.mxhero.console.frontend.infrastructure
 		[Embed(source="images/check.png")] 
 		[Bindable]
 		public static var CHECK_ICON:Class; 
+		
+		[Embed(source="images/logout.png")] 
+		[Bindable]
+		public static var LOGOUT_ICON:Class; 
+		
+		[Embed(source="images/logo.png")] 
+		[Bindable]
+		public static var LOGO_IMG:Class; 
 	}
 }

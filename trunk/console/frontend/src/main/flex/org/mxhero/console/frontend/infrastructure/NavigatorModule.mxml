@@ -4,7 +4,7 @@
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					width="100%" 
 					height="100%"
-					creationComplete="{created()}">
+					label="{moduleData.name}">
 	
 	<fx:Declarations>
 		
@@ -14,10 +14,6 @@
 		<![CDATA[
 			
 			private var _moduleData:ModuleData;
-			
-			private function created():void{
-				trace("hello");
-			}
 			
 			[Bindable]
 			public function get moduleData():ModuleData
