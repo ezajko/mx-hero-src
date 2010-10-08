@@ -1,6 +1,7 @@
 package org.mxhero.console.frontend.presentation
 {
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
+	import org.mxhero.console.frontend.application.message.ViewChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 
 	public class ErrorPanelPM
@@ -21,6 +22,11 @@ package org.mxhero.console.frontend.presentation
 			hasNewError=true;
 		}
 		
+		[MessageHandler]
+		public function handleViewChanged(message:ViewChangedMessage):void{
+			clear();
+		}
+			
 		public function clear():void{
 			hasNewError = false;
 		}

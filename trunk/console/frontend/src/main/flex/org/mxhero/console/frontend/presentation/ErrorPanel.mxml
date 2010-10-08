@@ -9,7 +9,7 @@
 				   visible="{model.hasNewError}"
 				   showEffect="{showEffect}"
 				   hideEffect="{hideEffect}"
-				   preinitialize="{this.visible=false}">
+				   preinitialize="{this.visible=false}" xmlns:component="org.mxhero.console.frontend.presentation.component.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -53,9 +53,8 @@
 		<s:HorizontalLayout verticalAlign="middle" paddingLeft="4" paddingRight="4" />
 	</s:layout>
 	
-	
 	<mx:Image id="alertImage" source="{Resources.ALERT_ICON}" />
 	<s:TextArea id="errorText" heightInLines="1" text="{model.errorMessage}" width="100%" height="100%" styleName="errorPanel" editable="false"/>
-	<mx:Image id="closeImage" source="{Resources.CHECK_ICON}" buttonMode="true" click="{model.clear()}"/>
+	<component:GlowButton id="closeImage" source="{Resources.CHECK_ICON}"  click="{model.clear()}"/>
 	
 </s:BorderContainer>

@@ -5,24 +5,44 @@
 		 xmlns:dashboard="org.mxhero.console.frontend.presentation.dashboard.*" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
 		 width="100%"
-		 height="100%">
+		 height="100%" xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*" xmlns:component="org.mxhero.console.frontend.presentation.component.*">
 	<fx:Declarations>
 		<parsley:Configure/>
 	</fx:Declarations>
 	
 	<s:layout>
-		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+		<s:VerticalLayout verticalAlign="middle"/>
 	</s:layout>
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.frontend.infrastructure.ModuleData;
+			
+			[Inject(id="policies")]
+			[Bindable]
+			public var policiesData:ModuleData;
+			
+			[Inject(id="reports")]
+			[Bindable]
+			public var reportsData:ModuleData;
+			
+			[Inject(id="configurations")]
+			[Bindable]
+			public var configurationsData:ModuleData;
+			
 			[Inject]
 			[Bindable]
 			public var model:DashboardPM;
+			
 		]]>
 	</fx:Script>
 	
-	<dashboard:Header width="100%"/>
-	<dashboard:BodyView selectedIndex="{model.selectedIndex}" width="100%" height="100%"/>
+	<component:DashboardControlBar dataProvider="{viewStack}" width="100%"/>
+	
+	<mx:ViewStack id="viewStack" width="100%" height="100%">
+		<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{policiesData}"/>
+		<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{reportsData}"/>
+		<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}"/>
+	</mx:ViewStack>
 	
 </s:Group>
