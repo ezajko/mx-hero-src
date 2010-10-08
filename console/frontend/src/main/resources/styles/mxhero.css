@@ -2,9 +2,11 @@
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
 
+
 s|Panel
 {
 	corner-radius:6;
+	background-alpha:0.6;
 }
 
 mx|LinkButton
@@ -23,14 +25,14 @@ s|TextArea.errorPanel
 	contentBackgroundAlpha: 0.0;
 	borderVisible: false;
 	color: #FFFFFF;
-	fontSize: 12;
+	fontSize: 14;
 	fontStyle: italic;
 	fontWeight: bold;
 }
 s|BorderContainer.errorPanel
 {
 	backgroundColor: #D33737;
-	borderWeight: 2;
+	borderWeight: 3;
 	dropShadowVisible: true;
 	borderStyle: inset;
 }
@@ -38,6 +40,14 @@ global
 {
 	font-size: 14;
 	font-family: Georgia;
+}
+mx|LinkBar.Dashboard
+{
+	borderVisible: false;
+	contentBackgroundAlpha: 0.0;
+	disabled-color:#a8c6ee;
+	fontSize: 16;
+	fontWeight: bold;
 }
 
 	
