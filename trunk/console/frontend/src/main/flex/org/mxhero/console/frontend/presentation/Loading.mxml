@@ -5,7 +5,7 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
 		 width="300"
 		 height="70"
-		 title="Loading">
+		 title="{resourceManager.getString(LOADING_RESOURCE,TITLE_LABEL)}">
 	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
@@ -21,9 +21,13 @@
 			[Inject]
 			[Bindable]
 			public var model:LoadingPM;
+			
+			private static const LOADING_RESOURCE:String="loading";
+			private static const TITLE_LABEL:String="title.label";
+			
 		]]>
 	</fx:Script>
 	
-	<mx:ProgressBar indeterminate="true" width="100%" labelPlacement="center" label="{model.currentLabel}"/>
+	<mx:ProgressBar indeterminate="true" width="100%" labelPlacement="center" label="{model.currentLabel}" styleName="loading"/>
 		
 </s:Panel>

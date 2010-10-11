@@ -17,6 +17,7 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:LoginEvent):AsyncToken
 		{
+			//service.setCredentials(null,null);
 			return service.channelSet.login(event.username,event.password)as AsyncToken;
 		}
 		

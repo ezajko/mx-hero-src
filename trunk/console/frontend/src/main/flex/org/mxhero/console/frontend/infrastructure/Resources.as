@@ -17,5 +17,17 @@ package org.mxhero.console.frontend.infrastructure
 		[Embed(source="images/logo.png")] 
 		[Bindable]
 		public static var LOGO_IMG:Class; 
+		
+		[Embed(source="images/configurations_ico.png")] 
+		[Bindable]
+		public static var CONFIGURATIONS_ICO:Class; 
+		
+		[Embed(source="images/policies_ico.png")] 
+		[Bindable]
+		public static var POLICIES_ICO:Class; 
+		
+		[Embed(source="images/reports_ico.png")] 
+		[Bindable]
+		public static var REPORTS_ICO:Class; 
 	}
 }

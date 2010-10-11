@@ -18,5 +18,6 @@ package org.mxhero.console.frontend.domain
 		public var validUntil:Date;
 		public var enabled:Boolean;
 		public var authorities:ArrayCollection;
+		public var locale:String;
 	}
 }

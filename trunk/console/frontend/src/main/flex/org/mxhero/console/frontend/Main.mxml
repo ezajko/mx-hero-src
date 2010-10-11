@@ -10,6 +10,13 @@
 	
 	<fx:Style source="../../../../../resources/styles/mxhero.css"/>
 	
+	<fx:Metadata>
+		[ResourceBundle("dashboard")]
+		[ResourceBundle("login")]
+		[ResourceBundle("modules")]
+		[ResourceBundle("loading")]
+		[ResourceBundle("errors")]
+	</fx:Metadata>
 	
 	<fx:Declarations>
 		<parsley:ContextBuilder>
@@ -26,10 +33,13 @@
 			import flash.net.registerClassAlias;
 			
 			import mx.logging.LogEventLevel;
+			import mx.resources.ResourceBundle;
+			import mx.resources.ResourceManager;
 			
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
+
 			
 			private function registerClasses():void{
 				registerClassAlias("org.mxhero.console.backend.entity.ApplicationUser",ApplicationUser);
