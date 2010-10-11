@@ -7,8 +7,8 @@ import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.service.ApplicationUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service("applicationUserService")
@@ -25,28 +25,36 @@ public class JpaApplicationUserService implements ApplicationUserService {
 		this.encoder = encoder;
 	}
 
-	@Secured("ROLE_DOMAIN_ADMIN")
 	@Override
-	public void changePassword(String userName, String password,
-			String newPassword) {
-		ApplicationUser user = userDao.finbByUserName(userName);
+	public void changePassword(String newPassword) {
+		ApplicationUser user = userDao.finbByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
 		user.setPassword(encoder.encodePassword(newPassword,null));
 		userDao.save(user);
 	}
 
-	@Secured("ROLE_ADMIN")
+	@Override
+	public void changeUserPassword(String userName, String password, String newPassword) {
+		ApplicationUser user = userDao.finbByUserName(userName);
+		user.setPassword(encoder.encodePassword(newPassword,null));
+		userDao.save(user);
+	}
+	
 	@Override
 	public Collection<ApplicationUser> findAll() {
 		return this.userDao.readAll();
 	}
 
-	@Secured("ROLE_DOMAIN_ADMIN")
 	@Override
 	public ApplicationUser findByUserName(String userName) {
 		return userDao.finbByUserName(userName);
 	}
+	
+	@Override
+	public ApplicationUser getUser() {
+		
+		return userDao.finbByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+	}
 
-	@Secured("ROLE_DOMAIN_ADMIN")
 	@Override
 	public void update(ApplicationUser applicationUser) {
 		userDao.save(applicationUser);

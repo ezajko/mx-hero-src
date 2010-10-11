@@ -13,6 +13,7 @@
             <endpoint url="http://{server.name}:{server.port}/{context.root}/messagebroker/flex-amf" class="flex.messaging.endpoints.AMFEndpoint"/>
             <properties>
                 <add-no-cache-headers>false</add-no-cache-headers>
+                <invalidate-session-on-disconnect>true</invalidate-session-on-disconnect>
             </properties>
         </channel-definition>
         

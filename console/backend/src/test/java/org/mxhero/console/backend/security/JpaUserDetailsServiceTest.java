@@ -57,6 +57,7 @@ public class JpaUserDetailsServiceTest {
 			user.setName("MyName");
 			user.setCreationDate(Calendar.getInstance());
 			user.setEnabled(true);
+			user.setLocale("pt_BR");
 			user.setNotifyEmail("email@example.com");
 			Calendar valid = Calendar.getInstance();
 			valid.add(Calendar.DAY_OF_MONTH, 30);
