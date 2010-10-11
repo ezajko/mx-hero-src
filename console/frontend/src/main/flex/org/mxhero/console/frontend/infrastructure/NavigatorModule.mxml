@@ -4,17 +4,25 @@
 					xmlns:mx="library://ns.adobe.com/flex/mx" 
 					width="100%" 
 					height="100%"
-					label="{moduleData.name}">
+					label="{resourceManager.getString(MODULES_RESOURCE,moduleData.name)}"
+					icon="{moduleData.ico}">
 	
 	<fx:Declarations>
 		
 	</fx:Declarations>
 	
+	<fx:Metadata>
+		
+	</fx:Metadata>
+	
 	<fx:Script>
 		<![CDATA[
+			import mx.resources.ResourceBundle;
+			
+			private static const MODULES_RESOURCE:String="modules";
 			
 			private var _moduleData:ModuleData;
-			
+
 			[Bindable]
 			public function get moduleData():ModuleData
 			{

@@ -14,12 +14,6 @@ package org.mxhero.console.frontend.presentation
 		[MessageDispatcher]
 		public var dispatcher:Function
 		
-		[Enter(time="every")]
-		public function enter():void
-		{
-
-		}
-		
 		private function navigateTo(destination:String):void
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));

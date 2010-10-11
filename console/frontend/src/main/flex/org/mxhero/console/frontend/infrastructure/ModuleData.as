@@ -8,10 +8,24 @@ package org.mxhero.console.frontend.infrastructure
 		
 		private var _name:String;
 		
+		private var _ico:Class;
+		
 		private var _path:String;
 		
 		private var _moduleLoader:ModuleLoader;
 		
+		
+		
+		public function get ico():Class
+		{
+			return _ico;
+		}
+
+		public function set ico(value:Class):void
+		{
+			_ico = value;
+		}
+
 		public function get name():String
 		{
 			return _name;

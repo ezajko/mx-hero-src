@@ -8,6 +8,7 @@ package org.mxhero.console.frontend.application.task
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
+	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.ApplicationUser;
@@ -41,6 +42,7 @@ package org.mxhero.console.frontend.application.task
 		public function onResult(result:ResultEvent):void{
 			applicationContext.applicationUser = result.result as ApplicationUser;
 			service.removeEventListener(ResultEvent.RESULT,onResult);
+			dispatcher(new LanguageChangedMessage(applicationContext.applicationUser.locale));
 			complete();
 		}
 		

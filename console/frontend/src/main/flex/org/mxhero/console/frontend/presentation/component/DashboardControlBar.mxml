@@ -32,6 +32,7 @@
 	</fx:Script>
 	
 	<mx:Image source="{Resources.LOGO_IMG}"/>
+	<mx:Spacer width="20"/>
 	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" styleName="Dashboard"/>
 	<mx:Spacer width="100%"/>
 	<s:Label text="{applicationContext.applicationUser.userName}"/>

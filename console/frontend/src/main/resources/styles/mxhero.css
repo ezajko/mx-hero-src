@@ -45,9 +45,15 @@ mx|LinkBar.Dashboard
 {
 	borderVisible: false;
 	contentBackgroundAlpha: 0.0;
-	disabled-color:#a8c6ee;
+	disabled-color:#4FA5ED;
 	fontSize: 16;
 	fontWeight: bold;
+	horizontalGap: 24;
+	separator-width:2;
+}
+mx|ProgressBar.loading
+{
+	color: #FFFFFF;
 }
 
 	

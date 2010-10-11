@@ -15,6 +15,7 @@
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
 			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
+			import org.mxhero.console.frontend.infrastructure.Resources;
 			
 		]]>
 	</fx:Script>
@@ -45,18 +46,23 @@
 		
 		<infrastructure:ModuleData 
 			id="configurations" 
-			name="Configurations" 
-			path="org\mxhero\console\configurations\Configurations.swf"/>
+			name="configurations" 
+			path="org\mxhero\console\configurations\Configurations.swf"
+			ico="{Resources.CONFIGURATIONS_ICO}"/>
 		
 		<infrastructure:ModuleData 
 			id="policies" 
-			name="Policies" 
-			path="org\mxhero\console\policies\Policies.swf"/>
+			name="policies" 
+			path="org\mxhero\console\policies\Policies.swf"
+			ico="{Resources.POLICIES_ICO}"/>
 		
 		<infrastructure:ModuleData 
 			id="reports" 
-			name="Reports" 
-			path="org\mxhero\console\reports\Reports.swf"/>
+			name="reports" 
+			path="org\mxhero\console\reports\Reports.swf"
+			ico="{Resources.REPORTS_ICO}"/>
+		
+		<infrastructure:LanguageSettings defaultLocal="en_US"/>
 		
 		<s:RemoteObject
 			id="applicationUserService" 
@@ -67,7 +73,7 @@
 		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<s:AMFChannel uri="http://10.30.2.252:8081/mxhero/messagebroker/flex-amf"/>
+				<s:AMFChannel uri="http://10.30.2.182:8081/mxhero/messagebroker/flex-amf"/>
 			</s:channels>
 		</s:ChannelSet>
 

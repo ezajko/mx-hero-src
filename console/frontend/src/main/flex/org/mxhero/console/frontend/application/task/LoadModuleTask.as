@@ -1,6 +1,8 @@
 package org.mxhero.console.frontend.application.task
 {
 	import mx.events.ModuleEvent;
+	import mx.resources.IResourceManager;
+	import mx.resources.ResourceManager;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
@@ -12,6 +14,12 @@ package org.mxhero.console.frontend.application.task
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
+		private static const LOADING_RESOURCE:String="loading";
+		private static const LOADING_MODULE_LABEL:String="loading.module.label";
+		
+		[Bindable]
+		private var rm:IResourceManager=ResourceManager.getInstance();
+		
 		private var _moduleData:ModuleData;
 		
 		public function LoadModuleTask()
@@ -21,7 +29,7 @@ package org.mxhero.console.frontend.application.task
 		
 		protected override function doStart ():void{
 			if(moduleData!=null){
-				dispatcher(new LoadingMessage("Loading Module "+moduleData.name));
+				dispatcher(new LoadingMessage(rm.getString(LOADING_RESOURCE,LOADING_MODULE_LABEL)+moduleData.name));
 				if(moduleData.moduleLoader!= null){
 					moduleData.moduleLoader.addEventListener(ModuleEvent.READY,onReady);
 					moduleData.moduleLoader.addEventListener(ModuleEvent.ERROR,onError);

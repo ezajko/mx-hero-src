@@ -21,7 +21,7 @@ package org.mxhero.console.frontend.presentation
 		
 		[Bindable]
 		[CommandStatus(type="org.mxhero.console.frontend.application.event.LoginEvent")]
-		public var isLoging:Boolean = true;
+		public var isLoging:Boolean = false;
 		
 		public function login():void
 		{
