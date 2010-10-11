@@ -55,6 +55,9 @@ public class ApplicationUser{
 	@Column(name="enabled", nullable=false)
 	private boolean enabled;
 	
+	@Column(name="locale", nullable=false)
+	private String locale;
+	
 	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
 	@JoinTable(
         name="app_users_authorities",
@@ -149,6 +152,14 @@ public class ApplicationUser{
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getLocale() {
+		return locale;
+	}
+
+	public void setLocale(String locale) {
+		this.locale = locale;
 	}
 
 	public Set<Authority> getAuthorities() {

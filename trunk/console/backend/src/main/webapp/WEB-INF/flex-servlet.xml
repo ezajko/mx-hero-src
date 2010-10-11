@@ -11,7 +11,7 @@
 	<flex:message-broker>
 		<flex:message-service
 			default-channels="flex-amf" />
-		<flex:secured />
+		<flex:secured per-client-authentication="true"/>
 	</flex:message-broker>
 
 </beans>
