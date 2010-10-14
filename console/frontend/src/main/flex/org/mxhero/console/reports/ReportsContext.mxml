@@ -4,7 +4,8 @@
 		xmlns:s="library://ns.adobe.com/flex/spark"
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
-		xmlns:parsley="http://www.spicefactory.org/parsley">
+		xmlns:parsley="http://www.spicefactory.org/parsley" 
+		xmlns:presentation="org.mxhero.console.reports.presentation.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -13,7 +14,7 @@
 	</fx:Script>
 
 	<fx:Declarations>
-
+		<presentation:ReportsViewPM/>
 	</fx:Declarations>
 
 </fx:Object>

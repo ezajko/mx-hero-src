@@ -15,7 +15,7 @@
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
 			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
-			import org.mxhero.console.frontend.infrastructure.Resources;
+			import org.mxhero.console.frontend.infrastructure.ImageResources;
 			
 		]]>
 	</fx:Script>
@@ -48,19 +48,19 @@
 			id="configurations" 
 			name="configurations" 
 			path="org\mxhero\console\configurations\Configurations.swf"
-			ico="{Resources.CONFIGURATIONS_ICO}"/>
+			ico="{ImageResources.CONFIGURATIONS_ICO}"/>
 		
 		<infrastructure:ModuleData 
 			id="policies" 
 			name="policies" 
 			path="org\mxhero\console\policies\Policies.swf"
-			ico="{Resources.POLICIES_ICO}"/>
+			ico="{ImageResources.POLICIES_ICO}"/>
 		
 		<infrastructure:ModuleData 
 			id="reports" 
 			name="reports" 
 			path="org\mxhero\console\reports\Reports.swf"
-			ico="{Resources.REPORTS_ICO}"/>
+			ico="{ImageResources.REPORTS_ICO}"/>
 		
 		<infrastructure:LanguageSettings defaultLocal="en_US"/>
 		

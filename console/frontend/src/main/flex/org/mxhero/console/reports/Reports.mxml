@@ -2,9 +2,12 @@
 <mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   xmlns:parsley="http://www.spicefactory.org/parsley" 
+		   xmlns:presentation="org.mxhero.console.reports.presentation.*"
 		   layout="absolute" 
 		   width="100%" 
-		   height="100%" xmlns:parsley="http://www.spicefactory.org/parsley">
+		   height="100%" 
+		   creationComplete="{ReportsViewPM.container=container}">
 	
 	<fx:Declarations>
 		<parsley:ContextBuilder>
@@ -14,14 +17,14 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.domain.ApplicationContext;
-			
+			import org.mxhero.console.reports.presentation.ReportsViewPM;
+
 			[Inject]
 			[Bindable]
-			public var applicationContext:ApplicationContext;
+			public var model:ReportsViewPM;
 			
 		]]>
 	</fx:Script>
 	
-	<s:Label text="{applicationContext.applicationUser.name}"/>
+	<presentation:ReportsView id="container" width="100%" height="100%"/>
 </mx:Module>

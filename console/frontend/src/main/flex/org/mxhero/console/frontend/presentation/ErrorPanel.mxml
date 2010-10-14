@@ -38,7 +38,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.infrastructure.Resources;
+			import org.mxhero.console.frontend.infrastructure.ImageResources;
 
 			private static const SHOW_SIZE:Number=32;
 			private static const HIDE_SIZE:Number=0;
@@ -53,8 +53,8 @@
 		<s:HorizontalLayout verticalAlign="middle" paddingLeft="4" paddingRight="4" />
 	</s:layout>
 	
-	<mx:Image id="alertImage" source="{Resources.ALERT_ICON}" />
+	<mx:Image id="alertImage" source="{ImageResources.ALERT_ICON}" />
 	<s:TextArea id="errorText" heightInLines="1" text="{model.errorMessage}" width="100%" height="100%" styleName="errorPanel" editable="false"/>
-	<component:GlowButton id="closeImage" source="{Resources.CHECK_ICON}"  click="{model.clear()}"/>
+	<component:GlowButton id="closeImage" source="{ImageResources.CHECK_ICON}"  click="{model.clear()}"/>
 	
 </s:BorderContainer>

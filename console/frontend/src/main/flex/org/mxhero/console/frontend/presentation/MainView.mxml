@@ -4,9 +4,9 @@
 			  xmlns:mx="library://ns.adobe.com/flex/mx"
 			  xmlns:presentation="org.mxhero.console.frontend.presentation.*" 
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
-			  creationPolicy="all"
 			  width="100%"
-			  height="100%">
+			  height="100%"
+			  selectedIndex="{model.selectedIndex}">
 	
 	<fx:Declarations>
 		<parsley:Configure/>

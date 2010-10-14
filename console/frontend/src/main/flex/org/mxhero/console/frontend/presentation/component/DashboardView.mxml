@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ViewStack xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx" 
+			  xmlns:parsley="http://www.spicefactory.org/parsley"
+			  xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*"
+			  width="100%" 
+			  height="100%">
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.frontend.application.MainDestination;
+			import org.mxhero.console.frontend.infrastructure.ModuleData;
+			import org.mxhero.console.frontend.presentation.DashboardPM;
+			
+			[Inject]
+			[Bindable]
+			public var model:DashboardPM;
+			
+			[Inject(id="policies")]
+			[Bindable]
+			public var policiesData:ModuleData;
+			
+			[Inject(id="reports")]
+			[Bindable]
+			public var reportsData:ModuleData;
+			
+			[Inject(id="configurations")]
+			[Bindable]
+			public var configurationsData:ModuleData;
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[Waypoint]
+	</fx:Metadata>
+	
+	<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{policiesData}" automationName="{MainDestination.POLICIES}"/>
+	<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{reportsData}" automationName="{MainDestination.REPORTS}"/>
+	<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}" automationName="{MainDestination.CONFIGURATIONS}"/>
+	
+</mx:ViewStack>

@@ -7,7 +7,7 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.infrastructure.Resources;
+			import org.mxhero.console.frontend.infrastructure.ImageResources;
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -31,10 +31,10 @@
 		]]>
 	</fx:Script>
 	
-	<mx:Image source="{Resources.LOGO_IMG}"/>
+	<mx:Image source="{ImageResources.LOGO_IMG}"/>
 	<mx:Spacer width="20"/>
 	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" styleName="Dashboard"/>
 	<mx:Spacer width="100%"/>
 	<s:Label text="{applicationContext.applicationUser.userName}"/>
-	<component:GlowButton source="{Resources.LOGOUT_ICON}" glowColor="#ff0000" maxGlow="15.0" click="{model.logout()}"/>
+	<component:GlowButton source="{ImageResources.LOGOUT_ICON}" glowColor="#ff0000" maxGlow="15.0" click="{model.logout()}"/>
 </s:BorderContainer>

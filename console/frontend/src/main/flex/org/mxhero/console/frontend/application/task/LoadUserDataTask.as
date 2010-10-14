@@ -2,22 +2,29 @@ package org.mxhero.console.frontend.application.task
 {
 	import flash.net.registerClassAlias;
 	
+	import mx.resources.IResourceManager;
+	import mx.resources.ResourceManager;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.events.FaultEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.ApplicationUser;
+	import org.mxhero.console.frontend.infrastructure.LoadingProperties;
 	import org.spicefactory.lib.task.Task;
 
 	public class LoadUserDataTask extends Task
 	{
 		[MessageDispatcher]
 		public var dispatcher:Function;
+		
+		[Bindable]
+		private var rm:IResourceManager=ResourceManager.getInstance();
 		
 		[Inject(id="applicationUserService")]
 		[Bindable]
@@ -33,7 +40,7 @@ package org.mxhero.console.frontend.application.task
 		}
 		
 		protected override function doStart ():void{
-			dispatcher(new LoadingMessage("Loading User Data"));
+			dispatcher(new LoadingMessage(rm.getString(LoadingProperties.NAME,LoadingProperties.LOADING_USER_LABEL)));
 			service.addEventListener(ResultEvent.RESULT,onResult);
 			service.addEventListener(FaultEvent.FAULT,onFault);
 			service.getUser();
@@ -49,6 +56,7 @@ package org.mxhero.console.frontend.application.task
 		public function onFault(fault:FaultEvent):void{
 			service.removeEventListener(FaultEvent.FAULT,onFault);
 			error(fault.fault.faultCode);
+			dispatcher(new ApplicationErrorMessage(fault.fault.faultCode));
 		}
 		
 	}
