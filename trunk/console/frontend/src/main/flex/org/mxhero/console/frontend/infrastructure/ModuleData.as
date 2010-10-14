@@ -14,8 +14,11 @@ package org.mxhero.console.frontend.infrastructure
 		
 		private var _moduleLoader:ModuleLoader;
 		
-		
-		
+		public function ModuleData(){
+			_moduleLoader=new ModuleLoader();
+			_moduleLoader.creationPolicy="auto";
+		}
+
 		public function get ico():Class
 		{
 			return _ico;
@@ -48,11 +51,6 @@ package org.mxhero.console.frontend.infrastructure
 		public function get moduleLoader():ModuleLoader
 		{
 			return _moduleLoader;
-		}
-
-		public function set moduleLoader(value:ModuleLoader):void
-		{
-			_moduleLoader = value;
 		}
 
 	}

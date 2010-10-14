@@ -1,6 +1,6 @@
 package org.mxhero.console.frontend.infrastructure
 {
-	public class Resources
+	public class ImageResources
 	{
 		[Embed(source="images/alert.png")] 
 		[Bindable]

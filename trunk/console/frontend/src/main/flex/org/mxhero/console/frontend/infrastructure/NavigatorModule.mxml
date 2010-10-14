@@ -32,14 +32,14 @@
 			public function set moduleData(value:ModuleData):void
 			{
 				if(value!=null){
-					value.moduleLoader=moduleLoader;
+					value.moduleLoader.percentHeight=100;
+					value.moduleLoader.percentHeight=100;
+					this.addElement(value.moduleLoader);
 				}
 				_moduleData = value;		
 			}
 
 		]]>
 	</fx:Script>
-	
-	<mx:ModuleLoader id="moduleLoader" width="100%" height="100%"/>
-	
+
 </s:NavigatorContent>

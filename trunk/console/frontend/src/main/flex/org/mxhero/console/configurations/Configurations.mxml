@@ -2,9 +2,13 @@
 <mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   xmlns:parsley="http://www.spicefactory.org/parsley" 
+		   xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
+		   xmlns:cairngorm="http://ns.adobe.com/cairngorm"
 		   layout="vertical" 
 		   width="100%" 
-		   height="100%" xmlns:parsley="http://www.spicefactory.org/parsley">
+		   height="100%"
+		   creationComplete="{ConfigurationsViewPM.container=container}">
 	
 	<fx:Declarations>
 		<parsley:ContextBuilder>
@@ -15,23 +19,11 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.domain.ApplicationContext;
-			import org.mxhero.console.frontend.infrastructure.LanguageSettings;
-			
-			[Inject]
-			[Bindable]
-			public var applicationContext:ApplicationContext;
-			[Inject]
-			[Bindable]
-			public var languagesSettings:LanguageSettings;
+			import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
 			
 		]]>
 	</fx:Script>
-	
 
-	
-	<s:Label text="{'language capabilities:'+Capabilities.language}"/>
-	<s:Label text="{'language selected:'+languagesSettings.selectedLanguage}"/>
-	<s:Label text="{'language default:'+languagesSettings.defaultLocal}"/>
+	<presentation:ConfigurationsView id="container" width="100%" height="100%"/>
 	
 </mx:Module>

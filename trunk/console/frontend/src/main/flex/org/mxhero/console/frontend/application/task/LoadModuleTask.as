@@ -5,7 +5,10 @@ package org.mxhero.console.frontend.application.task
 	import mx.resources.ResourceManager;
 	import mx.rpc.events.FaultEvent;
 	
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
+	import org.mxhero.console.frontend.infrastructure.ErrorsProperties;
+	import org.mxhero.console.frontend.infrastructure.LoadingProperties;
 	import org.mxhero.console.frontend.infrastructure.ModuleData;
 	import org.spicefactory.lib.task.Task;
 
@@ -13,10 +16,7 @@ package org.mxhero.console.frontend.application.task
 	{
 		[MessageDispatcher]
 		public var dispatcher:Function;
-		
-		private static const LOADING_RESOURCE:String="loading";
-		private static const LOADING_MODULE_LABEL:String="loading.module.label";
-		
+			
 		[Bindable]
 		private var rm:IResourceManager=ResourceManager.getInstance();
 		
@@ -29,17 +29,17 @@ package org.mxhero.console.frontend.application.task
 		
 		protected override function doStart ():void{
 			if(moduleData!=null){
-				dispatcher(new LoadingMessage(rm.getString(LOADING_RESOURCE,LOADING_MODULE_LABEL)+moduleData.name));
+				dispatcher(new LoadingMessage(rm.getString(LoadingProperties.NAME,LoadingProperties.LOADING_MODULE_LABEL)+moduleData.name));
 				if(moduleData.moduleLoader!= null){
 					moduleData.moduleLoader.addEventListener(ModuleEvent.READY,onReady);
 					moduleData.moduleLoader.addEventListener(ModuleEvent.ERROR,onError);
 					moduleData.moduleLoader.loadModule(moduleData.path);
 					
 				} else {
-					error("Module loader is not asigned for "+moduleData.name);
+					error(ErrorsProperties.LOADING_MODULE_LOADER_EMPTY);
 				}
 			} else {
-				error("Module data is empty");
+				error(ErrorsProperties.LOADING_MODULE_EMPTY);
 			}
 		}
 
@@ -50,7 +50,8 @@ package org.mxhero.console.frontend.application.task
 
 		protected function onError(event:ModuleEvent):void{
 			moduleData.moduleLoader.removeEventListener(ModuleEvent.ERROR,onError);
-			error("Error while loading module for "+moduleData.name);
+			error(ErrorsProperties.LOADING_MODULE_ERROR);
+			dispatcher(new ApplicationErrorMessage(ErrorsProperties.LOADING_MODULE_ERROR));
 		}
 		
 		public function get moduleData():ModuleData

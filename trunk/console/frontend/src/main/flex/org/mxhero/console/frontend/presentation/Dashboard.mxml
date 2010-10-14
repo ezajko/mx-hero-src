@@ -19,19 +19,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.frontend.application.MainDestination;
 			import org.mxhero.console.frontend.infrastructure.ModuleData;
-			
-			[Inject(id="policies")]
-			[Bindable]
-			public var policiesData:ModuleData;
-			
-			[Inject(id="reports")]
-			[Bindable]
-			public var reportsData:ModuleData;
-			
-			[Inject(id="configurations")]
-			[Bindable]
-			public var configurationsData:ModuleData;
 			
 			[Inject]
 			[Bindable]
@@ -39,13 +28,10 @@
 			
 		]]>
 	</fx:Script>
+
 	
 	<component:DashboardControlBar dataProvider="{viewStack}" width="100%"/>
 	
-	<mx:ViewStack id="viewStack" width="100%" height="100%">
-		<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{policiesData}"/>
-		<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{reportsData}"/>
-		<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}"/>
-	</mx:ViewStack>
-	
+	<component:DashboardView id="viewStack" width="100%" height="100%"/>
+
 </s:Group>
