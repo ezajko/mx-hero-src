@@ -32,10 +32,9 @@
 			public function set moduleData(value:ModuleData):void
 			{
 				if(value!=null){
-					value.moduleLoader.percentHeight=100;
-					value.moduleLoader.percentHeight=100;
 					this.addElement(value.moduleLoader);
 				}
+				invalidateDisplayList();
 				_moduleData = value;		
 			}
 

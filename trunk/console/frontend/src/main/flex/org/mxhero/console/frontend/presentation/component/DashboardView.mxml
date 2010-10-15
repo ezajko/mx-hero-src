@@ -20,9 +20,9 @@
 			[Bindable]
 			public var model:DashboardPM;
 			
-			[Inject(id="policies")]
+			[Inject(id="features")]
 			[Bindable]
-			public var policiesData:ModuleData;
+			public var featuresData:ModuleData;
 			
 			[Inject(id="reports")]
 			[Bindable]
@@ -38,7 +38,7 @@
 		[Waypoint]
 	</fx:Metadata>
 	
-	<modules:NavigatorModule width="100%" height="100%" moduleData="{policiesData}" automationName="{MainDestination.POLICIES}"/>
+	<modules:NavigatorModule width="100%" height="100%" moduleData="{featuresData}" automationName="{MainDestination.FEATURES}"/>
 	<modules:NavigatorModule width="100%" height="100%" moduleData="{reportsData}" automationName="{MainDestination.REPORTS}"/>
 	<modules:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}" automationName="{MainDestination.CONFIGURATIONS}"/>
 	

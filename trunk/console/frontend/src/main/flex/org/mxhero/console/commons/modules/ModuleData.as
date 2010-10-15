@@ -16,7 +16,8 @@ package org.mxhero.console.commons.modules
 		
 		public function ModuleData(){
 			_moduleLoader=new ModuleLoader();
-			_moduleLoader.creationPolicy="auto";
+			_moduleLoader.percentHeight=100;
+			_moduleLoader.percentWidth=100;
 		}
 
 		public function get ico():Class
