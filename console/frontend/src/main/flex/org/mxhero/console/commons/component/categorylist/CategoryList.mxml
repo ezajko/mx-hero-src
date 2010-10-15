@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.HRule;
+			
+			[Bindable]
+			public var model:CategoryListPM;
+			
+			private var _categoryList:Object;
+
+			[Bindable]
+			public function get categoryList():Object
+			{
+				return _categoryList;
+			}
+
+			public function set categoryList(value:Object):void
+			{
+				var hrule:HRule = new HRule();
+				hrule.percentWidth=100;
+				groupContainer.removeAllElements();
+				groupContainer.addElement(new CategoryListTitle());
+				groupContainer.addElement(hrule);
+				if(value!=null){
+					for each(var category:Object in value){
+						var newCategoryRow:CategoryRow= new CategoryRow();
+						newCategoryRow.category=category;
+						newCategoryRow.model=model;
+						groupContainer.addElement(newCategoryRow);
+						hrule = new HRule();
+						hrule.percentWidth=100;
+						groupContainer.addElement(hrule);
+					}
+				}
+				groupContainer.removeElementAt(groupContainer.numElements-1);
+				_categoryList = value;
+			}
+
+		]]>
+	</fx:Script>
+	<s:Group id="groupContainer" width="100%">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>		
+	</s:Group>
+</s:Scroller>

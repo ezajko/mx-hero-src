@@ -3,9 +3,10 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   xmlns:parsley="http://www.spicefactory.org/parsley" 
-		   layout="vertical" 
+		   xmlns:presentation1="org.mxhero.console.features.presentation.*"
+		   layout="vertical"
 		   width="100%" 
-		   height="100%" xmlns:presentation1="org.mxhero.console.features.presentation.*">
+		   height="100%">
 	<fx:Declarations>
 		<parsley:ContextBuilder>
 			<parsley:FlexConfig type="{FeaturesContext}"/>

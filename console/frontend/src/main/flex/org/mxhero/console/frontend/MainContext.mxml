@@ -37,7 +37,7 @@
 		
 		<fx:Array id="initialTasks">
 			<task1:LoadUserDataTask id="loadUserDataTask"/>
-			<task1:LoadModuleTask moduleData="{policies}"/>
+			<task1:LoadModuleTask moduleData="{features}"/>
 			<task1:LoadModuleTask moduleData="{reports}"/>
 			<task1:LoadModuleTask moduleData="{configurations}"/>			
 		</fx:Array>
@@ -51,9 +51,9 @@
 			ico="{ImageResources.CONFIGURATIONS_ICO}"/>
 		
 		<modules:ModuleData 
-			id="policies" 
-			name="policies" 
-			path="org\mxhero\console\policies\Policies.swf"
+			id="features" 
+			name="features" 
+			path="org\mxhero\console\features\Features.swf"
 			ico="{ImageResources.POLICIES_ICO}"/>
 		
 		<modules:ModuleData 
