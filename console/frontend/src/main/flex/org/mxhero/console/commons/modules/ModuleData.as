@@ -1,4 +1,4 @@
-package org.mxhero.console.frontend.infrastructure
+package org.mxhero.console.commons.modules
 {
 	import mx.modules.ModuleLoader;
 

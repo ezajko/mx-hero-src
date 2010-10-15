@@ -17,7 +17,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.infrastructure.LoadingProperties;
+			import org.mxhero.console.commons.resources.LoadingProperties;
 			
 			[Inject]
 			[Bindable]

@@ -15,7 +15,7 @@ package org.mxhero.console.frontend.application.task
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.ApplicationUser;
-	import org.mxhero.console.frontend.infrastructure.LoadingProperties;
+	import org.mxhero.console.commons.resources.LoadingProperties;
 	import org.spicefactory.lib.task.Task;
 
 	public class LoadUserDataTask extends Task

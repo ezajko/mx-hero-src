@@ -9,7 +9,7 @@
 				   visible="{model.hasNewError}"
 				   showEffect="{showEffect}"
 				   hideEffect="{hideEffect}"
-				   preinitialize="{this.visible=false}" xmlns:component="org.mxhero.console.frontend.presentation.component.*">
+				   preinitialize="{this.visible=false}" xmlns:component="org.mxhero.console.frontend.presentation.component.*" xmlns:component1="org.mxhero.console.commons.component.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -38,7 +38,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.infrastructure.ImageResources;
+			import org.mxhero.console.commons.resources.ImageResources;
 
 			private static const SHOW_SIZE:Number=32;
 			private static const HIDE_SIZE:Number=0;
@@ -55,6 +55,6 @@
 	
 	<mx:Image id="alertImage" source="{ImageResources.ALERT_ICON}" />
 	<s:TextArea id="errorText" heightInLines="1" text="{model.errorMessage}" width="100%" height="100%" styleName="errorPanel" editable="false"/>
-	<component:GlowButton id="closeImage" source="{ImageResources.CHECK_ICON}"  click="{model.clear()}"/>
+	<component1:GlowButton id="closeImage" source="{ImageResources.CHECK_ICON}"  click="{model.clear()}"/>
 	
 </s:BorderContainer>

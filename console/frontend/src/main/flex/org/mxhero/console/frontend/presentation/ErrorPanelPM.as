@@ -6,7 +6,7 @@ package org.mxhero.console.frontend.presentation
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.ViewChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
-	import org.mxhero.console.frontend.infrastructure.ErrorsProperties;
+	import org.mxhero.console.commons.resources.ErrorsProperties;
 
 	public class ErrorPanelPM
 	{

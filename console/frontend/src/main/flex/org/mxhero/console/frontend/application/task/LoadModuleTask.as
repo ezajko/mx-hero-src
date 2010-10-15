@@ -7,9 +7,9 @@ package org.mxhero.console.frontend.application.task
 	
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
-	import org.mxhero.console.frontend.infrastructure.ErrorsProperties;
-	import org.mxhero.console.frontend.infrastructure.LoadingProperties;
-	import org.mxhero.console.frontend.infrastructure.ModuleData;
+	import org.mxhero.console.commons.resources.ErrorsProperties;
+	import org.mxhero.console.commons.resources.LoadingProperties;
+	import org.mxhero.console.commons.modules.ModuleData;
 	import org.spicefactory.lib.task.Task;
 
 	public class LoadModuleTask extends Task
