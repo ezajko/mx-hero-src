@@ -7,7 +7,7 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:task="org.spicefactory.lib.task.*" 
-		xmlns:task1="org.mxhero.console.frontend.application.task.*" xmlns:domain="org.mxhero.console.frontend.domain.*" xmlns:data="com.adobe.cairngorm.integration.data.*" xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*">
+		xmlns:task1="org.mxhero.console.frontend.application.task.*" xmlns:domain="org.mxhero.console.frontend.domain.*" xmlns:data="com.adobe.cairngorm.integration.data.*" xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*" xmlns:modules="org.mxhero.console.commons.modules.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -15,7 +15,7 @@
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
 			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
-			import org.mxhero.console.frontend.infrastructure.ImageResources;
+			import org.mxhero.console.commons.resources.ImageResources;
 			
 		]]>
 	</fx:Script>
@@ -44,19 +44,19 @@
 
 		<task1:LoadUserDataTask id="initialCheckTask"/>
 		
-		<infrastructure:ModuleData 
+		<modules:ModuleData 
 			id="configurations" 
 			name="configurations" 
 			path="org\mxhero\console\configurations\Configurations.swf"
 			ico="{ImageResources.CONFIGURATIONS_ICO}"/>
 		
-		<infrastructure:ModuleData 
+		<modules:ModuleData 
 			id="policies" 
 			name="policies" 
 			path="org\mxhero\console\policies\Policies.swf"
 			ico="{ImageResources.POLICIES_ICO}"/>
 		
-		<infrastructure:ModuleData 
+		<modules:ModuleData 
 			id="reports" 
 			name="reports" 
 			path="org\mxhero\console\reports\Reports.swf"

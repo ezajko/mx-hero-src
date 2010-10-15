@@ -1,4 +1,4 @@
-package org.mxhero.console.frontend.infrastructure
+package org.mxhero.console.commons.resources
 {
 	public class ErrorsProperties
 	{

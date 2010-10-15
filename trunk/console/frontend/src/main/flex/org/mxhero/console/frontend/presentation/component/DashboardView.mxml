@@ -5,7 +5,7 @@
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
 			  xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*"
 			  width="100%" 
-			  height="100%">
+			  height="100%" xmlns:modules="org.mxhero.console.commons.modules.*">
 	<fx:Declarations>
 		<parsley:Configure/>
 	</fx:Declarations>
@@ -13,7 +13,7 @@
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.frontend.application.MainDestination;
-			import org.mxhero.console.frontend.infrastructure.ModuleData;
+			import org.mxhero.console.commons.modules.ModuleData;
 			import org.mxhero.console.frontend.presentation.DashboardPM;
 			
 			[Inject]
@@ -38,8 +38,8 @@
 		[Waypoint]
 	</fx:Metadata>
 	
-	<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{policiesData}" automationName="{MainDestination.POLICIES}"/>
-	<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{reportsData}" automationName="{MainDestination.REPORTS}"/>
-	<infrastructure:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}" automationName="{MainDestination.CONFIGURATIONS}"/>
+	<modules:NavigatorModule width="100%" height="100%" moduleData="{policiesData}" automationName="{MainDestination.POLICIES}"/>
+	<modules:NavigatorModule width="100%" height="100%" moduleData="{reportsData}" automationName="{MainDestination.REPORTS}"/>
+	<modules:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}" automationName="{MainDestination.CONFIGURATIONS}"/>
 	
 </mx:ViewStack>
