@@ -2,8 +2,10 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*" 
 		 width="100%" 
-		 resize="{calculateRows()}" xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*">
+		 resize="{calculateRows()}" 
+		 mouseMove="{model.selectedCategory=category}">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -18,7 +20,7 @@
 		public var category:Object;
 		
 		private function calculateRows():void{
-			var newRows:Number = Math.ceil((childsContainer.numElements*(childsContainer.columnWidth+4))/(width-categoryContainer.width));
+			var newRows:Number = Math.ceil((childsContainer.numElements*(childsContainer.columnWidth+30))/(width-categoryContainer.width-30));
 			if(newRows>childsContainer.numElements){
 				newRows=childsContainer.numElements;
 			} 
@@ -30,8 +32,8 @@
 	]]>
 </fx:Script>
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle"/>
+		<s:HorizontalLayout verticalAlign="middle" paddingRight="20" paddingTop="20" gap="30"/>
 	</s:layout>
-	<categorylist:Category id="categoryContainer" category="{category}" model="{model}"/>
-	<categorylist:CategoryChilds id="childsContainer"  links="{category.childs}" model="{model}"/>
+	<categorylist:Category id="categoryContainer" model="{model}" category="{category}"/>
+	<categorylist:CategoryChilds id="childsContainer"  model="{model}" links="{category.childs}" />
 </s:Group>

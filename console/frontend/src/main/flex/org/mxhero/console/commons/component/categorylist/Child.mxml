@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:LinkButton xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   label="{child.label}"
-			   rollOver="{model.selectedChild=child}"
-			   rollOut="model.selectedChild=null">
+			   width="100%">
+	<s:layout>
+		<s:HorizontalLayout horizontalAlign="left" paddingLeft="0" paddingTop="0" paddingRight="0" paddingBottom="0"/>
+	</s:layout>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+
 			[Bindable]
 			public var model:CategoryListPM;
 			
 			[Bindable]
 			public var child:Object;
+			
+			[Bindable]
+			public var category:Object;
+			
+			private function onRollOverHandler():void{
+				model.selectedChild=child;
+			}
 		]]>
 	</fx:Script>
 	
-</mx:LinkButton>
+	<mx:LinkButton label="{child.label}"
+				   rollOver="{onRollOverHandler();}"
+				   rollOut="{model.selectedChild=null}"  
+				   fontSize="14" 
+				   fontWeight="bold"
+				   width="{this.width}"
+				   icon="@Embed('images/stop_8x8.png')"
+				   textFieldClass="mx.core.UIFTETextField"
+				   textAlign="left"/>
+	
+</s:Group>

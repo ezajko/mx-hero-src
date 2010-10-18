@@ -12,8 +12,8 @@
 			import org.mxhero.console.features.application.FeaturesDestinations;
 			
 			[Bindable]
-			public var source:Object = [{label:"Policies",iconsrc:"3.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
+			public var source:Object = [{label:"Policies",iconsrc:"images/configurations/3.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
+				{label:"Other policy muito cumprido aqui",description:"another large description should go here to explain everything"},
 				{label:"Other policy",description:"another large description should go here to explain everything"},
 				{label:"Other policy",description:"another large description should go here to explain everything"},
 				{label:"Other policy",description:"another large description should go here to explain everything"},
@@ -23,7 +23,7 @@
 				{label:"Other policy",description:"another large description should go here to explain everything"},
 				{label:"Other policy",description:"another large description should go here to explain everything"},
 				{label:"Other policy",description:"another large description should go here to explain everything"}]}
-				,{label:"Security",iconsrc:"6.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
+				,{label:"Security",iconsrc:"images/configurations/6.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
@@ -34,7 +34,7 @@
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"}]}
-				,{label:"Security",iconsrc:"6.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
+				,{label:"Security",iconsrc:"images/configurations/6.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"},
@@ -46,9 +46,6 @@
 					{label:"Other policy",description:"another large description should go here to explain everything"},
 					{label:"Other policy",description:"another large description should go here to explain everything"}]}];
 
-			[Bindable]
-			private var listModel:CategoryListPM=new CategoryListPM();
-			
 			[Inject]
 			[Bindable]
 			public var model:FeaturesViewPM;
@@ -66,7 +63,7 @@
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>
-		<categorylist:CategoryList model="{listModel}" categoryList="{source}" width="100%" height="100%"/>
+		<categorylist:CategoryList id="featuresList" categoryList="{source}" width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
 </mx:ViewStack>
