@@ -2,7 +2,7 @@
 <s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100%">
+		 width="100%" xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -12,10 +12,19 @@
 			import mx.controls.HRule;
 			
 			[Bindable]
-			public var model:CategoryListPM;
+			public var model:CategoryListPM= new CategoryListPM();
 			
 			private var _categoryList:Object;
-
+			
+			[Bindable]
+			public function get columnsWidth():Number{
+				return model.columnsWidth;
+			}
+			
+			public function set columnsWidth(value:Number):void{
+				model.columnsWidth = value;
+			}
+			
 			[Bindable]
 			public function get categoryList():Object
 			{
@@ -24,31 +33,39 @@
 
 			public function set categoryList(value:Object):void
 			{
-				var hrule:HRule = new HRule();
-				hrule.percentWidth=100;
-				groupContainer.removeAllElements();
-				groupContainer.addElement(new CategoryListTitle());
-				groupContainer.addElement(hrule);
+				var hrule:HRule;
+				
+				for(var i:int=1;i<groupContainer.numElements;i++){
+					groupContainer.removeElementAt(i);
+				}
+
 				if(value!=null){
 					for each(var category:Object in value){
 						var newCategoryRow:CategoryRow= new CategoryRow();
-						newCategoryRow.category=category;
 						newCategoryRow.model=model;
+						newCategoryRow.category=category;
 						groupContainer.addElement(newCategoryRow);
 						hrule = new HRule();
 						hrule.percentWidth=100;
+						hrule.height=1;
 						groupContainer.addElement(hrule);
 					}
 				}
 				groupContainer.removeElementAt(groupContainer.numElements-1);
 				_categoryList = value;
+				invalidateDisplayList();
+				stylesInitialized();
 			}
 
 		]]>
 	</fx:Script>
+	
+	
+	
 	<s:Group id="groupContainer" width="100%">
 		<s:layout>
-			<s:VerticalLayout/>
-		</s:layout>		
+			<s:VerticalLayout gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10"/>
+		</s:layout>
+		<categorylist:CategoryListTitle width="100%" model="{model}"/>
 	</s:Group>
 </s:Scroller>

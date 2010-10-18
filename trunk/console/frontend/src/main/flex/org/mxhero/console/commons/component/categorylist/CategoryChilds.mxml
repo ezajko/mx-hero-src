@@ -3,9 +3,9 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="100%"
-		 columnWidth="90"
+		 columnWidth="{model.columnsWidth}"
 		 columnAlign="justifyUsingGap"
-		 >
+		 horizontalGap="10">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -31,8 +31,8 @@
 				if(value!=null){
 					for(var child:Object in value){
 						var childView:Child = new Child();
-						childView.child=value[child];
 						childView.model=model;
+						childView.child=value[child];
 						this.addElement(childView);
 					}
 					this.invalidateDisplayList();
