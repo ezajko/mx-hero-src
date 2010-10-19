@@ -4,8 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="100%"
 		 columnWidth="{model.columnsWidth}"
-		 columnAlign="justifyUsingGap"
-		 horizontalGap="10">
+		 columnAlign="left"
+		 horizontalGap="5">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>

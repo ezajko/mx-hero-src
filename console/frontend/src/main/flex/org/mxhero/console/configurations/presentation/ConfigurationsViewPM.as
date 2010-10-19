@@ -17,7 +17,6 @@ package org.mxhero.console.configurations.presentation
 		[Enter(time="first")]
 		public function enter():void
 		{
-			Alert.show("enter to configurations first");
 			container.createComponentsFromDescriptors();
 		}
 		

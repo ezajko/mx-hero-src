@@ -23,6 +23,10 @@
 			
 		]]>
 	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("configurations_list")]
+	</fx:Metadata>
 
 	<presentation:ConfigurationsView id="container" width="100%" height="100%"/>
 	

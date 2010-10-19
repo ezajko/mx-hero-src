@@ -30,9 +30,9 @@
 
 	<s:NavigatorContent automationName="{ConfigurationsDestinations.LIST}" width="100%" height="100%">
 		<s:layout>
-			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+			<s:VerticalLayout/>
 		</s:layout>	
-		<s:Label text="list"/>
+		<presentation:ConfigurationsList width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
 </mx:ViewStack>
