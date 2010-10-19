@@ -1,4 +1,4 @@
-package org.mxhero.console.commons.component.categorylist.entity
+package org.mxhero.console.commons.domain
 {
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
