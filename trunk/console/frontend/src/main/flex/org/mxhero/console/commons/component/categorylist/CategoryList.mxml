@@ -54,10 +54,11 @@
 			public function set categoryList(value:Object):void
 			{
 				var hrule:HRule;
-				
-				for(var i:int=1;i<groupContainer.numElements;i++){
-					groupContainer.removeElementAt(i);
-				}
+				var categoryListTitle:CategoryListTitle=new CategoryListTitle();
+				categoryListTitle.model=model;
+				groupContainer.removeAllElements();
+				groupContainer.addElement(categoryListTitle);
+
 
 				if(value!=null){
 					for each(var category:Object in value){
@@ -74,18 +75,14 @@
 				groupContainer.removeElementAt(groupContainer.numElements-1);
 				_categoryList = value;
 				invalidateDisplayList();
-				stylesInitialized();
 			}
 
 		]]>
 	</fx:Script>
-	
-	
-	
+
 	<s:Group id="groupContainer" width="100%">
 		<s:layout>
 			<s:VerticalLayout gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10"/>
 		</s:layout>
-		<categorylist:CategoryListTitle width="100%" model="{model}"/>
 	</s:Group>
 </s:Scroller>

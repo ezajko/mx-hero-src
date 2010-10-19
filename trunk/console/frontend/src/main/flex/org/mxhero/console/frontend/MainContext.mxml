@@ -63,6 +63,7 @@
 			ico="{ImageResources.REPORTS_ICO}"/>
 		
 		<infrastructure:LanguageSettings defaultLocal="en_US"/>
+		<infrastructure:AuthorizeHelper/>
 		
 		<s:RemoteObject
 			id="applicationUserService" 

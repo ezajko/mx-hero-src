@@ -1,5 +1,7 @@
 package org.mxhero.console.configurations.presentation
 {
+	import org.mxhero.console.frontend.infrastructure.AuthorizeHelper;
+
 	[Landmark(name="main.dashboard.configurations.list")]
 	public class ConfigurationsListPM
 	{
@@ -8,18 +10,17 @@ package org.mxhero.console.configurations.presentation
 		[Bindable]
 		public var dataSource:Object;
 		
+		[Inject]
+		[Bindable]
+		public var authorizeHelper:AuthorizeHelper;
+		
 		[Bindable]
 		public var authorizedDataSource:Object;
 		
 		[Enter(time="every")]
 		public function every():void{
-			authorize();
+			authorizedDataSource=authorizeHelper.authorizeList(dataSource);
 		}
-		
-		public function authorize():void{
-			authorizedDataSource=dataSource;
-		}
-		
 		
 	}
 }

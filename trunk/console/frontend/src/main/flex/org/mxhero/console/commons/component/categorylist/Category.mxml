@@ -20,5 +20,5 @@
 		<s:HorizontalLayout horizontalAlign="left" verticalAlign="middle"/>
 	</s:layout>
 	<mx:Image source="{category.iconsrc}"/>
-	<s:Label text="{category.label}" fontWeight="bold" fontSize="20" color="#FFFFFF"/>
+	<mx:Label text="{category.label}" fontWeight="bold" fontSize="20" color="#FFFFFF" textFieldClass="mx.core.UIFTETextField"/>
 </s:Group>

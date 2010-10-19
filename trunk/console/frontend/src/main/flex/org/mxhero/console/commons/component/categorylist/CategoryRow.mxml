@@ -32,7 +32,7 @@
 	]]>
 </fx:Script>
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle" paddingRight="20" paddingTop="20" gap="30"/>
+		<s:HorizontalLayout verticalAlign="middle" paddingRight="20" paddingTop="20" gap="40"/>
 	</s:layout>
 	<categorylist:Category id="categoryContainer" model="{model}" category="{category}"/>
 	<categorylist:CategoryChilds id="childsContainer"  model="{model}" links="{category.childs}" />
