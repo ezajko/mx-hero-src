@@ -1,7 +1,5 @@
 package org.mxhero.console.backend.security;
 
-import java.util.Calendar;
-
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.springframework.security.core.userdetails.User;
 
@@ -18,7 +16,7 @@ public class CustomUser extends User {
 	
 	@Override
 	public boolean isAccountNonExpired() {
-		return user.getValidUntil().after(Calendar.getInstance());
+		return true;
 	}
 	
 	@Override

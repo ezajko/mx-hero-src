@@ -13,13 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="app_users")
 public class ApplicationUser{
-
-	private static final long serialVersionUID = 3307754778675036756L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,24 +33,18 @@ public class ApplicationUser{
 	@Column(name="notify_email", length=50)
 	private String notifyEmail;
 	
-	@Column(name="password",  unique=true, nullable=false, length=100)
+	@Column(name="password",  nullable=false, length=100)
 	private String password;
 	
-	@Column(name="userName", nullable=false, length=20)
+	@Column(name="userName", unique=true, nullable=false, length=20)
 	private String userName;
-	
-	@Column(name="last_login")
-	private Calendar lastLogin;
-	
+
 	@Column(name="last_password_update")
 	private Calendar lastPasswordUpdate;
 	
 	@Column(name="creation", nullable=false)
 	private Calendar creationDate;
 	
-	@Column(name="valid_until")
-	private Calendar validUntil;
-		
 	@Column(name="enabled", nullable=false)
 	private boolean enabled;
 	
@@ -66,13 +59,9 @@ public class ApplicationUser{
     )
 	private Set<Authority> authorities;
 	
-	public Calendar getLastLogin() {
-		return lastLogin;
-	}
-
-	public void setLastLogin(Calendar lastLogin) {
-		this.lastLogin = lastLogin;
-	}
+	@ManyToOne(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
+	private Domain domain;
+	
 
 	public Calendar getLastPasswordUpdate() {
 		return lastPasswordUpdate;
@@ -88,14 +77,6 @@ public class ApplicationUser{
 
 	public void setCreationDate(Calendar creationDate) {
 		this.creationDate = creationDate;
-	}
-
-	public Calendar getValidUntil() {
-		return validUntil;
-	}
-
-	public void setValidUntil(Calendar validUntil) {
-		this.validUntil = validUntil;
 	}
 
 	public boolean isEnabled() {
@@ -168,6 +149,14 @@ public class ApplicationUser{
 
 	public void setAuthorities(Set<Authority> authorities) {
 		this.authorities = authorities;
+	}
+
+	public Domain getDomain() {
+		return domain;
+	}
+
+	public void setDomain(Domain domain) {
+		this.domain = domain;
 	}
 
 }

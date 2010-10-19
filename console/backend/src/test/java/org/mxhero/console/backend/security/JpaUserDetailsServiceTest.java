@@ -59,10 +59,6 @@ public class JpaUserDetailsServiceTest {
 			user.setEnabled(true);
 			user.setLocale("pt_BR");
 			user.setNotifyEmail("email@example.com");
-			Calendar valid = Calendar.getInstance();
-			valid.add(Calendar.DAY_OF_MONTH, 30);
-			user.setValidUntil(valid);
-
 			user.setAuthorities(new HashSet<Authority>(authorityDao.readAll()));
 			user = applicationUserDao.save(user);
 
