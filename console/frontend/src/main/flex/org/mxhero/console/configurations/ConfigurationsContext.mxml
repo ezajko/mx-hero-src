@@ -5,7 +5,8 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx"
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
-		xmlns:presentation="org.mxhero.console.configurations.presentation.*" xmlns:entity="org.mxhero.console.commons.component.categorylist.entity.*">
+		xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
+		xmlns:domain="org.mxhero.console.commons.domain.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -18,21 +19,21 @@
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
 		<s:ArrayCollection id="configurationsCategories">
-			<entity:LCCategory key="category.domains" resource="configurations_list" iconsrc="images/configurations/domains.png">
-				<entity:childs>
+			<domain:LCCategory key="category.domains" resource="configurations_list" iconsrc="images/configurations/domains.png">
+				<domain:childs>
 					<s:ArrayCollection>
-						<entity:LCChild key="category.domains.accounts" keyDescription="category.domains.accounts.description" resource="configurations_list"/>
-						<entity:LCChild key="category.domains.groups" keyDescription="category.domains.groups.description" resource="configurations_list"/>
+						<domain:LCChild key="category.domains.accounts" keyDescription="category.domains.accounts.description" resource="configurations_list"/>
+						<domain:LCChild key="category.domains.groups" keyDescription="category.domains.groups.description" resource="configurations_list"/>
 					</s:ArrayCollection>
-				</entity:childs>
-			</entity:LCCategory>
-			<entity:LCCategory key="category.settings" resource="configurations_list" iconsrc="images/configurations/settings.png">
-				<entity:childs>
+				</domain:childs>
+			</domain:LCCategory>
+			<domain:LCCategory key="category.settings" resource="configurations_list" iconsrc="images/configurations/settings.png">
+				<domain:childs>
 					<s:ArrayCollection>
-						<entity:LCChild key="category.settings.user" keyDescription="category.settings.user.description" resource="configurations_list"/> 
+						<domain:LCChild key="category.settings.user" keyDescription="category.settings.user.description" resource="configurations_list"/> 
 					</s:ArrayCollection>
-				</entity:childs>
-			</entity:LCCategory>
+				</domain:childs>
+			</domain:LCCategory>
 		</s:ArrayCollection>
 
 	</fx:Declarations>
