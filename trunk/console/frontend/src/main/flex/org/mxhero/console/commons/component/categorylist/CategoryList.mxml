@@ -9,12 +9,32 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.controls.HRule;
 			
 			[Bindable]
 			public var model:CategoryListPM= new CategoryListPM();
 			
 			private var _categoryList:Object;
+			
+			[Bindable]
+			public function get defaultTitle():String{
+				return model.defaultTitle;
+			}
+			
+			public function set defaultTitle(value:String):void{
+				model.defaultTitle=value;
+				invalidateDisplayList();
+			}
+			
+			[Bindable]
+			public function get defaultDescription():String{
+				return model.defaultDescription;
+			}
+			
+			public function set defaultDescription(value:String):void{
+				model.defaultDescription=value;
+			}
 			
 			[Bindable]
 			public function get columnsWidth():Number{

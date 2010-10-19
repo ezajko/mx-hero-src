@@ -9,11 +9,9 @@ package org.mxhero.console.commons.component.categorylist
 		
 		private static const DEFAULT_COLUMN_WIDTH:Number = 160;
 		
-		[Bindable]
-		public var defaultTitle:String="default";
+		private var _defaultTitle:String="default";
 		
-		[Bindable]
-		public var defaultDescription:String="default";
+		private var _defaultDescription:String="default";
 		
 		[Bindable]
 		public var titleLabelFunction:Function=getdefaultTitle;
@@ -41,9 +39,6 @@ package org.mxhero.console.commons.component.categorylist
 
 		public function set selectedCategory(value:Object):void
 		{
-			if(value==null){
-				trace("error");
-			}
 			_selectedCategory = value;
 		}
 		
@@ -57,11 +52,15 @@ package org.mxhero.console.commons.component.categorylist
 		{
 			_selectedChild = value;
 			if(value!=null){
-				this.title=titleLabelFunction();
-				this.description=descriptionLabelFunction();
+				updateLabels();
 			}
 		}
 
+		private function updateLabels():void{
+			this.title=titleLabelFunction();
+			this.description=descriptionLabelFunction();
+		}
+		
 		public function clicked():void{
 			if(onClick!=null){
 				onClick(selectedCategory,selectedChild);
@@ -83,5 +82,31 @@ package org.mxhero.console.commons.component.categorylist
 				return defaultDescription;
 			}		
 		}
+
+		[Bindable]
+		public function get defaultTitle():String
+		{
+			return _defaultTitle;
+		}
+
+		public function set defaultTitle(value:String):void
+		{
+			_defaultTitle = value;
+			updateLabels()
+		}
+
+		[Bindable]
+		public function get defaultDescription():String
+		{
+			return _defaultDescription;
+		}
+
+		public function set defaultDescription(value:String):void
+		{
+			_defaultDescription = value;
+			updateLabels()
+		}
+
+
 	}
 }

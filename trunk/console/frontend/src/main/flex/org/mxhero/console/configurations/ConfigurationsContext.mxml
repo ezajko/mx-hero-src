@@ -5,16 +5,36 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx"
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
-		xmlns:presentation="org.mxhero.console.configurations.presentation.*">
+		xmlns:presentation="org.mxhero.console.configurations.presentation.*" xmlns:entity="org.mxhero.console.commons.component.categorylist.entity.*">
 
 	<fx:Script>
 		<![CDATA[
+			import mx.utils.ObjectProxy;
 			
 		]]>
 	</fx:Script>
 
 	<fx:Declarations>
 		<presentation:ConfigurationsViewPM/>
+		<presentation:ConfigurationsListPM/>
+		<s:ArrayCollection id="configurationsCategories">
+			<entity:LCCategory key="category.domains" resource="configurations_list" iconsrc="images/configurations/domains.png">
+				<entity:childs>
+					<s:ArrayCollection>
+						<entity:LCChild key="category.domains.accounts" keyDescription="category.domains.accounts.description" resource="configurations_list"/>
+						<entity:LCChild key="category.domains.groups" keyDescription="category.domains.groups.description" resource="configurations_list"/>
+					</s:ArrayCollection>
+				</entity:childs>
+			</entity:LCCategory>
+			<entity:LCCategory key="category.settings" resource="configurations_list" iconsrc="images/configurations/settings.png">
+				<entity:childs>
+					<s:ArrayCollection>
+						<entity:LCChild key="category.settings.user" keyDescription="category.settings.user.description" resource="configurations_list"/> 
+					</s:ArrayCollection>
+				</entity:childs>
+			</entity:LCCategory>
+		</s:ArrayCollection>
+
 	</fx:Declarations>
 
 </fx:Object>
