@@ -19,18 +19,19 @@
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
 		<s:ArrayCollection id="configurationsCategories">
-			<domain:LCCategory key="category.domains" resource="configurations_list" iconsrc="images/configurations/domains.png">
+			<domain:LCCategory key="category.domains" requiredAuthority="ROLE_DOMAIN_ADMIN" resource="configurations_list" iconsrc="images/configurations/domains.png">
 				<domain:childs>
 					<s:ArrayCollection>
-						<domain:LCChild key="category.domains.accounts" keyDescription="category.domains.accounts.description" resource="configurations_list"/>
-						<domain:LCChild key="category.domains.groups" keyDescription="category.domains.groups.description" resource="configurations_list"/>
+						<domain:LCChild key="category.domains.domains" requiredAuthority="ROLE_DOMAIN_ADMIN" keyDescription="category.domains.domains.description" resource="configurations_list"/>
+						<domain:LCChild key="category.domains.groups" requiredAuthority="ROLE_DOMAIN_ADMIN" keyDescription="category.domains.groups.description" resource="configurations_list"/>
+						<domain:LCChild key="category.domains.accounts" requiredAuthority="ROLE_ADMIN" keyDescription="category.domains.accounts.description" resource="configurations_list"/>
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>
-			<domain:LCCategory key="category.settings" resource="configurations_list" iconsrc="images/configurations/settings.png">
+			<domain:LCCategory key="category.settings" requiredAuthority="ROLE_DOMAIN_ADMIN" resource="configurations_list" iconsrc="images/configurations/settings.png">
 				<domain:childs>
 					<s:ArrayCollection>
-						<domain:LCChild key="category.settings.user" keyDescription="category.settings.user.description" resource="configurations_list"/> 
+						<domain:LCChild key="category.settings.user" requiredAuthority="ROLE_DOMAIN_ADMIN" keyDescription="category.settings.user.description" resource="configurations_list"/> 
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>
