@@ -6,7 +6,7 @@ package org.mxhero.console.frontend.presentation
 	import mx.resources.ResourceManager;
 	
 	import org.mxhero.console.frontend.application.event.LogoutEvent;
-	import org.mxhero.console.commons.resources.DashboardProperties;
+	import org.mxhero.console.frontend.application.resources.DashboardProperties;
 	import org.spicefactory.parsley.core.messaging.MessageProcessor;
 
 	[Landmark(name="main.dashboard")]

@@ -30,7 +30,7 @@ package org.mxhero.console.frontend.presentation
 		}
 		
 		[CommandResult]
-		public function loadingResult (fault:*, event:LoadInitialDataEvent) : void {
+		public function loadingResult (result:*, event:LoadInitialDataEvent) : void {
 			navigateTo(MainDestination.DASHBOARD);
 		}
 		

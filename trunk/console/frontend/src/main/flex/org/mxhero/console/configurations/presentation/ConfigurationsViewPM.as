@@ -20,7 +20,7 @@ package org.mxhero.console.configurations.presentation
 			container.createComponentsFromDescriptors();
 		}
 		
-		private function navigateTo(destination:String):void
+		public function navigateTo(destination:String):void
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}

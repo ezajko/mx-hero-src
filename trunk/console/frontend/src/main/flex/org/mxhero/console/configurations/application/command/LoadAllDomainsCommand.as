@@ -1,28 +1,28 @@
-package org.mxhero.console.frontend.application.command
+package org.mxhero.console.configurations.application.command
 {
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.frontend.application.event.LoginEvent;
+	import org.mxhero.console.configurations.application.event.LoadAllDomainsEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 
-	public class LoginCommand
+	public class LoadAllDomainsCommand
 	{
-		[Inject(id="applicationUserService")]
+		[Inject(id="domainService")]
 		public var service:RemoteObject;
 		
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		public function execute(event:LoginEvent):AsyncToken
+		public function execute(event:LoadAllDomainsEvent):AsyncToken
 		{
-			return service.channelSet.login(event.username,event.password)as AsyncToken;
+			return service.findAll();
 		}
 		
 		public function error (fault:Fault) : void {
 			dispatcher(new ApplicationErrorMessage(fault.faultCode));
 		}
-
+		
 	}
 }

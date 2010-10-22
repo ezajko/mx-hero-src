@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:parsley="http://www.spicefactory.org/parsley">
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
+	</s:layout>
+	<s:BorderContainer backgroundAlpha="0.0" 
+					   borderColor="#000000" dropShadowVisible="true">
+		<s:layout>
+			<s:VerticalLayout paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20"/>
+		</s:layout>
+		<s:HGroup>
+			<s:Label text="Domain:" fontSize="14" fontFamily="Georgia"/>
+			<s:TextInput/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="Mail Server address" fontSize="14" fontFamily="Georgia"/>
+			<s:Label text=" (explain)" fontSize="14" fontFamily="Georgia" toolTip="Some explain about mail server" color="#70B2EE" fontWeight="bold"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:TextInput/>
+			<s:Button label="Test" fontSize="14" fontFamily="Georgia"/>
+		</s:HGroup>
+		<s:CheckBox label="Has domain specific administrator" fontSize="14" fontFamily="Georgia"/>
+		<mx:Form>
+			<mx:FormItem label="Password:" fontSize="14" fontFamily="Georgia">
+				<s:TextInput displayAsPassword="true"/>
+			</mx:FormItem>
+			<mx:FormItem label="confirm:" fontSize="14" fontFamily="Georgia">
+				<s:TextInput displayAsPassword="true"/>
+			</mx:FormItem>
+			<mx:FormItem label="Email:" fontSize="14" fontFamily="Georgia">
+				<s:TextInput/>
+			</mx:FormItem>
+		</mx:Form>
+		<s:HGroup horizontalAlign="right" width="100%">
+			<s:Button label="Cancel" fontSize="14" fontFamily="Georgia"/>
+			<s:Button label="Save" fontSize="14" fontFamily="Georgia"/>
+		</s:HGroup>
+	</s:BorderContainer>
+
+</s:TitleWindow>

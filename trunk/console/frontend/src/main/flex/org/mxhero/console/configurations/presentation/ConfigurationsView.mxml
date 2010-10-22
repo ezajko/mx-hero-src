@@ -6,7 +6,7 @@
 		 xmlns:presentation="org.mxhero.console.configurations.presentation.*"
 		 creationPolicy="none"
 		 width="100%"
-		 height="100%" xmlns:component="org.mxhero.console.configurations.presentation.component.*">
+		 height="100%" xmlns:component="org.mxhero.console.configurations.presentation.component.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -33,6 +33,13 @@
 			<s:VerticalLayout/>
 		</s:layout>	
 		<presentation:ConfigurationsList width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent automationName="{ConfigurationsDestinations.DOMAINS}" width="100%" height="100%">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<domains:DomainsView  width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
 </mx:ViewStack>

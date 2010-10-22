@@ -13,6 +13,8 @@ package org.mxhero.console.commons.component.categorylist
 		
 		private var _defaultDescription:String="default";
 		
+		
+		
 		[Bindable]
 		public var titleLabelFunction:Function=getdefaultTitle;
 		
@@ -30,6 +32,13 @@ package org.mxhero.console.commons.component.categorylist
 		
 		[Bindable]
 		public var columnsWidth:Number=DEFAULT_COLUMN_WIDTH;
+		
+		[Bindable]
+		public var clickHandler:Function=defaultClickHandler;
+		
+		public function defaultClickHandler(child:Object):void{
+			trace(child);
+		}
 		
 		[Bindable]
 		public function get selectedCategory():Object

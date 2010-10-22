@@ -17,6 +17,14 @@
 			
 			private var _categoryList:Object;
 			
+			public function get clickHandler():Function{
+				return model.clickHandler;
+			}
+	
+			public function set clickHandler(value:Function):void{
+				model.clickHandler=value;
+			}
+			
 			[Bindable]
 			public function get defaultTitle():String{
 				return model.defaultTitle;

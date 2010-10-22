@@ -5,10 +5,14 @@ package org.mxhero.console.configurations.presentation
 	[Landmark(name="main.dashboard.configurations.list")]
 	public class ConfigurationsListPM
 	{
-
+		
 		[Inject(id="configurationsCategories")]
 		[Bindable]
 		public var dataSource:Object;
+		
+		[Inject]
+		[Bindable]
+		public var configurationsViewPM:ConfigurationsViewPM;
 		
 		[Inject]
 		[Bindable]
@@ -22,5 +26,8 @@ package org.mxhero.console.configurations.presentation
 			authorizedDataSource=authorizeHelper.authorizeList(dataSource);
 		}
 		
+		public function childClickHandler(child:Object):void{
+			configurationsViewPM.navigateTo(child.navigateTo);
+		}
 	}
 }

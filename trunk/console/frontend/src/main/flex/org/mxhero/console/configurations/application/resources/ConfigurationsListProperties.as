@@ -1,4 +1,4 @@
-package org.mxhero.console.commons.resources
+package org.mxhero.console.configurations.application.resources
 {
 	public class ConfigurationsListProperties
 	{
