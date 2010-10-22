@@ -6,37 +6,67 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
-		xmlns:domain="org.mxhero.console.commons.domain.*">
+		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*">
 
 	<fx:Script>
 		<![CDATA[
-			import mx.utils.ObjectProxy;
+			import mx.rpc.remoting.RemoteObject;
 			
+			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
+
 		]]>
 	</fx:Script>
 
 	<fx:Declarations>
+		
+		<parsley:DynamicCommand type="{LoadAllDomainsCommand}"/>
+		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
+		<domains:DomainsViewPM/>
+		
 		<s:ArrayCollection id="configurationsCategories">
 			<domain:LCCategory key="category.domains" requiredAuthority="ROLE_DOMAIN_ADMIN" resource="configurations_list" iconsrc="images/configurations/domains.png">
 				<domain:childs>
 					<s:ArrayCollection>
-						<domain:LCChild key="category.domains.domains" requiredAuthority="ROLE_DOMAIN_ADMIN" keyDescription="category.domains.domains.description" resource="configurations_list"/>
-						<domain:LCChild key="category.domains.groups" requiredAuthority="ROLE_DOMAIN_ADMIN" keyDescription="category.domains.groups.description" resource="configurations_list"/>
-						<domain:LCChild key="category.domains.accounts" requiredAuthority="ROLE_ADMIN" keyDescription="category.domains.accounts.description" resource="configurations_list"/>
+						<domain:LCChild key="category.domains.domains" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.domains.domains.description" 
+										resource="configurations_list"
+										navigateTo="{ConfigurationsDestinations.DOMAINS}"/>
+						<domain:LCChild key="category.domains.groups" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.domains.groups.description" 
+										resource="configurations_list"/>
+						<domain:LCChild key="category.domains.accounts" 
+										requiredAuthority="ROLE_ADMIN" 
+										keyDescription="category.domains.accounts.description" 
+										resource="configurations_list"/>
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>
-			<domain:LCCategory key="category.settings" requiredAuthority="ROLE_DOMAIN_ADMIN" resource="configurations_list" iconsrc="images/configurations/settings.png">
+			<domain:LCCategory key="category.settings" 
+							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
+							   resource="configurations_list" 
+							   iconsrc="images/configurations/settings.png">
 				<domain:childs>
 					<s:ArrayCollection>
-						<domain:LCChild key="category.settings.user" requiredAuthority="ROLE_DOMAIN_ADMIN" keyDescription="category.settings.user.description" resource="configurations_list"/> 
+						<domain:LCChild key="category.settings.user" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.settings.user.description" 
+										resource="configurations_list"/> 
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>
 		</s:ArrayCollection>
-
+		
+		<parsley:Object type="{RemoteObject}" id="domainService">
+			<parsley:Property name="destination" value="domainService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
 	</fx:Declarations>
 
 </fx:Object>

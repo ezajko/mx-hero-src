@@ -1,4 +1,4 @@
-package org.mxhero.console.commons.resources
+package org.mxhero.console.frontend.application.resources
 {
 	public class LoadingProperties
 	{

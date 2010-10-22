@@ -25,6 +25,7 @@
 			private function onRollOverHandler():void{
 				model.selectedChild=child;
 			}
+
 		]]>
 	</fx:Script>
 	
@@ -36,6 +37,7 @@
 				   width="{this.width}"
 				   icon="@Embed('images/child_dot.png')"
 				   textFieldClass="mx.core.UIFTETextField"
-				   textAlign="left"/>
+				   textAlign="left"
+				   click="model.clickHandler(child)"/>
 	
 </s:Group>

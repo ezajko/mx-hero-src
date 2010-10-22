@@ -16,6 +16,8 @@ package org.mxhero.console.commons.domain
 		
 		public var requiredAuthority:String;
 		
+		public var navigateTo:String;
+		
 		public function get label():String{
 			return rm.getString(resource,key);
 		}

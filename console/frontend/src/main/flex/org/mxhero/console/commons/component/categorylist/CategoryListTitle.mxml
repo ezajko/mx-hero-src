@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%"
-		 rollOut="group1_rollOutHandler(event)">
+		 rollOut="group1_rollOutHandler(event)" xmlns:component="org.mxhero.console.commons.component.*">
 	<fx:Declarations>
 	</fx:Declarations>
 	
@@ -21,10 +21,6 @@
 		]]>
 	</fx:Script>
 	
-	<s:layout>
-		<s:VerticalLayout gap="10"/>
-		</s:layout>
-	<s:Label id="titleLabel" text="{model.title}"  fontWeight="bold" fontSize="20" color="#FFFFFF"/>
-	<s:Label id="descriptionLabel" text="{model.description}"  fontStyle="italic" fontSize="14" paddingLeft="40"/>
-		
+	<component:TitleExpanded title="{model.title}" description="{model.description}" enableExpanded="false"/>
+	
 </s:Group>

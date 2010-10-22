@@ -33,7 +33,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.commons.resources.LoginProperties;
+			import org.mxhero.console.frontend.application.resources.LoginProperties;
 			
 			[Inject]
 			[Bindable]

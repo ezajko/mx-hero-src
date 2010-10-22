@@ -55,5 +55,20 @@ mx|ProgressBar.loading
 {
 	color: #FFFFFF;
 }
+s|Label
+{
+	fontFamily: Verdana;
+	fontSize: 14;
+}
+mx|FormItem
+{
+	fontFamily: Georgia;
+	fontSize: 14;
+}
+s|Button
+{
+	fontFamily: Georgia;
+	fontSize: 14;
+}
 
 	

@@ -16,6 +16,7 @@
 		[ResourceBundle("modules")]
 		[ResourceBundle("loading")]
 		[ResourceBundle("errors")]
+		[ResourceBundle("commons")]
 	</fx:Metadata>
 	
 	<fx:Declarations>
@@ -39,13 +40,15 @@
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
 			import org.mxhero.console.frontend.domain.Domain;
+			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
 
 			
 			private function registerClasses():void{
-				registerClassAlias("org.mxhero.console.backend.entity.ApplicationUser",ApplicationUser);
-				registerClassAlias("org.mxhero.console.backend.entity.Authority",Authority);
-				registerClassAlias("org.mxhero.console.backend.entity.Domain",Domain);
+				registerClassAlias("org.mxhero.console.backend.vo.ApplicationUserVO",ApplicationUser);
+				registerClassAlias("org.mxhero.console.backend.vo.AuthorityVO",Authority);
+				registerClassAlias("org.mxhero.console.backend.vo.DomainVO",Domain);
+				registerClassAlias("org.mxhero.console.backend.vo.OwnerVO",Owner);
 			}
 			
 			[Inject]

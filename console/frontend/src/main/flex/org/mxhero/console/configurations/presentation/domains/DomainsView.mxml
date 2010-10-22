@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:component="org.mxhero.console.commons.component.*">
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+			[Inject]
+			public var model:DomainsViewPM;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="8" paddingTop="8" paddingRight="8" paddingBottom="8" gap="10"/>
+	</s:layout>
+
+	<component:TitleExpanded width="100%"
+		title="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.TITLE)}"
+		description="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.DESCRIPTION)}"
+		expandedDescription="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.EXPANDED_DESCRIPTION)}"
+		expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+		reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+		enableExpanded="true"/>
+	
+	<mx:Spacer height="0"/>
+	<domains:DomainsList width="100%" height="100%"/>
+
+</s:Group>

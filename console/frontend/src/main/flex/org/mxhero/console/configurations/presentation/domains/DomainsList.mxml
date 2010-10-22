@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:component="org.mxhero.console.commons.component.*">
+	<fx:Declarations>
+		<parsley:Configure/>
+		
+		<mx:DateFormatter id="creationDateFormatter" 
+						  formatString="DD-MM-YYYY"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+
+			[Inject]
+			[Bindable]
+			public var model:DomainsViewPM;
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.creationDate);
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout paddingLeft="8" paddingTop="8" paddingRight="8" paddingBottom="8" gap="20"/>
+	</s:layout>
+	<s:BorderContainer backgroundAlpha="1.0" 
+					   contentBackgroundAlpha="1.0" 
+					   dropShadowVisible="true" 
+					   borderStyle="solid" borderColor="#000000" contentBackgroundColor="#7C7B7B" backgroundColor="#696969">
+		<s:layout>
+			<s:VerticalLayout paddingLeft="12" 
+							  paddingRight="12" 
+							  paddingBottom="12" 
+							  paddingTop="12"
+							  gap="10"/>
+		</s:layout>
+		
+			<s:Label text="Search Filters"  fontSize="14" fontFamily="Georgia" fontWeight="bold" color="#FFFFFF"/>
+			<mx:HRule height="1" width="100%"/>
+			<s:Label text="Domain:" fontSize="14" fontFamily="Georgia"/>
+			<s:TextInput width="100%"/>
+			<mx:HRule height="1" width="100%"/>
+			<s:Label text="E-mail" fontSize="14" fontFamily="Georgia"/>
+			<s:TextInput width="100%"/>
+			<mx:HRule height="1" width="100%"/>
+			<s:Label text="Mail Server" fontSize="14" fontFamily="Georgia"/>
+			<s:TextInput width="100%"/>
+			<s:HGroup width="100%" horizontalAlign="right">
+				<s:Button label="Filter" fontSize="14" fontFamily="Georgia"/>
+			</s:HGroup>
+		
+	</s:BorderContainer>
+
+	<mx:DataGrid dataProvider="{model.domains}" 
+				 width="100%" 
+				 height="100%" 
+				 borderVisible="true" 
+				 dropShadowVisible="true" 
+				 fontWeight="normal" alternatingItemColors="[#696969,#7c7b7b]"
+				 textSelectedColor="#FFFFFF">
+		<mx:columns>
+			<mx:DataGridColumn dataField="domain" headerText="Domain" fontSize="14" fontWeight="bold" fontFamily="Georgia" />
+			<mx:DataGridColumn dataField="owner.email" headerText="Owner E-mail" fontSize="14" fontWeight="bold" fontFamily="Georgia"/>
+			<mx:DataGridColumn dataField="server" headerText="Mail Server" fontFamily="Georgia" fontSize="14" fontWeight="bold"/>
+			<mx:DataGridColumn dataField="updatedDate" headerText="Updated" fontFamily="Georgia" fontSize="14" fontWeight="bold" 
+							   labelFunction="dateLabelFunction"/>
+			<mx:DataGridColumn dataField="creationDate" headerText="Created" fontFamily="Georgia" fontSize="14" fontWeight="bold" 
+							   labelFunction="dateLabelFunction"/>
+			<mx:DataGridColumn  width="64" sortable="false" minWidth="64">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.commons.resources.ImageResources;
+								]]>
+							</fx:Script>
+							<component:GlowButton maxGlow="10.0" source="{ImageResources.EDIT_ICO}"/>
+							<component:GlowButton maxGlow="10.0" source="{ImageResources.DELETE_ICO}"/>						
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+</s:Group>

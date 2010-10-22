@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			[Bindable]
+			public var title:String="Title";
+			
+			[Bindable]
+			public var description:String="Description";
+			
+			[Bindable]
+			public var expandedDescription:String="Expanded Description";
+
+			[Bindable]
+			public var expandedLabel:String="(more)";
+			
+			[Bindable]
+			public var reducedLabel:String="(less)";
+			
+			[Bindable]
+			public var enableExpanded:Boolean=true;
+			
+			protected function expandLabel_clickHandler(event:MouseEvent):void
+			{
+				if(currentState=="expanded"){
+					currentState="default"
+				} else {
+					currentState="expanded";
+				}
+				
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:states> 
+		<s:State name="default"/>    
+		<s:State name="expanded"/> 
+	</s:states> 
+	
+	<s:transitions > 
+		<s:Transition fromState="default" toState="expanded"> 
+			<s:Sequence>
+				<s:Fade target="{expandedText}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Resize target="{this}" duration="200"/>
+				<s:Fade target="{expandedText}" alphaFrom="0" alphaTo="1" duration="200"/>
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="expanded" toState="default"> 
+			<s:Sequence>
+				<s:Fade target="{expandedText}" alphaFrom="1" alphaTo="0" duration="200" />
+				<s:Resize target="{this}" duration="200"/>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<s:layout>
+		<s:VerticalLayout gap="10"/>
+	</s:layout>
+	<s:HGroup width="100%" verticalAlign="bottom">
+		<s:Label id="titleLabel" text="{title}"  fontWeight="bold" fontSize="20" color="#FFFFFF"/>
+		<mx:Spacer width="1"/>
+		<s:Label id="expandLabel" 
+				 text.default="{expandedLabel}" 
+				 text.expanded="{reducedLabel}" 
+				 fontWeight="bold" 
+				 fontSize="14" 
+				 color="#70B2EE" 
+				 buttonMode="true" 
+				 visible="{enableExpanded}" 
+				 click="expandLabel_clickHandler(event)"/>
+	</s:HGroup>
+	
+	<mx:Text id="descriptionLabel" text="{description}"  fontStyle="italic" fontSize="14" paddingLeft="40"/>
+	<mx:Text includeIn="expanded" id="expandedText" text="{expandedDescription}" width="100%" fontStyle="italic" fontSize="14" paddingLeft="40"/>
+</s:Group>
