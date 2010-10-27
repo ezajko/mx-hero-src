@@ -14,6 +14,8 @@
 		<parsley:Configure/>
 	</fx:Declarations>
 	
+	<fx:Style source="../../../../../resources/styles/mxhero.css"/>
+	
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.frontend.application.MainDestination;

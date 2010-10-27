@@ -6,7 +6,7 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
-		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*">
+		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -14,6 +14,7 @@
 			
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
+			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 
 		]]>
 	</fx:Script>
@@ -21,6 +22,7 @@
 	<fx:Declarations>
 		
 		<parsley:DynamicCommand type="{LoadAllDomainsCommand}"/>
+		<parsley:DynamicCommand type="{RemoveDomainCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

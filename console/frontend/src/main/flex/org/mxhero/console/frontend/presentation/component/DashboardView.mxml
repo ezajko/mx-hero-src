@@ -5,9 +5,12 @@
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
 			  xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*"
 			  width="100%" 
-			  height="100%" xmlns:modules="org.mxhero.console.commons.modules.*">
+			  height="100%" xmlns:modules="org.mxhero.console.commons.modules.*"
+			  creationCompleteEffect="fadein">
 	<fx:Declarations>
 		<parsley:Configure/>
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -38,8 +41,14 @@
 		[Waypoint]
 	</fx:Metadata>
 	
-	<modules:NavigatorModule width="100%" height="100%" moduleData="{featuresData}" automationName="{MainDestination.FEATURES}"/>
-	<modules:NavigatorModule width="100%" height="100%" moduleData="{reportsData}" automationName="{MainDestination.REPORTS}"/>
-	<modules:NavigatorModule width="100%" height="100%" moduleData="{configurationsData}" automationName="{MainDestination.CONFIGURATIONS}"/>
+	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
+							 width="100%" height="100%" moduleData="{featuresData}" 
+							 automationName="{MainDestination.FEATURES}"/>
+	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
+							 width="100%" height="100%" moduleData="{reportsData}" 
+							 automationName="{MainDestination.REPORTS}"/>
+	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
+							 width="100%" height="100%" moduleData="{configurationsData}" 
+							 automationName="{MainDestination.CONFIGURATIONS}"/>
 	
 </mx:ViewStack>

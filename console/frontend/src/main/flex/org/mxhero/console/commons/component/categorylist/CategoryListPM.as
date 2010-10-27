@@ -13,8 +13,6 @@ package org.mxhero.console.commons.component.categorylist
 		
 		private var _defaultDescription:String="default";
 		
-		
-		
 		[Bindable]
 		public var titleLabelFunction:Function=getdefaultTitle;
 		

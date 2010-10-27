@@ -2,46 +2,86 @@
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:parsley="http://www.spicefactory.org/parsley">
+		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 close="cancelBtt_clickHandler()" 
+		 xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
+		 xmlns:component="org.mxhero.console.commons.component.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+			
+			protected function cancelBtt_clickHandler(event:MouseEvent=null):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				if(validateAll.isValid){
+					//do magic
+				}
+			}
+
+		]]>
+	</fx:Script>
+
 	<fx:Declarations>
 		<parsley:Configure/>
+		
+		<cairngorm:ValidatorGroup id="validateAll">
+			<cairngorm:validators>
+				<mx:StringValidator id="domainV" required="true" property="text" source="{domainTi}" enabled.new="true"/>
+				<mx:StringValidator id="serverV" required="true" property="text" source="{serverTi}"/>
+				<mx:StringValidator id="passwordV" required="true" property="text" source="{passwordTi}"/>
+				<mx:StringValidator id="confirmV" required="true" property="text" source="{confirmTi}"/>
+				<mx:EmailValidator id="emailV" required="true" property="text" source="{emailTi}"/>
+			</cairngorm:validators>	
+		</cairngorm:ValidatorGroup>
+		
 	</fx:Declarations>
+
+	<s:states> 
+		<s:State name="new"/>    
+		<s:State name="edit"/> 
+	</s:states> 
+	
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle" horizontalAlign="center"/>
+		<s:VerticalLayout paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20" gap="20"/>
 	</s:layout>
-	<s:BorderContainer backgroundAlpha="0.0" 
-					   borderColor="#000000" dropShadowVisible="true">
-		<s:layout>
-			<s:VerticalLayout paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20"/>
-		</s:layout>
-		<s:HGroup>
-			<s:Label text="Domain:" fontSize="14" fontFamily="Georgia"/>
-			<s:TextInput/>
+
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_DOMAIN_LABEL)}"/>
+			<s:TextInput id="domainTi" width="100%"/>
 		</s:HGroup>
-		<s:HGroup>
-			<s:Label text="Mail Server address" fontSize="14" fontFamily="Georgia"/>
-			<s:Label text=" (explain)" fontSize="14" fontFamily="Georgia" toolTip="Some explain about mail server" color="#70B2EE" fontWeight="bold"/>
+		<component:LabelExpanded width="100%" 
+			labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_LABEL)}"
+			explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+			hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+			expandedText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_EXPLAIN_TEXT)}"/>		
+
+		<s:HGroup width="100%" verticalAlign="middle">
+			<s:TextInput id="serverTi" width="100%"/>
+			<s:Button label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_TEST_LABEL)}"/>
 		</s:HGroup>
-		<s:HGroup>
-			<s:TextInput/>
-			<s:Button label="Test" fontSize="14" fontFamily="Georgia"/>
-		</s:HGroup>
-		<s:CheckBox label="Has domain specific administrator" fontSize="14" fontFamily="Georgia"/>
+		<s:CheckBox id="administratorCheck" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CHECK_LABEL)}" selected="true"/>
 		<mx:Form>
-			<mx:FormItem label="Password:" fontSize="14" fontFamily="Georgia">
-				<s:TextInput displayAsPassword="true"/>
+			<mx:FormItem label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_PASSWORD_LABEL)}">
+				<s:TextInput id="passwordTi" displayAsPassword="true" enabled="{administratorCheck.selected}"/>
 			</mx:FormItem>
-			<mx:FormItem label="confirm:" fontSize="14" fontFamily="Georgia">
-				<s:TextInput displayAsPassword="true"/>
+			<mx:FormItem label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CONFIRM_LABEL)}">
+				<s:TextInput id="confirmTi" displayAsPassword="true" enabled="{administratorCheck.selected}"/>
 			</mx:FormItem>
-			<mx:FormItem label="Email:" fontSize="14" fontFamily="Georgia">
-				<s:TextInput/>
+			<mx:FormItem label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_EMAIL_LABEL)}">
+				<s:TextInput id="emailTi" enabled="{administratorCheck.selected}"/>
 			</mx:FormItem>
 		</mx:Form>
 		<s:HGroup horizontalAlign="right" width="100%">
-			<s:Button label="Cancel" fontSize="14" fontFamily="Georgia"/>
-			<s:Button label="Save" fontSize="14" fontFamily="Georgia"/>
+			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
+			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" click="saveBtt_clickHandler(event)" enabled="{validateAll.isValid}" mouseOver="{validateAll.validate()}"/>
 		</s:HGroup>
-	</s:BorderContainer>
 
 </s:TitleWindow>

@@ -19,8 +19,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.application.MainDestination;
-			import org.mxhero.console.commons.modules.ModuleData;
 			
 			[Inject]
 			[Bindable]

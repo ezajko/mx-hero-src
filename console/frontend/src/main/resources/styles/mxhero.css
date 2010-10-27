@@ -3,6 +3,75 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 
 
+
+
+mx|DataGridColumn{
+	font-weight:"bold";
+	font-size:14;
+}
+
+mx|DataGrid{
+	text-selected-color:#FFFFFF;
+	font-weight:"bold";
+	drop-shadow-visible:true;
+	alternating-item-colors:#696969,#7c7b7b;
+	border-visible:true;
+}
+
+mx|LinkButton.titleexpanded_back
+{
+	fontWeight:"bold";
+	fontSize:20;
+	color:#70B2EE;
+	padding-right:0;
+	padding-left:0;
+}
+
+s|Label.titleexpanded_title
+{
+	font-size:20;
+	font-weight:"bold";
+	color:#FFFFFF;
+}
+
+s|Label.titleexpanded_expand
+{
+	fontWeight:"bold";
+	fontSize:14;
+	color:#70B2EE;
+}
+
+s|Label.labelexpanded_explain
+{
+	fontWeight:"bold";
+	fontSize:14;
+	color:#70B2EE;
+}
+
+mx|Text.titleexpanded_text
+{
+	fontStyle:"italic";
+	fontSize:14;
+	padding-left:40;
+}
+
+mx|LinkButton.categorylist_child
+{
+	color:#F3F7FA;
+	font-size:14;
+	font-weight:"bold";
+	text-align:"left";
+	color:#CCCCCC;
+	
+}
+
+mx|Label.categorylist_category
+{
+	font-size:20;
+	font-weight:"bold";
+	color:#FFFFFF;
+}
+
 s|Panel
 {
 	corner-radius:6;
@@ -36,10 +105,11 @@ s|BorderContainer.errorPanel
 	dropShadowVisible: true;
 	borderStyle: inset;
 }
+
 global
 {
 	font-size: 14;
-	font-family: Georgia;
+	font-family: Verdana;
 }
 mx|LinkBar.Dashboard
 {
@@ -57,18 +127,26 @@ mx|ProgressBar.loading
 }
 s|Label
 {
-	fontFamily: Verdana;
 	fontSize: 14;
 }
+
+mx|FormHeading{
+	padding-top:0;
+	text-align:center;
+	text-indent:0;
+	font-size:14;
+	padding-left:0;
+}
+
 mx|FormItem
 {
-	fontFamily: Georgia;
 	fontSize: 14;
 }
 s|Button
 {
-	fontFamily: Georgia;
 	fontSize: 14;
 }
 
-	
+s|TitleWindow{
+	background-alpha:1.0;
+}

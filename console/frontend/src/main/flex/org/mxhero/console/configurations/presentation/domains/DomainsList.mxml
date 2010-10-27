@@ -8,10 +8,16 @@
 		
 		<mx:DateFormatter id="creationDateFormatter" 
 						  formatString="DD-MM-YYYY"/>
+
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.DataGridEvent;
+			import mx.events.ListEvent;
+			
+			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 
 			[Inject]
 			[Bindable]
@@ -20,6 +26,26 @@
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.creationDate);
 			}
+
+			protected function filterBtt_clickHandler(event:MouseEvent):void
+			{
+				model.filterDomains(domainTI.text,emailTI.text,serverTI.text);
+			}
+
+			protected function clearBtt_clickHandler(event:MouseEvent):void
+			{
+				domainTI.text="";
+				emailTI.text="";
+				serverTI.text="";
+				model.filterDomains(domainTI.text,emailTI.text,serverTI.text);
+			}
+
+
+			protected function newDomainLink_clickHandler(event:MouseEvent):void
+			{
+				model.newDomain(this);
+			}
+
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -30,55 +56,73 @@
 					   dropShadowVisible="true" 
 					   borderStyle="solid" borderColor="#000000" contentBackgroundColor="#7C7B7B" backgroundColor="#696969">
 		<s:layout>
-			<s:VerticalLayout paddingLeft="12" 
-							  paddingRight="12" 
-							  paddingBottom="12" 
-							  paddingTop="12"
-							  gap="10"/>
+			<s:VerticalLayout gap="5"/>
 		</s:layout>
-		
-			<s:Label text="Search Filters"  fontSize="14" fontFamily="Georgia" fontWeight="bold" color="#FFFFFF"/>
-			<mx:HRule height="1" width="100%"/>
-			<s:Label text="Domain:" fontSize="14" fontFamily="Georgia"/>
-			<s:TextInput width="100%"/>
-			<mx:HRule height="1" width="100%"/>
-			<s:Label text="E-mail" fontSize="14" fontFamily="Georgia"/>
-			<s:TextInput width="100%"/>
-			<mx:HRule height="1" width="100%"/>
-			<s:Label text="Mail Server" fontSize="14" fontFamily="Georgia"/>
-			<s:TextInput width="100%"/>
-			<s:HGroup width="100%" horizontalAlign="right">
-				<s:Button label="Filter" fontSize="14" fontFamily="Georgia"/>
-			</s:HGroup>
-		
+		<s:HGroup width="100%" paddingTop="10" horizontalAlign="center">
+			<mx:LinkButton id="newDomainLink"
+						label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.ADD_NEW_DOMAIN_LABEL)}" 
+						icon="{ImageResources.ADD_ICO}"
+						fontWeight="bold"
+						click="newDomainLink_clickHandler(event)"/>
+		</s:HGroup>
+		<mx:HRule height="1" width="100%"/>
+		<mx:Form defaultButton="{filterBtt}" paddingTop="0">
+			<mx:FormHeading label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_TITLE)}"/>
+			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_DOMAIN_LABEL)}"/>
+			<s:TextInput id="domainTI" width="100%"/>
+			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_EMAIL_LABEL)}"/>
+			<s:TextInput id="emailTI" width="100%"/>
+			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_SERVER_LABEL)}"/>
+			<s:TextInput id="serverTI" width="100%"/>
+			<s:HGroup width="100%">
+				<s:Button id="clearBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
+						  click="clearBtt_clickHandler(event)"/>	
+				<mx:Spacer width="100%"/>
+				<s:Button id="filterBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_LABEL)}" 
+						  click="filterBtt_clickHandler(event)"/>
+			</s:HGroup>			
+		</mx:Form>		
 	</s:BorderContainer>
 
 	<mx:DataGrid dataProvider="{model.domains}" 
 				 width="100%" 
-				 height="100%" 
-				 borderVisible="true" 
-				 dropShadowVisible="true" 
-				 fontWeight="normal" alternatingItemColors="[#696969,#7c7b7b]"
-				 textSelectedColor="#FFFFFF">
+				 height="100%"
+				 minWidth="600"
+				 selectedItem="@{model.selectDomain}">
 		<mx:columns>
-			<mx:DataGridColumn dataField="domain" headerText="Domain" fontSize="14" fontWeight="bold" fontFamily="Georgia" />
-			<mx:DataGridColumn dataField="owner.email" headerText="Owner E-mail" fontSize="14" fontWeight="bold" fontFamily="Georgia"/>
-			<mx:DataGridColumn dataField="server" headerText="Mail Server" fontFamily="Georgia" fontSize="14" fontWeight="bold"/>
-			<mx:DataGridColumn dataField="updatedDate" headerText="Updated" fontFamily="Georgia" fontSize="14" fontWeight="bold" 
-							   labelFunction="dateLabelFunction"/>
-			<mx:DataGridColumn dataField="creationDate" headerText="Created" fontFamily="Georgia" fontSize="14" fontWeight="bold" 
-							   labelFunction="dateLabelFunction"/>
-			<mx:DataGridColumn  width="64" sortable="false" minWidth="64">
+			<mx:DataGridColumn dataField="domain" 
+							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_DOMAIN_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="owner.email" 
+							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_OWNER_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="server" 
+							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_SERVER_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="updatedDate" 
+							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_UPDATED_LABEL)}" 
+							   labelFunction="dateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn dataField="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_LABEL)}" 
+							   headerText="Created"
+							   labelFunction="dateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
 				<mx:itemRenderer>
 					<fx:Component>
 						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
 							<fx:Script>
 								<![CDATA[
 									import org.mxhero.console.commons.resources.ImageResources;
+									import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+
 								]]>
 							</fx:Script>
-							<component:GlowButton maxGlow="10.0" source="{ImageResources.EDIT_ICO}"/>
-							<component:GlowButton maxGlow="10.0" source="{ImageResources.DELETE_ICO}"/>						
+							<component:GlowButton maxGlow="10.0" 
+												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.removeDomain()}"
+												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
 						</mx:HBox>
 					</fx:Component>
 				</mx:itemRenderer>

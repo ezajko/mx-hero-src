@@ -130,20 +130,6 @@
 		</dependency>
 
 		<dependency>
-            <groupId>com.adobe.cairngorm</groupId>
-            <artifactId>integration</artifactId>
-            <version>0.14</version>
-            <type>swc</type>
-        </dependency>
-        
-		<dependency>
-			<groupId>com.adobe.cairngorm</groupId>
-			<artifactId>integrationParsley</artifactId>
-			<version>0.14</version>
-			<type>swc</type>
-		</dependency>
-		
-		<dependency>
 			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
 			<version>4.0-rc-1</version>
