@@ -29,7 +29,10 @@
 		<domains:DomainsViewPM/>
 		
 		<s:ArrayCollection id="configurationsCategories">
-			<domain:LCCategory key="category.domains" requiredAuthority="ROLE_DOMAIN_ADMIN" resource="configurations_list" iconsrc="images/configurations/domains.png">
+			<domain:LCCategory key="category.domains" 
+							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
+							   resource="configurations_list" 
+							   iconsrc="/images/configurations/domains.png">
 				<domain:childs>
 					<s:ArrayCollection>
 						<domain:LCChild key="category.domains.domains" 
@@ -51,7 +54,7 @@
 			<domain:LCCategory key="category.settings" 
 							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
 							   resource="configurations_list" 
-							   iconsrc="images/configurations/settings.png">
+							   iconsrc="/images/configurations/settings.png">
 				<domain:childs>
 					<s:ArrayCollection>
 						<domain:LCChild key="category.settings.user" 
