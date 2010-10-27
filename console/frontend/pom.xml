@@ -14,11 +14,6 @@
 	<packaging>swf</packaging>
 	<name>frontend</name>
 
-	 <properties>
-	    <sonar.language>flex</sonar.language>
-	    <sonar.dynamicAnalysis>false</sonar.dynamicAnalysis>
-	  </properties>
-
 	<build>
 		<finalName>mxhero</finalName>
 		<sourceDirectory>src/main/flex</sourceDirectory>
@@ -33,9 +28,18 @@
 					<output>${basedir}/../backend/src/main/webapp/${project.build.finalName}.swf</output>
 					<services>${basedir}/../backend/src/main/webapp/WEB-INF/flex/services-config.xml</services>
 					<contextRoot>/mxhero</contextRoot>
+					<resourceBundlePath>${basedir}/src/main/resources/locale/{locale}</resourceBundlePath>
 					<locales>
 						<locale>en_US</locale>
+						<locale>es_ES</locale>
+						<locale>pt_BR</locale>
 					</locales>
+					<moduleFiles>
+						<module>org/mxhero/console/configurations/Configurations.mxml</module>
+						<module>org/mxhero/console/features/Features.mxml</module>
+						<module>org/mxhero/console/reports/Reports.mxml</module>
+					</moduleFiles>
+					<allowSourcePathOverlap>true</allowSourcePathOverlap>
 				</configuration>
 				<executions>
 					<execution>
