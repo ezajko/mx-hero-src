@@ -7,7 +7,7 @@ package org.mxhero.console.commons.component
 	public class MxHeroPreLoader extends SparkDownloadProgressBar
 	{
 
-		[Embed(source="images/logo_preloader.png")]
+		[Embed(source="/images/logo_preloader.png")]
 		[Bindable]
 		public var preloaderImage:Class;
 		

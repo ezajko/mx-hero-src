@@ -57,12 +57,10 @@ mx|Text.titleexpanded_text
 
 mx|LinkButton.categorylist_child
 {
-	color:#F3F7FA;
 	font-size:14;
 	font-weight:"bold";
 	text-align:"left";
 	color:#CCCCCC;
-	
 }
 
 mx|Label.categorylist_category

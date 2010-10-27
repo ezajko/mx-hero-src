@@ -134,9 +134,14 @@ package org.mxhero.console.configurations.presentation.domains
 		
 		public function newDomain(parent:DisplayObject):void{
 			var domainShow:DomainShow = new DomainShow();
+			domainShow.domain=new Domain();
 			PopUpManager.addPopUp(domainShow,parent,true);
 			PopUpManager.centerPopUp(domainShow);
 			PopUpManager.centerPopUp(domainShow);
+		}
+		
+		public function insertDomain(domain:Domain,hasAdmin:Boolean=false,password:String=null,email:String=null):void{
+			
 		}
 		
 		public function editDomain(parent:DisplayObject):void{
