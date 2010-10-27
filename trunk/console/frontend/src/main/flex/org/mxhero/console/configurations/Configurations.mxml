@@ -27,8 +27,7 @@
 	</fx:Script>
 	
 	<fx:Metadata>
-		[ResourceBundle("configurations_list")]
-		[ResourceBundle("configurations_domains_show")]
+
 	</fx:Metadata>
 
 	<presentation:ConfigurationsView id="container" width="100%" height="100%"/>

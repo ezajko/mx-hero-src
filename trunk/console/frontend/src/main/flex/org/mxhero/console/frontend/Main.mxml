@@ -18,6 +18,8 @@
 		[ResourceBundle("loading")]
 		[ResourceBundle("errors")]
 		[ResourceBundle("commons")]
+		[ResourceBundle("configurations_list")]
+		[ResourceBundle("configurations_domains_show")]
 	</fx:Metadata>
 	
 	<fx:Declarations>
