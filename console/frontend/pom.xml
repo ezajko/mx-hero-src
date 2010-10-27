@@ -29,11 +29,9 @@
 					<services>${basedir}/../backend/src/main/webapp/WEB-INF/flex/services-config.xml</services>
 					<contextRoot>/mxhero</contextRoot>
 					<resourceBundlePath>${basedir}/src/main/resources/locale/{locale}</resourceBundlePath>
-					<locales>
+					<runtimeLocales>
 						<locale>en_US</locale>
-						<locale>es_ES</locale>
-						<locale>pt_BR</locale>
-					</locales>
+					</runtimeLocales>
 					<moduleFiles>
 						<module>org/mxhero/console/configurations/Configurations.mxml</module>
 						<module>org/mxhero/console/features/Features.mxml</module>
