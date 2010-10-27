@@ -38,6 +38,8 @@ package org.mxhero.console.commons.resources
 		[Bindable]
 		public static var EDIT_ICO:Class; 
 
-		
+		[Embed(source="images/add.png")] 
+		[Bindable]
+		public static var ADD_ICO:Class; 		
 	}
 }

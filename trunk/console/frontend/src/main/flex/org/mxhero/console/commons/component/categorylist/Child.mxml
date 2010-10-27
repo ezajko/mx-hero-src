@@ -29,15 +29,13 @@
 		]]>
 	</fx:Script>
 	
-	<mx:LinkButton label="{child.label}"
+	<mx:LinkButton styleName="categorylist_child"
+					label="{child.label}"
 				   rollOver="{onRollOverHandler();}"
-				   rollOut="{model.selectedChild=null}"  
-				   fontSize="14" 
-				   fontWeight="bold"
+				   rollOut="{model.selectedChild=null}" 
 				   width="{this.width}"
 				   icon="@Embed('images/child_dot.png')"
 				   textFieldClass="mx.core.UIFTETextField"
-				   textAlign="left"
 				   click="model.clickHandler(child)"/>
 	
 </s:Group>

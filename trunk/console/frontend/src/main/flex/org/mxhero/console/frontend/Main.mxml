@@ -6,7 +6,8 @@
 			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:parsley="http://www.spicefactory.org/parsley"
 			   width="100%"
 			   height="100%"
-			   creationComplete="{registerClasses()}">
+			   creationComplete="{registerClasses()}"
+			   preloader="org.mxhero.console.commons.component.MxHeroPreLoader">
 	
 	<fx:Style source="../../../../../resources/styles/mxhero.css"/>
 	

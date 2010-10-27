@@ -4,6 +4,8 @@ package org.mxhero.console.configurations.presentation
 	
 	import mx.controls.Alert;
 	import mx.core.Container;
+	
+	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 
 	[Landmark(name="main.dashboard.configurations")]
 	public class ConfigurationsViewPM
@@ -13,13 +15,13 @@ package org.mxhero.console.configurations.presentation
 		
 		[Bindable]
 		public static var container:Container;
-		
+
 		[Enter(time="first")]
 		public function enter():void
 		{
 			container.createComponentsFromDescriptors();
 		}
-		
+	
 		public function navigateTo(destination:String):void
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));

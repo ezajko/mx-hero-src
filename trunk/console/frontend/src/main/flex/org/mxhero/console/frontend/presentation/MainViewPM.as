@@ -11,8 +11,6 @@ package org.mxhero.console.frontend.presentation
 	[Landmark(name="main")]
 	public class MainViewPM
 	{	
-		[Bindable]
-		public var selectedIndex:Number=0;
 		
 		[MessageDispatcher]
 		public var dispatcher:Function
