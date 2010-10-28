@@ -13,6 +13,8 @@
 			import mx.rpc.remoting.RemoteObject;
 			
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+			import org.mxhero.console.configurations.application.command.EditDomainCommand;
+			import org.mxhero.console.configurations.application.command.InsertDomainCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 
@@ -23,6 +25,8 @@
 		
 		<parsley:DynamicCommand type="{LoadAllDomainsCommand}"/>
 		<parsley:DynamicCommand type="{RemoveDomainCommand}"/>
+		<parsley:DynamicCommand type="{InsertDomainCommand}"/>
+		<parsley:DynamicCommand type="{EditDomainCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
@@ -32,7 +36,7 @@
 			<domain:LCCategory key="category.domains" 
 							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
 							   resource="configurations_list" 
-							   iconsrc="/images/configurations/domains.png">
+							   iconsrc="images/configurations/domains.png">
 				<domain:childs>
 					<s:ArrayCollection>
 						<domain:LCChild key="category.domains.domains" 
@@ -54,7 +58,7 @@
 			<domain:LCCategory key="category.settings" 
 							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
 							   resource="configurations_list" 
-							   iconsrc="/images/configurations/settings.png">
+							   iconsrc="images/configurations/settings.png">
 				<domain:childs>
 					<s:ArrayCollection>
 						<domain:LCChild key="category.settings.user" 

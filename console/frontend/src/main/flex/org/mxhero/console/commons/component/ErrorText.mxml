@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%"
+		 styleName="errorText"
+		 height="{HIDE_SIZE}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			private var _errorMessage:String;
+
+			private static const HIDE_SIZE:Number=0;
+			
+			public function showError(errorMessage:String):void{
+				_errorMessage=errorMessage;
+				currentState="error";
+			}
+			
+			public function hideError():void{
+				currentState="default"
+			}
+		]]>
+	</fx:Script>
+
+	<!-- The Application class states property defines the view states.--> 
+	<s:states> 
+		<s:State name="default"/>    
+		<s:State name="error"/> 
+	</s:states> 
+	
+	<!-- Define the transition to animate the change of view state. --> 
+	<s:transitions > 
+		<s:Transition fromState="default" toState="error"> 
+			<s:Sequence>
+				<s:Fade target="{errorText}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Parallel duration="400"> 
+					<s:Resize target="{this}" heightFrom="{HIDE_SIZE}" heightTo="{errorText.height}"/>
+					<s:Fade target="{errorText}" alphaFrom="0" alphaTo="1" startDelay="100"/>
+				</s:Parallel> 
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="error" toState="default"> 
+			<s:Sequence>
+				<s:Fade target="{errorText}" alphaFrom="0" alphaTo="1" duration="0"/>
+				<s:Parallel duration="400"> 
+					<s:Resize target="{this}" heightFrom="{errorText.height}" heightTo="{HIDE_SIZE}"/>
+					<s:Fade target="{errorText}" alphaFrom="1" alphaTo="0" startDelay="100"/>
+				</s:Parallel> 
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<mx:Text styleName="errorText" id="errorText" width="100%" text="{_errorMessage}" includeIn="error"/>
+</s:BorderContainer>

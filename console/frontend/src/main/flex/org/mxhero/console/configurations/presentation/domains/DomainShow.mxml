@@ -5,28 +5,33 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
 		 close="cancelBtt_clickHandler()" 
 		 xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
-		 xmlns:component="org.mxhero.console.commons.component.*">
+		 xmlns:component="org.mxhero.console.commons.component.*"
+		 enabled="{!model.isLoading}"
+		 creationComplete="titlewindow1_creationCompleteHandler(event)"
+		 title.new="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.ADD_NEW_DOMAIN_LABEL)}"
+		 title.edit="{this.domainTi.text}">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
 			import mx.managers.PopUpManager;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.commons.resources.ErrorsProperties;
 			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 			import org.mxhero.console.frontend.domain.Domain;
 			
 			import spark.events.TextOperationEvent;
-			
-			[Inject]
+
 			[Bindable]
 			public var model:DomainsViewPM;
-			
+
 			[Bindable]
 			public var domain:Domain;
 			
 			private var email:String;
 			
-			protected function cancelBtt_clickHandler(event:MouseEvent=null):void
+			public function cancelBtt_clickHandler(event:MouseEvent=null):void
 			{
 				PopUpManager.removePopUp(this);
 			}
@@ -35,9 +40,25 @@
 			{
 				validateAll.validate();
 				if(validateAll.isValid){
+					if(passwordTi.text!=confirmTi.text){
+						confirmTi.errorString=resourceManager.getString(ErrorsProperties.NAME,ErrorsProperties.PASSWORD_CONFIRM_ERROR);
+							return;
+					}
 					if(currentState=="new"){
 						model.insertDomain(domain,administratorCheck.selected,passwordTi.text,emailTi.text);
 					}
+					if(currentState=="edit"){
+						model.updateDomain(domain,administratorCheck.selected,passwordTi.text,emailTi.text);
+					}
+				}
+			}
+
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(domain.owner!=null){
+					administratorCheck.selected=true;
+				}else{
+					administratorCheck.selected=false;
 				}
 			}
 
@@ -45,7 +66,6 @@
 	</fx:Script>
 
 	<fx:Declarations>
-		<parsley:Configure/>
 		
 		<cairngorm:ValidatorGroup id="validateAll">
 			<cairngorm:validators>
@@ -71,9 +91,10 @@
 	</s:states> 
 	
 	<s:layout>
-		<s:VerticalLayout paddingLeft="0" paddingRight="20" paddingBottom="20" paddingTop="20" gap="20"/>
+		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
 	</s:layout>
-		<mx:Form paddingTop="0">
+	<component:ErrorText id="errorText" width="100%"/>
+		<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
 			<s:VGroup width="100%">
 				<component:LabelExpanded width="100%" 
 										 labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_LABEL)}"
@@ -82,32 +103,29 @@
 										 expandedText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_EXPLAIN_TEXT)}"/>		
 				
 				<mx:FormItem required="true" width="100%">
-					<s:HGroup width="100%" verticalAlign="middle">
-						<s:TextInput id="serverTi" width="100%" text="@{domain.server}"/>
-						<s:Button label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_TEST_LABEL)}"/>
-					</s:HGroup>						
+					<s:TextInput id="serverTi" width="100%" text="@{domain.server}"/>
 				</mx:FormItem>
 			</s:VGroup>	
 			<mx:FormItem required="true" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_DOMAIN_LABEL)}" width="100%">
-				<s:TextInput id="domainTi" width="100%"  text="@{domain.domain}"/>
+				<s:TextInput id="domainTi" width="100%"  text="@{domain.domain}" enabled.edit="false" enabled.new="true" />
 			</mx:FormItem>
 			<s:CheckBox id="administratorCheck" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CHECK_LABEL)}" selected="false"/>
 			<mx:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_PASSWORD_LABEL)}" width="100%">
-				<s:TextInput id="passwordTi" displayAsPassword="true" enabled="{administratorCheck.selected}"/>
+				<s:TextInput id="passwordTi" displayAsPassword="true" enabled="{administratorCheck.selected}" width="100%"/>
 			</mx:FormItem>
 			<mx:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CONFIRM_LABEL)}" width="100%">
-				<s:TextInput id="confirmTi" displayAsPassword="true" enabled="{administratorCheck.selected}"/>
+				<s:TextInput id="confirmTi" displayAsPassword="true" enabled="{administratorCheck.selected}" width="100%"/>
 			</mx:FormItem>
 			<mx:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_EMAIL_LABEL)}" width="100%">
 				<s:TextInput id="emailTi" 
 							 text.edit="@{domain.owner.email}"
-							 enabled="{administratorCheck.selected}"/>
+							 enabled="{administratorCheck.selected}"
+							 width="100%"/>
 			</mx:FormItem>
+			<s:HGroup horizontalAlign="right" width="100%">
+				<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
+				<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+						  click="saveBtt_clickHandler(event)"/>
+			</s:HGroup>
 		</mx:Form>
-		<s:HGroup horizontalAlign="right" width="100%">
-			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
-			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
-					  click="saveBtt_clickHandler(event)"/>
-		</s:HGroup>
-
 </s:TitleWindow>
