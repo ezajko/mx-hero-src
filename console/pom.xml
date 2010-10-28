@@ -17,7 +17,8 @@
 		<flex.sdk.version>4.1.0.16248</flex.sdk.version>
 		<flex.playerglobal>10.1</flex.playerglobal>
 		<org.sonatype.flexmojos.version>3.7.1</org.sonatype.flexmojos.version>
-		<spring.version>3.0.3.RELEASE</spring.version>
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<spring.security.version>3.0.3.RELEASE</spring.security.version>
 		<spring.integration.version>1.0.3.RELEASE</spring.integration.version>
 	</properties>
 
