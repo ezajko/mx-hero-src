@@ -10,8 +10,12 @@ package org.mxhero.console.configurations.presentation.domains
 	import mx.managers.PopUpManager;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
+	import mx.rpc.events.FaultEvent;
 	
+	import org.mxhero.console.commons.infrastructure.ErrorTranslator;
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+	import org.mxhero.console.configurations.application.event.EditDomainEvent;
+	import org.mxhero.console.configurations.application.event.InsertDomainEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllDomainsEvent;
 	import org.mxhero.console.configurations.application.event.RemoveDomainEvent;
 	import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
@@ -22,6 +26,8 @@ package org.mxhero.console.configurations.presentation.domains
 	public class DomainsViewPM
 	{
 		
+		private var domainShow:DomainShow;
+				
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
 		
@@ -133,22 +139,61 @@ package org.mxhero.console.configurations.presentation.domains
 		}
 		
 		public function newDomain(parent:DisplayObject):void{
-			var domainShow:DomainShow = new DomainShow();
+			domainShow = new DomainShow();
 			domainShow.domain=new Domain();
+			domainShow.model=this;
+			domainShow.currentState="new";
 			PopUpManager.addPopUp(domainShow,parent,true);
 			PopUpManager.centerPopUp(domainShow);
 			PopUpManager.centerPopUp(domainShow);
 		}
 		
 		public function insertDomain(domain:Domain,hasAdmin:Boolean=false,password:String=null,email:String=null):void{
-			
+			dispatcher(new InsertDomainEvent(domain,hasAdmin,password,email));
+			isLoading=true;
 		}
 		
 		public function editDomain(parent:DisplayObject):void{
-			var domainShow:DomainShow = new DomainShow();
+			domainShow = new DomainShow();
+			domainShow.domain=selectDomain as Domain;
+			domainShow.model=this;
+			domainShow.currentState="edit";
 			PopUpManager.addPopUp(domainShow,parent,true);
 			PopUpManager.centerPopUp(domainShow);
 			PopUpManager.centerPopUp(domainShow);
-		}		
+		}	
+		
+		public function updateDomain(domain:Domain,hasAdmin:Boolean=false,password:String=null,email:String=null):void{
+			dispatcher(new EditDomainEvent(domain,hasAdmin,password,email));
+			isLoading=true;
+		}
+		
+		[CommandResult]
+		public function insertResult (result:*, event:InsertDomainEvent) : void {
+			isLoading=false;
+			loadDomains();
+			PopUpManager.removePopUp(domainShow);
+			domainShow.cancelBtt_clickHandler(null);
+		}
+		
+		[CommandError]
+		public function insertError (faultEvent:FaultEvent, event:InsertDomainEvent) : void {
+			isLoading=false;
+			domainShow.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+		}
+		
+		[CommandResult]
+		public function updateResult (result:*, event:EditDomainEvent) : void {
+			isLoading=false;
+			loadDomains();
+			PopUpManager.removePopUp(domainShow);
+			domainShow.cancelBtt_clickHandler(null);
+		}
+		
+		[CommandError]
+		public function updateError (faultEvent:FaultEvent, event:EditDomainEvent) : void {
+			isLoading=false;
+			domainShow.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+		}
 	}
 }

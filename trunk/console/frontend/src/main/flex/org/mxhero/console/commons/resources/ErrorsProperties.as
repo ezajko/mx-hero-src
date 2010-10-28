@@ -10,5 +10,7 @@ package org.mxhero.console.commons.resources
 		
 		public static const UNEXPECTED_ERROR_START:String="unexpected.error.start";
 		public static const UNEXPECTED_ERROR_END:String="unexpected.error.end";
+		
+		public static const PASSWORD_CONFIRM_ERROR:String ="password.confirm.error";
 	}
 }
