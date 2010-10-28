@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.mxhero.console.backend.dao.ApplicationUserDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.service.ApplicationUserService;
+import org.mxhero.console.backend.translator.ApplicationUserTranslator;
+import org.mxhero.console.backend.vo.ApplicationUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -19,10 +21,13 @@ public class JpaApplicationUserService implements ApplicationUserService {
 	
 	private ApplicationUserDao userDao;
 	
+	private ApplicationUserTranslator applicationUserTranslator;
+	
 	@Autowired
-	public JpaApplicationUserService(ApplicationUserDao userDao, PasswordEncoder encoder){
+	public JpaApplicationUserService(ApplicationUserDao userDao, PasswordEncoder encoder, ApplicationUserTranslator applicationUserTranslator){
 		this.userDao = userDao;
 		this.encoder = encoder;
+		this.applicationUserTranslator=applicationUserTranslator;
 	}
 
 	@Override
@@ -40,24 +45,24 @@ public class JpaApplicationUserService implements ApplicationUserService {
 	}
 	
 	@Override
-	public Collection<ApplicationUser> findAll() {
-		return this.userDao.readAll();
+	public Collection<ApplicationUserVO> findAll() {
+		return applicationUserTranslator.translate(this.userDao.readAll());
 	}
 
 	@Override
-	public ApplicationUser findByUserName(String userName) {
-		return userDao.finbByUserName(userName);
+	public ApplicationUserVO findByUserName(String userName) {
+		return applicationUserTranslator.translate(userDao.finbByUserName(userName));
 	}
 	
 	@Override
-	public ApplicationUser getUser() {
+	public ApplicationUserVO getUser() {
 		
-		return userDao.finbByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+		return applicationUserTranslator.translate(userDao.finbByUserName(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
 
 	@Override
-	public void update(ApplicationUser applicationUser) {
-		userDao.save(applicationUser);
+	public void update(ApplicationUserVO applicationUserVO) {
+		//userDao.save(applicationUser);
 	}
 
 }

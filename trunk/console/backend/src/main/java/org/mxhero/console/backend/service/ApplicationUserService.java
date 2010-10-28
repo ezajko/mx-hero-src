@@ -2,7 +2,7 @@ package org.mxhero.console.backend.service;
 
 import java.util.Collection;
 
-import org.mxhero.console.backend.entity.ApplicationUser;
+import org.mxhero.console.backend.vo.ApplicationUserVO;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +17,17 @@ public interface ApplicationUserService {
 	
 	@Transactional(readOnly=true)
 	@Secured("ROLE_ADMIN")
-	Collection<ApplicationUser> findAll();
+	Collection<ApplicationUserVO> findAll();
 	
 	@Transactional(readOnly=true)
 	@Secured("ROLE_ADMIN")
-	ApplicationUser findByUserName(String userName);
+	ApplicationUserVO findByUserName(String userName);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void update(ApplicationUser applicationUser);
+	void update(ApplicationUserVO applicationUser);
 	
 	@Transactional(readOnly=true)
 	@Secured("ROLE_DOMAIN_ADMIN")
-	public ApplicationUser getUser();
+	public ApplicationUserVO getUser();
 
 }

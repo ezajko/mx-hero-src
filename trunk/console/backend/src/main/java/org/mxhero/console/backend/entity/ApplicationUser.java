@@ -13,13 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="app_users")
-public class ApplicationUser{
+public class ApplicationUser {
 
+	public static final String DEFAULT_LOCALE="en_US";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
@@ -59,7 +61,7 @@ public class ApplicationUser{
     )
 	private Set<Authority> authorities;
 	
-	@ManyToOne(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
+	@OneToOne(mappedBy="owner",fetch=FetchType.EAGER)
 	private Domain domain;
 	
 
