@@ -126,5 +126,4 @@ public class JpaDomainService implements DomainService {
 		}
 		dao.save(domain);
 	}
-
 }

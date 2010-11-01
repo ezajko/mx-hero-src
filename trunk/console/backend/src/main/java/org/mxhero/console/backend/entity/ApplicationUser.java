@@ -61,7 +61,8 @@ public class ApplicationUser {
     )
 	private Set<Authority> authorities;
 	
-	@OneToOne(mappedBy="owner",fetch=FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE,CascadeType.PERSIST})
+	@JoinColumn(name="domain_id")
 	private Domain domain;
 	
 
