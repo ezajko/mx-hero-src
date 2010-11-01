@@ -2,7 +2,8 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:component="org.mxhero.console.commons.component.*">
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:component="org.mxhero.console.commons.component.*">
 	<fx:Declarations>
 		<parsley:Configure/>
 		

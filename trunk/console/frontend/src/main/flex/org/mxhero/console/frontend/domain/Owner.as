@@ -6,5 +6,12 @@ package org.mxhero.console.frontend.domain
 	{
 		public var id:Number
 		public var email:String;
+		
+		public function clone():Owner{
+			var clonedOwner:Owner = new Owner();
+			clonedOwner.email=this.email;
+			clonedOwner.id=this.id;
+			return clonedOwner;
+		}
 	}
 }

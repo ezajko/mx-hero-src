@@ -25,6 +25,6 @@
 							   clickHandler="{model.childClickHandler}"
 							   defaultTitle="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.DEFAULT_TITLE)}"
 							   defaultDescription="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.DEFAULT_DESCRIPTION)}"
-							   columnsWidth="220"/>
+							   columnsWidth="240"/>
 	
 </s:Group>

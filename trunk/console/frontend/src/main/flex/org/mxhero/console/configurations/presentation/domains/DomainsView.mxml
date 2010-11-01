@@ -15,6 +15,7 @@
 		<![CDATA[
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.configurations.application.resources.ConfigurationsListProperties;
 			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 			[Inject]
 			[Bindable]
@@ -33,9 +34,9 @@
 								 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
 								 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
 								 enableExpanded="true"
-								 backLink="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.GOBACK_LABEL)}"
+								 backLink="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_LABEL)}"
 								 backLinkFunction="{model.goBack}"
-								 backLinkTooltip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.GOBACK_TOOLTIP)}"/>
+								 backLinkTooltip="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_TOOLTIP)}"/>
 	<mx:Spacer height="0"/>
 	<domains:DomainsList width="100%" height="100%"/>
 </s:Group>

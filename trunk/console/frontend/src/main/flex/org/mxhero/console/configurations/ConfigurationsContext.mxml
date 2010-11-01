@@ -6,7 +6,7 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
-		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*">
+		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -16,6 +16,7 @@
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
 			import org.mxhero.console.configurations.application.command.InsertDomainCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
+			import org.mxhero.console.configurations.application.command.LoadAllEmailAccountsCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 
 		]]>
@@ -27,10 +28,12 @@
 		<parsley:DynamicCommand type="{RemoveDomainCommand}"/>
 		<parsley:DynamicCommand type="{InsertDomainCommand}"/>
 		<parsley:DynamicCommand type="{EditDomainCommand}"/>
+		<parsley:DynamicCommand type="{LoadAllEmailAccountsCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
 		<domains:DomainsViewPM/>
+		<accounts:AccountsViewPM/>
 		
 		<s:ArrayCollection id="configurationsCategories">
 			<domain:LCCategory key="category.domains" 
@@ -40,18 +43,21 @@
 				<domain:childs>
 					<s:ArrayCollection>
 						<domain:LCChild key="category.domains.domains" 
-										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										requiredAuthority="ROLE_ADMIN" 
 										keyDescription="category.domains.domains.description" 
 										resource="configurations_list"
 										navigateTo="{ConfigurationsDestinations.DOMAINS}"/>
 						<domain:LCChild key="category.domains.groups" 
 										requiredAuthority="ROLE_DOMAIN_ADMIN" 
 										keyDescription="category.domains.groups.description" 
-										resource="configurations_list"/>
+										resource="configurations_list"
+										domainExclusive="true"/>
 						<domain:LCChild key="category.domains.accounts" 
-										requiredAuthority="ROLE_ADMIN" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
 										keyDescription="category.domains.accounts.description" 
-										resource="configurations_list"/>
+										resource="configurations_list"
+										domainExclusive="true"
+										navigateTo="{ConfigurationsDestinations.ACCOUNTS}"/>
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>
@@ -72,6 +78,12 @@
 		
 		<parsley:Object type="{RemoteObject}" id="domainService">
 			<parsley:Property name="destination" value="domainService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+	
+		<parsley:Object type="{RemoteObject}" id="emailAccountService">
+			<parsley:Property name="destination" value="emailAccountService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

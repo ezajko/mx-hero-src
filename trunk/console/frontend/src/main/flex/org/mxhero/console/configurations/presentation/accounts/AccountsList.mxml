@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:component="org.mxhero.console.commons.component.*">
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+		
+		<mx:DateFormatter id="creationDateFormatter" 
+						  formatString="DD-MM-YYYY"/>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.DataGridEvent;
+			import mx.events.ListEvent;
+			import mx.utils.ObjectUtil;
+			
+			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:AccountsViewPM;
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.createdDate);
+			}
+			
+			protected function filterBtt_clickHandler(event:MouseEvent):void
+			{
+				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text);
+			}
+			
+			protected function clearBtt_clickHandler(event:MouseEvent):void
+			{
+				emailTI.text="";
+				nameTI.text="";
+				lastNameTI.text="";
+				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text);
+			}
+			
+			
+			protected function newAccountLink_clickHandler(event:MouseEvent):void
+			{
+				model.newEmailAccount(this);
+			}
+			
+			public function nullLastCompareFunction(item1:Object, item2:Object):int
+			{
+				if(item1.owner==null && item2.owner==null){
+					return 0;
+				}
+				if(item1.owner==null){
+					return 1;
+				}
+				if(item2.owner==null){
+					return -1;
+				}
+				return ObjectUtil.stringCompare(item1.owner.email.toString(),item2.owner.email.toString());
+			}
+			
+
+			protected function uploadAccounstLink_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout paddingLeft="8" paddingTop="8" paddingRight="8" paddingBottom="8" gap="20"/>
+	</s:layout>
+	<s:BorderContainer backgroundAlpha="1.0" 
+					   contentBackgroundAlpha="1.0" 
+					   dropShadowVisible="true" 
+					   borderStyle="solid" 
+					   borderColor="#000000" 
+					   contentBackgroundColor="#7C7B7B" 
+					   backgroundColor="#696969">
+		<s:layout>
+			<s:VerticalLayout gap="5"/>
+		</s:layout>
+		<s:VGroup width="100%" paddingTop="10" horizontalAlign="left">
+			<mx:LinkButton id="newAccountLink"
+						   textAlign="left"
+						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}" 
+						   icon="{ImageResources.ADD_ICO}"
+						   fontWeight="bold"
+						   click="newAccountLink_clickHandler(event)"
+						   width="100%"/>
+			<mx:LinkButton id="uploadAccounstLink"
+						   textAlign="left"
+						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
+						   icon="{ImageResources.UPLOAD_ICO}"
+						   fontWeight="bold"
+						   click="uploadAccounstLink_clickHandler(event)"
+						   width="100%"/>
+		</s:VGroup>
+		<mx:HRule height="1" width="100%"/>
+		<mx:Form defaultButton="{filterBtt}" paddingTop="0" width="100%">
+			<mx:FormHeading label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_TITLE)}"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_EMAIL_LABEL)}"/>
+			<s:TextInput id="emailTI" width="100%"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_NAME_LABEL)}"/>
+			<s:TextInput id="nameTI" width="100%"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}"/>
+			<s:TextInput id="lastNameTI" width="100%"/>
+			<s:HGroup width="100%">
+				<s:Button id="clearBtt" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
+						  click="clearBtt_clickHandler(event)"/>	
+				<mx:Spacer width="100%"/>
+				<s:Button id="filterBtt" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_LABEL)}" 
+						  click="filterBtt_clickHandler(event)"/>
+			</s:HGroup>			
+		</mx:Form>		
+	</s:BorderContainer>
+	
+	<mx:DataGrid dataProvider="{model.actualPage.elements}" 
+				 width="100%" 
+				 height="100%"
+				 minWidth="600"
+				 selectedItem="@{model.selectEmailAccount}">
+		<mx:columns>
+			<mx:DataGridColumn dataField="email" 
+							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_EMAIL_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="name" 
+							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="lastName" 
+							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+							   minWidth="100"
+							   sortCompareFunction="{nullLastCompareFunction}"/>
+			<mx:DataGridColumn dataField="updatedDate" 
+							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
+							   labelFunction="dateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn dataField="createdDate" 
+							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
+							   labelFunction="dateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.commons.resources.ImageResources;
+									import org.mxhero.console.configurations.application.resources.AccountsProperties;
+									
+								]]>
+							</fx:Script>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.editEmailAccount(outerDocument)}"
+												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.removeEmailAccount()}"
+												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+</s:Group>
