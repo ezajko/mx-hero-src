@@ -155,7 +155,7 @@ package org.mxhero.console.configurations.presentation.domains
 		
 		public function editDomain(parent:DisplayObject):void{
 			domainShow = new DomainShow();
-			domainShow.domain=selectDomain as Domain;
+			domainShow.domain=(selectDomain as Domain).clone();
 			domainShow.model=this;
 			domainShow.currentState="edit";
 			PopUpManager.addPopUp(domainShow,parent,true);

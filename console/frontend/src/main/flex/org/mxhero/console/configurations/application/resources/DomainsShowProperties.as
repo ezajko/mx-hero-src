@@ -36,10 +36,6 @@ package org.mxhero.console.configurations.application.resources
 	
 		public static const COLUMN_CREATED_REMOVE_LABEL:String="list.column.remove.tooltip";
 		
-		public static const GOBACK_LABEL:String="goback.link.label";
-		
-		public static const GOBACK_TOOLTIP:String="goback.link.tooltip";
-		
 		public static const ADD_NEW_DOMAIN_LABEL:String="add.domain.label";
 		
 		public static const REMOVE_DOMAIN_CONFIRMATION_TEXT:String="remove.domain.confirmation.text";

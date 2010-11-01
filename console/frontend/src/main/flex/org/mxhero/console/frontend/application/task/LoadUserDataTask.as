@@ -48,6 +48,7 @@ package org.mxhero.console.frontend.application.task
 		
 		public function onResult(result:ResultEvent):void{
 			applicationContext.applicationUser = result.result as ApplicationUser;
+			applicationContext.selectedDomain=applicationContext.applicationUser.domain;
 			service.removeEventListener(ResultEvent.RESULT,onResult);
 			dispatcher(new LanguageChangedMessage(applicationContext.applicationUser.locale));
 			complete();

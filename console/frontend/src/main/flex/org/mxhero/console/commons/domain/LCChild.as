@@ -16,6 +16,8 @@ package org.mxhero.console.commons.domain
 		
 		public var requiredAuthority:String;
 		
+		public var domainExclusive:Boolean=false;
+		
 		public var navigateTo:String;
 		
 		public function get label():String{

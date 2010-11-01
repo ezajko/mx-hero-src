@@ -4,5 +4,7 @@ package org.mxhero.console.frontend.domain
 	public class ApplicationContext
 	{
 		public var applicationUser:ApplicationUser;
+		
+		public var selectedDomain:Domain;
 	}
 }

@@ -40,6 +40,10 @@ package org.mxhero.console.commons.resources
 
 		[Embed(source="/images/add.png")] 
 		[Bindable]
-		public static var ADD_ICO:Class; 		
+		public static var ADD_ICO:Class; 	
+		
+		[Embed(source="/images/upload.png")] 
+		[Bindable]
+		public static var UPLOAD_ICO:Class; 	
 	}
 }

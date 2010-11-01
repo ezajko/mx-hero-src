@@ -20,7 +20,7 @@ package org.mxhero.console.frontend.infrastructure
 			for each (var category:Object in list){
 				if(category.hasOwnProperty("requiredAuthority") &&
 					category.requiredAuthority!=null){
-					if(checkUserForAuthority(category.requiredAuthority)){
+					if(checkUserForAuthority(category.requiredAuthority,category.domainExclusive)){
 						authorizedList.addItem(getCategory(category));
 					}
 				}else{
@@ -30,11 +30,16 @@ package org.mxhero.console.frontend.infrastructure
 			return authorizedList;
 		}
 		
-		public function checkUserForAuthority(authority:String):Boolean{
+		public function checkUserForAuthority(authority:String,exclusive:Boolean=false):Boolean{
 			if (context==null || 
 				context.applicationUser==null){
 				return false;
 			}
+			
+			if(exclusive && context.selectedDomain==null){
+				return false;
+			}
+			
 			for each(var userAuthority:Authority in context.applicationUser.authorities){
 				if(authority==userAuthority.authority){
 					return true;
@@ -55,7 +60,7 @@ package org.mxhero.console.frontend.infrastructure
 			for each (var child:Object in category.childs){
 				if(child.hasOwnProperty("requiredAuthority") &&
 					child.requiredAuthority!=null){
-					if(checkUserForAuthority(child.requiredAuthority)){
+					if(checkUserForAuthority(child.requiredAuthority,child.domainExclusive)){
 						newChilds.addItem(child);
 					}
 				}else{
