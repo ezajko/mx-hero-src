@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.entity;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,7 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -33,9 +34,11 @@ public class Domain {
 	@Column(name="updated",nullable=false)
 	private Calendar updatesDate;
 	
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="owner_id")
+	@OneToOne(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private ApplicationUser owner;
+	
+	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	public Set<EmailAccount> emailAccounts;
 
 	public Integer getId() {
 		return id;
@@ -83,6 +86,14 @@ public class Domain {
 
 	public void setUpdatesDate(Calendar updatesDate) {
 		this.updatesDate = updatesDate;
+	}
+
+	public Set<EmailAccount> getEmailAccounts() {
+		return emailAccounts;
+	}
+
+	public void setEmailAccounts(Set<EmailAccount> emailAccounts) {
+		this.emailAccounts = emailAccounts;
 	}
 
 }
