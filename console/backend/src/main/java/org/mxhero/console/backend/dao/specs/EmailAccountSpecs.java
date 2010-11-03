@@ -17,7 +17,7 @@ public class EmailAccountSpecs {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
 					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
-				return builder.like(root.get(EmailAccount_.name), "*"+name+"*");
+				return builder.like(root.get(EmailAccount_.name), "%"+name+"%");
 			}
 		};
 	}
@@ -27,7 +27,7 @@ public class EmailAccountSpecs {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
 					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
-				return builder.like(root.get(EmailAccount_.lastName), "*"+lastName+"*");
+				return builder.like(root.get(EmailAccount_.lastName), "%"+lastName+"%");
 			}
 		};
 	}
@@ -37,7 +37,7 @@ public class EmailAccountSpecs {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
 					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
-				return builder.like(root.get(EmailAccount_.email), "*"+email+"*");
+				return builder.like(root.get(EmailAccount_.email), "%"+email+"%");
 			}
 		};
 	}
