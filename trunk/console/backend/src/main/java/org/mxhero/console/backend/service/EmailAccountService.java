@@ -1,7 +1,5 @@
 package org.mxhero.console.backend.service;
 
-import java.util.Collection;
-
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.security.access.annotation.Secured;
@@ -11,9 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 public interface EmailAccountService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findAll(Integer domainId);
+	PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer page, Integer pageSize);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	public PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer page, Integer pageSize);
-		
+	void remove(Integer emailId);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void insert(EmailAccountVO emailAccountVO,Integer domainId);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void edit(EmailAccountVO emailAccountVO);
 }

@@ -35,7 +35,7 @@ public class EmailAccount {
 	@Column(name="updated", nullable=false)
 	private Calendar updatedDate;
 	
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.MERGE})
 	@JoinColumn(name="domain_id",nullable=false)
 	private Domain domain;
 
