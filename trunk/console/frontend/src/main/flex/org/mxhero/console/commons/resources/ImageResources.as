@@ -45,5 +45,13 @@ package org.mxhero.console.commons.resources
 		[Embed(source="/images/upload.png")] 
 		[Bindable]
 		public static var UPLOAD_ICO:Class; 	
+		
+		[Embed(source="/images/left.png")] 
+		[Bindable]
+		public static var LEFT_ICO:Class; 	
+		
+		[Embed(source="/images/right.png")] 
+		[Bindable]
+		public static var RIGHT_ICO:Class; 	
 	}
 }

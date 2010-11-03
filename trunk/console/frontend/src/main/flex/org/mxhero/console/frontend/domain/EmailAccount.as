@@ -10,5 +10,16 @@ package org.mxhero.console.frontend.domain
 		public var email:String;
 		public var createdDate:Date;
 		public var updatedDate:Date;
+		
+		public function clone():EmailAccount{
+			var clonedEmailAccount:EmailAccount = new EmailAccount();
+			clonedEmailAccount.createdDate=this.createdDate;
+			clonedEmailAccount.email=this.email;
+			clonedEmailAccount.id=this.id;
+			clonedEmailAccount.lastName=this.lastName;
+			clonedEmailAccount.name=this.name;
+			clonedEmailAccount.updatedDate=this.updatedDate;
+			return clonedEmailAccount;
+		}
 	}
 }

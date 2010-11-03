@@ -1,8 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:parsley="http://www.spicefactory.org/parsley"
+			   close="cancelBtt_clickHandler()" 
+			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
+			   xmlns:component="org.mxhero.console.commons.component.*"
+			   enabled="{!model.isLoading}"
+			   title.new="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.commons.resources.ErrorsProperties;
+			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			import org.mxhero.console.frontend.domain.EmailAccount;
+			
+			import spark.events.TextOperationEvent;
+			
+			private var _emailStr:String;
+			
+			[Bindable]
+			public var model:AccountsViewPM;
+			
+			[Bindable]
+			public var account:EmailAccount;
+
+			public function cancelBtt_clickHandler(event:MouseEvent=null):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+			
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				emailStr;
+				validateAll.validate();
+
+				if(emailStr!=null && validateAll.isValid){
+					account.email=emailStr;
+					if(currentState=="new"){
+						model.insertAccount(account);
+					}
+					if(currentState=="edit"){
+						model.updateDomain(account);
+					}
+				}
+			}
+			
+			[Bindable]
+			public function get emailStr():String{
+				if(model==null){
+					return "";
+				}
+				if(emailTi.text==null){
+					return '@'+model.context.selectedDomain.domain;
+				}
+				
+				return emailTi.text+'@'+model.context.selectedDomain.domain;
+			}
+			
+			public function set emailStr(value:String):void{
+				_emailStr=value;
+			}
+
+		]]>
+	</fx:Script>
+	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+		<cairngorm:ValidatorGroup id="validateAll">
+			<cairngorm:validators>
+				<mx:EmailValidator id="emailV" 
+								   required="true"
+								   property="emailStr"
+								   source="{this}"
+								   listener="{emailTi}"
+								   />
+			</cairngorm:validators>
+		</cairngorm:ValidatorGroup>
+		
 	</fx:Declarations>
-</s:Group>
+	
+	<s:states> 
+		<s:State name="new"/>    
+		<s:State name="edit"/>
+	</s:states> 
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
+	</s:layout>
+	<component:ErrorText id="errorText" width="100%"/>
+	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
+		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_EMAIL_LABEL)}" width="100%">
+			<s:HGroup verticalAlign="middle">
+				<s:TextInput id="emailTi" width="100%" enabled.edit="false" enabled.new="true" 
+							 text="{account.email.split('@')[0]}"/>
+				<s:Label text="{'@'+model.context.selectedDomain.domain}"/>
+			</s:HGroup>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_NAME_LABEL)}" width="100%">
+			<s:TextInput id="nameTi" text="@{account.name}" width="100%"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_LAST_NAME_LABEL)}" width="100%">
+			<s:TextInput id="lastNameTi" text="@{account.lastName}" width="100%"/>
+		</mx:FormItem>
+
+		<s:HGroup horizontalAlign="right" width="100%">
+			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
+			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+					  click="saveBtt_clickHandler(event)"/>
+		</s:HGroup>
+	</mx:Form>
+</s:TitleWindow>
+

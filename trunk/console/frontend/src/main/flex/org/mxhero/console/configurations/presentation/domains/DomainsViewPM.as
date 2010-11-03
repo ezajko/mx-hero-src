@@ -173,7 +173,6 @@ package org.mxhero.console.configurations.presentation.domains
 			isLoading=false;
 			loadDomains();
 			PopUpManager.removePopUp(domainShow);
-			domainShow.cancelBtt_clickHandler(null);
 		}
 		
 		[CommandError]

@@ -2,12 +2,15 @@
 <mx:Image xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
-		  buttonMode="true"
-		  rollOverEffect="{glowOn}"
-		  rollOutEffect="{glowOff}"
+		  buttonMode.default="true"
+		  buttonMode.disabled="false"
+		  rollOverEffect.default="{glowOn}"
+		  rollOutEffect.default="{glowOff}"
+		  alpha.default="1"
+		  alpha.disabled="0.2"
 		  creationComplete="init()">
 	<fx:Declarations>
-		<mx:Glow id="glowOn"
+		<mx:Glow id="glowOn" effectStart="{shouldPlay(event)}"
 				 alphaFrom="{minAlpha}"
 				 alphaTo="{maxAlpha}"
 				 blurXFrom="{minGlow}"
@@ -17,7 +20,7 @@
 				 color="{glowColor}"
 				 duration="{duration}"/>
 		
-		<mx:Glow id="glowOff"
+		<mx:Glow id="glowOff" effectStart="{shouldPlay(event)}"
 				 alphaFrom="{maxAlpha}"
 				 alphaTo="{minAlpha}"
 				 blurXFrom="{maxGlow}"
@@ -28,8 +31,14 @@
 				 duration="{duration}"/>
 	</fx:Declarations>
 	
+	<mx:states> 
+		<s:State name="default"/>    
+		<s:State name="disabled"/> 
+	</mx:states> 
+	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.EffectEvent;
 			[Bindable]
 			public var glowColor:Number=0xFFFFFF;
 			
@@ -52,6 +61,23 @@
 				glowOff.duration=0;
 				glowOff.play([this]);
 				glowOff.duration=duration;
+			}
+			
+			private function shouldPlay(event:EffectEvent):void{
+				if(!this.enabled){
+					event.effectInstance.stop();
+					event.stopPropagation();
+				}
+			}
+			
+			[Bindable]
+			override public function set enabled(value:Boolean):void {
+				super.enabled = value;
+				if(value){
+					currentState="default";
+				} else {
+					currentState="disabled";
+				}
 			}
 			
 		]]>
