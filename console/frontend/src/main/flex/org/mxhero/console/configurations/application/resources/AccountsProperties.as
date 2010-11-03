@@ -39,5 +39,13 @@ package org.mxhero.console.configurations.application.resources
 		public static const ADD_NEW_EMAIL_LABEL:String="add.email.label";
 		
 		public static const UPLOAD_EMAILS_LABEL:String="upload.emails.label";
+		
+		public static const REMOVE_EMAIL_ACCOUNT_CONFIRMATION_TEXT:String="remove.email.account.confirmation.text";
+		
+		public static const FORM_EMAIL_LABEL:String="form.email.label";
+		
+		public static const FORM_NAME_LABEL:String="form.name.label";
+		
+		public static const FORM_LAST_NAME_LABEL:String="form.last.name.label";
 	}
 }

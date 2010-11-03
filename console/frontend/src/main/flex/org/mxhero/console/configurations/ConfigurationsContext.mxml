@@ -14,10 +14,14 @@
 			
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
+			import org.mxhero.console.configurations.application.command.EditEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.InsertDomainCommand;
+			import org.mxhero.console.configurations.application.command.InsertEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllEmailAccountsCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
+			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
+			import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
 
 		]]>
 	</fx:Script>
@@ -28,7 +32,11 @@
 		<parsley:DynamicCommand type="{RemoveDomainCommand}"/>
 		<parsley:DynamicCommand type="{InsertDomainCommand}"/>
 		<parsley:DynamicCommand type="{EditDomainCommand}"/>
+		
 		<parsley:DynamicCommand type="{LoadAllEmailAccountsCommand}"/>
+		<parsley:DynamicCommand type="{RemoveEmailAccountCommand}"/>
+		<parsley:DynamicCommand type="{InsertEmailAccountCommand}"/>
+		<parsley:DynamicCommand type="{EditEmailAccountCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

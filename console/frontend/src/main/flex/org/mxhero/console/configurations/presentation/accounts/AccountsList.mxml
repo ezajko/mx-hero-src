@@ -20,6 +20,7 @@
 			import mx.utils.ObjectUtil;
 			
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.commons.skin.TitleLessPanel;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			
 			[Inject]
@@ -119,51 +120,78 @@
 		</mx:Form>		
 	</s:BorderContainer>
 	
-	<mx:DataGrid dataProvider="{model.actualPage.elements}" 
-				 width="100%" 
-				 height="100%"
-				 minWidth="600"
-				 selectedItem="@{model.selectEmailAccount}">
-		<mx:columns>
-			<mx:DataGridColumn dataField="email" 
-							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_EMAIL_LABEL)}" 
-							   minWidth="100"/>
-			<mx:DataGridColumn dataField="name" 
-							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
-							   minWidth="100"/>
-			<mx:DataGridColumn dataField="lastName" 
-							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-							   minWidth="100"
-							   sortCompareFunction="{nullLastCompareFunction}"/>
-			<mx:DataGridColumn dataField="updatedDate" 
-							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
-							   labelFunction="dateLabelFunction"
-							   width="110" resizable="false"/>
-			<mx:DataGridColumn dataField="createdDate" 
-							   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
-							   labelFunction="dateLabelFunction"
-							   width="110" resizable="false"/>
-			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
-				<mx:itemRenderer>
-					<fx:Component>
-						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-							<fx:Script>
-								<![CDATA[
-									import org.mxhero.console.commons.resources.ImageResources;
-									import org.mxhero.console.configurations.application.resources.AccountsProperties;
-									
-								]]>
-							</fx:Script>
-							<component:GlowButton maxGlow="10.0" 
-												  click="{outerDocument.model.editEmailAccount(outerDocument)}"
-												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
-							<component:GlowButton maxGlow="10.0" 
-												  click="{outerDocument.model.removeEmailAccount()}"
-												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
-						</mx:HBox>
-					</fx:Component>
-				</mx:itemRenderer>
-			</mx:DataGridColumn>
-		</mx:columns>
-	</mx:DataGrid>
+	<s:Panel width="100%" 
+			height="100%"
+			minWidth="600"
+			skinClass="{TitleLessPanel}"
+			cornerRadius="0">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		
+		<mx:DataGrid dataProvider="{model.actualPage.elements}" 
+					 width="100%" 
+					 height="100%"
+					 borderStyle="none"
+					 dropShadowVisible="false"
+					 selectedItem="@{model.selectedEmailAccount}">
+			<mx:columns>
+				<mx:DataGridColumn dataField="email" 
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_EMAIL_LABEL)}" 
+								   minWidth="100"/>
+				<mx:DataGridColumn dataField="name" 
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
+								   minWidth="100"/>
+				<mx:DataGridColumn dataField="lastName" 
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+								   minWidth="100"
+								   sortCompareFunction="{nullLastCompareFunction}"/>
+				<mx:DataGridColumn dataField="updatedDate" 
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
+								   labelFunction="dateLabelFunction"
+								   width="110" resizable="false"/>
+				<mx:DataGridColumn dataField="createdDate" 
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
+								   labelFunction="dateLabelFunction"
+								   width="110" resizable="false"/>
+				<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+								<fx:Script>
+									<![CDATA[
+										import org.mxhero.console.commons.resources.ImageResources;
+										import org.mxhero.console.configurations.application.resources.AccountsProperties;
+										
+									]]>
+								</fx:Script>
+								<component:GlowButton maxGlow="10.0" 
+													  click="{outerDocument.model.editEmailAccount(outerDocument)}"
+													  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+								<component:GlowButton maxGlow="10.0" 
+													  click="{outerDocument.model.removeEmailAccount()}"
+													  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		
+		<s:controlBarContent>
+			<s:HGroup width="100%" 
+					  horizontalAlign="right">
+				<component:GlowButton
+									id="previusPageBtt"
+									source="{ImageResources.LEFT_ICO}" 
+									enabled="{model.actualPage.hasPreviousPage}"
+									click="model.prevPage()"/>
+				<component:GlowButton 
+									id="nextPageBtt"
+									source="{ImageResources.RIGHT_ICO}" 
+									enabled="{model.actualPage.hasNextPage}"
+									click="model.nextPage()"/>			
+			</s:HGroup>			
+		</s:controlBarContent>
+	</s:Panel>
 </s:Group>
