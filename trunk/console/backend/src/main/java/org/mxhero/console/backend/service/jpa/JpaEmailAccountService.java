@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageRequest;
 
-import static org.mxhero.console.backend.infrastructure.PipedSpecifications.where;
+import static org.mxhero.console.backend.infrastructure.PipedSpecifications.*;
 import static org.mxhero.console.backend.dao.specs.EmailAccountSpecs.*;
 
 
@@ -45,7 +45,7 @@ public class JpaEmailAccountService implements EmailAccountService{
 
 		PipedSpecifications<EmailAccount> specifications = where(domainIdEqual(domainId));
 		if(email!=null && !email.trim().isEmpty()){
-			specifications.and(emailLike(email));
+			specifications.and(accountLike(email));
 		}
 		if(name!=null && !name.trim().isEmpty()){
 			specifications.and(nameLike(name));
@@ -81,7 +81,7 @@ public class JpaEmailAccountService implements EmailAccountService{
 		EmailAccount newEmailAccount = new EmailAccount();
 		newEmailAccount.setUpdatedDate(Calendar.getInstance());
 		newEmailAccount.setCreatedDate(Calendar.getInstance());
-		newEmailAccount.setEmail(emailAccountVO.getEmail());
+		newEmailAccount.setAccount(emailAccountVO.getAccount());
 		newEmailAccount.setLastName(emailAccountVO.getLastName());
 		newEmailAccount.setName(emailAccountVO.getName());
 		newEmailAccount.setDomain(domainDao.readByPrimaryKey(domainId));
