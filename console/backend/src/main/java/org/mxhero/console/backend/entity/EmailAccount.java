@@ -11,9 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="email_accounts")
+@Table(name="email_accounts",
+		uniqueConstraints={@UniqueConstraint(columnNames={"account","domain_id"})})
 public class EmailAccount {
 
 	@Id
@@ -26,8 +28,8 @@ public class EmailAccount {
 	@Column(name="last_name",length=100)
 	private String lastName;
 	
-	@Column(name="email", length=100, nullable=false, unique=true)
-	private String email;
+	@Column(name="account", length=100, nullable=false)
+	private String account;
 	
 	@Column(name="created", nullable=false)
 	private Calendar createdDate;
@@ -63,12 +65,12 @@ public class EmailAccount {
 		this.lastName = lastName;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getAccount() {
+		return account;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	public Calendar getCreatedDate() {

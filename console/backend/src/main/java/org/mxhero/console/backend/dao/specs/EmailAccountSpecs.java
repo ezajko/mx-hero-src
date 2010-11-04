@@ -32,12 +32,12 @@ public class EmailAccountSpecs {
 		};
 	}
 	
-	public static Specification<EmailAccount> emailLike(final String email){
+	public static Specification<EmailAccount> accountLike(final String account){
 		return new Specification<EmailAccount>() {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
 					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
-				return builder.like(root.get(EmailAccount_.email), "%"+email+"%");
+				return builder.like(root.get(EmailAccount_.account), "%"+account+"%");
 			}
 		};
 	}

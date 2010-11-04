@@ -10,7 +10,7 @@ public abstract class EmailAccount_ {
 
 	public static volatile SingularAttribute<EmailAccount, Integer> id;
 	public static volatile SingularAttribute<EmailAccount, String> lastName;
-	public static volatile SingularAttribute<EmailAccount, String> email;
+	public static volatile SingularAttribute<EmailAccount, String> account;
 	public static volatile SingularAttribute<EmailAccount, Calendar> updatedDate;
 	public static volatile SingularAttribute<EmailAccount, String> name;
 	public static volatile SingularAttribute<EmailAccount, Domain> domain;

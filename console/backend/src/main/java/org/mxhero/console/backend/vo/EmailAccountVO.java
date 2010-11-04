@@ -10,7 +10,7 @@ public class EmailAccountVO {
 
 	private String lastName;
 	
-	private String email;
+	private String account;
 	
 	private Calendar createdDate;
 	
@@ -40,12 +40,12 @@ public class EmailAccountVO {
 		this.lastName = lastName;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getAccount() {
+		return account;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	public Calendar getCreatedDate() {
