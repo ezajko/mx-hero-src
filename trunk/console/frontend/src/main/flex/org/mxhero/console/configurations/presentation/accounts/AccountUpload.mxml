@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 close="cancelBtt_clickHandler()" minWidth="650" minHeight="350"
+		 title="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
+		 creationComplete="{init()}"
+		 xmlns:component="org.mxhero.console.commons.component.*">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.DataGridEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
+			
+			import org.mxhero.console.commons.infrastructure.parser.CSV;
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			import org.mxhero.console.frontend.domain.EmailAccount;
+			
+			[Bindable]
+			public var model:AccountsViewPM;
+
+			private var fileLoader:FileReference=new FileReference();
+			
+			[Bindable]
+			public var uploadedAccounts:ArrayCollection;
+			
+			private function init():void{
+				fileLoader.addEventListener(Event.SELECT,selectHandler);
+				fileLoader.addEventListener(Event.COMPLETE,completeHandle);
+				
+			}
+
+			[Bindable]
+			private var fileLoading:Boolean=false;
+			
+			private var csv:CSV = new CSV();
+			
+			private function selectHandler(event:Event):void{
+				fileName.text=fileLoader.name;
+				fileLoader.load();
+				fileLoading=true;
+			}
+			
+			private function completeHandle(event:Event):void{
+				csv.data=fileLoader.data.readUTFBytes(fileLoader.data.length);
+				csv.fieldSeperator=";";
+				csv.embededHeader=false;
+				csv.decode();
+				uploadedAccounts=new ArrayCollection();
+				for each(var row:Array in csv.data){
+					if(StringUtil.trim(row[0].toString()).length>0){
+						var account:EmailAccount = new EmailAccount();
+						account.account=row[0].toString().split("@")[0];
+						if(row.length>1){
+							account.name=row[1];
+						}
+						if(row.length>2){
+							account.lastName=row[2];
+						}
+						uploadedAccounts.addItem(account);
+					}
+				}
+				fileLoading=false;
+			}
+			
+			public function cancelBtt_clickHandler(event:MouseEvent=null):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+
+
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				model.uploadAllAccounts(uploadedAccounts,failOnError.selected);
+			}
+			
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:VerticalLayout  paddingLeft="10" paddingBottom="10" paddingRight="10" paddingTop="0" gap="10"/>
+	</s:layout>
+	
+	<component:ErrorText id="errorText" width="100%"/>
+	<component:LabelExpanded width="100%" 
+							 labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL)}"
+							 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+							 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+							 expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL_EXPLAIN)}"/>		
+
+	<s:HGroup width="100%" verticalAlign="bottom">
+		<s:TextInput editable="false" id="fileName" width="240"/>
+		<s:Button label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_SELECT_FILE_LABEL)}"
+				  enabled="{!(model.isLoading || fileLoading)}"
+				  click="{fileLoader.browse()}"/>
+		<mx:Spacer width="100%"/>
+		<mx:ProgressBar width="100%" labelPlacement="center" indeterminate="true" visible="{(model.isLoading || fileLoading)}"/>
+	</s:HGroup>
+	
+	<mx:DataGrid width="100%" 
+				 height="100%"
+				 borderStyle="solid"
+				 dropShadowVisible="false"
+				 id="dg"
+				 dataProvider="{uploadedAccounts}"
+				 editable="true">
+		<mx:columns>
+			<mx:DataGridColumn 	dataField="account"
+								headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+							   	minWidth="100"
+								editable="true"/>
+			<mx:DataGridColumn 	dataField="name"
+								headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
+							   	minWidth="100"
+								editable="true"/>
+			<mx:DataGridColumn 	dataField="lastName"
+								headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+							   	minWidth="100"
+								editable="true"/>
+			<mx:DataGridColumn  width="42" sortable="false" resizable="false" editable="false">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.commons.resources.ImageResources;
+									
+								]]>
+							</fx:Script>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.uploadedAccounts.removeItemAt(outerDocument.uploadedAccounts.getItemIndex(outerDocument.dg.selectedItem))}"
+												  source="{ImageResources.DELETE_ICO}"/>						
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+	<s:CheckBox id="failOnError" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_CHECK_FAIL_ON_ERROR)}" selected="true"/>
+	<s:HGroup  width="100%">
+		<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_TOTAL_ACCOUNTS)+uploadedAccounts.length}"/>
+		<mx:Spacer width="100%"/>
+		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
+				  click="cancelBtt_clickHandler(event)"
+				  enabled="{!(model.isLoading || fileLoading)}"/>
+		<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+				  click="saveBtt_clickHandler(event)"
+				  enabled="{!(model.isLoading || fileLoading)}"/>
+	</s:HGroup>
+</s:TitleWindow>
