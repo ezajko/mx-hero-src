@@ -7,7 +7,8 @@
 			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 			   xmlns:component="org.mxhero.console.commons.component.*"
 			   enabled="{!model.isLoading}"
-			   title.new="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}">
+			   title.new="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}"
+			   title.edit="{account.account+'@'+model.context.selectedDomain.domain}">
 	
 	<fx:Script>
 		<![CDATA[
@@ -39,8 +40,8 @@
 				emailStr;
 				validateAll.validate();
 
-				if(emailStr!=null && validateAll.isValid){
-					account.email=emailStr;
+				if(validateAll.isValid){
+					
 					if(currentState=="new"){
 						model.insertAccount(account);
 					}
@@ -94,10 +95,10 @@
 	</s:layout>
 	<component:ErrorText id="errorText" width="100%"/>
 	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
-		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_EMAIL_LABEL)}" width="100%">
+		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ACCOUNT_LABEL)}" width="100%">
 			<s:HGroup verticalAlign="middle">
 				<s:TextInput id="emailTi" width="100%" enabled.edit="false" enabled.new="true" 
-							 text="{account.email.split('@')[0]}"/>
+							 text="@{account.account}"/>
 				<s:Label text="{'@'+model.context.selectedDomain.domain}"/>
 			</s:HGroup>
 		</mx:FormItem>

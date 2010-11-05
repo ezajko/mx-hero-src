@@ -49,25 +49,10 @@
 			{
 				model.newEmailAccount(this);
 			}
-			
-			public function nullLastCompareFunction(item1:Object, item2:Object):int
-			{
-				if(item1.owner==null && item2.owner==null){
-					return 0;
-				}
-				if(item1.owner==null){
-					return 1;
-				}
-				if(item2.owner==null){
-					return -1;
-				}
-				return ObjectUtil.stringCompare(item1.owner.email.toString(),item2.owner.email.toString());
-			}
-			
 
 			protected function uploadAccounstLink_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				model.uploadAccount(this);
 			}
 
 		]]>
@@ -104,7 +89,7 @@
 		<mx:HRule height="1" width="100%"/>
 		<mx:Form defaultButton="{filterBtt}" paddingTop="0" width="100%">
 			<mx:FormHeading label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_TITLE)}"/>
-			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_EMAIL_LABEL)}"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_ACCOUNT_LABEL)}"/>
 			<s:TextInput id="emailTI" width="100%"/>
 			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_NAME_LABEL)}"/>
 			<s:TextInput id="nameTI" width="100%"/>
@@ -136,16 +121,15 @@
 					 dropShadowVisible="false"
 					 selectedItem="@{model.selectedEmailAccount}">
 			<mx:columns>
-				<mx:DataGridColumn dataField="email" 
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_EMAIL_LABEL)}" 
+				<mx:DataGridColumn dataField="account" 
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
 								   minWidth="100"/>
 				<mx:DataGridColumn dataField="name" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
 								   minWidth="100"/>
 				<mx:DataGridColumn dataField="lastName" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-								   minWidth="100"
-								   sortCompareFunction="{nullLastCompareFunction}"/>
+								   minWidth="100"/>
 				<mx:DataGridColumn dataField="updatedDate" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
 								   labelFunction="dateLabelFunction"

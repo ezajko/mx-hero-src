@@ -21,6 +21,7 @@
 			import org.mxhero.console.configurations.application.command.LoadAllEmailAccountsCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
+			import org.mxhero.console.configurations.application.command.UploadAccountsCommand;
 			import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
 
 		]]>
@@ -37,6 +38,7 @@
 		<parsley:DynamicCommand type="{RemoveEmailAccountCommand}"/>
 		<parsley:DynamicCommand type="{InsertEmailAccountCommand}"/>
 		<parsley:DynamicCommand type="{EditEmailAccountCommand}"/>
+		<parsley:DynamicCommand type="{UploadAccountsCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

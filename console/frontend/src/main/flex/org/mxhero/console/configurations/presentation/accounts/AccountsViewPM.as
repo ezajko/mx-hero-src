@@ -18,6 +18,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.configurations.application.event.InsertEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllEmailAccountsEvent;
 	import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
+	import org.mxhero.console.configurations.application.event.UploadAccountsEvent;
 	import org.mxhero.console.configurations.application.resources.AccountsProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
@@ -29,6 +30,9 @@ package org.mxhero.console.configurations.presentation.accounts
 	{
 		[Bindable]
 		private var accountShow:AccountShow;
+		
+		[Bindable]
+		private var accountUpload:AccountUpload;
 		
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
@@ -56,7 +60,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		[Bindable]
 		public var selectedEmailAccount:Object;
 		
-		private var _emailFilter:String=null;
+		private var _accountFilter:String=null;
 		private var _nameFilter:String=null;
 		private var _lastNameFilter:String=null;
 		
@@ -70,7 +74,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		}
 		
 		public function loadEmailAccounts():void{
-			_emailFilter=null;
+			_accountFilter=null;
 			_nameFilter=null;
 			_lastNameFilter=null;
 			findAccounts(0);
@@ -84,8 +88,8 @@ package org.mxhero.console.configurations.presentation.accounts
 			findAccounts(actualPage.number-1);
 		}
 		
-		public function filterEmailAccounts(email:String,name:String,lastName:String):void{
-			_emailFilter=email;
+		public function filterEmailAccounts(account:String,name:String,lastName:String):void{
+			_accountFilter=account;
 			_nameFilter=name;
 			_lastNameFilter=lastName;
 			findAccounts(0);
@@ -131,7 +135,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		}
 		
 		public function removeEmailAccount():void{
-			Alert.show(rm.getString(AccountsProperties.NAME,AccountsProperties.REMOVE_EMAIL_ACCOUNT_CONFIRMATION_TEXT),selectedEmailAccount.email,Alert.YES|Alert.NO,null,removeHandler);
+			Alert.show(rm.getString(AccountsProperties.NAME,AccountsProperties.REMOVE_EMAIL_ACCOUNT_CONFIRMATION_TEXT),selectedEmailAccount.account,Alert.YES|Alert.NO,null,removeHandler);
 		}
 		
 		[CommandResult]
@@ -173,8 +177,31 @@ package org.mxhero.console.configurations.presentation.accounts
 		}
 
 		private function findAccounts(page:Number):void{
-			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.id,_emailFilter,_nameFilter,_lastNameFilter,page,pageSize));
+			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.id,_accountFilter,_nameFilter,_lastNameFilter,page,pageSize));
 			isLoading=true;
+		}
+		
+		public function uploadAccount(parent:DisplayObject):void{
+			accountUpload=new AccountUpload();
+			accountUpload.model=this;
+			PopUpManager.addPopUp(accountUpload,parent,true);
+			PopUpManager.centerPopUp(accountUpload);
+			PopUpManager.centerPopUp(accountUpload);
+		}
+		
+		public function uploadAllAccounts(uploadAccounts:ArrayCollection,failOnError:Boolean):void{
+			dispatcher(new UploadAccountsEvent(uploadAccounts,failOnError));
+			isLoading=false;
+		}
+		
+		[CommandResult]
+		public function uploadResult (result:*, event:UploadAccountsEvent) : void {
+			isLoading=false;
+		}
+		
+		[CommandError]
+		public function uploadError (faultEvent:FaultEvent, event:UploadAccountsEvent) : void {
+			isLoading=false;
 		}
 	}
 }
