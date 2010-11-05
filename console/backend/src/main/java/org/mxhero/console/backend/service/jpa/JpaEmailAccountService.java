@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.service.jpa;
 
 import java.util.Calendar;
+import java.util.Collection;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.EmailAccountDao;
@@ -90,6 +91,13 @@ public class JpaEmailAccountService implements EmailAccountService{
 		} catch (DataIntegrityViolationException e){
 			throw new BusinessException(EMAIL_ALREADY_EXISTS);
 		}
+	}
+
+	@Override
+	public void upload(Collection<EmailAccountVO> emailAccountVOs,
+			Boolean failOnError) {
+	
+		System.out.println("HELLO");
 	}
 	
 	
