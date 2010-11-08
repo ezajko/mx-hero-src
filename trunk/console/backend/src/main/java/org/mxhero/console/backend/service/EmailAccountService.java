@@ -23,5 +23,5 @@ public interface EmailAccountService {
 	void edit(EmailAccountVO emailAccountVO);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void upload(Collection<EmailAccountVO> emailAccountVOs, Boolean failOnError);
+	Collection<EmailAccountVO> upload(Collection<EmailAccountVO> emailAccountVOs, Integer domainId, Boolean failOnError);
 }

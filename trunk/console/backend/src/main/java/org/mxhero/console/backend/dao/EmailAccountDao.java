@@ -10,12 +10,13 @@ import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.Pageable;
 
 public interface EmailAccountDao extends GenericDao<EmailAccount,Integer>{
-	
-	@Query("Select ea From EmailAccount ea WHERE ea.domain.id = :domainId")
-	List<EmailAccount> finbAllByDomainId(@Param("domainId") Integer domainId);
-	
 
 	@Query("Select ea From EmailAccount ea WHERE ea.domain.id = :domainId")
 	Page<EmailAccount> finbAllByDomainId(@Param("domainId") Integer domainId, Pageable pageable);
 
+	@Query("Select ea From EmailAccount ea WHERE ea.group.id = :groupId")
+	List<EmailAccount> findAllByGroupId(@Param("groupId") Integer groupId);
+	
+	@Query("Select ea From EmailAccount ea WHERE ea.domain.id = :domainId AND ea.group IS NULL")
+	List<EmailAccount> findAllByDomainIdWithoutGroup(@Param("domainId") Integer domainId);
 }

@@ -14,6 +14,7 @@ public abstract class EmailAccount_ {
 	public static volatile SingularAttribute<EmailAccount, Calendar> updatedDate;
 	public static volatile SingularAttribute<EmailAccount, String> name;
 	public static volatile SingularAttribute<EmailAccount, Domain> domain;
+	public static volatile SingularAttribute<EmailAccount, Group> group;
 	public static volatile SingularAttribute<EmailAccount, Calendar> createdDate;
 
 }
