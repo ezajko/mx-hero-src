@@ -8,7 +8,7 @@
 		 width="100%"
 		 height="100%" 
 		 xmlns:component="org.mxhero.console.configurations.presentation.component.*" 
-		 xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*">
+		 xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -62,4 +62,14 @@
 		<accounts:AccountsView width="100%" height="100%"/>
 	</s:NavigatorContent>
 
+	<s:NavigatorContent automationName="{ConfigurationsDestinations.GROUPS}"  
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<groups:GroupsView width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
 </mx:ViewStack>

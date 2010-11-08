@@ -88,6 +88,7 @@
 		</s:Transition> 
 		<s:Transition fromState="expanded" toState="default"> 
 			<s:Sequence>
+				<s:Fade target="{expandedText}" alphaFrom="0" alphaTo="1" duration="0"/>
 				<s:Fade target="{expandedText}" alphaFrom="1" alphaTo="0" duration="200" />
 				<s:Resize target="{this}" duration="200"/>
 			</s:Sequence>

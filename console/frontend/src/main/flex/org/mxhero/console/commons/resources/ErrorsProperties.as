@@ -12,5 +12,7 @@ package org.mxhero.console.commons.resources
 		public static const UNEXPECTED_ERROR_END:String="unexpected.error.end";
 		
 		public static const PASSWORD_CONFIRM_ERROR:String ="password.confirm.error";
+		
+		public static const EMAIL_UPLOAD_CHECKED_ERRORS:String ="email.upload.checked.errors";
 	}
 }

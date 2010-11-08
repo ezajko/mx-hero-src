@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:component="org.mxhero.console.commons.component.*">
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+		
+		<mx:DateFormatter id="creationDateFormatter" 
+						  formatString="DD-MM-YYYY"/>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.DataGridEvent;
+			import mx.events.ListEvent;
+			import mx.utils.ObjectUtil;
+			
+			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.configurations.application.resources.GroupsProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:GroupsViewPM;
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.createdDate);
+			}
+			
+			protected function filterBtt_clickHandler(event:MouseEvent):void
+			{
+				model.filterGroups(nameTI.text,descriptionTI.text);
+			}
+			
+			protected function clearBtt_clickHandler(event:MouseEvent):void
+			{
+				nameTI.text="";
+				descriptionTI.text="";
+				model.filterGroups(nameTI.text,descriptionTI.text);
+			}
+			
+			
+			protected function newGroupLink_clickHandler(event:MouseEvent):void
+			{
+				model.newGroup(this);
+			}
+
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:HorizontalLayout paddingLeft="8" paddingTop="8" paddingRight="8" paddingBottom="8" gap="20"/>
+	</s:layout>
+	<s:BorderContainer backgroundAlpha="1.0" 
+					   contentBackgroundAlpha="1.0" 
+					   dropShadowVisible="true" 
+					   borderStyle="solid" borderColor="#000000" 
+					   contentBackgroundColor="#7C7B7B" 
+					   backgroundColor="#696969">
+		<s:layout>
+			<s:VerticalLayout gap="5"/>
+		</s:layout>
+		<s:HGroup width="100%" paddingTop="10" horizontalAlign="center">
+			<mx:LinkButton id="newGroupLink"
+						   label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.ADD_NEW_GROUP_LABEL)}" 
+						   icon="{ImageResources.ADD_ICO}"
+						   fontWeight="bold"
+						   click="newGroupLink_clickHandler(event)"/>
+		</s:HGroup>
+		<mx:HRule height="1" width="100%"/>
+		<mx:Form defaultButton="{filterBtt}" paddingTop="0">
+			<mx:FormHeading label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_TITLE)}"/>
+			<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_NAME_LABEL)}"/>
+			<s:TextInput id="nameTI" width="100%"/>
+			<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_DESCRIPTION_LABEL)}"/>
+			<s:TextInput id="descriptionTI" width="100%"/>
+			<s:HGroup width="100%">
+				<s:Button id="clearBtt" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
+						  click="clearBtt_clickHandler(event)"/>	
+				<mx:Spacer width="100%"/>
+				<s:Button id="filterBtt" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_BUTTON_LABEL)}" 
+						  click="filterBtt_clickHandler(event)"/>
+			</s:HGroup>			
+		</mx:Form>		
+	</s:BorderContainer>
+	
+	<mx:DataGrid dataProvider="{model.groups}" 
+				 width="100%" 
+				 height="100%"
+				 minWidth="600"
+				 selectedItem="@{model.selectGroup}">
+		<mx:columns>
+			<mx:DataGridColumn dataField="name" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_NAME_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="description" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_DESCRIPTION_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="updatedDate" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_UPDATED_LABEL)}" 
+							   labelFunction="dateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn dataField="createdDate" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_LABEL)}"
+							   labelFunction="dateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.commons.resources.ImageResources;
+									import org.mxhero.console.configurations.application.resources.GroupsProperties;
+									
+								]]>
+							</fx:Script>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.editGroup()}"
+												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.removeGroup()}"
+												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+</s:Group>

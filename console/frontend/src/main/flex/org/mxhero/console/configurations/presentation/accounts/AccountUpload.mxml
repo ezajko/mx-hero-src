@@ -86,73 +86,75 @@
 		]]>
 	</fx:Script>
 	<s:layout>
-		<s:VerticalLayout  paddingLeft="10" paddingBottom="10" paddingRight="10" paddingTop="0" gap="10"/>
+		<s:VerticalLayout/>
 	</s:layout>
 	
 	<component:ErrorText id="errorText" width="100%"/>
-	<component:LabelExpanded width="100%" 
-							 labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL)}"
-							 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
-							 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
-							 expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL_EXPLAIN)}"/>		
-
-	<s:HGroup width="100%" verticalAlign="bottom">
-		<s:TextInput editable="false" id="fileName" width="240"/>
-		<s:Button label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_SELECT_FILE_LABEL)}"
-				  enabled="{!(model.isLoading || fileLoading)}"
-				  click="{fileLoader.browse()}"/>
-		<mx:Spacer width="100%"/>
-		<mx:ProgressBar width="100%" labelPlacement="center" indeterminate="true" visible="{(model.isLoading || fileLoading)}"/>
-	</s:HGroup>
-	
-	<mx:DataGrid width="100%" 
-				 height="100%"
-				 borderStyle="solid"
-				 dropShadowVisible="false"
-				 id="dg"
-				 dataProvider="{uploadedAccounts}"
-				 editable="true">
-		<mx:columns>
-			<mx:DataGridColumn 	dataField="account"
-								headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
-							   	minWidth="100"
-								editable="true"/>
-			<mx:DataGridColumn 	dataField="name"
-								headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
-							   	minWidth="100"
-								editable="true"/>
-			<mx:DataGridColumn 	dataField="lastName"
-								headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-							   	minWidth="100"
-								editable="true"/>
-			<mx:DataGridColumn  width="42" sortable="false" resizable="false" editable="false">
-				<mx:itemRenderer>
-					<fx:Component>
-						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-							<fx:Script>
-								<![CDATA[
-									import org.mxhero.console.commons.resources.ImageResources;
-									
-								]]>
-							</fx:Script>
-							<component:GlowButton maxGlow="10.0" 
-												  click="{outerDocument.uploadedAccounts.removeItemAt(outerDocument.uploadedAccounts.getItemIndex(outerDocument.dg.selectedItem))}"
-												  source="{ImageResources.DELETE_ICO}"/>						
-						</mx:HBox>
-					</fx:Component>
-				</mx:itemRenderer>
-			</mx:DataGridColumn>
-		</mx:columns>
-	</mx:DataGrid>
-	<s:CheckBox id="failOnError" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_CHECK_FAIL_ON_ERROR)}" selected="true"/>
-	<s:HGroup  width="100%">
-		<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_TOTAL_ACCOUNTS)+uploadedAccounts.length}"/>
-		<mx:Spacer width="100%"/>
-		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
-				  click="cancelBtt_clickHandler(event)"
-				  enabled="{!(model.isLoading || fileLoading)}"/>
-		<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
-				  click="saveBtt_clickHandler(event)"
-				  enabled="{!(model.isLoading || fileLoading)}"/>
-	</s:HGroup>
+	<s:VGroup paddingLeft="10" paddingBottom="10" paddingRight="10" paddingTop="0" gap="10">
+		<component:LabelExpanded width="100%" 
+								 labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL)}"
+								 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+								 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+								 expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL_EXPLAIN)}"/>		
+		
+		<s:HGroup width="100%" verticalAlign="bottom">
+			<s:TextInput editable="false" id="fileName" width="240"/>
+			<s:Button label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_SELECT_FILE_LABEL)}"
+					  enabled="{!(model.isLoading || fileLoading)}"
+					  click="{fileLoader.browse()}"/>
+			<mx:Spacer width="100%"/>
+			<mx:ProgressBar width="100%" labelPlacement="center" indeterminate="true" visible="{(model.isLoading || fileLoading)}"/>
+		</s:HGroup>
+		
+		<mx:DataGrid width="100%" 
+					 height="100%"
+					 borderStyle="solid"
+					 dropShadowVisible="false"
+					 id="dg"
+					 dataProvider="{uploadedAccounts}"
+					 editable="true">
+			<mx:columns>
+				<mx:DataGridColumn 	dataField="account"
+									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+									minWidth="100"
+									editable="true"/>
+				<mx:DataGridColumn 	dataField="name"
+									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
+									minWidth="100"
+									editable="true"/>
+				<mx:DataGridColumn 	dataField="lastName"
+									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+									minWidth="100"
+									editable="true"/>
+				<mx:DataGridColumn  width="42" sortable="false" resizable="false" editable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+								<fx:Script>
+									<![CDATA[
+										import org.mxhero.console.commons.resources.ImageResources;
+										
+									]]>
+								</fx:Script>
+								<component:GlowButton maxGlow="10.0" 
+													  click="{outerDocument.uploadedAccounts.removeItemAt(outerDocument.uploadedAccounts.getItemIndex(outerDocument.dg.selectedItem))}"
+													  source="{ImageResources.DELETE_ICO}"/>						
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:CheckBox id="failOnError" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_CHECK_FAIL_ON_ERROR)}" selected="true"/>
+		<s:HGroup  width="100%">
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_TOTAL_ACCOUNTS)+uploadedAccounts.length}"/>
+			<mx:Spacer width="100%"/>
+			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
+					  click="cancelBtt_clickHandler(event)"
+					  enabled="{!(model.isLoading || fileLoading)}"/>
+			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+					  click="saveBtt_clickHandler(event)"
+					  enabled="{!(model.isLoading || fileLoading)}"/>
+		</s:HGroup>		
+	</s:VGroup>
 </s:TitleWindow>
