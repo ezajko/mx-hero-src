@@ -16,7 +16,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:UploadAccountsEvent):AsyncToken
 		{
-			return service.upload(event.accounts,event.failOnError);
+			return service.upload(event.accounts,event.domainId,event.failOnError);
 		}
 		
 	}

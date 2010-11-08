@@ -13,6 +13,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.commons.infrastructure.ErrorTranslator;
+	import org.mxhero.console.commons.resources.ErrorsProperties;
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 	import org.mxhero.console.configurations.application.event.EditEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.InsertEmailAccountEvent;
@@ -160,7 +161,6 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountShow.currentState="edit";
 			PopUpManager.addPopUp(accountShow,parent,true);
 			PopUpManager.centerPopUp(accountShow);
-			PopUpManager.centerPopUp(accountShow);
 		}	
 		
 		public function updateDomain(account:EmailAccount):void{
@@ -186,22 +186,36 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountUpload.model=this;
 			PopUpManager.addPopUp(accountUpload,parent,true);
 			PopUpManager.centerPopUp(accountUpload);
-			PopUpManager.centerPopUp(accountUpload);
+			PopUpManager.bringToFront(accountUpload)
 		}
 		
 		public function uploadAllAccounts(uploadAccounts:ArrayCollection,failOnError:Boolean):void{
-			dispatcher(new UploadAccountsEvent(uploadAccounts,failOnError));
-			isLoading=false;
+			dispatcher(new UploadAccountsEvent(uploadAccounts,context.selectedDomain.id,failOnError));
+			isLoading=true;
 		}
 		
 		[CommandResult]
 		public function uploadResult (result:*, event:UploadAccountsEvent) : void {
 			isLoading=false;
+			var emailAccountsDuplicated:ArrayCollection=null;
+			if(result is EmailAccount){
+				emailAccountsDuplicated=new ArrayCollection();
+				emailAccountsDuplicated.addItem(emailAccountsDuplicated);
+			} else if(result is ArrayCollection && (result as ArrayCollection).length>0){
+				emailAccountsDuplicated=result as ArrayCollection;
+			}
+			if(emailAccountsDuplicated!=null){
+				accountUpload.errorText.showError(rm.getString(ErrorsProperties.NAME,ErrorsProperties.EMAIL_UPLOAD_CHECKED_ERRORS));
+				accountUpload.uploadedAccounts=emailAccountsDuplicated;
+			}else{
+				accountUpload.cancelBtt_clickHandler();
+			}
 		}
 		
 		[CommandError]
 		public function uploadError (faultEvent:FaultEvent, event:UploadAccountsEvent) : void {
 			isLoading=false;
+			accountUpload.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
 		}
 	}
 }
