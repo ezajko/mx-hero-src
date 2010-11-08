@@ -1,7 +1,10 @@
 package org.mxhero.console.backend.service.jpa;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+
+import javax.validation.ConstraintViolationException;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.EmailAccountDao;
@@ -28,6 +31,7 @@ import static org.mxhero.console.backend.dao.specs.EmailAccountSpecs.*;
 public class JpaEmailAccountService implements EmailAccountService{
 
 	public static final String EMAIL_ALREADY_EXISTS="email.already.exists";
+	public static final String EMAIL_INVALID_FORMAT="email.invalid.format";
 	
 	private EmailAccountDao emailAccountDao;
 	
@@ -45,6 +49,7 @@ public class JpaEmailAccountService implements EmailAccountService{
 	public PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer page, Integer pageSize) {
 
 		PipedSpecifications<EmailAccount> specifications = where(domainIdEqual(domainId));
+
 		if(email!=null && !email.trim().isEmpty()){
 			specifications.and(accountLike(email));
 		}
@@ -94,11 +99,54 @@ public class JpaEmailAccountService implements EmailAccountService{
 	}
 
 	@Override
-	public void upload(Collection<EmailAccountVO> emailAccountVOs,
+	public Collection<EmailAccountVO> upload(Collection<EmailAccountVO> emailAccountVOs, Integer domainId,
 			Boolean failOnError) {
-	
-		System.out.println("HELLO");
+		
+		Collection<EmailAccount> newEmailAccounts = new ArrayList<EmailAccount>(emailAccountVOs.size());;
+		Collection<EmailAccountVO> errorEmailAccountsVOs = new ArrayList<EmailAccountVO>();
+		
+		for(EmailAccountVO emailAccountVO : emailAccountVOs){
+			EmailAccount newEmail= new EmailAccount();
+			if(emailAccountVO.getAccount()==null){
+				
+			}
+			newEmail.setAccount(emailAccountVO.getAccount());
+			newEmail.setCreatedDate(Calendar.getInstance());
+			newEmail.setDomain(domainDao.readByPrimaryKey(domainId));
+			newEmail.setLastName(emailAccountVO.getLastName());
+			newEmail.setName(emailAccountVO.getName());
+			newEmail.setUpdatedDate(Calendar.getInstance());
+			newEmailAccounts.add(newEmail);
+		}
+		
+		if(failOnError){
+			try{
+				emailAccountDao.save(newEmailAccounts);
+			}catch(DataIntegrityViolationException e){
+				throw new BusinessException(EMAIL_ALREADY_EXISTS);
+			}catch(ConstraintViolationException e){
+				throw new BusinessException(EMAIL_INVALID_FORMAT);
+			}
+		}else{
+			for(EmailAccount emailAccount : newEmailAccounts){
+				try{
+					emailAccountDao.save(emailAccount);
+				}catch(DataIntegrityViolationException e){
+					EmailAccountVO errorEmailAccountVO = new EmailAccountVO();
+					errorEmailAccountVO.setAccount(emailAccount.getAccount());
+					errorEmailAccountVO.setName(emailAccount.getLastName());
+					errorEmailAccountVO.setLastName(emailAccount.getLastName());
+					errorEmailAccountsVOs.add(errorEmailAccountVO);
+				}catch(ConstraintViolationException e){
+					EmailAccountVO errorEmailAccountVO = new EmailAccountVO();
+					errorEmailAccountVO.setAccount(emailAccount.getAccount());
+					errorEmailAccountVO.setName(emailAccount.getLastName());
+					errorEmailAccountVO.setLastName(emailAccount.getLastName());
+					errorEmailAccountsVOs.add(errorEmailAccountVO);
+				}
+			}	
+		}
+		return errorEmailAccountsVOs;
 	}
-	
-	
+
 }

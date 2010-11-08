@@ -47,8 +47,10 @@ public class EmailAccountSpecs {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
 					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+				query.orderBy(builder.asc(root.get(EmailAccount_.account)));
 				return builder.equal(root.get(EmailAccount_.domain).get(Domain_.id), id);
 			}
 		};
 	}
+
 }
