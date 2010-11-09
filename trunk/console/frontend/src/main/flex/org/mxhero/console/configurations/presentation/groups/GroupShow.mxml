@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="{cancelBtt_clickHandler()}"
+			   enabled="{!model.isLoading}"
+			   xmlns:component="org.mxhero.console.commons.component.*"
+			   title.new="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.ADD_NEW_GROUP_LABEL)}" 
+			   title.edit="{group.name}"
+			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
+			   xmlns:parsley="http://www.spicefactory.org/parsley">
+
+	<fx:Script>
+		<![CDATA[
+			import mx.events.DragEvent;
+			import mx.managers.PopUpManager;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			import org.mxhero.console.configurations.application.resources.GroupsProperties;
+			import org.mxhero.console.frontend.domain.Group;
+			
+			[Bindable]
+			public var group:Group;
+			[Bindable]
+			public var model:GroupsViewPM;
+			
+			protected function cancelBtt_clickHandler(event:MouseEvent=null):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				validateAll.validate();
+				if(validateAll.isValid){
+					if(currentState=="new"){
+						model.insertGroup(group);
+					} else if(currentState=="edit"){
+						model.updateGroup(group);
+					}
+				}
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<cairngorm:ValidatorGroup id="validateAll">
+			<cairngorm:validators>
+				<mx:StringValidator required="true" source="{nameTi}" property="text" trigger="{saveBtt}" triggerEvent="click"/>
+			</cairngorm:validators>
+		</cairngorm:ValidatorGroup>
+	</fx:Declarations>
+	
+	<s:states> 
+		<s:State name="new"/>    
+		<s:State name="edit"/>
+	</s:states> 
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
+	</s:layout>
+	
+	<component:ErrorText id="errorText" width="100%"/>
+	
+	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
+		<s:HGroup>
+			<s:VGroup>
+				<mx:FormItem includeIn="new" required="true" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_NAME_LABEL)}">
+					<s:TextInput id="nameTi" text="@{group.name}" enabled="false"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_DESCRIPTION_LABEL)}">
+					<s:TextInput id="descriptionTi" text="@{group.description}"/>
+				</mx:FormItem>			
+			</s:VGroup>
+		</s:HGroup>
+		
+		<s:HGroup paddingTop="15">
+			<s:VGroup>
+				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_MEMBERS_LABEL)}"/>
+				<mx:DataGrid id="groupAccountsDg"
+							dataProvider="{model.groupAccounts}" 
+							width="100%" 
+							height="100%"
+							dropShadowVisible="false"
+							minWidth="420"
+							dragEnabled="true"
+							dropEnabled="true"
+							allowMultipleSelection="true"
+							allowDragSelection="true"
+							dragMoveEnabled="true">
+					<mx:columns>
+						<mx:DataGridColumn dataField="account" 
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+										   minWidth="180"/>
+						<mx:DataGridColumn dataField="name" 
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
+										   minWidth="120"/>
+						<mx:DataGridColumn dataField="lastName" 
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+										   minWidth="120"/>
+					</mx:columns>
+				</mx:DataGrid>				
+			</s:VGroup>
+
+			<s:VGroup>
+				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_NO_GROUP_ACCOUNTS_LABEL)}"/>
+				<mx:DataGrid id="noGroupAccountsDg"
+							dataProvider="{model.noGroupAccounts}" 
+							width="100%" 
+							height="100%"
+							dropShadowVisible="false" 
+							minWidth="420"
+							dragEnabled="true"
+							dropEnabled="true"
+							allowMultipleSelection="true"
+							allowDragSelection="true"
+							dragMoveEnabled="true">
+					<mx:columns>
+						<mx:DataGridColumn dataField="account" 
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+										   minWidth="180"/>
+						<mx:DataGridColumn dataField="name" 
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
+										   minWidth="120"/>
+						<mx:DataGridColumn dataField="lastName" 
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+										   minWidth="120"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</s:VGroup>
+		</s:HGroup>
+
+		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">
+			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
+			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+					  click="saveBtt_clickHandler(event)"/>
+		</s:HGroup>
+	</mx:Form>
+	
+</s:TitleWindow>

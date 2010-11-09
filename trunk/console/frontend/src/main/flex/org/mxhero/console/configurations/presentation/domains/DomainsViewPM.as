@@ -145,7 +145,7 @@ package org.mxhero.console.configurations.presentation.domains
 			domainShow.currentState="new";
 			PopUpManager.addPopUp(domainShow,parent,true);
 			PopUpManager.centerPopUp(domainShow);
-			PopUpManager.centerPopUp(domainShow);
+			PopUpManager.bringToFront(domainShow);
 		}
 		
 		public function insertDomain(domain:Domain,hasAdmin:Boolean=false,password:String=null,email:String=null):void{

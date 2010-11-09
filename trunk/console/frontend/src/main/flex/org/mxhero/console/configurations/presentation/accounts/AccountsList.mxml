@@ -33,7 +33,13 @@
 			
 			protected function filterBtt_clickHandler(event:MouseEvent):void
 			{
-				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text);
+				var groupId:Number;
+				if(groupDdl.selectedItem==null){
+					groupId=-1;
+				} else {
+					groupId=groupDdl.selectedItem.id;
+				}
+				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text,groupId);
 			}
 			
 			protected function clearBtt_clickHandler(event:MouseEvent):void
@@ -41,7 +47,8 @@
 				emailTI.text="";
 				nameTI.text="";
 				lastNameTI.text="";
-				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text);
+				groupDdl.selectedIndex=-1;
+				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text,-1);
 			}
 			
 			
@@ -53,6 +60,17 @@
 			protected function uploadAccounstLink_clickHandler(event:MouseEvent):void
 			{
 				model.uploadAccount(this);
+			}
+			
+			protected function grouplabelFunction(item:Object, column:DataGridColumn):String{
+				if(item.groupId>0){
+					for each (var group:Object in model.context.groups){
+						if(group.id==item.groupId){
+							return group.name;
+						}
+					}
+				}
+				return "";
 			}
 
 		]]>
@@ -95,6 +113,9 @@
 			<s:TextInput id="nameTI" width="100%"/>
 			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}"/>
 			<s:TextInput id="lastNameTI" width="100%"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}"/>
+			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="100%"/>
+			<mx:Spacer height="5"/>
 			<s:HGroup width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
 						  click="clearBtt_clickHandler(event)"/>	
@@ -129,6 +150,10 @@
 								   minWidth="100"/>
 				<mx:DataGridColumn dataField="lastName" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
+								   minWidth="100"/>
+				<mx:DataGridColumn dataField="groupId"
+								   labelFunction="{grouplabelFunction}"
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
 								   minWidth="100"/>
 				<mx:DataGridColumn dataField="updatedDate" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 

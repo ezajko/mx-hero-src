@@ -4,25 +4,24 @@ package org.mxhero.console.configurations.application.command
 	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.configurations.application.event.LoadAllEmailAccountsEvent;
+	import org.mxhero.console.configurations.application.event.LoadEmailAccountsByGroupEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 
-	public class LoadAllEmailAccountsCommand
+	public class LoadEmailAccountsByGroupCommand
 	{
-		[Inject(id="emailAccountService")]
+		[Inject(id="groupService")]
 		public var service:RemoteObject;
 		
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		public function execute(event:LoadAllEmailAccountsEvent):AsyncToken
+		public function execute(event:LoadEmailAccountsByGroupEvent):AsyncToken
 		{
-			return service.findPageBySpecs(event.domainId,event.email,event.name,event.lastName,event.groupId,event.page,event.pageSize);
+			return service.findMembersByGroupId(event.groupId);
 		}
 		
 		public function error (fault:Fault) : void {
 			dispatcher(new ApplicationErrorMessage(fault.faultCode));
 		}
-		
 	}
 }

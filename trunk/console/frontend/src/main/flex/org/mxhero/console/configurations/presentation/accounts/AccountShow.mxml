@@ -8,7 +8,8 @@
 			   xmlns:component="org.mxhero.console.commons.component.*"
 			   enabled="{!model.isLoading}"
 			   title.new="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}"
-			   title.edit="{account.account+'@'+model.context.selectedDomain.domain}">
+			   title.edit="{account.account+'@'+model.context.selectedDomain.domain}"
+			   creationComplete="creationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
@@ -20,6 +21,7 @@
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			import org.mxhero.console.frontend.domain.EmailAccount;
 			
+			import spark.events.IndexChangeEvent;
 			import spark.events.TextOperationEvent;
 			
 			private var _emailStr:String;
@@ -41,6 +43,12 @@
 				validateAll.validate();
 
 				if(validateAll.isValid){
+					
+					if(groupDdl.selectedItem!=null){
+						account.groupId=groupDdl.selectedItem.id;
+					}else{
+						account.groupId=-1;
+					}
 					
 					if(currentState=="new"){
 						model.insertAccount(account);
@@ -65,6 +73,22 @@
 			
 			public function set emailStr(value:String):void{
 				_emailStr=value;
+			}
+
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				if(currentState=="new"){
+					groupDdl.selectedIndex=-1;
+					account.groupId=-1;
+				} else {
+					groupDdl.selectedIndex=-1;
+					for each(var group:Object in groupDdl.dataProvider){
+						if(group.id==account.groupId){
+							groupDdl.selectedIndex=groupDdl.dataProvider.getItemIndex(group);
+							break;
+						}
+					}
+				}
 			}
 
 		]]>
@@ -108,8 +132,10 @@
 		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_LAST_NAME_LABEL)}" width="100%">
 			<s:TextInput id="lastNameTi" text="@{account.lastName}" width="100%"/>
 		</mx:FormItem>
-
-		<s:HGroup horizontalAlign="right" width="100%">
+		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}" width="100%">
+			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="100%"/>
+		</mx:FormItem>
+		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">
 			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
 			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
 					  click="saveBtt_clickHandler(event)"/>

@@ -57,6 +57,12 @@ package org.mxhero.console.configurations.application.resources
 		public static const UPLOAD_FILE_LABEL_EXPLAIN:String="upload.file.label.explain";
 		
 		public static const UPLOAD_CHECK_FAIL_ON_ERROR:String="upload.check.fail.on.error";
+		
+		public static const FORM_GROUP_LABEL:String="form.group.label";
+		
+		public static const FORM_GROUP_SELECT_LABEL:String="form.group.select.label";
+		
+		public static const COLUMN_GROUP_LABEL:String="column.group.label";
 
 	}
 }
