@@ -35,6 +35,14 @@ package org.mxhero.console.configurations.application.resources
 		public static const COLUMN_CREATED_REMOVE_LABEL:String="column.created.remove.label";
 		
 		public static const REMOVE_GROUP_CONFIRMATION_TEXT:String="remove.group.confirmation.text";
+		
+		public static const FORM_NAME_LABEL:String="form.name.label";
+		
+		public static const FORM_DESCRIPTION_LABEL:String="form.description.label";
+		
+		public static const SHOW_MEMBERS_LABEL:String="show.members.label";
+		
+		public static const SHOW_NO_GROUP_ACCOUNTS_LABEL:String="show.no.group.accounts.label";
 
 	}
 }

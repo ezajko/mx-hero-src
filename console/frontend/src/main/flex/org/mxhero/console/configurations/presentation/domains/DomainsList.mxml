@@ -90,6 +90,7 @@
 			<s:TextInput id="emailTI" width="100%"/>
 			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_SERVER_LABEL)}"/>
 			<s:TextInput id="serverTI" width="100%"/>
+			<mx:Spacer height="5"/>
 			<s:HGroup width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
 						  click="clearBtt_clickHandler(event)"/>	

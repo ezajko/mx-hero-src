@@ -15,11 +15,15 @@
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
 			import org.mxhero.console.configurations.application.command.EditEmailAccountCommand;
+			import org.mxhero.console.configurations.application.command.EditGroupCommand;
 			import org.mxhero.console.configurations.application.command.InsertDomainCommand;
 			import org.mxhero.console.configurations.application.command.InsertEmailAccountCommand;
+			import org.mxhero.console.configurations.application.command.InsertGroupCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllEmailAccountsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllGroupsCommand;
+			import org.mxhero.console.configurations.application.command.LoadEmailAccountsByGroupCommand;
+			import org.mxhero.console.configurations.application.command.LoadEmailAccountsWithNoGroupCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupCommand;
@@ -43,6 +47,10 @@
 		
 		<parsley:DynamicCommand type="{LoadAllGroupsCommand}"/>
 		<parsley:DynamicCommand type="{RemoveGroupCommand}"/>
+		<parsley:DynamicCommand type="{InsertGroupCommand}"/>
+		<parsley:DynamicCommand type="{LoadEmailAccountsByGroupCommand}"/>
+		<parsley:DynamicCommand type="{LoadEmailAccountsWithNoGroupCommand}"/>
+		<parsley:DynamicCommand type="{EditGroupCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

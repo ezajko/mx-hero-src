@@ -18,6 +18,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.configurations.application.event.EditEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.InsertEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllEmailAccountsEvent;
+	import org.mxhero.console.configurations.application.event.LoadAllGroupsEvent;
 	import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.UploadAccountsEvent;
 	import org.mxhero.console.configurations.application.resources.AccountsProperties;
@@ -39,7 +40,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		private var rm:IResourceManager = ResourceManager.getInstance();
 		
 		[Bindable]
-		public var pageSize:Number=20;
+		public var pageSize:Number=100;
 		
 		[Bindable]
 		public var actualPage:Page;
@@ -64,6 +65,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		private var _accountFilter:String=null;
 		private var _nameFilter:String=null;
 		private var _lastNameFilter:String=null;
+		private var _groupIdFilter:Number=-1;
 		
 		public function goBack():void{
 			parentModel.navigateTo(ConfigurationsDestinations.LIST);
@@ -72,12 +74,14 @@ package org.mxhero.console.configurations.presentation.accounts
 		[Enter(time="every")]
 		public function every():void{
 			loadEmailAccounts();
+			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.id));
 		}
 		
 		public function loadEmailAccounts():void{
 			_accountFilter=null;
 			_nameFilter=null;
 			_lastNameFilter=null;
+			_groupIdFilter=-1;
 			findAccounts(0);
 		}
 		
@@ -89,10 +93,11 @@ package org.mxhero.console.configurations.presentation.accounts
 			findAccounts(actualPage.number-1);
 		}
 		
-		public function filterEmailAccounts(account:String,name:String,lastName:String):void{
+		public function filterEmailAccounts(account:String,name:String,lastName:String,groupId:Number):void{
 			_accountFilter=account;
 			_nameFilter=name;
 			_lastNameFilter=lastName;
+			_groupIdFilter=groupId;
 			findAccounts(0);
 		}
 		
@@ -177,7 +182,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		}
 
 		private function findAccounts(page:Number):void{
-			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.id,_accountFilter,_nameFilter,_lastNameFilter,page,pageSize));
+			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.id,_accountFilter,_nameFilter,_lastNameFilter,_groupIdFilter,page,pageSize));
 			isLoading=true;
 		}
 		
