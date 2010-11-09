@@ -17,6 +17,9 @@ public class EmailAccountTranslator extends AbstractTranslator<EmailAccountVO, E
 		emailAccountVO.setLastName(entity.getLastName());
 		emailAccountVO.setName(entity.getName());
 		emailAccountVO.setUpdatedDate(entity.getUpdatedDate());
+		if(entity.getGroup()!=null){
+			emailAccountVO.setGroupId(entity.getGroup().getId());
+		}
 		
 		return emailAccountVO;
 	}

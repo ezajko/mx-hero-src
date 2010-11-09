@@ -8,6 +8,7 @@ import javax.persistence.criteria.Root;
 import org.mxhero.console.backend.entity.Domain_;
 import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.entity.EmailAccount_;
+import org.mxhero.console.backend.entity.Group_;
 import org.synyx.hades.domain.Specification;
 
 public class EmailAccountSpecs {
@@ -49,6 +50,17 @@ public class EmailAccountSpecs {
 					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
 				query.orderBy(builder.asc(root.get(EmailAccount_.account)));
 				return builder.equal(root.get(EmailAccount_.domain).get(Domain_.id), id);
+			}
+		};
+	}
+	
+	
+	public static Specification<EmailAccount> groupIdEqual(final Integer id){
+		return new Specification<EmailAccount>() {
+			@Override
+			public Predicate toPredicate(Root<EmailAccount> root,
+					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+				return builder.equal(root.get(EmailAccount_.group).get(Group_.id), id);
 			}
 		};
 	}

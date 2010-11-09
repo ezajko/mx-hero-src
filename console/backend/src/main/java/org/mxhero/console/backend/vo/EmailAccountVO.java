@@ -15,6 +15,8 @@ public class EmailAccountVO {
 	private Calendar createdDate;
 	
 	private Calendar updatedDate;
+	
+	private Integer groupId;
 
 	public Integer getId() {
 		return id;
@@ -62,6 +64,14 @@ public class EmailAccountVO {
 
 	public void setUpdatedDate(Calendar updatedDate) {
 		this.updatedDate = updatedDate;
+	}
+
+	public Integer getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
 	}
 
 }
