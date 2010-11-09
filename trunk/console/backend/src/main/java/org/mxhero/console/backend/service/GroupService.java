@@ -17,8 +17,14 @@ public interface GroupService {
 	Collection<EmailAccountVO> findMembersByGroupId(Integer groupId);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findMembersBydomainIdWithoutGroup(Integer domainId);
+	Collection<EmailAccountVO> findMembersByDomainIdWithoutGroup(Integer domainId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	void remove(Integer groupId);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void insert(GroupVO groupVO, Integer domainId, Collection<EmailAccountVO> members);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void edit(GroupVO groupVO, Collection<EmailAccountVO> members);
 }

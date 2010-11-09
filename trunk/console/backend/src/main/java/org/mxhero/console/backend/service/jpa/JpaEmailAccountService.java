@@ -8,6 +8,7 @@ import javax.validation.ConstraintViolationException;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.EmailAccountDao;
+import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.infrastructure.PipedSpecifications;
@@ -39,14 +40,19 @@ public class JpaEmailAccountService implements EmailAccountService{
 	
 	private EmailAccountTranslator emailAccountTranslator;
 	
+	private GroupDao groupDao;
+	
 	@Autowired
-	public JpaEmailAccountService(EmailAccountDao emailAccountDao, EmailAccountTranslator emailAccountTranslator, DomainDao domainDao){
-		this.emailAccountDao=emailAccountDao;
-		this.emailAccountTranslator=emailAccountTranslator;
-		this.domainDao=domainDao;
+	public JpaEmailAccountService(EmailAccountDao emailAccountDao,
+			DomainDao domainDao, EmailAccountTranslator emailAccountTranslator,
+			GroupDao groupDao) {
+		this.emailAccountDao = emailAccountDao;
+		this.domainDao = domainDao;
+		this.emailAccountTranslator = emailAccountTranslator;
+		this.groupDao = groupDao;
 	}
 
-	public PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer page, Integer pageSize) {
+	public PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer groupId, Integer page, Integer pageSize) {
 
 		PipedSpecifications<EmailAccount> specifications = where(domainIdEqual(domainId));
 
@@ -59,7 +65,10 @@ public class JpaEmailAccountService implements EmailAccountService{
 		if(lastName!=null && !lastName.trim().isEmpty()){
 			specifications.and(lastNameLike(lastName));
 		}
-
+		if(groupId!=null && groupId>-1){
+			specifications.and(groupIdEqual(groupId));
+		}
+	
 		PageRequest pr = new PageRequest(page, pageSize);
 		Page<EmailAccount> pageData = emailAccountDao.readAll(specifications, pr);
 		return emailAccountTranslator.translate(pageData);
@@ -78,6 +87,11 @@ public class JpaEmailAccountService implements EmailAccountService{
 		emailAccount.setName(emailAccountVO.getName());
 		emailAccount.setLastName(emailAccountVO.getLastName());
 		emailAccount.setUpdatedDate(Calendar.getInstance());
+		if(emailAccountVO.getGroupId()==null || emailAccountVO.getGroupId()<0){
+			emailAccount.setGroup(null);
+		} else {
+			emailAccount.setGroup(groupDao.readByPrimaryKey(emailAccountVO.getGroupId()));
+		}
 		emailAccountDao.save(emailAccount);
 	}
 
@@ -91,6 +105,11 @@ public class JpaEmailAccountService implements EmailAccountService{
 		newEmailAccount.setLastName(emailAccountVO.getLastName());
 		newEmailAccount.setName(emailAccountVO.getName());
 		newEmailAccount.setDomain(domainDao.readByPrimaryKey(domainId));
+		if(emailAccountVO.getGroupId()==null || emailAccountVO.getGroupId()<0){
+			newEmailAccount.setGroup(null);
+		} else {
+			newEmailAccount.setGroup(groupDao.readByPrimaryKey(emailAccountVO.getGroupId()));
+		}
 		try{
 			emailAccountDao.save(newEmailAccount);
 		} catch (DataIntegrityViolationException e){

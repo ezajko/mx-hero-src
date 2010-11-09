@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface EmailAccountService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer page, Integer pageSize);
+	PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer groupId, Integer page, Integer pageSize);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	void remove(Integer emailId);
