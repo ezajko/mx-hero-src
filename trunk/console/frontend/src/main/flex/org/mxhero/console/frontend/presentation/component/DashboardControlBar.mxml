@@ -8,6 +8,8 @@
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.frontend.application.resources.DashboardProperties;
+			import org.mxhero.console.frontend.infrastructure.AuthorizeHelper;
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -15,6 +17,7 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import mx.resources.IResourceManager;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.presentation.DashboardPM;
 			
@@ -28,6 +31,7 @@
 			[Inject]
 			[Bindable]
 			public var applicationContext:ApplicationContext;
+			
 		]]>
 	</fx:Script>
 	
@@ -35,6 +39,14 @@
 	<mx:Spacer width="20"/>
 	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" styleName="Dashboard"/>
 	<mx:Spacer width="100%"/>
+	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" fontWeight="bold"/>
+	<s:Label text="{applicationContext.selectedDomain.domain}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"/>
+	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.USER_LABEL)}" fontWeight="bold"/>
 	<s:Label text="{applicationContext.applicationUser.userName}"/>
-	<component1:GlowButton source="{ImageResources.LOGOUT_ICON}" glowColor="#ff0000" maxGlow="15.0" click="{model.logout()}"/>
+	<mx:Spacer width="5"/>
+	<component1:GlowButton source="{ImageResources.LOGOUT_ICON}" 
+						   glowColor="#ff0000" 
+						   maxGlow="15.0" 
+						   click="{model.logout()}" 
+						   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_TOOLTIP)}"/>
 </s:BorderContainer>

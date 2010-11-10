@@ -41,8 +41,7 @@
 				serverTI.text="";
 				model.filterDomains(domainTI.text,emailTI.text,serverTI.text);
 			}
-
-
+	
 			protected function newDomainLink_clickHandler(event:MouseEvent):void
 			{
 				model.newDomain(this);
@@ -125,7 +124,7 @@
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_LABEL)}"
 							   labelFunction="dateLabelFunction"
 							   width="110" resizable="false"/>
-			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+			<mx:DataGridColumn  width="108" sortable="false" resizable="false">
 				<mx:itemRenderer>
 					<fx:Component>
 						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
@@ -136,6 +135,9 @@
 
 								]]>
 							</fx:Script>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.enterDomain()}"
+												  source="{ImageResources.ENTER_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_ENTER_LABEL)}"/>
 							<component:GlowButton maxGlow="10.0" 
 												  click="{outerDocument.model.editDomain(outerDocument)}"
 												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_EDIT_LABEL)}"/>

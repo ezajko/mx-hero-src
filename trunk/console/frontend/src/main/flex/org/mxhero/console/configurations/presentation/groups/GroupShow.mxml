@@ -65,18 +65,17 @@
 	<component:ErrorText id="errorText" width="100%"/>
 	
 	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
-		<s:HGroup>
-			<s:VGroup>
-				<mx:FormItem includeIn="new" required="true" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_NAME_LABEL)}">
-					<s:TextInput id="nameTi" text="@{group.name}" enabled="false"/>
-				</mx:FormItem>
-				<mx:FormItem label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_DESCRIPTION_LABEL)}">
-					<s:TextInput id="descriptionTi" text="@{group.description}"/>
-				</mx:FormItem>			
-			</s:VGroup>
+		<s:HGroup width="100%">
+			<mx:FormItem includeIn="new" required="true" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_NAME_LABEL)}">
+				<s:TextInput id="nameTi" text="@{group.name}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_DESCRIPTION_LABEL)}" width="100%">
+				<s:TextInput id="descriptionTi" text="@{group.description}" width="100%"/>
+			</mx:FormItem>
 		</s:HGroup>
-		
-		<s:HGroup paddingTop="15">
+		<mx:Spacer height="10"/>
+		<component:LabelExpanded width="100%" explainText="(more)" hideText="(less)" labelText="Selecte members for this group" expandedText="Select with emails that doesn't have an account and drag them to the grid on the right. To select multiple accounts just click on them while you keep the control button on your keyboard pressed"/>
+		<s:HGroup>
 			<s:VGroup>
 				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_MEMBERS_LABEL)}"/>
 				<mx:DataGrid id="groupAccountsDg"
