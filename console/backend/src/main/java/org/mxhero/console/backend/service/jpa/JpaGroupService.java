@@ -114,8 +114,8 @@ public class JpaGroupService implements GroupService{
 					EmailAccount emailAccount =emailAccountDao.readByPrimaryKey(emailAccountVO.getId());
 					if(emailAccount!=null){
 						emailAccount.setGroup(group);
+						emailAccountDao.save(emailAccount);
 					}
-					emailAccountDao.save(emailAccount);
 				}catch (Exception e){
 					
 				}
