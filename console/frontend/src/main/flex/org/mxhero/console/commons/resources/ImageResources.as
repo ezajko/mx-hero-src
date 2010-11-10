@@ -53,5 +53,9 @@ package org.mxhero.console.commons.resources
 		[Embed(source="/images/right.png")] 
 		[Bindable]
 		public static var RIGHT_ICO:Class; 	
+		
+		[Embed(source="/images/enter.png")] 
+		[Bindable]
+		public static var ENTER_ICO:Class; 	
 	}
 }

@@ -55,6 +55,10 @@ package org.mxhero.console.configurations.application.resources
 		public static const FORM_ADMINISTRATOR_CONFIRM_LABEL:String="form.administrator.confirm.label";
 		
 		public static const FORM_ADMINISTRATOR_EMAIL_LABEL:String="form.administrator.email.label";
+		
+		public static const COLUMN_CREATED_ENTER_LABEL:String="list.column.enter.tooltip";
+		
+		
 
 	}
 }

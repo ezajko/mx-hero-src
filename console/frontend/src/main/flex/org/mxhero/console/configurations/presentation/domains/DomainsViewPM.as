@@ -20,6 +20,7 @@ package org.mxhero.console.configurations.presentation.domains
 	import org.mxhero.console.configurations.application.event.RemoveDomainEvent;
 	import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
+	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Domain;
 
 	[Landmark(name="main.dashboard.configurations.domains")]
@@ -40,6 +41,10 @@ package org.mxhero.console.configurations.presentation.domains
 			
 		[MessageDispatcher]
 		public var dispatcher:Function;
+		
+		[Inject]
+		[Bindable]
+		public var context:ApplicationContext;
 		
 		[Bindable]
 		public var domains:ArrayCollection;
@@ -193,6 +198,10 @@ package org.mxhero.console.configurations.presentation.domains
 		public function updateError (faultEvent:FaultEvent, event:EditDomainEvent) : void {
 			isLoading=false;
 			domainShow.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+		}
+		
+		public function enterDomain():void{
+			context.selectedDomain=selectDomain as Domain;
 		}
 	}
 }
