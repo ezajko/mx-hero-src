@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.vo;
 
 import java.util.Calendar;
+import java.util.Collection;
 
 public class DomainVO {
 
@@ -15,6 +16,8 @@ public class DomainVO {
 	private Calendar updatedDate;
 
 	private OwnerVO owner;
+	
+	private Collection<String> aliases;
 
 	
 	public Integer getId() {
@@ -64,5 +67,13 @@ public class DomainVO {
 	public void setOwner(OwnerVO owner) {
 		this.owner = owner;
 	}
-	
+
+	public Collection<String> getAliases() {
+		return aliases;
+	}
+
+	public void setAliases(Collection<String> aliases) {
+		this.aliases = aliases;
+	}
+
 }
