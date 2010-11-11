@@ -1,5 +1,7 @@
 package org.mxhero.console.frontend.domain
 {
+	import mx.collections.ArrayCollection;
+
 	[Bindable]
 	[RemoteClass(alias="org.mxhero.console.backend.vo.DomainVO")]
 	public class Domain
@@ -10,6 +12,7 @@ package org.mxhero.console.frontend.domain
 		public var creationDate:Date;
 		public var owner:Owner;
 		public var updatedDate:Date;
+		public var aliases:ArrayCollection;
 		
 		public function clone():Domain{
 			var clonedDomain:Domain=new Domain();
@@ -20,6 +23,10 @@ package org.mxhero.console.frontend.domain
 			clonedDomain.updatedDate=this.updatedDate;
 			if(this.owner!=null){
 				clonedDomain.owner=this.owner.clone();
+			}
+			if(this.aliases!=null){
+				clonedDomain.aliases=new ArrayCollection();
+				clonedDomain.aliases.addAll(this.aliases);
 			}
 			return clonedDomain;
 		}

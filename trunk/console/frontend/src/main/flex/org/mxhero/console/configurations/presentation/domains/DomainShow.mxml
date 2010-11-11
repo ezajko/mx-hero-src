@@ -13,11 +13,16 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
+			import mx.managers.DragManager;
 			import mx.managers.PopUpManager;
+			import mx.utils.StringUtil;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.commons.resources.ErrorsProperties;
+			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 			import org.mxhero.console.frontend.domain.Domain;
 			
@@ -40,7 +45,7 @@
 			{
 				validateAll.validate();
 				if(validateAll.isValid){
-					if(passwordTi.text!=confirmTi.text){
+					if(passwordTi.text.length>0 && passwordTi.text!=confirmTi.text && this.administratorCheck.selected){
 						confirmTi.errorString=resourceManager.getString(ErrorsProperties.NAME,ErrorsProperties.PASSWORD_CONFIRM_ERROR);
 							return;
 					}
@@ -60,12 +65,41 @@
 				}else{
 					administratorCheck.selected=false;
 				}
+				PopUpManager.centerPopUp(this);
 			}
 
+
+			protected function addAliasBtt_clickHandler(event:MouseEvent):void
+			{
+				
+				if(aliasTi.text!=null && StringUtil.trim(aliasTi.text).length>0){
+					if(domain.aliases==null){
+						domain.aliases=new ArrayCollection();
+					}
+					domain.aliases.addItem(aliasTi.text);
+					aliasTi.text="";
+				}
+			}
+
+
+			protected function image1_dragEnterHandler(event:DragEvent):void
+			{
+				DragManager.acceptDragDrop(event.currentTarget as Image);
+			}
+			
 		]]>
 	</fx:Script>
 
 	<fx:Declarations>
+		<s:Sequence id="effectDrop" target="{tashImg}" >
+			<mx:Blur id="blurImage" duration="150" 
+					 blurXFrom="0.0" blurXTo="10.0" 
+					 blurYFrom="0.0" blurYTo="10.0"/>
+			<mx:Blur id="unblurImage" duration="150" 
+					 blurXFrom="10.0" blurXTo="0.0" 
+					 blurYFrom="10.0" blurYTo="0.0"/>			
+		</s:Sequence>
+
 		
 		<cairngorm:ValidatorGroup id="validateAll">
 			<cairngorm:validators>
@@ -75,8 +109,8 @@
 			<cairngorm:groups>
 				<cairngorm:ValidatorGroup id="adminValidators" enabled="{administratorCheck.selected}">
 					<cairngorm:validators>
-						<mx:StringValidator id="passwordV" required="true" property="text" source="{passwordTi}" enabled="{administratorCheck.selected}" trigger="{saveBtt}" triggerEvent="click" />
-						<mx:StringValidator id="confirmV" required="true" property="text" source="{confirmTi}" enabled="{administratorCheck.selected}" trigger="{saveBtt}" triggerEvent="click"/>
+						<mx:StringValidator id="passwordV" required.new="true" required.edit="false" property="text" source="{passwordTi}" enabled="{administratorCheck.selected}" trigger="{saveBtt}" triggerEvent="click" />
+						<mx:StringValidator id="confirmV" required.new="true" required.edit="false" property="text" source="{confirmTi}" enabled="{administratorCheck.selected}" trigger="{saveBtt}" triggerEvent="click"/>
 						<mx:EmailValidator id="emailV" required="true" property="text" source="{emailTi}" enabled="{administratorCheck.selected}" trigger="{saveBtt}" triggerEvent="click"/>						
 					</cairngorm:validators>
 				</cairngorm:ValidatorGroup>				
@@ -94,7 +128,9 @@
 		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
 	</s:layout>
 	<component:ErrorText id="errorText" width="100%"/>
-		<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
+	
+	<s:HGroup paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20" gap="20">
+		<mx:Form paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" >
 			<s:VGroup width="100%">
 				<component:LabelExpanded width="100%" 
 										 labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_LABEL)}"
@@ -122,10 +158,25 @@
 							 enabled="{administratorCheck.selected}"
 							 width="100%"/>
 			</mx:FormItem>
-			<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">
-				<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
-				<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
-						  click="saveBtt_clickHandler(event)"/>
-			</s:HGroup>
 		</mx:Form>
+		
+		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
+			<s:VGroup height="100%">
+				<component:LabelExpanded labelText="Aliases" explainText="(more)" hideText="less" expandedText="Add aliases for this domain. Just enter a new alias and press the add button." width="100%"/>
+				<s:HGroup>
+					<s:TextInput id="aliasTi"/>
+					<s:Button id="addAliasBtt" label="Add" click="addAliasBtt_clickHandler(event)"/>
+				</s:HGroup>
+				<s:List dataProvider="{domain.aliases}" width="100%" height="100%" dragEnabled="true" dragMoveEnabled="true"/>				
+			</s:VGroup>
+			<mx:Image id="tashImg" source="{ImageResources.TRASHCAN}" dragEnter="image1_dragEnterHandler(event)" dragDrop="{effectDrop.play()}"/>
+		</s:HGroup>		
+	</s:HGroup>
+	
+	<s:HGroup horizontalAlign="right" width="100%" paddingLeft="20" paddingRight="20" paddingBottom="20" >
+		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
+		<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+				  click="saveBtt_clickHandler(event)"/>
+	</s:HGroup>
+	
 </s:TitleWindow>

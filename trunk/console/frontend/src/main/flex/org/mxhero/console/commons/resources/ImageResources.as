@@ -57,5 +57,9 @@ package org.mxhero.console.commons.resources
 		[Embed(source="/images/enter.png")] 
 		[Bindable]
 		public static var ENTER_ICO:Class; 	
+		
+		[Embed(source="/images/trashcan.png")] 
+		[Bindable]
+		public static var TRASHCAN:Class; 	
 	}
 }
