@@ -34,14 +34,17 @@ public class Domain {
 	@Column(name="updated",nullable=false)
 	private Calendar updatesDate;
 	
-	@OneToOne(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToOne(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private ApplicationUser owner;
 	
 	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	public Set<EmailAccount> emailAccounts;
+	private Set<EmailAccount> emailAccounts;
 
+	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+	private Set<DomainAlias> aliases;
+	
 	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	public Set<Group> groups;
+	private Set<Group> groups;
 	
 	public Integer getId() {
 		return id;
@@ -99,6 +102,14 @@ public class Domain {
 		this.emailAccounts = emailAccounts;
 	}
 	
+	public Set<DomainAlias> getAliases() {
+		return aliases;
+	}
+
+	public void setAliases(Set<DomainAlias> aliases) {
+		this.aliases = aliases;
+	}
+
 	public Set<Group> getGroups() {
 		return groups;
 	}

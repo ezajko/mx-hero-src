@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.mxhero.console.backend.dao.AuthorityDao;
+import org.mxhero.console.backend.dao.DomainAliasDao;
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
 import org.mxhero.console.backend.entity.Domain;
+import org.mxhero.console.backend.entity.DomainAlias;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.DomainService;
 import org.mxhero.console.backend.translator.DomainTranslator;
@@ -26,20 +28,30 @@ public class JpaDomainService implements DomainService {
 	
 	public static final String DOMAIN_NOT_EXISTS="domain.not.exists";
 	
+	public static final String ALIAS_WITH_DOMAIN_NAME="alias.with.domain.name";
+	
+	public static final String ALIAS_OTHER_DOMAIN="alias.other.domain";
+	
 	private DomainDao dao;
 	
 	private AuthorityDao authorityDao;
+	
+	private DomainAliasDao domainaliasDao;
 	
 	private DomainTranslator domainTranslator;
 	
 	private PasswordEncoder encoder;
 	
 	@Autowired(required=true)
-	public JpaDomainService(DomainDao dao, DomainTranslator domainTranslator, AuthorityDao authorityDao, PasswordEncoder encoder) {
+	public JpaDomainService(DomainDao dao, AuthorityDao authorityDao,
+			DomainAliasDao domainaliasDao, DomainTranslator domainTranslator,
+			PasswordEncoder encoder) {
+		super();
 		this.dao = dao;
-		this.authorityDao=authorityDao;
-		this.domainTranslator=domainTranslator;
-		this.encoder=encoder;
+		this.authorityDao = authorityDao;
+		this.domainaliasDao = domainaliasDao;
+		this.domainTranslator = domainTranslator;
+		this.encoder = encoder;
 	}
 
 	@Override
@@ -86,7 +98,7 @@ public class JpaDomainService implements DomainService {
 			domain.setOwner(user);
 			user.setDomain(domain);
 		}
-		dao.save(domain);
+		dao.save(domain);		
 	}
 
 	@Override
@@ -119,10 +131,39 @@ public class JpaDomainService implements DomainService {
 				user.setDomain(domain);				
 			} else {
 				domain.getOwner().setNotifyEmail(email);
-				domain.getOwner().setPassword(encoder.encodePassword(password, null));
+				if(password!=null && !password.isEmpty()){
+					domain.getOwner().setPassword(encoder.encodePassword(password, null));
+				}
 			}
 		} else {
 			domain.setOwner(null);
+		}
+
+		if(domainVO.getAliases()!=null && domainVO.getAliases().size()>0){
+			domain.setAliases(new HashSet<DomainAlias>());
+			for(String alias : domainVO.getAliases()){
+				if(dao.finbByDomain(alias)!=null){
+					throw new BusinessException(ALIAS_WITH_DOMAIN_NAME);
+				}
+				DomainAlias domainAlias = domainaliasDao.readByPrimaryKey(alias);
+				
+				if(domainAlias!=null){
+					if(!domainAlias.getDomain().getId().equals(domainVO.getId())){
+						throw new BusinessException(ALIAS_OTHER_DOMAIN);
+					}
+				} else {
+					domainAlias = new DomainAlias();
+					domainAlias.setAlias(alias);
+					domainAlias.setCreatedDate(Calendar.getInstance());
+					domainAlias.setDomain(domain);
+				}
+				domain.getAliases().add(domainAlias);
+			}
+
+		}else{
+			if(domain.getAliases()!=null){
+				domain.getAliases().clear();
+			}
 		}
 		dao.save(domain);
 	}
