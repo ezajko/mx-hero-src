@@ -1,0 +1,57 @@
+package org.mxhero.console.backend.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="system_properties")
+public class SystemProperty {
+
+	public final static String MAIL_SMTP_HOST="mail.smtp.host";
+	public final static String MAIL_SMTP_AUTH="mail.smtp.auth";
+	public final static String MAIL_SMTP_PORT="mail.smtp.port";
+	public final static String MAIL_SMTP_SSL_ENABLE="mail.smtp.ssl.enable";
+	public final static String MAIL_ADMIN="mail.admin";
+	public final static String MAIL_SMTP_USER="mail.smtp.user";
+	public final static String MAIL_SMTP_PASSWORD="mail.smtp.password";
+	public final static String DEFAULT_USER_LANGUAGE="default.user.language";
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer id;
+	
+	@Column(name="key", nullable=false, length=100)
+	private String key;
+	
+	@Column(name="value", nullable=false, length=100)
+	private String value;
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+}

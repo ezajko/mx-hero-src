@@ -10,4 +10,6 @@ public interface ApplicationUserDao extends GenericDao<ApplicationUser, Integer>
 	@Query("From ApplicationUser u WHERE u.userName = :userName")
 	ApplicationUser finbByUserName(@Param("userName") String userName);
 	
+	@Query("From ApplicationUser u WHERE u.notifyEmail = :notifyEmail")
+	ApplicationUser finbByNotifyEmail(@Param("notifyEmail") String notifyEmail);
 }
