@@ -14,5 +14,7 @@ package org.mxhero.console.frontend.application.resources
 		public static const FORGOT_EMAIL_LABEL:String="forgot.email.label";
 		public static const FORGOT_LINK_LABEL:String="forgot.link.label";
 		public static const FORGOT_BUTTON_LABEL:String="forgot.button.label";
+		
+		public static const PASSWORD_SENT_TOMAIL:String="password.sent.tomail";
 	}
 }
