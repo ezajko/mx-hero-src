@@ -6,6 +6,7 @@ package org.mxhero.console.frontend.application.event
 		
 		public function RecoverPasswordEvent(mail:String)
 		{
+			this._mail=mail;
 		}
 		
 		public function get mail():String{

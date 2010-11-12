@@ -1,24 +1,29 @@
 package org.mxhero.console.frontend.application.command
 {
+	import mx.controls.Alert;
 	import mx.rpc.AsyncToken;
+	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.mxhero.console.frontend.application.event.RecoverPasswordEvent;
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 
 	public class RecoverPasswordCommand
 	{
 		[Inject(id="applicationUserService")]
-		private var service:RemoteObject;
+		[Bindable]
+		public var service:RemoteObject;
+		
+		[MessageDispatcher]
+		public var dispatcher:Function;
 		
 		public function execute(event:RecoverPasswordEvent):AsyncToken
 		{
-			return null;
+			return service.sendPassword(event.mail);
 		}
 		
-		public function result(event:RecoverPasswordEvent):void
-		{
-			
+		public function error (fault:Fault) : void {
+			dispatcher(new ApplicationErrorMessage(fault.faultCode));
 		}
-
 	}
 }
