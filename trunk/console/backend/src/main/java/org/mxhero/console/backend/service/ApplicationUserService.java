@@ -30,4 +30,7 @@ public interface ApplicationUserService {
 	@Secured("ROLE_DOMAIN_ADMIN")
 	public ApplicationUserVO getUser();
 
+	@Transactional(readOnly=true)
+	public void sendPassword(String email);
+
 }
