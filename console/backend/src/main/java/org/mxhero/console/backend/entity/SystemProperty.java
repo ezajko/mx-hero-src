@@ -27,7 +27,7 @@ public class SystemProperty {
 	@Column(name="key", nullable=false, length=100)
 	private String key;
 	
-	@Column(name="value", nullable=false, length=100)
+	@Column(name="value", length=100)
 	private String value;
 	
 	public Integer getId() {

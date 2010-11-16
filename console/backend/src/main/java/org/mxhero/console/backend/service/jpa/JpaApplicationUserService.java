@@ -88,8 +88,13 @@ public class JpaApplicationUserService implements ApplicationUserService {
 	}
 
 	@Override
-	public void update(ApplicationUserVO applicationUserVO) {
-		//userDao.save(applicationUser);
+	public ApplicationUserVO edit(ApplicationUserVO applicationUserVO) {
+		ApplicationUser user = userDao.readByPrimaryKey(applicationUserVO.getId());
+		user.setName(applicationUserVO.getName());
+		user.setLastName(applicationUserVO.getLastName());
+		user.setNotifyEmail(applicationUserVO.getNotifyEmail());
+		user.setLocale(applicationUserVO.getLocale());
+		return applicationUserTranslator.translate(userDao.save(user));
 	}
 
 	@Override
