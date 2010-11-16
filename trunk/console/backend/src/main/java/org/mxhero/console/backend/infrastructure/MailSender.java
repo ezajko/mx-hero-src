@@ -2,8 +2,6 @@ package org.mxhero.console.backend.infrastructure;
 
 import java.util.Properties;
 
-import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -17,6 +15,8 @@ public abstract class MailSender {
 	private static final String DEFAULT_PORT = "25";
 	
 	private static final String DEFAULT_SSL_PORT = "465";
+	
+	private static final String ERROR_SENDING_MAIL="error.sending.mail";
 	
 	public static void send(String subject, String body, String recipient, ConfigurationVO configurationVO ){
 		 Properties props = new Properties();
@@ -54,18 +54,14 @@ public abstract class MailSender {
         	message.saveChanges();
         	
         	Transport transport = session.getTransport("smtp");
-        	if(configurationVO.getPort()==null || configurationVO.getPort()<0){
-        		transport.connect("mmarmol@mxhero.com", "vantar80");
+        	if(configurationVO.getAuth()){
+        		transport.connect(configurationVO.getUser(), configurationVO.getPassword());
         	}else{
         		transport.connect();
         	}
         	transport.sendMessage(message, message.getAllRecipients());
-		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new BusinessException(ERROR_SENDING_MAIL);
 		}
 	}
 	

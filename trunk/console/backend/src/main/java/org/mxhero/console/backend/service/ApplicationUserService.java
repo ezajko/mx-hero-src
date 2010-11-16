@@ -24,7 +24,7 @@ public interface ApplicationUserService {
 	ApplicationUserVO findByUserName(String userName);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void update(ApplicationUserVO applicationUser);
+	ApplicationUserVO edit(ApplicationUserVO applicationUser);
 	
 	@Transactional(readOnly=true)
 	@Secured("ROLE_DOMAIN_ADMIN")
