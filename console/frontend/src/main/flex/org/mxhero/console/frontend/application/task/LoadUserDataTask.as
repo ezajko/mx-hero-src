@@ -2,6 +2,7 @@ package org.mxhero.console.frontend.application.task
 {
 	import flash.net.registerClassAlias;
 	
+	import mx.collections.ArrayCollection;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	import mx.rpc.AsyncToken;
@@ -9,13 +10,14 @@ package org.mxhero.console.frontend.application.task
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
+	import org.mxhero.console.commons.resources.CommonsProperties;
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
+	import org.mxhero.console.frontend.application.resources.LoadingProperties;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.ApplicationUser;
-	import org.mxhero.console.frontend.application.resources.LoadingProperties;
 	import org.spicefactory.lib.task.Task;
 
 	public class LoadUserDataTask extends Task
@@ -51,6 +53,7 @@ package org.mxhero.console.frontend.application.task
 			applicationContext.selectedDomain=applicationContext.applicationUser.domain;
 			service.removeEventListener(ResultEvent.RESULT,onResult);
 			dispatcher(new LanguageChangedMessage(applicationContext.applicationUser.locale));
+			applicationContext.locales=new ArrayCollection(rm.getString(CommonsProperties.NAME,CommonsProperties.LOCALES).split(";"));
 			complete();
 		}
 		

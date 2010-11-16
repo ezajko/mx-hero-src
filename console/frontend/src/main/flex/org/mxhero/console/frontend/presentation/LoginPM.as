@@ -23,6 +23,10 @@ package org.mxhero.console.frontend.presentation
 		[CommandStatus(type="org.mxhero.console.frontend.application.event.LoginEvent")]
 		public var isLoging:Boolean = false;
 		
+		[Bindable]
+		[CommandStatus(type="org.mxhero.console.frontend.application.event.RecoverPasswordEvent")]
+		public var isRecovering:Boolean = false;
+		
 		public function login():void
 		{
 			dispatcher(new LoginEvent(username,password));

@@ -22,6 +22,7 @@
 		[ResourceBundle("configurations_domains_show")]
 		[ResourceBundle("configurations_accounts")]
 		[ResourceBundle("configurations_groups")]
+		[ResourceBundle("configurations_users")]
 	</fx:Metadata>
 	
 	<fx:Declarations>
