@@ -10,5 +10,7 @@ package org.mxhero.console.frontend.domain
 		public var selectedDomain:Domain;
 		
 		public var groups:ArrayCollection;
+		
+		public var locales:ArrayCollection;
 	}
 }

@@ -6,13 +6,14 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
-		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*">
+		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*" xmlns:user="org.mxhero.console.configurations.presentation.user.*" xmlns:system="org.mxhero.console.configurations.presentation.system.*">
 
 	<fx:Script>
 		<![CDATA[
 			import mx.rpc.remoting.RemoteObject;
 			
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+			import org.mxhero.console.configurations.application.command.EditApplicationUserCommand;
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
 			import org.mxhero.console.configurations.application.command.EditEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.EditGroupCommand;
@@ -52,11 +53,15 @@
 		<parsley:DynamicCommand type="{LoadEmailAccountsWithNoGroupCommand}"/>
 		<parsley:DynamicCommand type="{EditGroupCommand}"/>
 		
+		<parsley:DynamicCommand type="{EditApplicationUserCommand}"/>
+		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
 		<domains:DomainsViewPM/>
 		<accounts:AccountsViewPM/>
 		<groups:GroupsViewPM/>
+		<user:UserViewPM/>
+		<system:SystemViewPM/>
 		
 		<s:ArrayCollection id="configurationsCategories">
 			<domain:LCCategory key="category.domains" 
@@ -94,6 +99,12 @@
 						<domain:LCChild key="category.settings.user" 
 										requiredAuthority="ROLE_DOMAIN_ADMIN" 
 										keyDescription="category.settings.user.description" 
+										resource="configurations_list"
+										navigateTo="{ConfigurationsDestinations.USER}"/>
+						<domain:LCChild key="category.settings.system" 
+										requiredAuthority="ROLE_ADMIN" 
+										keyDescription="category.settings.system.description" 
+										navigateTo="{ConfigurationsDestinations.SYSTEM}"
 										resource="configurations_list"/> 
 					</s:ArrayCollection>
 				</domain:childs>

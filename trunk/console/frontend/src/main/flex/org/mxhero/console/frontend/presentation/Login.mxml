@@ -91,19 +91,19 @@
 		<s:Panel id="loginPanel"
 				 title.default="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_TITLE)}" 
 				 title.forgot="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_TITLE)}"
-				 enabled="{!model.isLoging}"> 
+				 enabled="{!(model.isLoging||model.isRecovering)}"> 
 			<s:layout> 
 				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 			</s:layout>
 			<mx:Form id="loginForm" defaultButton="{submit}" > 
 				<mx:FormItem id="mailFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_EMAIL_LABEL)}" includeIn="forgot"> 
-					<s:TextInput id="mailTi" text="@{model.mail}" width="140" /> 
+					<s:TextInput id="mailTi" text="@{model.mail}" width="180" /> 
 				</mx:FormItem>
 				<mx:FormItem id="useridFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_USERNAME_LABEL)}" includeIn="default"> 
-					<s:TextInput id="useridTi" text="@{model.username}" width="140"/> 
+					<s:TextInput id="useridTi" text="@{model.username}" width="180"/> 
 				</mx:FormItem> 
 				<mx:FormItem id="passwordFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_PASSWORD_LABEL)}" includeIn="default" > 
-					<s:TextInput id="passwordTi" text="@{model.password}" displayAsPassword="true"  width="140" /> 
+					<s:TextInput id="passwordTi" text="@{model.password}" displayAsPassword="true"  width="180" /> 
 				</mx:FormItem>
 				<s:Group width="100%"> 
 					<s:layout>
