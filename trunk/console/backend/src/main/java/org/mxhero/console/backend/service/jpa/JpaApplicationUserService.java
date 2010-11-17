@@ -27,6 +27,8 @@ public class JpaApplicationUserService implements ApplicationUserService {
 
 	private final static String MAIL_NOT_FOUND="mail.not.found";
 	
+	private final static String PASSWORD_NOT_MATCH="password.not.match";
+	
 	private PasswordEncoder encoder;
 	
 	private ApplicationUserDao userDao;
@@ -58,18 +60,15 @@ public class JpaApplicationUserService implements ApplicationUserService {
 
 
 	@Override
-	public void changePassword(String newPassword) {
+	public void changePassword(String oldPassword, String newPassword) {
 		ApplicationUser user = userDao.finbByUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-		user.setPassword(encoder.encodePassword(newPassword,null));
-		userDao.save(user);
-	}
-
-
-	@Override
-	public void changeUserPassword(String userName, String password, String newPassword) {
-		ApplicationUser user = userDao.finbByUserName(userName);
-		user.setPassword(encoder.encodePassword(newPassword,null));
-		userDao.save(user);
+		if(user.getPassword().equals(encoder.encodePassword(oldPassword,null))){
+			user.setPassword(encoder.encodePassword(newPassword,null));
+			userDao.save(user);
+		} else {
+			throw new BusinessException(PASSWORD_NOT_MATCH);
+		}
+		
 	}
 	
 	@Override
