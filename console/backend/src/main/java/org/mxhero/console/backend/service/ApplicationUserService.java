@@ -9,11 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface ApplicationUserService {
 
-	@Secured("ROLE_ADMIN")
-	void changeUserPassword(String username, String password, String newPassword);
-	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void changePassword(String newPassword);
+	void changePassword(String oldPassword, String newPassword);
 	
 	@Transactional(readOnly=true)
 	@Secured("ROLE_ADMIN")
