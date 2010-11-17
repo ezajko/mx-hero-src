@@ -13,6 +13,7 @@
 			import mx.rpc.remoting.RemoteObject;
 			
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+			import org.mxhero.console.configurations.application.command.ChangePasswordCommand;
 			import org.mxhero.console.configurations.application.command.EditApplicationUserCommand;
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
 			import org.mxhero.console.configurations.application.command.EditEmailAccountCommand;
@@ -54,6 +55,7 @@
 		<parsley:DynamicCommand type="{EditGroupCommand}"/>
 		
 		<parsley:DynamicCommand type="{EditApplicationUserCommand}"/>
+		<parsley:DynamicCommand type="{ChangePasswordCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

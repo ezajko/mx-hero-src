@@ -31,5 +31,7 @@ package org.mxhero.console.configurations.application.resources
 		public static const FORM_LOCALE_ERROR:String="form.locale.error";
 		
 		public static const UPDATE_USER_RESULT:String="update.user.result";
+		
+		public static const PASSWORD_CHANGED:String="password.changed";
 	}
 }
