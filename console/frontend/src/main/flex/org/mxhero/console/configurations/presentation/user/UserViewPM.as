@@ -5,6 +5,7 @@ package org.mxhero.console.configurations.presentation.user
 	import mx.resources.ResourceManager;
 	
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+	import org.mxhero.console.configurations.application.event.ChangePasswordEvent;
 	import org.mxhero.console.configurations.application.event.EditApplicationUserEvent;
 	import org.mxhero.console.configurations.application.resources.UserProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
@@ -69,6 +70,22 @@ package org.mxhero.console.configurations.presentation.user
 		
 		[CommandError]
 		public function updateUserError(fault:*,event:EditApplicationUserEvent):void{
+			this.isUpdating=false;
+		}
+		
+		public function changePassword(oldPassword:String,newPassword:String):void{
+			this.isUpdating=true;
+			dispatcher(new ChangePasswordEvent(oldPassword,newPassword));
+		}
+		
+		[CommandResult]
+		public function changePasswordResult(result:*,event:ChangePasswordEvent):void{
+			this.isUpdating=false;
+			Alert.show(rm.getString(UserProperties.NAME,UserProperties.PASSWORD_CHANGED),context.applicationUser.userName,Alert.OK);
+		}
+		
+		[CommandError]
+		public function changePasswordError(fault:*,event:ChangePasswordEvent):void{
 			this.isUpdating=false;
 		}
 	}
