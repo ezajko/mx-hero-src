@@ -7,7 +7,7 @@ import org.synyx.hades.dao.Query;
 
 public interface SystemPropertyDao extends GenericDao<SystemProperty, Integer>{
 
-	@Query("Select sp From SystemProperty sp WHERE sp.key = :key")
+	@Query("Select sp From SystemProperty sp WHERE sp.propertyKey = :key")
 	SystemProperty findByKey(@Param("key") String key);
 	
 }

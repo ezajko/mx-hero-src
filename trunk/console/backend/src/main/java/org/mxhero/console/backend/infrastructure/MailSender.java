@@ -18,9 +18,22 @@ public abstract class MailSender {
 	
 	private static final String ERROR_SENDING_MAIL="error.sending.mail";
 	
+	private static final String MAIL_MISSING_CONFIGURATION="mail.missing.configuration";
+	
 	public static void send(String subject, String body, String recipient, ConfigurationVO configurationVO ){
 		 Properties props = new Properties();
 		 props.put("mail.smtp.host", configurationVO.getHost());
+		 
+		 if(configurationVO==null||
+			configurationVO.getHost()==null||
+			configurationVO.getHost().trim().length()<1||
+			configurationVO.getPort()==null||
+			configurationVO.getPort()<1||
+			configurationVO.getAdminMail()==null||
+			configurationVO.getAdminMail().trim().length()<1){
+			 throw new BusinessException(MAIL_MISSING_CONFIGURATION);
+		 }
+	
 		 
 		 if(configurationVO.getSsl()!=null && configurationVO.getSsl()){
 			 props.put("mail.smtp.ssl.enable","true");

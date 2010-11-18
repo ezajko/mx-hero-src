@@ -24,11 +24,11 @@ public class SystemProperty {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="key", nullable=false, length=100)
-	private String key;
+	@Column(name="property_key", nullable=false, length=100)
+	private String propertyKey;
 	
-	@Column(name="value", length=100)
-	private String value;
+	@Column(name="property_value", length=100 )
+	private String propertyValue;
 	
 	public Integer getId() {
 		return id;
@@ -38,20 +38,20 @@ public class SystemProperty {
 		this.id = id;
 	}
 
-	public String getKey() {
-		return key;
+	public String getPropertyKey() {
+		return propertyKey;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setPropertyKey(String key) {
+		this.propertyKey = key;
 	}
 
-	public String getValue() {
-		return value;
+	public String getPropertyValue() {
+		return propertyValue;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setPropertyValue(String value) {
+		this.propertyValue = value;
 	}
 
 }
