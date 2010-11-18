@@ -12,4 +12,6 @@ public interface ConfigurationService {
 	@Secured("ROLE_ADMIN")
 	void edit(ConfigurationVO configurationVO);
 	
+	@Secured("ROLE_ADMIN")
+	void testMail(ConfigurationVO configurationVO);
 }
