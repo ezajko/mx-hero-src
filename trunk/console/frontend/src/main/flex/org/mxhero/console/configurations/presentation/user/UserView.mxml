@@ -93,6 +93,8 @@
 	
 	<s:VGroup width="100%">
 		<mx:Form width="700">
+			<mx:FormHeading label="{resourceManager.getString(UserProperties.NAME,UserProperties.FORM_USER_DATA_TITLE)}" 
+							textAlign="left" paddingLeft="0" textIndent="0" leading="0"/>
 			<s:HGroup width="100%" verticalAlign="bottom" gap="40">
 				<s:HGroup width="100%" gap="20">
 					<s:VGroup width="100%" gap="20">
@@ -124,6 +126,8 @@
 	</s:VGroup>
 	<s:VGroup width="100%">
 		<mx:Form width="700">
+			<mx:FormHeading label="{resourceManager.getString(UserProperties.NAME,UserProperties.FORM_PASSWORD_TITLE)}" 
+							textAlign="left" paddingLeft="0" textIndent="0" leading="0"/>
 			<s:HGroup width="100%" verticalAlign="bottom" gap="40">
 				<s:HGroup width="100%" gap="20">
 					<s:VGroup width="100%" gap="20">

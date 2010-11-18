@@ -23,6 +23,7 @@
 		[ResourceBundle("configurations_accounts")]
 		[ResourceBundle("configurations_groups")]
 		[ResourceBundle("configurations_users")]
+		[ResourceBundle("configurations_system")]
 	</fx:Metadata>
 	
 	<fx:Declarations>
@@ -45,6 +46,7 @@
 			
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
+			import org.mxhero.console.frontend.domain.Configuration;
 			import org.mxhero.console.frontend.domain.Domain;
 			import org.mxhero.console.frontend.domain.EmailAccount;
 			import org.mxhero.console.frontend.domain.Group;
@@ -61,6 +63,7 @@
 				registerClassAlias("org.mxhero.console.backend.vo.EmailAccountVO",EmailAccount);
 				registerClassAlias("org.mxhero.console.backend.vo.PageVO",Page);
 				registerClassAlias("org.mxhero.console.backend.vo.GroupVO",Group);
+				registerClassAlias("org.mxhero.console.backend.vo.ConfigurationVO",Configuration);
 			}
 			
 			[Inject]

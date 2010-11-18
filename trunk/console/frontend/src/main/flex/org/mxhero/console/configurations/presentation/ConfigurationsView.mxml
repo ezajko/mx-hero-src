@@ -8,7 +8,7 @@
 		 width="100%"
 		 height="100%" 
 		 xmlns:component="org.mxhero.console.configurations.presentation.component.*" 
-		 xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*" xmlns:user="org.mxhero.console.configurations.presentation.user.*">
+		 xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*" xmlns:user="org.mxhero.console.configurations.presentation.user.*" xmlns:system="org.mxhero.console.configurations.presentation.system.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -80,6 +80,16 @@
 			<s:VerticalLayout/>
 		</s:layout>
 		<user:UserView width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent automationName="{ConfigurationsDestinations.SYSTEM}"  
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<system:SystemView width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
 </mx:ViewStack>

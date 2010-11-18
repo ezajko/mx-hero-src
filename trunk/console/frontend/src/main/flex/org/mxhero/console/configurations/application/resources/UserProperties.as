@@ -33,5 +33,9 @@ package org.mxhero.console.configurations.application.resources
 		public static const UPDATE_USER_RESULT:String="update.user.result";
 		
 		public static const PASSWORD_CHANGED:String="password.changed";
+		
+		public static const FORM_USER_DATA_TITLE:String="form.user.data.title";
+		
+		public static const FORM_PASSWORD_TITLE:String="form.password.title";
 	}
 }
