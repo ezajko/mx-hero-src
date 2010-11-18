@@ -15,6 +15,7 @@
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 			import org.mxhero.console.configurations.application.command.ChangePasswordCommand;
 			import org.mxhero.console.configurations.application.command.EditApplicationUserCommand;
+			import org.mxhero.console.configurations.application.command.EditConfigurationCommand;
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
 			import org.mxhero.console.configurations.application.command.EditEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.EditGroupCommand;
@@ -24,11 +25,13 @@
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllEmailAccountsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllGroupsCommand;
+			import org.mxhero.console.configurations.application.command.LoadConfigurationCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsByGroupCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsWithNoGroupCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupCommand;
+			import org.mxhero.console.configurations.application.command.TestEmailCommand;
 			import org.mxhero.console.configurations.application.command.UploadAccountsCommand;
 
 		]]>
@@ -56,6 +59,10 @@
 		
 		<parsley:DynamicCommand type="{EditApplicationUserCommand}"/>
 		<parsley:DynamicCommand type="{ChangePasswordCommand}"/>
+		
+		<parsley:DynamicCommand type="{LoadConfigurationCommand}"/>
+		<parsley:DynamicCommand type="{EditConfigurationCommand}"/>
+		<parsley:DynamicCommand type="{TestEmailCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
@@ -127,6 +134,12 @@
 
 		<parsley:Object type="{RemoteObject}" id="groupService">
 			<parsley:Property name="destination" value="groupService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+
+		<parsley:Object type="{RemoteObject}" id="configurationService">
+			<parsley:Property name="destination" value="configurationService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

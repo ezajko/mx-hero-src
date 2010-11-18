@@ -1,8 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:component="org.mxhero.console.commons.component.*"
+		 xmlns:cairngorm="http://ns.adobe.com/cairngorm"
+		 enabled="{!model.isUpdating}">
+	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<parsley:Configure/>
+		<cairngorm:ValidatorGroup id="validateMailUpdate">
+			<cairngorm:validators>
+				<mx:StringValidator id="hostV" required="true" property="text" source="{hostTi}" trigger="{updateMailBtt}" triggerEvent="click" />
+				<mx:NumberValidator id="portV" allowNegative="false" domain="int" property="text" source="{portTi}" trigger="{updateMailBtt}" triggerEvent="click" />
+				<mx:EmailValidator id="adminV" required="true" property="text" source="{adminTi}" trigger="{updateMailBtt}" triggerEvent="click" />
+				<mx:StringValidator id="userV" enabled="{this.checkAuthCb.selected}" required="{this.checkAuthCb.selected}" property="text" source="{userTi}" trigger="{updateMailBtt}" triggerEvent="click" />
+				<mx:StringValidator id="passwordV" enabled="{this.checkAuthCb.selected}" required="{this.checkAuthCb.selected}" property="text" source="{passwordTi}" trigger="{updateMailBtt}" triggerEvent="click" />
+			</cairngorm:validators>
+			
+		</cairngorm:ValidatorGroup>
 	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.application.resources.ConfigurationsListProperties;
+			import org.mxhero.console.configurations.application.resources.SystemProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:SystemViewPM;
+
+			protected function updateMailBtt_clickHandler(event:MouseEvent):void
+			{
+				validateMailUpdate.validate();
+				if(validateMailUpdate.isValid){
+					model.configuration.port=new Number(this.portTi.text);
+					model.editConfiguration();
+				}
+			}
+
+
+			protected function testMailBtt_clickHandler(event:MouseEvent):void
+			{
+				validateMailUpdate.validate();
+				if(validateMailUpdate.isValid){
+					model.configuration.port=new Number(this.portTi.text);
+					model.testConfiguration();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="8" paddingTop="8" paddingRight="8" paddingBottom="8" gap="10"/>
+	</s:layout>
+	
+	<component:TitleExpanded width="100%"
+							 title="{resourceManager.getString(SystemProperties.NAME,SystemProperties.TITLE)}"
+							 description="{resourceManager.getString(SystemProperties.NAME,SystemProperties.DESCRIPTION)}"
+							 expandedDescription="{resourceManager.getString(SystemProperties.NAME,SystemProperties.EXPANDED_DESCRIPTION)}"
+							 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+							 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+							 enableExpanded="true"
+							 backLink="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_LABEL)}"
+							 backLinkFunction="{model.goBack}"
+							 backLinkTooltip="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_TOOLTIP)}"/>
+	
+		<mx:Form>
+			<mx:FormHeading label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_MAIL_TITLE)}" 
+						textAlign="left" paddingLeft="0" textIndent="0" leading="0"/>
+			<s:HGroup width="100%" verticalAlign="bottom" gap="40">
+			<s:TileGroup requestedColumnCount="2" 
+						 verticalAlign="bottom" 
+						 horizontalAlign="left" 
+						 columnWidth="300" 
+						 rowHeight="24"
+						 requestedRowCount="3" 
+						 horizontalGap="20" 
+						 verticalGap="20"
+						 height="160">
+				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_HOST_LABEL)}" width="100%">
+					<s:TextInput id="hostTi" text="@{model.configuration.host}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PORT_LABEL)}" width="100%">
+					<s:TextInput id="portTi" text="{model.configuration.port}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_ADMIN_LABEL)}" width="100%">
+					<s:TextInput id="adminTi" text="@{model.configuration.adminMail}" width="100%"/>
+				</mx:FormItem>
+				<mx:Spacer/>
+				<s:CheckBox id="checkAuthCb" 
+							selected="@{model.configuration.auth}"
+							change="{validateMailUpdate.validate()}"
+							label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_AUTH)}"/>
+				<s:CheckBox id="checkSslCb" 
+							selected="@{model.configuration.ssl}"
+							label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_SSL)}"/>
+				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_USER_LABEL)}" width="100%">
+					<s:TextInput id="userTi" enabled="{this.checkAuthCb.selected}" text="@{model.configuration.user}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PASSWORD_LABEL)}" width="100%">
+					<s:TextInput id="passwordTi" enabled="{this.checkAuthCb.selected}" text="@{model.configuration.password}" displayAsPassword="true" width="100%"/>
+				</mx:FormItem>
+			</s:TileGroup>
+				<s:Button id="testMailBtt" 
+						  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_TEST_MAIL_LABEL)}"
+						  click="testMailBtt_clickHandler(event)"/>
+				<s:Button id="updateMailBtt" 
+						  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_UPDATE_MAIL_LABEL)}"
+						  click="updateMailBtt_clickHandler(event)"/>
+			</s:HGroup>
+		</mx:Form>
+	
 </s:Group>
