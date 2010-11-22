@@ -1,0 +1,63 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: \
+org.springframework.beans.factory;resolution:=optional;version="[3.0.0, 3.5.0)", \
+org.w3c.dom;resolution:=optional, \
+javax.xml.parsers;resolution:=optional, \
+org.springframework.orm.jpa;resolution:=optional;version="[3.0.0, 3.5.0)", \
+org.springframework.dao.support;resolution:=optional;version="[3.0.0, 3.5.0)", \
+org.hibernate.ejb.packaging;resolution:=optional|;version="[3.2.0, 4.0.0)", \
+org.synyx.hades.domain;resolution:=optional;version="[2.0.0, 2.5.0)", \
+org.synyx.hades.dao;resolution:=optional;version="[2.0.0, 2.5.0)", \
+org.synyx.hades.dao.orm;resolution:=optional;version="[2.0.0, 2.5.0)", \
+javax.sql;resolution:=optional, \
+javax.transaction;resolution:=optional, \
+javax.persistence;resolution:=optional, \
+javax.persistence.spi;resolution:=optional, \
+javax.persistence.metamodel;resolution:=optional, \
+javax.persistence.criteria;resolution:=optional, \
+org.hibernate;version="[3.2.0, 4.0.0)", \
+org.hibernate.annotations;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.annotations.common;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.annotations.common.reflection;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.ejb;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.cfg;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.cfg.annotations;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.cfg.annotations.reflection;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.cache;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.hql;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.hql.ast;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.hql.antlr;resolution:=optional;version="[3.2.0, 4.0.0)", \
+org.hibernate.validator;resolution:=optional, \
+org.hibernate.validator.constraints;resolution:=optional, \
+org.hibernate.validator.constraints.impl;resolution:=optional, \
+org.hibernate.validator.engine;resolution:=optional, \
+org.hibernate.validator.engine.groups;resolution:=optional, \
+org.hibernate.validator.engine.resolver;resolution:=optional, \
+org.hibernate.validator.jtype;resolution:=optional, \
+org.hibernate.validator.metadata;resolution:=optional, \
+org.hibernate.validator.util;resolution:=optional, \
+org.hibernate.validator.util.annotationfactory;resolution:=optional, \
+org.hibernate.validator.xml;resolution:=optional, \
+org.hibernate.proxy;resolution:=optional;version="[3.2.0, 4.0.0)", \
+com.mysql.jdbc;resolution:=optional, \
+javassist.util.proxy;resolution:=optional, \
+org.aopalliance.aop;resolution:=optional, \
+org.springframework.aop;resolution:=optional;version="[3.0.0, 3.5.0)", \
+org.springframework.aop.framework;resolution:=optional;version="[3.0.0, 3.5.0)", \
+net.sf.cglib.core;resolution:=optional,net.sf.cglib.reflect;resolution:=optional, \
+net.sf.cglib.proxy;resolution:=optional, \
+org.springframework.orm.*;resolution:=optional;version="[3.0.0, 3.5.0)", \
+org.springframework.jdbc.*;resolution:=optional;version="[3.0.0, 3.5.0)", \
+org.springframework.*;resolution:=optional;version="[3.0.0, 3.5.0)", \
+javax.*;resolution:=optional, \
+org.slf4j.*;resolution:=optional;version="[1.4.0, 1.9.0)";provider=paxlogging, \
+antlr;resolution:=optional,*
+
+Embed-Dependency: \
+bonecp;groupId=com.jolbox;inline=false,\
+google-collections;groupId=com.google.collections;inline=false
+
+Export-Package: com.googlecode.jtype,com.jolbox*,com.google*,org.mxhero.engine.plugin.dbfinder*
