@@ -1,0 +1,16 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+		version="1.0">
+
+	<persistence-unit name="mxheroPer" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jar-file></jar-file>
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain</class> 
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbAlias</class>
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbGroup</class> 
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbUser</class>	
+		<exclude-unlisted-classes/>
+	</persistence-unit>
+
+</persistence>
