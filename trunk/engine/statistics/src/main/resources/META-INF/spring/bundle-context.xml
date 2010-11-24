@@ -127,8 +127,9 @@
 				<prop key="hibernate.generate_statistics">${initial.hibernate.generate_statistics}</prop>
 				<!--<prop key="hibernate.hbm2ddl.auto">${initial.hibernate.hbm2ddl.auto}</prop>-->
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
-				<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory
-				</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</prop>
+				<prop key="net.sf.ehcache.configurationResourceName">/ehcache.xml</prop>
 				<prop
 					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.statistics.internal.entity.Stat">nonstrict-read-write</prop>
 				<prop

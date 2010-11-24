@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.statistics.internal.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -13,13 +12,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * Represents a stat for a record, a key can't be repeated for the same record.
  * @author mmarmol
  */
 @Entity
 @Table(name="mail_stats")
-@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Stat implements Serializable{
 
 	private static final long serialVersionUID = 2157349611125482911L;
