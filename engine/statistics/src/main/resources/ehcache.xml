@@ -28,6 +28,14 @@
 		</cacheWriter>
 	</cache>
 
+	<cache name="org.mxhero.engine.plugin.statistics.internal.entity.StatPk"
+		eternal="false" maxElementsInMemory="10000" overflowToDisk="false">
+		<cacheWriter writeMode="write_behind" maxWriteDelay="8"
+			rateLimitPerSecond="5" writeCoalescing="true" writeBatching="true"
+			writeBatchSize="20" retryAttempts="3" retryAttemptDelaySeconds="3">
+		</cacheWriter>
+	</cache>
+
 	<cache name="org.mxhero.engine.plugin.statistics.internal.entity.Record"
 		eternal="false" maxElementsInMemory="10000" overflowToDisk="false" >
 		<cacheWriter writeMode="write_behind" maxWriteDelay="8"
@@ -36,4 +44,12 @@
 		</cacheWriter>
 	</cache>
 
+	<cache name="org.mxhero.engine.plugin.statistics.internal.entity.RecordPk"
+		eternal="false" maxElementsInMemory="10000" overflowToDisk="false">
+		<cacheWriter writeMode="write_behind" maxWriteDelay="8"
+			rateLimitPerSecond="5" writeCoalescing="true" writeBatching="true"
+			writeBatchSize="20" retryAttempts="3" retryAttemptDelaySeconds="3">
+		</cacheWriter>
+	</cache>
+	
 </ehcache>

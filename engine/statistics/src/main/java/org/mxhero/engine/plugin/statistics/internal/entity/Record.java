@@ -3,11 +3,13 @@ package org.mxhero.engine.plugin.statistics.internal.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  * Represents an email. One email may have to record in a database, one for each phase.
@@ -15,7 +17,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "mail_records")
-@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class Record implements Serializable{
 
 	private static final long serialVersionUID = -4673170035825892441L;

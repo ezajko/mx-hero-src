@@ -6,10 +6,14 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * @author mmarmol
  */
 @Embeddable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class RecordPk implements Serializable{
 
 	private static final long serialVersionUID = 7632011568792734925L;

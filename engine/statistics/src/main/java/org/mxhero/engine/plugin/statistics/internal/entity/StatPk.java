@@ -5,10 +5,14 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 /**
  * @author mmarmol
  */
 @Embeddable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class StatPk implements Serializable{
 
 	private static final long serialVersionUID = 3512218688548304886L;
