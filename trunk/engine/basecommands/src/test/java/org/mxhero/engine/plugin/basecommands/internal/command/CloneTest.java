@@ -33,20 +33,20 @@ public class CloneTest {
 		message.saveChanges();
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		
-		Assert.assertFalse((new Clone().exec(mail)).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,(String[])null)).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,null,null)).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,null,null,null)).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,null,null,null,null)).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,"wronghase","","","")).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,RulePhase.SEND,"","","")).isTrue());
-		Assert.assertFalse((new Clone().exec(mail,RulePhase.SEND,"valid@mxhero.com","","")).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail)).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,(String[])null)).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,null,null)).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,null,null,null)).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,null,null,null,null)).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,"wronghase","","","")).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,RulePhase.SEND,"","","")).isTrue());
+		Assert.assertFalse((new CloneImpl().exec(mail,RulePhase.SEND,"valid@mxhero.com","","")).isTrue());
 		
 	}
 	
 	@Test
 	public void testOk() throws AddressException, MessagingException{
-		Clone clone = new Clone();
+		CloneImpl clone = new CloneImpl();
 		clone.setService(new InputService() {
 			
 			@Override

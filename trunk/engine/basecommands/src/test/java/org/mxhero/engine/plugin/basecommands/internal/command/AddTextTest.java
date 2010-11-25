@@ -16,18 +16,18 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.plugin.basecommands.internal.command.AddText;
+import org.mxhero.engine.plugin.basecommands.internal.command.AddTextImpl;
 
 public class AddTextTest {
 
 	@Test
 	public void wrongParams(){
-		Assert.assertFalse((new AddText().exec(null)).isTrue());
-		Assert.assertFalse((new AddText().exec(null,(String[])null)).isTrue());
-		Assert.assertFalse((new AddText().exec(null,null,null)).isTrue());
-		Assert.assertFalse((new AddText().exec(null,"",null)).isTrue());
-		Assert.assertFalse((new AddText().exec(null,null,"")).isTrue());
-		Assert.assertFalse((new AddText().exec(null,"","")).isTrue());
+		Assert.assertFalse((new AddTextImpl().exec(null)).isTrue());
+		Assert.assertFalse((new AddTextImpl().exec(null,(String[])null)).isTrue());
+		Assert.assertFalse((new AddTextImpl().exec(null,null,null)).isTrue());
+		Assert.assertFalse((new AddTextImpl().exec(null,"",null)).isTrue());
+		Assert.assertFalse((new AddTextImpl().exec(null,null,"")).isTrue());
+		Assert.assertFalse((new AddTextImpl().exec(null,"","")).isTrue());
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class AddTextTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		
-		Assert.assertTrue((new AddText().exec(mail,"ADDED ON TOP","top")).isTrue());
+		Assert.assertTrue((new AddTextImpl().exec(mail,"ADDED ON TOP","top")).isTrue());
 		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON TOP"));
 	}
 	
@@ -62,8 +62,46 @@ public class AddTextTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		
-		Assert.assertTrue((new AddText().exec(mail,"ADDED ON BOTTOM","bottom")).isTrue());
+		Assert.assertTrue((new AddTextImpl().exec(mail,"ADDED ON BOTTOM","bottom")).isTrue());
 		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON BOTTOM"));
+	}
+	
+	@Test
+	public void addTextBottomHtlm() throws AddressException, MessagingException, IOException{
+		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
+		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
+		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
+		message.setRecipient(RecipientType.TO, new InternetAddress(
+				"mmarmol@mxhero.com"));
+		message.setSubject("subject");
+		message.setContent("<h1>Hello world</h1>","text/html");
+		message.setSentDate(Calendar.getInstance().getTime());
+		message.saveChanges();
+		
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		
+		Assert.assertTrue((new AddTextImpl().exec(mail,"ADDED ON BOTTOM","bottom","html")).isTrue());
+		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON BOTTOM"));
+		System.out.println(mail.getMessage().getContent().toString());
+	}
+	
+	@Test
+	public void addTextTopHtml() throws AddressException, MessagingException, IOException{
+		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
+		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
+		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
+		message.setRecipient(RecipientType.TO, new InternetAddress(
+				"mmarmol@mxhero.com"));
+		message.setSubject("subject");
+		message.setContent("<h1 id='sss'>Hello world</h1>","text/html");
+		message.setSentDate(Calendar.getInstance().getTime());
+		message.saveChanges();
+		
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		
+		Assert.assertTrue((new AddTextImpl().exec(mail,"<B>ADDED ON TOP</B>","top","hTmL")).isTrue());
+		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON TOP"));
+		System.out.println(mail.getMessage().getContent().toString());
 	}
 
 }

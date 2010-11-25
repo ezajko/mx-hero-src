@@ -12,6 +12,7 @@ import org.mxhero.engine.domain.connector.InputService;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.Clone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +26,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public class Clone implements
-		org.mxhero.engine.plugin.basecommands.command.Clone {
+public class CloneImpl implements Clone {
 
-	private static Logger log = LoggerFactory.getLogger(Clone.class);
+	private static Logger log = LoggerFactory.getLogger(CloneImpl.class);
 
 	private static final int MIM_PARAMANS = 3;
 	private static final int PHASE_PARAM_NUMBER = 0;

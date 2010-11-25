@@ -23,7 +23,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
-import org.mxhero.engine.plugin.basecommands.internal.command.RemoveByType;
+import org.mxhero.engine.plugin.basecommands.internal.command.RemoveByTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,10 +33,10 @@ public class RemoveByTypeTest {
 	
 	@Test
 	public void wrongParams(){
-		Assert.assertFalse((new RemoveByType().exec(null)).isTrue());
-		Assert.assertFalse((new RemoveByType().exec(null,(String[])null)).isTrue());
-		Assert.assertFalse((new RemoveByType().exec(null,null,null)).isTrue());
-		Assert.assertFalse((new RemoveByType().exec(null,"","")).isTrue());
+		Assert.assertFalse((new RemoveByTypeImpl().exec(null)).isTrue());
+		Assert.assertFalse((new RemoveByTypeImpl().exec(null,(String[])null)).isTrue());
+		Assert.assertFalse((new RemoveByTypeImpl().exec(null,null,null)).isTrue());
+		Assert.assertFalse((new RemoveByTypeImpl().exec(null,"","")).isTrue());
 	}
 	
 	@Test
@@ -82,7 +82,7 @@ public class RemoveByTypeTest {
 		log.debug(message.toString());
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		log.debug(mail.toString());
-		Result result = new RemoveByType().exec(mail,"text/");
+		Result result = new RemoveByTypeImpl().exec(mail,"text/");
 		log.debug(result.toString());
 		Assert.assertTrue(result.isTrue());
 		Assert.assertTrue(result.getLongField()==1);
@@ -116,6 +116,6 @@ public class RemoveByTypeTest {
 
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		
-		Assert.assertFalse((new RemoveByType().exec(mail,"text/html")).isTrue());
+		Assert.assertFalse((new RemoveByTypeImpl().exec(mail,"text/html")).isTrue());
 	}
 }

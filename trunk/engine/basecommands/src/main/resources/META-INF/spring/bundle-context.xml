@@ -23,11 +23,11 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.AddRecipient</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.AddRecipient"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.AddRecipientImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="addRecipient" class="org.mxhero.engine.plugin.basecommands.internal.command.AddRecipient"/>
+	<bean id="addRecipient" class="org.mxhero.engine.plugin.basecommands.internal.command.AddRecipientImpl"/>
 	
 	<osgi:service ref="addText">
 	  	<osgi:interfaces>
@@ -35,11 +35,11 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.AddText</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.AddText"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.AddTextImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="addText" class="org.mxhero.engine.plugin.basecommands.internal.command.AddText"/>
+	<bean id="addText" class="org.mxhero.engine.plugin.basecommands.internal.command.AddTextImpl"/>
 	
 	<osgi:service ref="clone">
 	  	<osgi:interfaces>
@@ -47,11 +47,11 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.Clone</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.Clone"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.CloneImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="clone" class="org.mxhero.engine.plugin.basecommands.internal.command.Clone">
+	<bean id="clone" class="org.mxhero.engine.plugin.basecommands.internal.command.CloneImpl">
 		<property name="service" ref="inputService"/>
 	</bean>
 	
@@ -61,11 +61,11 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.Create</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.Create"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.CreateImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="create" class="org.mxhero.engine.plugin.basecommands.internal.command.Create">
+	<bean id="create" class="org.mxhero.engine.plugin.basecommands.internal.command.CreateImpl">
 		<property name="service" ref="inputService"/>
 	</bean>
 		
@@ -75,11 +75,11 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.GetSize</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.GetSize"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.GetSizeImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="getSize" class="org.mxhero.engine.plugin.basecommands.internal.command.GetSize"/>
+	<bean id="getSize" class="org.mxhero.engine.plugin.basecommands.internal.command.GetSizeImpl"/>
 	
 	<osgi:service ref="removeByExtension">
 	  	<osgi:interfaces>
@@ -87,11 +87,11 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.RemoveByExtension</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtension"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtensionImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="removeByExtension" class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtension"/>
+	<bean id="removeByExtension" class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtensionImpl"/>
 	
 		<osgi:service ref="removeByType">
 	  	<osgi:interfaces>
@@ -99,10 +99,10 @@
 	  		<value>org.mxhero.engine.plugin.basecommands.command.RemoveByType</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByType"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByTypeImpl"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="removeByType" class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByType"/>
+	<bean id="removeByType" class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByTypeImpl"/>
 
 </beans>

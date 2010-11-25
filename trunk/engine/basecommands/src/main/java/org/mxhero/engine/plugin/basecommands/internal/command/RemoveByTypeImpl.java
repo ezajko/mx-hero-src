@@ -16,19 +16,19 @@ import javax.mail.Part;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.RemoveByType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements the RemoveByExtension interface. Remove attachments and inlines by
+ * Implements the RemoveByType interface. Remove attachments and inlines by
  * type. Takes any amount of types passed.
  * 
  * @author mmarmol
  */
-public class RemoveByType implements
-		org.mxhero.engine.plugin.basecommands.command.RemoveByType {
+public class RemoveByTypeImpl implements RemoveByType {
 
-	private static Logger log = LoggerFactory.getLogger(RemoveByType.class);
+	private static Logger log = LoggerFactory.getLogger(RemoveByTypeImpl.class);
 
 	private static final String TEXT_TYPE = "text/*";
 	private static final String MULTIPART_TYPE = "multipart/*";

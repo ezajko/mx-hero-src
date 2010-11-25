@@ -6,3 +6,4 @@ Export-Package: org.mxhero.engine.plugin.basecommands*
 
 Import-Package: org.mxhero.engine.domain.mail.business,org.slf4j.*;resolution:=optional;provider=paxlogging,*
 
+Embed-Dependency: jsoup;groupId=org.jsoup;inline=false

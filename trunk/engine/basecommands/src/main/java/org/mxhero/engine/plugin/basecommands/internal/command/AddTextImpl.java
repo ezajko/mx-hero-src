@@ -7,8 +7,11 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.AddText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,20 +22,25 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public class AddText implements
-		org.mxhero.engine.plugin.basecommands.command.AddText {
+public class AddTextImpl implements AddText {
 
-	private static Logger log = LoggerFactory.getLogger(AddText.class);
+	private static Logger log = LoggerFactory.getLogger(AddTextImpl.class);
 
 	private static final int MIM_PARAMANS = 1;
-	private static final int MAX_PARAMANS = 2;
+	private static final int MAX_PARAMANS = 3;
 	private static final int TEXT_PARAM_NUMBER = 0;
 	private static final int POSITION_PARAM_NUMBER = 1;
+	private static final int TYPE_CONTENT_NUMBER = 2;
 
 	public static final String TOP_POSITION = "top";
 	public static final String BOTTOM_POSITION = "bottom";
 
-	private static final String TEXT_PLAIN_TYPE = "text/plain";
+	private static final String TEXT_CONTENT = "text";
+	private static final String HTML_CONTENT = "html";
+	
+	public static final String TEXT_TYPE = "text/*";
+	public static final String TEXT_PLAIN_TYPE = "text/plain";
+	public static final String TEXT_HTML_TYPE = "text/html";
 	private static final String MULTIPART_TYPE = "multipart/*";
 	private static final String WRONG_PARAMS = "wrong params";
 
@@ -44,7 +52,7 @@ public class AddText implements
 	public Result exec(MimeMail mail, String... args) {
 		Result result = new Result();
 		String text = null;
-
+		String type = TEXT_CONTENT;
 		/* default values */
 		String position = TOP_POSITION;
 		/* default values */
@@ -61,6 +69,17 @@ public class AddText implements
 
 		/* checking parameters format and settings vars to use them */
 		switch (args.length) {
+		case 3: {
+			if(args[TYPE_CONTENT_NUMBER]!=null
+					&&(args[TYPE_CONTENT_NUMBER].equalsIgnoreCase(HTML_CONTENT)
+						|| args[TYPE_CONTENT_NUMBER].equalsIgnoreCase(TEXT_CONTENT))){
+					type = args[TYPE_CONTENT_NUMBER].toLowerCase();
+			} else {
+				log.warn("wrong type");
+				result.setText(WRONG_PARAMS);
+				return result;
+			}
+		}
 		case 2: {
 			if (args[POSITION_PARAM_NUMBER] != null
 					&& (args[POSITION_PARAM_NUMBER]
@@ -87,7 +106,7 @@ public class AddText implements
 		}
 
 		try {
-			addText(mail.getMessage(), text, position);
+			addText(mail.getMessage(), text, position,type);
 			mail.getMessage().saveChanges();
 			result.setResult(true);
 		} catch (MessagingException e) {
@@ -99,34 +118,39 @@ public class AddText implements
 		return result;
 	}
 
-	private static void addText(Part p, String text, String position)
+	private static void addText(Part p, String text, String position, String type)
 			throws MessagingException, IOException {
 
-		if (p.isMimeType(TEXT_PLAIN_TYPE)
+		if (p.isMimeType(TEXT_TYPE)
 				&& (p.getDisposition() == null || (!p.getDisposition().equals(
 						Part.INLINE))
 						&& !p.getDisposition().equals(Part.ATTACHMENT))) {
-			log.debug("found part");
-			log.debug("adding text " + text);
-			log.debug("adding real type is " + p.getContentType());
-			log.debug("original text " + ((String) p.getContent()));
+
 			if (position.equals(TOP_POSITION)) {
-				log.debug("new text " + text + ((String) p.getContent()));
-				p.setContent(text + ((String) p.getContent()), p
-						.getContentType());
-				log.debug("text set " + ((String) p.getContent()));
-				log.debug("adding text top");
+				if(type.equals(TEXT_CONTENT) && p.isMimeType(TEXT_PLAIN_TYPE)){
+					p.setContent(text + ((String) p.getContent()), p
+							.getContentType());
+				} else if (type.equals(HTML_CONTENT) && p.isMimeType(TEXT_HTML_TYPE)){
+					Document doc = Jsoup.parse((String) p.getContent());
+					doc.body().prepend(text);
+					p.setContent(doc.outerHtml(), p
+							.getContentType());
+				}
 			} else if (position.equals(BOTTOM_POSITION)) {
-				log.debug("new text " + ((String) p.getContent()) + text);
-				p.setContent(((String) p.getContent()) + text, p
-						.getContentType());
-				log.debug("text set " + ((String) p.getContent()));
-				log.debug("adding text bottom");
+				if(type.equals(TEXT_CONTENT) && p.isMimeType(TEXT_PLAIN_TYPE)){
+					p.setContent(((String) p.getContent()) + text, p
+							.getContentType());
+				} else if (type.equals(HTML_CONTENT) && p.isMimeType(TEXT_HTML_TYPE)){
+					Document doc = Jsoup.parse((String) p.getContent());
+					doc.body().append(text);
+					p.setContent(doc.outerHtml(), p
+							.getContentType());
+				}
 			}
 		} else if (p.isMimeType(MULTIPART_TYPE)) {
 			Multipart mp = (Multipart) p.getContent();
 			for (int i = 0; i < mp.getCount(); i++) {
-				addText(mp.getBodyPart(i), text, position);
+				addText(mp.getBodyPart(i), text, position, type);
 			}
 		}
 	}

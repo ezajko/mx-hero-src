@@ -15,18 +15,18 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.plugin.basecommands.internal.command.AddRecipient;
+import org.mxhero.engine.plugin.basecommands.internal.command.AddRecipientImpl;
 
 public class AddRecipientTest {
 
 	@Test
 	public void wrongParams(){
-		Assert.assertFalse((new AddRecipient().exec(null)).isTrue());
-		Assert.assertFalse((new AddRecipient().exec(null,(String[])null)).isTrue());
-		Assert.assertFalse((new AddRecipient().exec(null,null,null)).isTrue());
-		Assert.assertFalse((new AddRecipient().exec(null,"",null)).isTrue());
-		Assert.assertFalse((new AddRecipient().exec(null,null,"")).isTrue());
-		Assert.assertFalse((new AddRecipient().exec(null,"","")).isTrue());
+		Assert.assertFalse((new AddRecipientImpl().exec(null)).isTrue());
+		Assert.assertFalse((new AddRecipientImpl().exec(null,(String[])null)).isTrue());
+		Assert.assertFalse((new AddRecipientImpl().exec(null,null,null)).isTrue());
+		Assert.assertFalse((new AddRecipientImpl().exec(null,"",null)).isTrue());
+		Assert.assertFalse((new AddRecipientImpl().exec(null,null,"")).isTrue());
+		Assert.assertFalse((new AddRecipientImpl().exec(null,"","")).isTrue());
 	}
 
 	@Test
@@ -43,7 +43,7 @@ public class AddRecipientTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 
-		Assert.assertTrue(new AddRecipient().exec(mail, "to","other@gmail.com").isTrue());
+		Assert.assertTrue(new AddRecipientImpl().exec(mail, "to","other@gmail.com").isTrue());
 		Assert.assertTrue(mail.getMessage().getRecipients(RecipientType.TO).length==2);
 	}
 	
@@ -61,7 +61,7 @@ public class AddRecipientTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 
-		Assert.assertTrue(new AddRecipient().exec(mail, "cc","other@gmail.com").isTrue());
+		Assert.assertTrue(new AddRecipientImpl().exec(mail, "cc","other@gmail.com").isTrue());
 		Assert.assertTrue(mail.getMessage().getRecipients(RecipientType.CC).length==1);
 	}
 	
@@ -79,7 +79,7 @@ public class AddRecipientTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 
-		Assert.assertTrue(new AddRecipient().exec(mail, "bcc","other@gmail.com").isTrue());
+		Assert.assertTrue(new AddRecipientImpl().exec(mail, "bcc","other@gmail.com").isTrue());
 		Assert.assertTrue(mail.getMessage().getRecipients(RecipientType.BCC).length==1);
 	}
 	
@@ -97,8 +97,8 @@ public class AddRecipientTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 
-		Assert.assertTrue(new AddRecipient().exec(mail, "none","other@gmail.com").isTrue());
-		Assert.assertTrue(new AddRecipient().exec(mail, "none","other@gmail.com").isTrue());
+		Assert.assertTrue(new AddRecipientImpl().exec(mail, "none","other@gmail.com").isTrue());
+		Assert.assertTrue(new AddRecipientImpl().exec(mail, "none","other@gmail.com").isTrue());
 		Assert.assertTrue(mail.getRecipients().size()==3);
 	}
 }
