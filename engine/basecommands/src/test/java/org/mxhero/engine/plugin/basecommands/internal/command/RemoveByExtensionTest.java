@@ -22,16 +22,16 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
-import org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtension;
+import org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtensionImpl;
 
 public class RemoveByExtensionTest {
 
 	@Test
 	public void wrongParams(){
-		Assert.assertFalse((new RemoveByExtension().exec(null)).isTrue());
-		Assert.assertFalse((new RemoveByExtension().exec(null,(String[])null)).isTrue());
-		Assert.assertFalse((new RemoveByExtension().exec(null,null,null)).isTrue());
-		Assert.assertFalse((new RemoveByExtension().exec(null,"","")).isTrue());
+		Assert.assertFalse((new RemoveByExtensionImpl().exec(null)).isTrue());
+		Assert.assertFalse((new RemoveByExtensionImpl().exec(null,(String[])null)).isTrue());
+		Assert.assertFalse((new RemoveByExtensionImpl().exec(null,null,null)).isTrue());
+		Assert.assertFalse((new RemoveByExtensionImpl().exec(null,"","")).isTrue());
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class RemoveByExtensionTest {
 		message.saveChanges();
 
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
-		Result result = new RemoveByExtension().exec(mail,"properties");
+		Result result = new RemoveByExtensionImpl().exec(mail,"properties");
 		Assert.assertTrue(result.isTrue());
 		Assert.assertTrue(result.getLongField()==1);
 		Assert.assertTrue(result.getText()!=null);
@@ -93,6 +93,6 @@ public class RemoveByExtensionTest {
 
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		
-		Assert.assertFalse((new RemoveByExtension().exec(mail,"txt")).isTrue());
+		Assert.assertFalse((new RemoveByExtensionImpl().exec(mail,"txt")).isTrue());
 	}
 }

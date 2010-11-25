@@ -10,6 +10,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.GetSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +21,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public class GetSize implements
-		org.mxhero.engine.plugin.basecommands.command.GetSize {
+public class GetSizeImpl implements GetSize {
 
-	private static Logger log = LoggerFactory.getLogger(GetSize.class);
+	private static Logger log = LoggerFactory.getLogger(GetSizeImpl.class);
 
 	private static final int FORMAT_TYPE_PARAM_NUMBER = 0;
 

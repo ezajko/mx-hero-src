@@ -16,6 +16,7 @@ import javax.mail.Part;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.RemoveByExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +26,10 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public class RemoveByExtension implements
-		org.mxhero.engine.plugin.basecommands.command.RemoveByExtension {
+public class RemoveByExtensionImpl implements RemoveByExtension {
 
 	private static Logger log = LoggerFactory
-			.getLogger(RemoveByExtension.class);
+			.getLogger(RemoveByExtensionImpl.class);
 
 	private static final String MULTIPART_TYPE = "multipart/*";
 	private static final String MULTIPART_MESSAGE = "message/rfc822";

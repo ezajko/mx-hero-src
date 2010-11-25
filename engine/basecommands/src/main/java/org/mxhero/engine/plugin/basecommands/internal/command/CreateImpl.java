@@ -16,6 +16,7 @@ import org.mxhero.engine.domain.connector.InputService;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.Create;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,10 +29,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public class Create implements
-		org.mxhero.engine.plugin.basecommands.command.Create {
+public class CreateImpl implements Create {
 
-	private static Logger log = LoggerFactory.getLogger(Create.class);
+	private static Logger log = LoggerFactory.getLogger(CreateImpl.class);
 
 	public static final String DIV_CHARACTER = ",";
 

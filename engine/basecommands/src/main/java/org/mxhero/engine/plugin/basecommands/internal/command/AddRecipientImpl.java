@@ -14,6 +14,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.domain.mail.command.Result;
+import org.mxhero.engine.plugin.basecommands.command.AddRecipient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +26,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public class AddRecipient implements
-		org.mxhero.engine.plugin.basecommands.command.AddRecipient {
+public class AddRecipientImpl implements AddRecipient {
 
-	private static Logger log = LoggerFactory.getLogger(AddRecipient.class);
+	private static Logger log = LoggerFactory.getLogger(AddRecipientImpl.class);
 
 	private static final int MIM_PARAMANS = 2;
 	private static final int RECIPIENT_TYPE_PARAM_NUMBER = 0;

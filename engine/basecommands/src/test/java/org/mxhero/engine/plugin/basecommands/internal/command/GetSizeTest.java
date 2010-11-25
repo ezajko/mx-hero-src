@@ -13,7 +13,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.plugin.basecommands.internal.command.GetSize;
+import org.mxhero.engine.plugin.basecommands.internal.command.GetSizeImpl;
 
 public class GetSizeTest {
 
@@ -29,17 +29,17 @@ public class GetSizeTest {
 						message,
 						"service");
 		
-		Assert.assertTrue(new GetSize().exec(mail).isTrue());
-		Assert.assertTrue(new GetSize().exec(mail,"k").isTrue());
-		Assert.assertTrue(new GetSize().exec(mail,"K").isTrue());
-		Assert.assertTrue(new GetSize().exec(mail,"b").isTrue());
-		Assert.assertTrue(new GetSize().exec(mail,"B").isTrue());
-		Assert.assertTrue(new GetSize().exec(mail,"m").isTrue());
-		Assert.assertTrue(new GetSize().exec(mail,"M").isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail).isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail,"k").isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail,"K").isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail,"b").isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail,"B").isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail,"m").isTrue());
+		Assert.assertTrue(new GetSizeImpl().exec(mail,"M").isTrue());
 		
-		Assert.assertFalse(new GetSize().exec(mail,"k ").isTrue());
-		Assert.assertFalse(new GetSize().exec(mail," k").isTrue());
-		Assert.assertFalse(new GetSize().exec(mail,"kbytes ").isTrue());
+		Assert.assertFalse(new GetSizeImpl().exec(mail,"k ").isTrue());
+		Assert.assertFalse(new GetSizeImpl().exec(mail," k").isTrue());
+		Assert.assertFalse(new GetSizeImpl().exec(mail,"kbytes ").isTrue());
 	}
 	
 }

@@ -32,21 +32,21 @@ public class CreateTest {
 		message.saveChanges();
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
 		
-		Assert.assertFalse((new Create().exec(mail)).isTrue());
-		Assert.assertFalse((new Create().exec(mail,(String[])null)).isTrue());
-		Assert.assertFalse((new Create().exec(mail,null,null)).isTrue());
-		Assert.assertFalse((new Create().exec(mail,null,null,null)).isTrue());
-		Assert.assertFalse((new Create().exec(mail,null,null,null,null)).isTrue());
-		Assert.assertFalse((new Create().exec(mail,"wronghase","","","")).isTrue());
-		Assert.assertFalse((new Create().exec(mail,"","","")).isTrue());
-		Assert.assertFalse((new Create().exec(mail,"","","","")).isTrue());
-		Assert.assertFalse((new Create().exec(mail,"","","","","")).isTrue());
-		Assert.assertFalse((new Create().exec(mail,"valid@mxhero.com","","","","")).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail)).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,(String[])null)).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,null,null)).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,null,null,null)).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,null,null,null,null)).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,"wronghase","","","")).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,"","","")).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,"","","","")).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,"","","","","")).isTrue());
+		Assert.assertFalse((new CreateImpl().exec(mail,"valid@mxhero.com","","","","")).isTrue());
 	}
 	
 	@Test
 	public void testOk() throws AddressException, MessagingException{
-		Create create = new Create();
+		CreateImpl create = new CreateImpl();
 		create.setService(new InputService() {
 			
 			@Override
