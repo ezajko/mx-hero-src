@@ -8,8 +8,6 @@ public final class MailState {
 	
 	public static final String DELIVER = "deliver";
 
-	public static final String REJECT = "reject";
-
 	public static final String DROP = "drop";
 	
 	/**
