@@ -14,7 +14,7 @@
 		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
 
 	<osgix:cm-properties id="jdbcCmProps"
-		persistent-id="org.mxhero.engine.plugin.statistics.jdbc">
+		persistent-id="org.mxhero.engine.plugin.dbfinder.jdbc">
 		<prop key="initial.hibernate.generate_statistics">true</prop>
 		<prop key="initial.hibernate.format_sql">true</prop>
 		<prop key="initial.showSql">true</prop>
