@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.drools;
 
+import java.util.List;
+
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactoryService;
@@ -9,6 +11,7 @@ import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactoryService;
 import org.drools.util.ServiceRegistry;
+import org.mxhero.engine.domain.provider.ResourceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +28,9 @@ public class KnowledgeBaseBuilder {
 	private String filePath;
 
 	private ServiceRegistry registry;
+	
+	@SuppressWarnings("unchecked")
+	private List resourceProviders;
 
 	private KnowledgeBase knowledgeBase = null;
 
@@ -49,10 +55,19 @@ public class KnowledgeBaseBuilder {
 
 		KnowledgeBuilder kbuilder = knowledgeBuilderFactoryService
 				.newKnowledgeBuilder(kbConf);
-		ResourceFactoryService resource = resourceFactoryService;
-		kbuilder.add(resource.newFileSystemResource(filePath),
+		
+		kbuilder.add(resourceFactoryService.newFileSystemResource(filePath),
 				ResourceType.CHANGE_SET);
 
+		for(Object provider : resourceProviders){
+			try{
+				kbuilder.add(resourceFactoryService.newInputStreamResource(((ResourceProvider)provider).getResource()),
+						ResourceType.getResourceType(((ResourceProvider)provider).getResourceType()));
+			}catch (Exception e) {
+				log.error("error while trying to load resource from external provider",e);
+			}
+		}
+		
 		if (kbuilder.hasErrors()) {
 			log.error("error while building rules data base:", kbuilder
 					.getErrors().toString());
@@ -112,6 +127,22 @@ public class KnowledgeBaseBuilder {
 	 */
 	public void setRegistry(ServiceRegistry registry) {
 		this.registry = registry;
+	}
+	
+	/**
+	 * @return the resourceProviders
+	 */
+	@SuppressWarnings("unchecked")
+	public List getResourceProviders() {
+		return resourceProviders;
+	}
+
+	/**
+	 * @param resourceProviders the resourceProviders to set
+	 */
+	@SuppressWarnings("unchecked")
+	public void setResourceProviders(List resourceProviders) {
+		this.resourceProviders = resourceProviders;
 	}
 
 }

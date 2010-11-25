@@ -47,10 +47,13 @@
 	   </osgi:service-properties>
 	</osgi:service>
 	
+	<osgi:list id="resourceProviders" interface="org.mxhero.engine.domain.provider.ResourceProvider" cardinality="0..N"/>
+	
 	<bean id="corePropertyService" class="org.mxhero.engine.core.internal.service.Core"/>
 
 	<bean id="kbbuilder" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseBuilder">
 		<property name="registry" ref="serviceRegistry"/>
+		<property name="resourceProviders" ref="resourceProviders"/>
 	</bean>
 
 	<bean id="kbloader" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader" init-method="start" destroy-method="stop">
