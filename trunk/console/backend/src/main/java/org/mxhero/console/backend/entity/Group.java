@@ -31,7 +31,7 @@ public class Group {
 	@Column(name="description", length=200)
 	private String description;
 	
-	@OneToMany(mappedBy="group", cascade=CascadeType.MERGE, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="group", cascade=CascadeType.MERGE, fetch=FetchType.EAGER)
 	private Set<EmailAccount> members;
 
 	@ManyToOne(cascade=CascadeType.MERGE)

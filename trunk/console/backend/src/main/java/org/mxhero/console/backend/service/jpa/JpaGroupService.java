@@ -100,6 +100,7 @@ public class JpaGroupService implements GroupService{
 	@Override
 	public void edit(GroupVO groupVO, Collection<EmailAccountVO> members) {
 		Group group = groupDao.readByPrimaryKey(groupVO.getId());
+		Collection<EmailAccount> previousMembers= group.getMembers();
 		group.setDescription(groupVO.getDescription());
 		group.setUpdatedDate(Calendar.getInstance());
 		group.setMembers(null);
@@ -108,6 +109,13 @@ public class JpaGroupService implements GroupService{
 		} catch (DataIntegrityViolationException e){
 			throw new BusinessException(GROUP_ALREADY_EXISTS);
 		}
+		if(previousMembers!=null){
+			for(EmailAccount previousAccount : previousMembers){
+				previousAccount.setGroup(null);
+				emailAccountDao.save(previousAccount);
+			}
+		}
+		
 		if(members!=null && members.size()>0){
 			for(EmailAccountVO emailAccountVO : members){
 				try{
@@ -117,7 +125,7 @@ public class JpaGroupService implements GroupService{
 						emailAccountDao.save(emailAccount);
 					}
 				}catch (Exception e){
-					
+					e.printStackTrace();
 				}
 			}
 		}
