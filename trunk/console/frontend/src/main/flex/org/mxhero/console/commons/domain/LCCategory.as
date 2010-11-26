@@ -19,6 +19,8 @@ package org.mxhero.console.commons.domain
 		
 		public var domainExclusive:Boolean=false;
 		
+		public var adminExclusive:Boolean=false;
+		
 		private var rm:IResourceManager=ResourceManager.getInstance();
 		
 		public function get label():String{

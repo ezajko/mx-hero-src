@@ -18,6 +18,8 @@ package org.mxhero.console.commons.domain
 		
 		public var domainExclusive:Boolean=false;
 		
+		public var adminExclusive:Boolean=false;
+		
 		public var navigateTo:String;
 		
 		public function get label():String{

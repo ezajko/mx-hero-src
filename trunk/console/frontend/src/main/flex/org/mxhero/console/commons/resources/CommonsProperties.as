@@ -17,6 +17,8 @@ package org.mxhero.console.commons.resources
 		public static const HIDE_LABEL:String="hide.label";
 		
 		public static const LOCALES:String="locales";
+		
+		public static const DRAG_HERE:String="drag.here";
 
 	}
 }

@@ -2,7 +2,8 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100%">
+		 width="100%"
+		 minHeight="55">
 
 	<fx:Declarations>
 	</fx:Declarations>
@@ -104,7 +105,7 @@
 					   	visible="false"
 					  	click="backLinkButton_clickHandler(event)"
 					   	toolTip="{backLinkTooltip}"/>
-		<s:Label styleName="titleexpanded_title" id="titleLabel" text="{title}"/>
+		<s:Label styleName="titleexpanded_title" id="titleLabel" text="{title}" paddingTop="4"/>
 		<mx:Spacer width="1"/>
 		<s:Label id="expandLabel" 
 				 styleName="titleexpanded_expand"
@@ -116,5 +117,5 @@
 	</s:HGroup>
 	
 	<mx:Text styleName="titleexpanded_text" text="{description}" width="100%"/>
-	<mx:Text styleName="titleexpanded_text" includeIn="expanded" id="expandedText" text="{expandedDescription}" width="100%" />
+	<mx:Text id="expandedText" styleName="titleexpanded_text" includeIn="expanded" text="{expandedDescription}" width="100%" />
 </s:Group>

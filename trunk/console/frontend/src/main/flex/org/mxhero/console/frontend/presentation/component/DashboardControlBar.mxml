@@ -37,7 +37,8 @@
 	
 	<mx:Image source="{ImageResources.LOGO_IMG}"/>
 	<mx:Spacer width="20"/>
-	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" styleName="Dashboard"/>
+	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" 
+				styleName="Dashboard" />
 	<mx:Spacer width="100%"/>
 	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" fontWeight="bold"/>
 	<s:Label text="{applicationContext.selectedDomain.domain}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"/>

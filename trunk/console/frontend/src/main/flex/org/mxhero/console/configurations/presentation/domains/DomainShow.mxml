@@ -87,6 +87,17 @@
 				DragManager.acceptDragDrop(event.currentTarget as Image);
 			}
 			
+
+			protected function aliasList_keyUpHandler(event:KeyboardEvent):void
+			{
+				if(event.keyCode==46)
+				{
+					if(aliasList.selectedItem!=null){
+						domain.aliases.removeItemAt(domain.aliases.getItemIndex(aliasList.selectedItem));
+					}
+				}
+			}
+
 		]]>
 	</fx:Script>
 
@@ -142,7 +153,7 @@
 					<s:TextInput id="serverTi" width="100%" text="@{domain.server}"/>
 				</mx:FormItem>
 			</s:VGroup>	
-			<mx:FormItem required="true" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_DOMAIN_LABEL)}" width="100%">
+			<mx:FormItem required="true" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_DOMAIN_LABEL)}" width="100%" fontWeight.new="bold">
 				<s:TextInput id="domainTi" width="100%"  text="@{domain.domain}" enabled.edit="false" enabled.new="true" />
 			</mx:FormItem>
 			<s:CheckBox id="administratorCheck" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CHECK_LABEL)}" selected="false"/>
@@ -162,21 +173,48 @@
 		
 		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
 			<s:VGroup height="100%">
-				<component:LabelExpanded labelText="Aliases" explainText="(more)" hideText="less" expandedText="Add aliases for this domain. Just enter a new alias and press the add button." width="100%"/>
-				<s:HGroup>
-					<s:TextInput id="aliasTi"/>
-					<s:Button id="addAliasBtt" label="Add" click="addAliasBtt_clickHandler(event)"/>
-				</s:HGroup>
-				<s:List dataProvider="{domain.aliases}" width="100%" height="100%" dragEnabled="true" dragMoveEnabled="true"/>				
+				<component:LabelExpanded labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_LABEL)}" 
+										 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+										 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+										 expandedText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}" 
+										 width="100%"/>
+					<mx:Form defaultButton="{addAliasBtt}" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+						<s:HGroup>
+							<s:TextInput id="aliasTi"/>
+							<s:Button id="addAliasBtt" 
+									  label="Add" 
+									  click="addAliasBtt_clickHandler(event)" 
+									  buttonMode="true"/>							
+						</s:HGroup>
+					</mx:Form>
+				<s:List id="aliasList"
+						dataProvider="{domain.aliases}" 
+						width="100%" 
+						height="100%"
+						maxHeight="140"
+						dragEnabled="true" 
+						dragMoveEnabled="true"
+						keyUp="aliasList_keyUpHandler(event)"/>				
 			</s:VGroup>
-			<mx:Image id="tashImg" source="{ImageResources.TRASHCAN}" dragEnter="image1_dragEnterHandler(event)" dragDrop="{effectDrop.play()}"/>
+			<s:VGroup horizontalAlign="center">
+				<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.DRAG_HERE)}" 
+						 styleName="draghere"
+						 toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
+				<mx:Image id="tashImg" 
+						  source="{ImageResources.TRASHCAN}" dragEnter="image1_dragEnterHandler(event)" 
+						  dragDrop="{effectDrop.play()}"
+						  toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
+			</s:VGroup>
 		</s:HGroup>		
 	</s:HGroup>
 	
 	<s:HGroup horizontalAlign="right" width="100%" paddingLeft="20" paddingRight="20" paddingBottom="20" >
-		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
+		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
+				  click="cancelBtt_clickHandler(event)" 
+				  buttonMode="true"/>
 		<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
-				  click="saveBtt_clickHandler(event)"/>
+				  click="saveBtt_clickHandler(event)"
+				  buttonMode="true"/>
 	</s:HGroup>
 	
 </s:TitleWindow>

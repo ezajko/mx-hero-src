@@ -83,7 +83,8 @@
 										requiredAuthority="ROLE_ADMIN" 
 										keyDescription="category.domains.domains.description" 
 										resource="configurations_list"
-										navigateTo="{ConfigurationsDestinations.DOMAINS}"/>
+										navigateTo="{ConfigurationsDestinations.DOMAINS}"
+										adminExclusive="true"/>
 						<domain:LCChild key="category.domains.groups" 
 										requiredAuthority="ROLE_DOMAIN_ADMIN" 
 										keyDescription="category.domains.groups.description" 
@@ -114,7 +115,8 @@
 										requiredAuthority="ROLE_ADMIN" 
 										keyDescription="category.settings.system.description" 
 										navigateTo="{ConfigurationsDestinations.SYSTEM}"
-										resource="configurations_list"/> 
+										resource="configurations_list"
+										adminExclusive="true"/> 
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>

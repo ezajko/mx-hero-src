@@ -215,6 +215,7 @@ package org.mxhero.console.configurations.presentation.accounts
 			}else{
 				accountUpload.cancelBtt_clickHandler();
 			}
+			loadEmailAccounts();
 		}
 		
 		[CommandError]

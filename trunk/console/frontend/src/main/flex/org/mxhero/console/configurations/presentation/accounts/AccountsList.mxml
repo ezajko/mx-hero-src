@@ -73,6 +73,12 @@
 				return "";
 			}
 
+
+			protected function datagrid1_itemDoubleClickHandler(event:ListEvent):void
+			{
+				model.editEmailAccount(this);
+			}
+
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -95,33 +101,50 @@
 						   icon="{ImageResources.ADD_ICO}"
 						   fontWeight="bold"
 						   click="newAccountLink_clickHandler(event)"
+						   textRollOverColor="#FFFFFF"
+						   textSelectedColor="#FFFFFF"
 						   width="100%"/>
 			<mx:LinkButton id="uploadAccounstLink"
 						   textAlign="left"
 						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
 						   icon="{ImageResources.UPLOAD_ICO}"
 						   fontWeight="bold"
+						   textRollOverColor="#FFFFFF"
+						   textSelectedColor="#FFFFFF"
 						   click="uploadAccounstLink_clickHandler(event)"
 						   width="100%"/>
 		</s:VGroup>
 		<mx:HRule height="1" width="100%"/>
 		<mx:Form defaultButton="{filterBtt}" paddingTop="0" width="100%">
-			<mx:FormHeading label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_TITLE)}"/>
-			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_ACCOUNT_LABEL)}"/>
+			<mx:FormHeading
+				label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_TITLE)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_ACCOUNT_LABEL)}"/>
 			<s:TextInput id="emailTI" width="100%"/>
-			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_NAME_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_NAME_LABEL)}"/>
 			<s:TextInput id="nameTI" width="100%"/>
-			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}"/>
 			<s:TextInput id="lastNameTI" width="100%"/>
-			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}"/>
 			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="100%"/>
 			<mx:Spacer height="5"/>
-			<s:HGroup width="100%">
-				<s:Button id="clearBtt" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
-						  click="clearBtt_clickHandler(event)"/>	
-				<mx:Spacer width="100%"/>
-				<s:Button id="filterBtt" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_LABEL)}" 
-						  click="filterBtt_clickHandler(event)"/>
+			<s:HGroup horizontalAlign="right" width="100%">
+				<s:Button id="clearBtt" 
+						  label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
+						  click="clearBtt_clickHandler(event)"
+						  buttonMode="true"/>	
+
+				<s:Button id="filterBtt" 
+						  label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_LABEL)}" 
+						  click="filterBtt_clickHandler(event)"
+						  buttonMode="true"/>
 			</s:HGroup>			
 		</mx:Form>		
 	</s:BorderContainer>
@@ -140,7 +163,10 @@
 					 height="100%"
 					 borderStyle="none"
 					 dropShadowVisible="false"
-					 selectedItem="@{model.selectedEmailAccount}">
+					 selectedItem="@{model.selectedEmailAccount}"
+					 itemDoubleClick="datagrid1_itemDoubleClickHandler(event)"
+					 doubleClickEnabled="true"
+					 mouseChildren="true">
 			<mx:columns>
 				<mx:DataGridColumn dataField="account" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 

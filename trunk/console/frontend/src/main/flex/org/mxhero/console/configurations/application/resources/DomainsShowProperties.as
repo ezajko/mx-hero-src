@@ -56,9 +56,13 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const FORM_ADMINISTRATOR_EMAIL_LABEL:String="form.administrator.email.label";
 		
+		public static const FORM_ALIASES_LABEL:String="form.aliases.label";
+		
+		public static const FORM_ALIASES_EXPLAIN:String="form.aliases.explain";
+		
 		public static const COLUMN_CREATED_ENTER_LABEL:String="list.column.enter.tooltip";
-		
-		
 
+		public static const DRAG_HERE_ALIAS_EXPLAIN:String="drag.here.alias.explain";
+		
 	}
 }

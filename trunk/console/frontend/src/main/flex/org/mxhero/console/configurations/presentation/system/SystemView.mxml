@@ -72,47 +72,60 @@
 	
 		<mx:Form>
 			<mx:FormHeading label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_MAIL_TITLE)}" 
-						textAlign="left" paddingLeft="0" textIndent="0" leading="0"/>
+							color="#FFFFFF"
+							textAlign="left" paddingLeft="0" textIndent="0" leading="0"/>
 			<s:HGroup width="100%" verticalAlign="bottom" gap="40">
-			<s:TileGroup requestedColumnCount="2" 
-						 verticalAlign="bottom" 
-						 horizontalAlign="left" 
-						 columnWidth="300" 
-						 rowHeight="24"
-						 requestedRowCount="3" 
-						 horizontalGap="20" 
-						 verticalGap="20"
-						 height="160">
-				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_HOST_LABEL)}" width="100%">
-					<s:TextInput id="hostTi" text="@{model.configuration.host}" width="100%"/>
-				</mx:FormItem>
-				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PORT_LABEL)}" width="100%">
-					<s:TextInput id="portTi" text="{model.configuration.port}" width="100%"/>
-				</mx:FormItem>
-				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_ADMIN_LABEL)}" width="100%">
-					<s:TextInput id="adminTi" text="@{model.configuration.adminMail}" width="100%"/>
-				</mx:FormItem>
-				<mx:Spacer/>
-				<s:CheckBox id="checkAuthCb" 
-							selected="@{model.configuration.auth}"
-							change="{validateMailUpdate.validate()}"
-							label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_AUTH)}"/>
-				<s:CheckBox id="checkSslCb" 
-							selected="@{model.configuration.ssl}"
-							label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_SSL)}"/>
-				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_USER_LABEL)}" width="100%">
-					<s:TextInput id="userTi" enabled="{this.checkAuthCb.selected}" text="@{model.configuration.user}" width="100%"/>
-				</mx:FormItem>
-				<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PASSWORD_LABEL)}" width="100%">
-					<s:TextInput id="passwordTi" enabled="{this.checkAuthCb.selected}" text="@{model.configuration.password}" displayAsPassword="true" width="100%"/>
-				</mx:FormItem>
-			</s:TileGroup>
+
+				<mx:Form paddingBottom="0">
+					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_HOST_LABEL)}" width="100%">
+						<s:TextInput id="hostTi" 
+									 text="@{model.configuration.host}" 
+									 width="200"/>
+					</mx:FormItem>
+					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_ADMIN_LABEL)}" width="100%">
+						<s:TextInput id="adminTi" 
+									 text="@{model.configuration.adminMail}" 
+									 width="200"/>
+					</mx:FormItem>
+					<s:CheckBox id="checkAuthCb" 
+								selected="@{model.configuration.auth}"
+								change="{validateMailUpdate.validate()}"
+								label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_AUTH)}"/>
+					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_USER_LABEL)}" width="100%">
+						<s:TextInput id="userTi" 
+									 enabled="{this.checkAuthCb.selected}" 
+									 text="@{model.configuration.user}" 
+									 width="200"/>
+					</mx:FormItem>
+				</mx:Form>
+				
+				<mx:Form paddingBottom="0">
+					<mx:FormItem id="portItemPort" label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PORT_LABEL)}" width="100%">
+						<s:TextInput id="portTi" text="{model.configuration.port}" 
+									 width="200"/>
+					</mx:FormItem>	
+					<mx:Spacer height="{portItemPort.height}"/>
+					<s:CheckBox id="checkSslCb" 
+								selected="@{model.configuration.ssl}"
+								label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_SSL)}"/>
+					
+					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PASSWORD_LABEL)}" width="100%">
+						<s:TextInput id="passwordTi" 
+									 enabled="{this.checkAuthCb.selected}" 
+									 text="@{model.configuration.password}" 
+									 displayAsPassword="true" 
+									 width="200"/>
+					</mx:FormItem>
+				</mx:Form>
+
 				<s:Button id="testMailBtt" 
 						  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_TEST_MAIL_LABEL)}"
-						  click="testMailBtt_clickHandler(event)"/>
+						  click="testMailBtt_clickHandler(event)"
+						  buttonMode="true"/>
 				<s:Button id="updateMailBtt" 
 						  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_UPDATE_MAIL_LABEL)}"
-						  click="updateMailBtt_clickHandler(event)"/>
+						  click="updateMailBtt_clickHandler(event)"
+						  buttonMode="true"/>
 			</s:HGroup>
 		</mx:Form>
 	

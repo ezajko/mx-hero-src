@@ -112,11 +112,15 @@
 
 					<mx:LinkButton label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_LINK_LABEL)}"
 								   includeIn="forgot" 
+								   color="#FFFFFF"
+								   textRollOverColor="#FFFFFF"
 								   click="currentState=''"/>
 					
 					<mx:LinkButton id="changeLink"
 								   includeIn="default" 
 								   label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_LINK_LABEL)}" 
+								   color="#FFFFFF"
+								   textRollOverColor="#FFFFFF"
 								   click="currentState='forgot'"/>
 					<mx:Spacer width="100%"/>
 					
@@ -124,7 +128,8 @@
 							  click.default="signInClick(event)" 
 							  click.forgot="submitClick(event)"
 							  label.default="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_BUTTON_LABEL)}" 
-							  label.forgot="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_BUTTON_LABEL)}"/> 
+							  label.forgot="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_BUTTON_LABEL)}"
+							  buttonMode="true"/> 
 				</s:Group>
 			</mx:Form>
 		</s:Panel>
