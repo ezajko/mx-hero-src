@@ -2,7 +2,7 @@
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 close="cancelBtt_clickHandler()" minWidth="650" minHeight="350"
+		 close="cancelBtt_clickHandler()" minWidth="550" minHeight="350"
 		 title="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
 		 creationComplete="{init()}"
 		 xmlns:component="org.mxhero.console.commons.component.*">

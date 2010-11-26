@@ -67,20 +67,25 @@
 						   label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.ADD_NEW_GROUP_LABEL)}" 
 						   icon="{ImageResources.ADD_ICO}"
 						   fontWeight="bold"
+						   textRollOverColor="#FFFFFF"
+						   textSelectedColor="#FFFFFF"
 						   click="newGroupLink_clickHandler(event)"/>
 		</s:HGroup>
 		<mx:HRule height="1" width="100%"/>
 		<mx:Form defaultButton="{filterBtt}" paddingTop="0">
 			<mx:FormHeading label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_TITLE)}"/>
-			<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_NAME_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_NAME_LABEL)}"/>
 			<s:TextInput id="nameTI" width="100%"/>
-			<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_DESCRIPTION_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_DESCRIPTION_LABEL)}"/>
 			<s:TextInput id="descriptionTI" width="100%"/>
 			<mx:Spacer height="5"/>
-			<s:HGroup width="100%">
+			<s:HGroup horizontalAlign="right" width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
 						  click="clearBtt_clickHandler(event)"/>	
-				<mx:Spacer width="100%"/>
 				<s:Button id="filterBtt" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_BUTTON_LABEL)}" 
 						  click="filterBtt_clickHandler(event)"/>
 			</s:HGroup>			

@@ -21,6 +21,6 @@
 		]]>
 	</fx:Script>
 	
-	<component:TitleExpanded title="{model.title}" description="{model.description}" enableExpanded="false"/>
+	<component:TitleExpanded title="{model.title}" description="{model.description}" enableExpanded="false" width="100%"/>
 	
 </s:Group>

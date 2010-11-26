@@ -13,6 +13,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.events.DragEvent;
+			import mx.events.ListEvent;
 			import mx.managers.PopUpManager;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
@@ -32,14 +33,27 @@
 
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
-				validateAll.validate();
-				if(validateAll.isValid){
-					if(currentState=="new"){
+				if(currentState=="new"){
+					validateAll.validate();
+					if(validateAll.isValid){
 						model.insertGroup(group);
-					} else if(currentState=="edit"){
-						model.updateGroup(group);
 					}
+				}else if(currentState=="edit"){
+					model.updateGroup(group);
 				}
+			}
+
+			protected function groupAccountsDg_itemDoubleClickHandler(event:ListEvent):void
+			{
+				model.groupAccounts.removeItemAt(model.groupAccounts.getItemIndex(event.itemRenderer.data));
+				model.noGroupAccounts.addItem(event.itemRenderer.data);
+			}
+
+
+			protected function noGroupAccountsDg_itemDoubleClickHandler(event:ListEvent):void
+			{
+				model.noGroupAccounts.removeItemAt(model.noGroupAccounts.getItemIndex(event.itemRenderer.data));
+				model.groupAccounts.addItem(event.itemRenderer.data);
 			}
 
 		]]>
@@ -48,7 +62,12 @@
 	<fx:Declarations>
 		<cairngorm:ValidatorGroup id="validateAll">
 			<cairngorm:validators>
-				<mx:StringValidator required="true" source="{nameTi}" property="text" trigger="{saveBtt}" triggerEvent="click"/>
+				<mx:StringValidator required="true" 
+									includeIn="new"
+									source="{nameTi}" 
+									property="text" 
+									trigger="{saveBtt}" 
+									triggerEvent="click"/>
 			</cairngorm:validators>
 		</cairngorm:ValidatorGroup>
 	</fx:Declarations>
@@ -77,7 +96,9 @@
 		<component:LabelExpanded width="100%" explainText="(more)" hideText="(less)" labelText="Selecte members for this group" expandedText="Select with emails that doesn't have an account and drag them to the grid on the right. To select multiple accounts just click on them while you keep the control button on your keyboard pressed"/>
 		<s:HGroup>
 			<s:VGroup>
-				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_MEMBERS_LABEL)}"/>
+				<s:Label 
+					fontWeight="bold"
+					text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_MEMBERS_LABEL)}"/>
 				<mx:DataGrid id="groupAccountsDg"
 							dataProvider="{model.groupAccounts}" 
 							width="100%" 
@@ -88,7 +109,10 @@
 							dropEnabled="true"
 							allowMultipleSelection="true"
 							allowDragSelection="true"
-							dragMoveEnabled="true">
+							dragMoveEnabled="true"
+							doubleClickEnabled="true"
+							mouseChildren="true"
+							itemDoubleClick="groupAccountsDg_itemDoubleClickHandler(event)">
 					<mx:columns>
 						<mx:DataGridColumn dataField="account" 
 										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
@@ -104,7 +128,9 @@
 			</s:VGroup>
 
 			<s:VGroup>
-				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_NO_GROUP_ACCOUNTS_LABEL)}"/>
+				<s:Label 
+					fontWeight="bold"
+					text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_NO_GROUP_ACCOUNTS_LABEL)}"/>
 				<mx:DataGrid id="noGroupAccountsDg"
 							dataProvider="{model.noGroupAccounts}" 
 							width="100%" 
@@ -115,7 +141,10 @@
 							dropEnabled="true"
 							allowMultipleSelection="true"
 							allowDragSelection="true"
-							dragMoveEnabled="true">
+							dragMoveEnabled="true"
+							doubleClickEnabled="true"
+							mouseChildren="true"
+							itemDoubleClick="noGroupAccountsDg_itemDoubleClickHandler(event)">
 					<mx:columns>
 						<mx:DataGridColumn dataField="account" 
 										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 

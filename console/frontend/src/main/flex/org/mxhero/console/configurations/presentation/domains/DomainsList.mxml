@@ -61,6 +61,12 @@
 				return ObjectUtil.stringCompare(item1.owner.email.toString(),item2.owner.email.toString());
 			}
 
+
+			protected function datagrid1_itemDoubleClickHandler(event:ListEvent):void
+			{
+				model.editDomain(this);
+			}
+
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -78,24 +84,34 @@
 						label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.ADD_NEW_DOMAIN_LABEL)}" 
 						icon="{ImageResources.ADD_ICO}"
 						fontWeight="bold"
+						textRollOverColor="#FFFFFF"
+						textSelectedColor="#FFFFFF"
 						click="newDomainLink_clickHandler(event)"/>
 		</s:HGroup>
 		<mx:HRule height="1" width="100%"/>
 		<mx:Form defaultButton="{filterBtt}" paddingTop="0">
 			<mx:FormHeading label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_TITLE)}"/>
-			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_DOMAIN_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_DOMAIN_LABEL)}"/>
 			<s:TextInput id="domainTI" width="100%"/>
-			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_EMAIL_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_EMAIL_LABEL)}"/>
 			<s:TextInput id="emailTI" width="100%"/>
-			<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_SERVER_LABEL)}"/>
+			<s:Label 
+				fontWeight="bold"
+				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_SERVER_LABEL)}"/>
 			<s:TextInput id="serverTI" width="100%"/>
 			<mx:Spacer height="5"/>
 			<s:HGroup width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
-						  click="clearBtt_clickHandler(event)"/>	
+						  click="clearBtt_clickHandler(event)"
+						  buttonMode="true"/>	
 				<mx:Spacer width="100%"/>
 				<s:Button id="filterBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_LABEL)}" 
-						  click="filterBtt_clickHandler(event)"/>
+						  click="filterBtt_clickHandler(event)"
+						  buttonMode="true"/>
 			</s:HGroup>			
 		</mx:Form>		
 	</s:BorderContainer>
@@ -104,7 +120,10 @@
 				 width="100%" 
 				 height="100%"
 				 minWidth="600"
-				 selectedItem="@{model.selectDomain}">
+				 selectedItem="@{model.selectDomain}"
+				 itemDoubleClick="datagrid1_itemDoubleClickHandler(event)"
+				 doubleClickEnabled="true"
+				 mouseChildren="true">
 		<mx:columns>
 			<mx:DataGridColumn dataField="domain" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_DOMAIN_LABEL)}" 

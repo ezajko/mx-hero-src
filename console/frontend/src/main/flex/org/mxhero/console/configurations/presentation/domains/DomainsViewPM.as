@@ -20,8 +20,10 @@ package org.mxhero.console.configurations.presentation.domains
 	import org.mxhero.console.configurations.application.event.RemoveDomainEvent;
 	import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
+	import org.mxhero.console.features.application.FeaturesDestinations;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Domain;
+	import org.mxhero.console.reports.application.ReportsDestinations;
 
 	[Landmark(name="main.dashboard.configurations.domains")]
 	public class DomainsViewPM
@@ -202,6 +204,9 @@ package org.mxhero.console.configurations.presentation.domains
 		
 		public function enterDomain():void{
 			context.selectedDomain=selectDomain as Domain;
+			parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			parentModel.navigateTo(ReportsDestinations.LIST);
+			parentModel.navigateTo(FeaturesDestinations.LIST);
 		}
 	}
 }

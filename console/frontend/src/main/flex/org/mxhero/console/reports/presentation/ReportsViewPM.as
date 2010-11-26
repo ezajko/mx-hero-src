@@ -17,7 +17,6 @@ package org.mxhero.console.reports.presentation
 		[Enter(time="first")]
 		public function enter():void
 		{
-			Alert.show("enter to reports first");
 			container.createComponentsFromDescriptors();
 		}
 		
