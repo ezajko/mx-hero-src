@@ -8,10 +8,16 @@
 			  height="100%" xmlns:modules="org.mxhero.console.commons.modules.*"
 			  creationCompleteEffect="fadein"
 			  creationPolicy="none">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.resources.SoundResources;
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<parsley:Configure/>
 		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0"/>
 		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
+		<mx:SoundEffect id="startup" source="{SoundResources.STARTUP}" duration="6000"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -44,7 +50,8 @@
 	
 	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
 							 width="100%" height="100%" moduleData="{featuresData}" 
-							 automationName="{MainDestination.FEATURES}"/>
+							 automationName="{MainDestination.FEATURES}"
+							 creationCompleteEffect="{startup}"/>
 	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
 							 width="100%" height="100%" moduleData="{reportsData}" 
 							 automationName="{MainDestination.REPORTS}"/>

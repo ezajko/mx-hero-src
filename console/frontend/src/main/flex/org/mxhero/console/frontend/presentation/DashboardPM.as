@@ -4,6 +4,7 @@ package org.mxhero.console.frontend.presentation
 	
 	import mx.controls.Alert;
 	import mx.core.Container;
+	import mx.effects.SoundEffect;
 	import mx.events.CloseEvent;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
@@ -47,6 +48,7 @@ package org.mxhero.console.frontend.presentation
 		public function enter():void
 		{
 			container.createComponentsFromDescriptors();
+			dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
 		}
 		
 		public function logout():void{

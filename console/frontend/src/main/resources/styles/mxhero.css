@@ -3,20 +3,20 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 
 @font-face {
-	src: url("fonts/Ubuntu-R.ttf");
+	src: url("/fonts/Ubuntu-R.ttf");
 	fontFamily: "Ubuntu";
 	embedAsCFF: true;	
 }
 
 @font-face {
-	src: url("fonts/Ubuntu-B.ttf");
+	src: url("/fonts/Ubuntu-B.ttf");
 	fontFamily: "Ubuntu";
 	fontWeight: "bold";
 	embedAsCFF: true;	
 }
 
 @font-face {
-	src: url("fonts/Ubuntu-BI.ttf");
+	src: url("/fonts/Ubuntu-BI.ttf");
 	fontFamily: "Ubuntu";
 	fontWeight: "bold";
 	fontStyle: "italic";
@@ -24,7 +24,7 @@
 }
 
 @font-face {
-	src: url("fonts/Ubuntu-I.ttf");
+	src: url("/fonts/Ubuntu-I.ttf");
 	fontFamily: "Ubuntu";
 	fontStyle: "italic";
 	embedAsCFF: true;	
@@ -120,14 +120,13 @@ mx|Text.titleexpanded_text
 	padding-left:40;
 }
 
-mx|LinkButton.categorylist_child
+s|Label.categorylist_child
 {
 	font-size:14;
 	font-weight:"bold";
 	text-align:"left";
-	text-roll-over-color:#FFFFFF;
-	text-selected-color:#FFFFFF;
-	color:#CCCCCC;
+	padding-bottom:4;
+	padding-top:4;
 }
 
 mx|Label.categorylist_category

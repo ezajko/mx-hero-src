@@ -26,6 +26,10 @@
 		]]>
 	</fx:Script>
 	
-	<mx:ProgressBar indeterminate="true" width="100%" labelPlacement="center" label="{model.currentLabel}" styleName="loading"/>
+	<mx:ProgressBar indeterminate="true" 
+					width="100%" 
+					labelPlacement="center" 
+					label="{model.currentLabel}" 
+					styleName="loading"/>
 		
 </s:Panel>
