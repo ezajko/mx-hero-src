@@ -21,6 +21,6 @@ public abstract class ApplicationUser_ {
 	public static volatile SingularAttribute<ApplicationUser, Domain> domain;
 	public static volatile SingularAttribute<ApplicationUser, String> userName;
 	public static volatile SingularAttribute<ApplicationUser, String> password;
-
+	public static volatile SingularAttribute<ApplicationUser, Boolean> soundsEnabled;
 }
 

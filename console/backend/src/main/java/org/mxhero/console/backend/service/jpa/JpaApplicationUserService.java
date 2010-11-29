@@ -93,7 +93,9 @@ public class JpaApplicationUserService implements ApplicationUserService {
 		user.setLastName(applicationUserVO.getLastName());
 		user.setNotifyEmail(applicationUserVO.getNotifyEmail());
 		user.setLocale(applicationUserVO.getLocale());
-		return applicationUserTranslator.translate(userDao.save(user));
+		user.setSoundsEnabled(applicationUserVO.getSoundsEnabled());
+		applicationUserVO = applicationUserTranslator.translate(userDao.save(user));
+		return applicationUserVO;
 	}
 
 	@Override

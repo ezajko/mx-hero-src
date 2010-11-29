@@ -26,6 +26,8 @@ public class ApplicationUserVO {
 	
 	private DomainVO domain;
 	
+	private Boolean soundsEnabled;
+	
 	
 	public Integer getId() {
 		return id;
@@ -97,6 +99,14 @@ public class ApplicationUserVO {
 	
 	public void setDomain(DomainVO domain) {
 		this.domain = domain;
+	}
+
+	public Boolean getSoundsEnabled() {
+		return soundsEnabled;
+	}
+
+	public void setSoundsEnabled(Boolean soundsEnabled) {
+		this.soundsEnabled = soundsEnabled;
 	}
 
 }

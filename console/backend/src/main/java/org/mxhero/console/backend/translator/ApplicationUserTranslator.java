@@ -27,7 +27,8 @@ public class ApplicationUserTranslator extends AbstractTranslator<ApplicationUse
 		applicationUserVO.setName(entity.getName());
 		applicationUserVO.setNotifyEmail(entity.getNotifyEmail());
 		applicationUserVO.setUserName(entity.getUserName());
-
+		applicationUserVO.setSoundsEnabled(entity.isSoundsEnabled());
+		
 		return applicationUserVO;
 	}
 
