@@ -24,7 +24,7 @@ package org.mxhero.console.frontend.presentation
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
 		
-		private function navigateTo(destination:String):void
+		public function navigateTo(destination:String):void
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}
