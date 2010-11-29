@@ -1,8 +1,7 @@
 package org.mxhero.console.frontend.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
-	
-	import mx.controls.Alert;
+
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
@@ -10,6 +9,7 @@ package org.mxhero.console.frontend.presentation
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
 	import org.mxhero.console.frontend.application.event.LoginEvent;
 	import org.mxhero.console.frontend.application.event.RecoverPasswordEvent;
+	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.application.message.ViewChangedMessage;
 	import org.mxhero.console.frontend.application.resources.LoginProperties;
 	import org.spicefactory.parsley.core.messaging.MessageProcessor;
@@ -44,7 +44,7 @@ package org.mxhero.console.frontend.presentation
 		[CommandResult]
 		public function recoverResult (result:*, event:RecoverPasswordEvent) : void {
 			dispatcher(new ViewChangedMessage());
-			Alert.show(rm.getString(LoginProperties.NAME,LoginProperties.PASSWORD_SENT_TOMAIL),event.mail,Alert.OK);
+			dispatcher(new ApplicationMessage(LoginProperties.NAME,LoginProperties.PASSWORD_SENT_TOMAIL));
 		}
 	}
 }

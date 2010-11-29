@@ -23,7 +23,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.configurations.application.resources.ConfigurationsListProperties;

@@ -13,6 +13,8 @@ package org.mxhero.console.frontend.application.resources
 		public static const USER_LABEL:String="user.label";
 		
 		public static const LOGOUT_TOOLTIP:String="logout.tooltip";
+		
+		public static const DOMAIN_LEAVE_MESSAGE:String="domain.leave.message";
 
 	}
 }

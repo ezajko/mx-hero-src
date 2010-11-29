@@ -1,8 +1,7 @@
 package org.mxhero.console.reports.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
-	
-	import mx.controls.Alert;
+
 	import mx.core.Container;
 
 	[Landmark(name="main.dashboard.reports")]

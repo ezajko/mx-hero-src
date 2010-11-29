@@ -167,6 +167,22 @@ s|BorderContainer.errorPanel
 	borderStyle: inset;
 }
 
+s|TextArea.messagePanel
+{
+	contentBackgroundAlpha: 0.0;
+	borderVisible: false;
+	color: #FFFFFF;
+	fontSize: 14;
+	fontStyle: italic;
+	fontWeight: bold;
+}
+s|BorderContainer.messagePanel
+{
+	backgroundColor: #70B2EE;
+	borderWeight: 3;
+	dropShadowVisible: true;
+	borderStyle: inset;
+}
 
 mx|LinkBar.Dashboard
 {

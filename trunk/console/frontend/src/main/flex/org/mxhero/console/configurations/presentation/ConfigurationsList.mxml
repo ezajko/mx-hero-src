@@ -23,6 +23,7 @@
 	<categorylist:CategoryList id="configurationsList" width="100%" height="100%" 
 							   categoryList="{model.authorizedDataSource}"
 							   clickHandler="{model.childClickHandler}"
+							   titleLabelFunction="{configurationsList.model.getExtendedTitle}"
 							   defaultTitle="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.DEFAULT_TITLE)}"
 							   defaultDescription="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.DEFAULT_DESCRIPTION)}"
 							   columnsWidth="240"/>

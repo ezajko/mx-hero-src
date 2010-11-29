@@ -48,6 +48,12 @@
 				model.newGroup(this);
 			}
 
+
+			protected function datagrid2_itemDoubleClickHandler(event:ListEvent):void
+			{
+				model.editGroup(this);
+			}
+
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -96,7 +102,10 @@
 				 width="100%" 
 				 height="100%"
 				 minWidth="600"
-				 selectedItem="@{model.selectGroup}">
+				 selectedItem="@{model.selectGroup}"
+				 itemDoubleClick="datagrid2_itemDoubleClickHandler(event)"
+				 doubleClickEnabled="true"
+				 mouseChildren="true">
 		<mx:columns>
 			<mx:DataGridColumn dataField="name" 
 							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_NAME_LABEL)}" 

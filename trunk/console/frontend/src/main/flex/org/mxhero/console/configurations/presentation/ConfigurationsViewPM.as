@@ -2,7 +2,6 @@ package org.mxhero.console.configurations.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
 	
-	import mx.controls.Alert;
 	import mx.core.Container;
 	
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
