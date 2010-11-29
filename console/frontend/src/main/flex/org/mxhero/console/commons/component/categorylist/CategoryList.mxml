@@ -9,7 +9,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
 			import mx.controls.HRule;
 			
 			[Bindable]
@@ -47,6 +46,16 @@
 			[Bindable]
 			public function get columnsWidth():Number{
 				return model.columnsWidth;
+			}
+			
+			public function get titleLabelFunction():Function{
+				return this.model.titleLabelFunction;
+			}
+			
+			public function set titleLabelFunction(value:Function):void{
+				if(value!=null){
+					this.model.titleLabelFunction=value;
+				}
 			}
 			
 			public function set columnsWidth(value:Number):void{

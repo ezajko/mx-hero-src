@@ -64,5 +64,7 @@ package org.mxhero.console.configurations.application.resources
 
 		public static const DRAG_HERE_ALIAS_EXPLAIN:String="drag.here.alias.explain";
 		
+		public static const ENTER_DOMAIN_MESSAGE:String="enter.domain.message";
+		
 	}
 }

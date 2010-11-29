@@ -2,40 +2,40 @@
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				   xmlns:s="library://ns.adobe.com/flex/spark" 
 				   xmlns:mx="library://ns.adobe.com/flex/mx" 
-				   styleName="errorPanel"
+				   styleName="messagePanel"
 				   autoLayout="true" 
 				   height="{HIDE_SIZE}" 
 				   xmlns:parsley="http://www.spicefactory.org/parsley"
-				   visible="{model.hasNewError}"
-				   hide="bordercontainer1_hideHandler(event)"
+				   visible="{model.hasNewMessage}"
 				   showEffect="{showEffect}"
 				   hideEffect="{hideEffect}"
 				   preinitialize="{this.visible=false}" 
+				   hide="bordercontainer1_hideHandler(event)"
 				   xmlns:component="org.mxhero.console.frontend.presentation.component.*" 
 				   xmlns:component1="org.mxhero.console.commons.component.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
 		
-		<mx:SoundEffect id="errorSound" target="{this}" source="{SoundResources.ERROR}" duration="1000"/>
+		<mx:SoundEffect id="messageSound" 
+						target="{this}" 
+						source="{SoundResources.MESSAGE}" 
+						duration="1000"/>
 		
 		<s:Sequence id="showEffect" duration="200">
 			<s:Parallel>
-				<s:Fade target="{alertImage}" alphaFrom="1" alphaTo="0" duration="0"/>
-				<s:Fade target="{errorText}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{messageText}" alphaFrom="1" alphaTo="0" duration="0"/>
 				<s:Fade target="{closeImage}" alphaFrom="1" alphaTo="0" duration="0"/>
 				<s:Resize heightFrom="{HIDE_SIZE}" heightTo="{SHOW_SIZE}"/>
 			</s:Parallel>
 			<s:Parallel>
-				<s:Fade target="{alertImage}" alphaFrom="0" alphaTo="1"/>
-				<s:Fade target="{errorText}" alphaFrom="0" alphaTo="1"/>
+				<s:Fade target="{messageText}" alphaFrom="0" alphaTo="1"/>
 				<s:Fade target="{closeImage}" alphaFrom="0" alphaTo="1"/>
 			</s:Parallel>
 		</s:Sequence>
 		
 		<s:Parallel id="hideEffect" duration="200">
-			<s:Fade target="{alertImage}" alphaFrom="1" alphaTo="0" duration="0"/>
-			<s:Fade target="{errorText}" alphaFrom="1" alphaTo="0" duration="0"/>
+			<s:Fade target="{messageText}" alphaFrom="1" alphaTo="0" duration="0"/>
 			<s:Fade target="{closeImage}" alphaFrom="1" alphaTo="0" duration="0"/>
 			<s:Resize heightFrom="{SHOW_SIZE}" heightTo="{HIDE_SIZE}"/>
 		</s:Parallel>
@@ -47,24 +47,24 @@
 			
 			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.commons.resources.SoundResources;
-
+			
 			private static const SHOW_SIZE:Number=32;
 			private static const HIDE_SIZE:Number=0;
 			
-			[Inject]
-			[Bindable]
-			public var model:ErrorPanelPM;
-
 			private var timer:Timer;
 			
-			protected function errorText_valueCommitHandler(event:FlexEvent):void
+			[Inject]
+			[Bindable]
+			public var model:MessagePanelPM;
+
+			protected function messageText_valueCommitHandler(event:FlexEvent):void
 			{
-				if(this.errorText.text!=null && this.errorText.text.length>0){
-					errorSound.play();
+				if(this.messageText.text!=null && this.messageText.text.length>0){
+					messageSound.play();
 					initTimer();
 				}
 			}
-
+			
 			protected function bordercontainer1_hideHandler(event:FlexEvent):void
 			{
 				if(timer!=null){
@@ -72,40 +72,38 @@
 				}
 				model.clear();
 			}
-
-
+			
+			
 			protected function initTimer():void{
 				if(timer!=null){
 					timer.removeEventListener(TimerEvent.TIMER_COMPLETE,timerCompleted);
 					timer.stop();
 				}
-				timer=new Timer(10000);
+				timer=new Timer(5000);
 				timer.repeatCount=1;
 				timer.addEventListener(TimerEvent.TIMER_COMPLETE,timerCompleted);
 				timer.start();
 			}
-			
-			
+
 			protected function timerCompleted(event:TimerEvent):void{
 				model.clear();
 			}
 
 		]]>
 	</fx:Script>
-
+	
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle" paddingLeft="4" paddingRight="4" />
 	</s:layout>
-	
-	<mx:Image id="alertImage" source="{ImageResources.ALERT_ICON}" />
-	<s:TextArea id="errorText" 
+
+	<s:TextArea id="messageText" 
 				heightInLines="1" 
-				text="{model.errorMessage}" 
+				text="{model.message}" 
 				width="100%" 
 				height="100%" 
-				styleName="errorPanel" 
+				styleName="messagePanel" 
 				editable="false"
-				valueCommit="errorText_valueCommitHandler(event)"/>
+				valueCommit="messageText_valueCommitHandler(event)"/>
 	<component1:GlowButton id="closeImage" 
 						   source="{ImageResources.CHECK_ICON}"  
 						   click="{model.clear()}"/>

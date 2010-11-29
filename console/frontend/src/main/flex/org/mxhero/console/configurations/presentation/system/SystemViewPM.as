@@ -1,6 +1,5 @@
 package org.mxhero.console.configurations.presentation.system
 {
-	import mx.controls.Alert;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
@@ -10,6 +9,7 @@ package org.mxhero.console.configurations.presentation.system
 	import org.mxhero.console.configurations.application.event.TestEmailEvent;
 	import org.mxhero.console.configurations.application.resources.SystemProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
+	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.domain.Configuration;
 
 	[Landmark(name="main.dashboard.configurations.system")]
@@ -60,7 +60,7 @@ package org.mxhero.console.configurations.presentation.system
 		[CommandResult]
 		public function editMailResult(result:*,event:EditConfigurationEvent):void{
 			this.isUpdating=false;
-			Alert.show(rm.getString(SystemProperties.NAME,SystemProperties.FORM_UPDATE_MAIL_RESULT),"",Alert.OK);
+			dispatcher(new ApplicationMessage(SystemProperties.NAME,SystemProperties.FORM_UPDATE_MAIL_RESULT));
 		}
 		
 		[CommandError]
@@ -76,7 +76,7 @@ package org.mxhero.console.configurations.presentation.system
 		[CommandResult]
 		public function testMailResult(result:*,event:TestEmailEvent):void{
 			this.isUpdating=false;
-			Alert.show(rm.getString(SystemProperties.NAME,SystemProperties.FORM_TEST_MAIL_RESULT),"",Alert.OK);
+			dispatcher(new ApplicationMessage(SystemProperties.NAME,SystemProperties.FORM_TEST_MAIL_RESULT));
 		}
 		
 		[CommandError]

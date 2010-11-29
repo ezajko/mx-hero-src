@@ -26,6 +26,7 @@
 		<presentation:DashboardPM/>	
 		<presentation:LoadingPM/>
 		<presentation:ErrorPanelPM/>
+		<presentation:MessagePanelPM/>
 		
 		<parsley:DynamicCommand type="{ LoginCommand }"/>
 		<parsley:DynamicCommand type="{ LogoutCommand }"/>

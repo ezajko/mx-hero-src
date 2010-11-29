@@ -16,6 +16,26 @@
 	</fx:Script>
 	<fx:Declarations>
 		<parsley:Configure/>
+		<s:Sequence id="showEffect">
+			<mx:Glow alphaFrom="{minAlpha}"
+					 alphaTo="{maxAlpha}"
+					 blurXFrom="{minGlow}"
+					 blurXTo="{maxGlow}"
+					 blurYFrom="{minGlow}"
+					 blurYTo="{maxGlow}"
+					 color="{glowColor}"
+					 duration="{duration}"/>
+			
+			<mx:Glow alphaFrom="{maxAlpha}"
+					 alphaTo="{minAlpha}"
+					 blurXFrom="{maxGlow}"
+					 blurXTo="{minGlow}"
+					 blurYFrom="{maxGlow}"
+					 blurYTo="{minGlow}"
+					 color="{glowColor}"
+					 duration="{duration}"/>		
+		</s:Sequence>
+
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
@@ -34,6 +54,24 @@
 			[Bindable]
 			public var applicationContext:ApplicationContext;
 			
+			[Bindable]
+			public var glowColor:Number=0xFFFFFF;
+			
+			[Bindable]
+			public var minGlow:Number=1.0;
+			
+			[Bindable]
+			public var maxGlow:Number=15.0;
+			
+			[Bindable]
+			public var minAlpha:Number=0.0;
+			
+			[Bindable]
+			public var maxAlpha:Number=0.8;
+			
+			[Bindable]
+			public var duration:Number=1000;
+			
 		]]>
 	</fx:Script>
 	
@@ -43,9 +81,17 @@
 				dataProvider="{dataProvider}" 
 				styleName="Dashboard" />
 	<mx:Spacer width="100%"/>
-	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" fontWeight="bold"/>
-	<s:Label text="{applicationContext.selectedDomain.domain}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"/>
-	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.USER_LABEL)}" fontWeight="bold"/>
+	
+	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" 
+			 visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" 
+			 fontWeight="bold"
+			 showEffect="{showEffect}"/>
+	<s:Label text="{applicationContext.selectedDomain.domain}" 
+			 visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"
+			 showEffect="{showEffect}"/>
+	
+	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.USER_LABEL)}" 
+			 fontWeight="bold"/>
 	<s:Label text="{applicationContext.applicationUser.userName}"/>
 	<mx:Spacer width="5"/>
 	<component1:GlowButton source="{ImageResources.LOGOUT_ICON}" 

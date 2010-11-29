@@ -21,6 +21,7 @@ package org.mxhero.console.configurations.presentation.domains
 	import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
 	import org.mxhero.console.features.application.FeaturesDestinations;
+	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Domain;
 	import org.mxhero.console.reports.application.ReportsDestinations;
@@ -207,6 +208,8 @@ package org.mxhero.console.configurations.presentation.domains
 			parentModel.navigateTo(ConfigurationsDestinations.LIST);
 			parentModel.navigateTo(ReportsDestinations.LIST);
 			parentModel.navigateTo(FeaturesDestinations.LIST);
+			var message:String=rm.getString(DomainsShowProperties.NAME,DomainsShowProperties.ENTER_DOMAIN_MESSAGE)+"("+selectDomain.domain+")";
+			dispatcher(new ApplicationMessage(null,null,message));
 		}
 	}
 }

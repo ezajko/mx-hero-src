@@ -9,6 +9,7 @@ package org.mxhero.console.configurations.presentation.user
 	import org.mxhero.console.configurations.application.event.EditApplicationUserEvent;
 	import org.mxhero.console.configurations.application.resources.UserProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
+	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.ApplicationUser;
 
@@ -65,7 +66,7 @@ package org.mxhero.console.configurations.presentation.user
 		[CommandResult]
 		public function updateUserResult(result:*,event:EditApplicationUserEvent):void{
 			this.isUpdating=false;
-			Alert.show(rm.getString(UserProperties.NAME,UserProperties.UPDATE_USER_RESULT),context.applicationUser.userName,Alert.OK);
+			dispatcher(new ApplicationMessage(UserProperties.NAME,UserProperties.UPDATE_USER_RESULT));
 		}
 		
 		[CommandError]
@@ -81,7 +82,7 @@ package org.mxhero.console.configurations.presentation.user
 		[CommandResult]
 		public function changePasswordResult(result:*,event:ChangePasswordEvent):void{
 			this.isUpdating=false;
-			Alert.show(rm.getString(UserProperties.NAME,UserProperties.PASSWORD_CHANGED),context.applicationUser.userName,Alert.OK);
+			dispatcher(new ApplicationMessage(UserProperties.NAME,UserProperties.PASSWORD_CHANGED));
 		}
 		
 		[CommandError]

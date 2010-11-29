@@ -10,7 +10,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import mx.controls.Alert;
 			import mx.controls.LinkButton;
 			
 			[Bindable]

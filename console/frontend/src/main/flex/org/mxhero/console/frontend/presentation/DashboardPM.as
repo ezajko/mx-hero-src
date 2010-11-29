@@ -13,6 +13,7 @@ package org.mxhero.console.frontend.presentation
 	import org.mxhero.console.features.application.FeaturesDestinations;
 	import org.mxhero.console.frontend.application.MainDestination;
 	import org.mxhero.console.frontend.application.event.LogoutEvent;
+	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.application.resources.DashboardProperties;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Domain;
@@ -68,10 +69,13 @@ package org.mxhero.console.frontend.presentation
 
 		public function leaveDomainHandler(event:CloseEvent):void{
 			if(event.detail==Alert.YES){
+				var message:String=rm.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LEAVE_MESSAGE)+"("+context.selectedDomain.domain+")";
+				dispatcher(new ApplicationMessage(null,null,message));
 				context.selectedDomain=null;
 				dispatcher(NavigationEvent.createNavigateToEvent(ConfigurationsDestinations.LIST));
 				dispatcher(NavigationEvent.createNavigateToEvent(ReportsDestinations.LIST));
 				dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
+				
 			}
 		}
 		

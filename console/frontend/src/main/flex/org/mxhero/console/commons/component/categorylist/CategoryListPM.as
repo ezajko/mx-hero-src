@@ -114,6 +114,12 @@ package org.mxhero.console.commons.component.categorylist
 			updateLabels()
 		}
 
-
+		public function getExtendedTitle():String{
+			if(this.selectedCategory!=null && this.selectedChild!=null){
+				return this.defaultTitle+" > "+this.selectedCategory.label+" > "+this.selectedChild.label;
+			} else {
+				return defaultTitle;
+			}
+		}
 	}
 }
