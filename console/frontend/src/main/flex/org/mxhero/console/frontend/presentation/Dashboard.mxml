@@ -8,7 +8,8 @@
 		 height="100%" 
 		 enabled="{!model.isLogingout}"
 		 xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*" 
-		 xmlns:component="org.mxhero.console.frontend.presentation.component.*">
+		 xmlns:component="org.mxhero.console.frontend.presentation.component.*"
+		 creationComplete="{DashboardPM.container=viewStack}">
 	<fx:Declarations>
 		<parsley:Configure/>
 	</fx:Declarations>

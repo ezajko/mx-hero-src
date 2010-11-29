@@ -74,7 +74,7 @@
 		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<s:AMFChannel uri="http://10.30.2.199:8081/mxhero/messagebroker/flex-amf"/>
+				<s:AMFChannel uri="http://10.30.2.240:8086/mxhero/messagebroker/flex-amf"/>
 			</s:channels>
 		</s:ChannelSet>
 

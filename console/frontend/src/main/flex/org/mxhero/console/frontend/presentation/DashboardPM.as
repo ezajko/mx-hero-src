@@ -3,6 +3,7 @@ package org.mxhero.console.frontend.presentation
 	import com.adobe.cairngorm.navigation.NavigationEvent;
 	
 	import mx.controls.Alert;
+	import mx.core.Container;
 	import mx.events.CloseEvent;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
@@ -23,6 +24,9 @@ package org.mxhero.console.frontend.presentation
 	{
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
+
+		[Bindable]
+		public static var container:Container;
 		
 		[Inject]
 		[Bindable]
@@ -38,6 +42,12 @@ package org.mxhero.console.frontend.presentation
 		[Bindable]
 		[CommandStatus(type="org.mxhero.console.frontend.application.event.LogoutEvent")]
 		public var isLogingout:Boolean = false;
+		
+		[Enter(time="first")]
+		public function enter():void
+		{
+			container.createComponentsFromDescriptors();
+		}
 		
 		public function logout():void{
 			if(context.selectedDomain!=null 
