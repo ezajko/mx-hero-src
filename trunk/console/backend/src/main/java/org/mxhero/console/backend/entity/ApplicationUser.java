@@ -53,6 +53,9 @@ public class ApplicationUser {
 	@Column(name="locale", nullable=false)
 	private String locale;
 	
+	@Column(name="sounds_enabled", nullable=false)
+	private boolean soundsEnabled = true;
+	
 	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
 	@JoinTable(
         name="app_users_authorities",
@@ -160,6 +163,14 @@ public class ApplicationUser {
 
 	public void setDomain(Domain domain) {
 		this.domain = domain;
+	}
+
+	public boolean isSoundsEnabled() {
+		return soundsEnabled;
+	}
+
+	public void setSoundsEnabled(boolean soundsEnabled) {
+		this.soundsEnabled = soundsEnabled;
 	}
 
 	@Override
