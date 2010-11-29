@@ -199,10 +199,12 @@
 			<s:VGroup horizontalAlign="center">
 				<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.DRAG_HERE)}" 
 						 styleName="draghere"
+						 buttonMode="true"
 						 toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
 				<mx:Image id="tashImg" 
 						  source="{ImageResources.TRASHCAN}" dragEnter="image1_dragEnterHandler(event)" 
 						  dragDrop="{effectDrop.play()}"
+						  buttonMode="true"
 						  toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
 			</s:VGroup>
 		</s:HGroup>		

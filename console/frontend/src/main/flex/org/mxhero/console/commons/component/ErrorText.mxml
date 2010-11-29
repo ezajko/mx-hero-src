@@ -6,11 +6,16 @@
 		 styleName="errorText"
 		 height="{HIDE_SIZE}">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:SoundEffect id="errorSound" 
+						target="{this}" 
+						source="{SoundResources.ERROR}" 
+						duration="1000"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.commons.resources.SoundResources;
+			
 			[Bindable]
 			private var _errorMessage:String;
 
@@ -19,6 +24,7 @@
 			public function showError(errorMessage:String):void{
 				_errorMessage=errorMessage;
 				currentState="error";
+				errorSound.play();
 			}
 			
 			public function hideError():void{
