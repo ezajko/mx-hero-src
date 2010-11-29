@@ -6,7 +6,7 @@
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
 			  width="100%"
 			  height="100%"
-			  creationPolicy="all">
+			  creationPolicy="all" xmlns:component="org.mxhero.console.commons.component.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -43,7 +43,8 @@
 		<s:layout>
 			<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 		</s:layout>		
-		<presentation:Loading/>
+		<presentation:Loading id="loading"/>
+		<component:ReflectionManager id="reflectionManager" target="{loading}" falloff="0.65" blurAmount="0.15"/>
 	</s:NavigatorContent>
 	
 	<s:NavigatorContent width="100%" height="100%" 

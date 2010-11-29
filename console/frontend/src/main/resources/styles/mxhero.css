@@ -69,6 +69,8 @@ mx|LinkButton.titleexpanded_back
 	color:#70B2EE;
 	padding-right:0;
 	padding-left:0;
+	text-selected-color:#FFFFFF;
+	text-roll-over-color:#FFFFFF;	
 }
 
 s|Label.titleexpanded_title

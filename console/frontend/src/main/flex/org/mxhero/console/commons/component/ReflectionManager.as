@@ -4,6 +4,10 @@ package org.mxhero.console.commons.component
 	import flash.display.GradientType;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BitmapFilterQuality;
+	import flash.filters.BlurFilter;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -12,11 +16,6 @@ package org.mxhero.console.commons.component
 	import mx.events.FlexEvent;
 	import mx.events.MoveEvent;
 	import mx.events.ResizeEvent;
-	
-	// imports for handling blur
-	import flash.filters.BitmapFilter;
-	import flash.filters.BitmapFilterQuality;
-	import flash.filters.BlurFilter;
 	
 	
 	/**
@@ -65,7 +64,8 @@ package org.mxhero.console.commons.component
 				_target.removeEventListener(FlexEvent.UPDATE_COMPLETE, handleTargetUpdate, true);
 				_target.removeEventListener(MoveEvent.MOVE, handleTargetMove);
 				_target.removeEventListener(ResizeEvent.RESIZE, handleTargetResize);
-				
+				_target.removeEventListener(FlexEvent.VALUE_COMMIT,handleTargetUpdate);
+				_target.removeEventListener(KeyboardEvent.KEY_UP,handleTargetUpdate);
 				// Clear our bitmaps, so we regenerate them next time a component is targeted.
 				clearCachedBitmaps();
 			}
@@ -77,6 +77,10 @@ package org.mxhero.console.commons.component
 				// for useCapture here so we can detect when any descendants of the target are
 				// redrawn as well.
 				_target.addEventListener(FlexEvent.UPDATE_COMPLETE, handleTargetUpdate, true);
+				
+				_target.addEventListener(FlexEvent.VALUE_COMMIT,handleTargetUpdate);
+				
+				_target.addEventListener(KeyboardEvent.KEY_UP,handleTargetUpdate);
 				
 				// Register to get notified whenever the target moves or resizes.
 				_target.addEventListener(MoveEvent.MOVE, handleTargetMove);
@@ -122,7 +126,7 @@ package org.mxhero.console.commons.component
 			invalidateDisplayList();
 		}
 		
-		private function handleTargetUpdate(event: FlexEvent): void {
+		private function handleTargetUpdate(event: *): void {
 			// The target has been redrawn, so mark ourselves for redraw.
 			invalidateDisplayList();
 		}
