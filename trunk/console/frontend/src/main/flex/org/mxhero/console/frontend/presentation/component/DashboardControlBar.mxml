@@ -7,9 +7,11 @@
 	</s:layout>
 	<fx:Script>
 		<![CDATA[
+
 			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.frontend.application.resources.DashboardProperties;
 			import org.mxhero.console.frontend.infrastructure.AuthorizeHelper;
+
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -37,7 +39,8 @@
 	
 	<mx:Image source="{ImageResources.LOGO_IMG}"/>
 	<mx:Spacer width="20"/>
-	<mx:LinkBar id="linkBar" dataProvider="{dataProvider}" 
+	<mx:LinkBar id="linkBar" 
+				dataProvider="{dataProvider}" 
 				styleName="Dashboard" />
 	<mx:Spacer width="100%"/>
 	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" fontWeight="bold"/>
