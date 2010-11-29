@@ -89,7 +89,7 @@
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	<component:ErrorText id="errorText" width="100%"/>
+	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 	<s:VGroup paddingLeft="10" paddingBottom="10" paddingRight="10" paddingTop="0" gap="10">
 		<component:LabelExpanded width="100%" 
 								 labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL)}"

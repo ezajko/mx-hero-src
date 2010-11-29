@@ -53,6 +53,9 @@
 			
 			private var timer:Timer;
 			
+			[Bindable]
+			public var soundEnabled:Boolean=true;
+			
 			[Inject]
 			[Bindable]
 			public var model:MessagePanelPM;
@@ -60,7 +63,9 @@
 			protected function messageText_valueCommitHandler(event:FlexEvent):void
 			{
 				if(this.messageText.text!=null && this.messageText.text.length>0){
-					messageSound.play();
+					if(soundEnabled){
+						messageSound.play();
+					}
 					initTimer();
 				}
 			}

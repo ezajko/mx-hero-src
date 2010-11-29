@@ -49,6 +49,7 @@ package org.mxhero.console.configurations.presentation.user
 			user.name = context.applicationUser.name;
 			user.lastName = context.applicationUser.lastName;
 			user.notifyEmail = context.applicationUser.notifyEmail;
+			user.soundsEnabled = context.applicationUser.soundsEnabled;
 			for each (var locale:Object in context.locales){
 				if(context.applicationUser.locale==locale.toString()){
 					selectedLocaleIndex=context.locales.getItemIndex(locale);
@@ -66,6 +67,7 @@ package org.mxhero.console.configurations.presentation.user
 		[CommandResult]
 		public function updateUserResult(result:*,event:EditApplicationUserEvent):void{
 			this.isUpdating=false;
+			this.context.applicationUser=result;
 			dispatcher(new ApplicationMessage(UserProperties.NAME,UserProperties.UPDATE_USER_RESULT));
 		}
 		

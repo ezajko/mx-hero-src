@@ -57,10 +57,15 @@
 
 			private var timer:Timer;
 			
+			[Bindable]
+			public var soundEnabled:Boolean=true;
+			
 			protected function errorText_valueCommitHandler(event:FlexEvent):void
 			{
 				if(this.errorText.text!=null && this.errorText.text.length>0){
-					errorSound.play();
+					if(soundEnabled){
+						errorSound.play();
+					}
 					initTimer();
 				}
 			}

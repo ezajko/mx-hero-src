@@ -15,6 +15,6 @@ package org.mxhero.console.frontend.domain
 		public var authorities:ArrayCollection;
 		public var locale:String;
 		public var domain:Domain;
-
+		public var soundsEnabled:Boolean;
 	}
 }

@@ -117,7 +117,7 @@
 	<s:layout>
 		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
 	</s:layout>
-	<component:ErrorText id="errorText" width="100%"/>
+	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
 		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ACCOUNT_LABEL)}" width="100%">
 			<s:HGroup verticalAlign="middle">
