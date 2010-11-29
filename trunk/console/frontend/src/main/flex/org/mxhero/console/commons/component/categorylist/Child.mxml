@@ -7,7 +7,25 @@
 		<s:HorizontalLayout horizontalAlign="left" paddingLeft="0" paddingTop="0" paddingRight="0" paddingBottom="0"/>
 	</s:layout>
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:Glow id="glowOn"
+				 alphaFrom="{minAlpha}"
+				 alphaTo="{maxAlpha}"
+				 blurXFrom="{minGlow}"
+				 blurXTo="{maxGlow}"
+				 blurYFrom="{minGlow}"
+				 blurYTo="{maxGlow}"
+				 color="{glowColor}"
+				 duration="{duration}"/>
+		
+		<mx:Glow id="glowOff" 
+				 alphaFrom="{maxAlpha}"
+				 alphaTo="{minAlpha}"
+				 blurXFrom="{maxGlow}"
+				 blurXTo="{minGlow}"
+				 blurYFrom="{maxGlow}"
+				 blurYTo="{minGlow}"
+				 color="{glowColor}"
+				 duration="{duration}"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -22,20 +40,50 @@
 			[Bindable]
 			public var category:Object;
 			
+			[Bindable]
+			public var glowColor:Number=0xFFFFFF;
+			
+			[Bindable]
+			public var minGlow:Number=1.0;
+			
+			[Bindable]
+			public var maxGlow:Number=10.0;
+			
+			[Bindable]
+			public var minAlpha:Number=0.0;
+			
+			[Bindable]
+			public var maxAlpha:Number=0.5;
+			
+			[Bindable]
+			public var duration:Number=300;
+			
+			private var lastColor:*;
+		
 			private function onRollOverHandler():void{
 				model.selectedChild=child;
+				lastColor=childLabel.getStyle("color");
+				childLabel.setStyle("color",glowColor);
 			}
 
+			private function onRollOutHandler():void{
+				model.selectedChild=null
+				childLabel.setStyle("color",lastColor);
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<mx:LinkButton styleName="categorylist_child"
-					label="{child.label}"
-				   rollOver="{onRollOverHandler();}"
-				   rollOut="{model.selectedChild=null}" 
-				   width="{this.width}"
-				   icon="@Embed('/images/child_dot.png')"
-				   textFieldClass="mx.core.UIFTETextField"
-				   click="model.clickHandler(child)"/>
-	
+	<s:Label id="childLabel"
+			 styleName="categorylist_child"
+			 text="{child.label}"
+			 rollOver="{onRollOverHandler();}"
+			 rollOut="{onRollOutHandler();}"
+			 width="{this.width}"
+			 buttonMode="true"
+			 mouseEnabled="true"
+			 click="model.clickHandler(child)"
+			 rollOverEffect="{glowOn}"
+			 rollOutEffect="{glowOff}"/>
+
 </s:Group>
