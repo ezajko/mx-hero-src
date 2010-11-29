@@ -104,7 +104,9 @@
 						</mx:FormItem>
 						<mx:FormItem required="true" label="{resourceManager.getString(UserProperties.NAME,UserProperties.FORM_NOTIFY_EMAIL_LABEL)}" width="100%">
 							<s:TextInput id="emailTi" width="200" text="@{model.user.notifyEmail}"/>
-						</mx:FormItem>							
+						</mx:FormItem>
+						<s:CheckBox selected="@{model.user.soundsEnabled}" 
+									label="{resourceManager.getString(UserProperties.NAME,UserProperties.FORM_SOUNDS_ENABLED)}" />
 					</mx:Form>
 					<mx:Form paddingBottom="0">
 						<mx:FormItem label="{resourceManager.getString(UserProperties.NAME,UserProperties.FORM_LASTNAME_LABEL)}" width="100%">

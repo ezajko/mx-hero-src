@@ -37,5 +37,7 @@ package org.mxhero.console.configurations.application.resources
 		public static const FORM_USER_DATA_TITLE:String="form.user.data.title";
 		
 		public static const FORM_PASSWORD_TITLE:String="form.password.title";
+		
+		public static const FORM_SOUNDS_ENABLED:String="form.sounds.enabled";
 	}
 }

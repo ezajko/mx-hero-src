@@ -21,15 +21,21 @@
 
 			private static const HIDE_SIZE:Number=0;
 			
+			[Bindable]
+			public var soundEnabled:Boolean=true;
+			
 			public function showError(errorMessage:String):void{
 				_errorMessage=errorMessage;
 				currentState="error";
-				errorSound.play();
+				if(soundEnabled){
+					errorSound.play();
+				}
 			}
 			
 			public function hideError():void{
 				currentState="default"
 			}
+
 		]]>
 	</fx:Script>
 
