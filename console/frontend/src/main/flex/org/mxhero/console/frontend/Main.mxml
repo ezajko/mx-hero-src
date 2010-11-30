@@ -6,7 +6,7 @@
 			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:parsley="http://www.spicefactory.org/parsley"
 			   width="100%"
 			   height="100%"
-			   creationComplete="{registerClasses()}"
+			   creationComplete="{init()}"
 			   preloader="org.mxhero.console.commons.component.MxHeroPreLoader">
 	
 	<fx:Style source="../../../../../resources/styles/mxhero.css"/>
@@ -34,6 +34,8 @@
 		</parsley:ContextBuilder>
 		<parsley:Configure/>
 		<s:TraceTarget level="{ LogEventLevel.DEBUG }"/>
+		<mx:Rotate id="rotate"/>
+		<mx:Zoom id="zoom"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -42,6 +44,7 @@
 			
 			import mx.core.Application;
 			import mx.logging.LogEventLevel;
+			import mx.managers.ToolTipManager;
 			import mx.resources.ResourceBundle;
 			import mx.resources.ResourceManager;
 			
@@ -56,6 +59,17 @@
 			import org.mxhero.console.frontend.domain.Page;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
 
+			
+			private function init():void{
+				modifyTooltips();
+				registerClasses();
+			}
+			
+			private function modifyTooltips():void{
+				ToolTipManager.hideDelay = 2000;
+				ToolTipManager.showEffect = rotate;
+				ToolTipManager.hideEffect = zoom;
+			}
 			
 			private function registerClasses():void{
 				registerClassAlias("org.mxhero.console.backend.vo.ApplicationUserVO",ApplicationUser);

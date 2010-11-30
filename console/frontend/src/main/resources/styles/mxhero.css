@@ -238,3 +238,7 @@ mx|Text.errorText{
 	padding-left:5;
 	padding-right:5;
 }
+
+mx|ToolTip{
+	font-size:12;
+}
