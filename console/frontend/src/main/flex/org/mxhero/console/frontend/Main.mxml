@@ -34,8 +34,7 @@
 		</parsley:ContextBuilder>
 		<parsley:Configure/>
 		<s:TraceTarget level="{ LogEventLevel.DEBUG }"/>
-		<mx:Rotate id="rotate"/>
-		<mx:Zoom id="zoom"/>
+		<mx:Zoom id="zoom" duration="400"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -66,8 +65,7 @@
 			}
 			
 			private function modifyTooltips():void{
-				ToolTipManager.hideDelay = 2000;
-				ToolTipManager.showEffect = rotate;
+				ToolTipManager.hideDelay = 4000;
 				ToolTipManager.hideEffect = zoom;
 			}
 			
