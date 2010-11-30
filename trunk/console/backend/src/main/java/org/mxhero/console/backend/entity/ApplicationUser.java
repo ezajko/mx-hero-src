@@ -20,8 +20,6 @@ import javax.persistence.Table;
 @Table(name="app_users")
 public class ApplicationUser {
 
-	public static final String DEFAULT_LOCALE="en_US";
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;

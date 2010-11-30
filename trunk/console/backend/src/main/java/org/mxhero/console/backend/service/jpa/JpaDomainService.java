@@ -7,6 +7,7 @@ import java.util.HashSet;
 import org.mxhero.console.backend.dao.AuthorityDao;
 import org.mxhero.console.backend.dao.DomainAliasDao;
 import org.mxhero.console.backend.dao.DomainDao;
+import org.mxhero.console.backend.dao.SystemPropertyDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
 import org.mxhero.console.backend.entity.Domain;
@@ -32,6 +33,8 @@ public class JpaDomainService implements DomainService {
 	
 	public static final String ALIAS_OTHER_DOMAIN="alias.other.domain";
 	
+	private static final String DEFAULT_LANGUAGE="default.user.language";
+	
 	private DomainDao dao;
 	
 	private AuthorityDao authorityDao;
@@ -40,18 +43,22 @@ public class JpaDomainService implements DomainService {
 	
 	private DomainTranslator domainTranslator;
 	
+	private SystemPropertyDao systemPropertyDao;
+	
 	private PasswordEncoder encoder;
 	
 	@Autowired(required=true)
 	public JpaDomainService(DomainDao dao, AuthorityDao authorityDao,
 			DomainAliasDao domainaliasDao, DomainTranslator domainTranslator,
-			PasswordEncoder encoder) {
+			PasswordEncoder encoder,
+			SystemPropertyDao systemPropertyDao) {
 		super();
 		this.dao = dao;
 		this.authorityDao = authorityDao;
 		this.domainaliasDao = domainaliasDao;
 		this.domainTranslator = domainTranslator;
 		this.encoder = encoder;
+		this.systemPropertyDao = systemPropertyDao;
 	}
 
 	@Override
@@ -90,7 +97,7 @@ public class JpaDomainService implements DomainService {
 			user.setCreationDate(Calendar.getInstance());
 			user.setEnabled(true);
 			user.setLastName(domainVO.getDomain());
-			user.setLocale(ApplicationUser.DEFAULT_LOCALE);
+			user.setLocale(systemPropertyDao.findByKey(DEFAULT_LANGUAGE).getPropertyValue());
 			user.setName(domainVO.getDomain());
 			user.setNotifyEmail(email);
 			user.setPassword(encoder.encodePassword(password, null));
@@ -122,7 +129,7 @@ public class JpaDomainService implements DomainService {
 				user.setCreationDate(Calendar.getInstance());
 				user.setEnabled(true);
 				user.setLastName(domainVO.getDomain());
-				user.setLocale(ApplicationUser.DEFAULT_LOCALE);
+				user.setLocale(systemPropertyDao.findByKey(DEFAULT_LANGUAGE).getPropertyValue());
 				user.setName(domainVO.getDomain());
 				user.setNotifyEmail(email);
 				user.setPassword(encoder.encodePassword(password, null));

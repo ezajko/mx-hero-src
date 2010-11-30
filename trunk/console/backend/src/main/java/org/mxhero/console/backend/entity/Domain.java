@@ -46,6 +46,9 @@ public class Domain {
 	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private Set<Group> groups;
 	
+	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private Set<FeatureRule> rules;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -116,6 +119,14 @@ public class Domain {
 
 	public void setGroups(Set<Group> groups) {
 		this.groups = groups;
+	}
+
+	public Set<FeatureRule> getRules() {
+		return rules;
+	}
+
+	public void setRules(Set<FeatureRule> rules) {
+		this.rules = rules;
 	}
 
 	@Override
