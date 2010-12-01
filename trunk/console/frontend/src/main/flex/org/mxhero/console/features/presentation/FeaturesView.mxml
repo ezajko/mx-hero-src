@@ -5,47 +5,12 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
 		 xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*"
 		 width="100%" 
-		 height="100%">
+		 height="100%" xmlns:presentation="org.mxhero.console.features.presentation.*">
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.commons.component.categorylist.CategoryListPM;
 			import org.mxhero.console.features.application.FeaturesDestinations;
 			
-			[Bindable]
-			public var source:Object = [{label:"Policies",iconsrc:"images/configurations/3.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
-				{label:"Other policy muito cumprido aqui",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"},
-				{label:"Other policy",description:"another large description should go here to explain everything"}]}
-				,{label:"Security",iconsrc:"images/configurations/6.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"}]}
-				,{label:"Security",iconsrc:"images/configurations/6.png",childs:[{label:"One policy",description:"some large description should go here to explain something"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"},
-					{label:"Other policy",description:"another large description should go here to explain everything"}]}];
-
 			[Inject]
 			[Bindable]
 			public var model:FeaturesViewPM;
@@ -63,7 +28,7 @@
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>
-		<categorylist:CategoryList id="featuresList" categoryList="{source}" width="100%" height="100%" columnsWidth="180"/>
+		<presentation:FeaturesList width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
 </mx:ViewStack>

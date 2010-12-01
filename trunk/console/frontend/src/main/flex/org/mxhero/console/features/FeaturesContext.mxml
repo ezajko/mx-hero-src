@@ -9,12 +9,27 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.rpc.remoting.RemoteObject;
+			
+			import org.mxhero.console.features.application.command.GetFeaturesByDomainIdCommand;
+			import org.mxhero.console.features.application.command.GetFeaturesCommand;
 			
 		]]>
 	</fx:Script>
 
 	<fx:Declarations>
+		<parsley:DynamicCommand type="{GetFeaturesByDomainIdCommand}"/>
+		<parsley:DynamicCommand type="{GetFeaturesCommand}"/>
+		
 		<presentation1:FeaturesViewPM/>
+		<presentation1:FeaturesListPM/>
+		
+		<parsley:Object type="{RemoteObject}" id="featureService">
+			<parsley:Property name="destination" value="featureService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
 	</fx:Declarations>
 
 </fx:Object>
