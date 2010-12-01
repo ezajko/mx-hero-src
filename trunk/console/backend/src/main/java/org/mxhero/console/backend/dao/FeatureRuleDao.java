@@ -13,6 +13,6 @@ public interface FeatureRuleDao extends GenericDao<FeatureRule, Integer>{
 	List<FeatureRule> findByFeatureIdAndDomainId(@Param("featureId") Integer featureId, 
 										@Param("domainId") Integer domainId);
 	
-	@Query("From FeatureRule fr WHERE fr.feature.id = :featureId AND fr.domain.id is null")
+	@Query("From FeatureRule fr WHERE fr.feature.id = :featureId AND fr.domain is null")
 	List<FeatureRule> findByFeatureIdAndNullDomain(@Param("featureId") Integer featureId);
 }
