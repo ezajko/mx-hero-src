@@ -26,6 +26,6 @@
 							   titleLabelFunction="{configurationsList.model.getExtendedTitle}"
 							   defaultTitle="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.DEFAULT_TITLE)}"
 							   defaultDescription="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.DEFAULT_DESCRIPTION)}"
-							   columnsWidth="240"/>
+							   columnsWidth="140"/>
 	
 </s:Group>

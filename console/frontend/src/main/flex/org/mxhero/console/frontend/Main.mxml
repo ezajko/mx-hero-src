@@ -24,6 +24,7 @@
 		[ResourceBundle("configurations_groups")]
 		[ResourceBundle("configurations_users")]
 		[ResourceBundle("configurations_system")]
+		[ResourceBundle("features_list")]
 	</fx:Metadata>
 	
 	<fx:Declarations>
@@ -50,9 +51,12 @@
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
+			import org.mxhero.console.frontend.domain.Category;
 			import org.mxhero.console.frontend.domain.Configuration;
 			import org.mxhero.console.frontend.domain.Domain;
 			import org.mxhero.console.frontend.domain.EmailAccount;
+			import org.mxhero.console.frontend.domain.Feature;
+			import org.mxhero.console.frontend.domain.FeatureRule;
 			import org.mxhero.console.frontend.domain.Group;
 			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.domain.Page;
@@ -78,6 +82,9 @@
 				registerClassAlias("org.mxhero.console.backend.vo.PageVO",Page);
 				registerClassAlias("org.mxhero.console.backend.vo.GroupVO",org.mxhero.console.frontend.domain.Group);
 				registerClassAlias("org.mxhero.console.backend.vo.ConfigurationVO",Configuration);
+				registerClassAlias("org.mxhero.console.backend.vo.CategoryVO",Category);
+				registerClassAlias("org.mxhero.console.backend.vo.FeatureVO",Feature);
+				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleVO",FeatureRule);
 			}
 			
 			[Inject]
