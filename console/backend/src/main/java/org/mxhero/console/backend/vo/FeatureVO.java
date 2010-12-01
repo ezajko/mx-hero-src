@@ -1,6 +1,6 @@
 package org.mxhero.console.backend.vo;
 
-import java.util.Set;
+import java.util.Collection;
 
 public class FeatureVO {
 
@@ -10,7 +10,9 @@ public class FeatureVO {
 	
 	private String description;
 	
-	private Set<FeatureRuleVO> rules;
+	private String explain;
+	
+	private Collection<FeatureRuleVO> rules;
 
 	public Integer getId() {
 		return id;
@@ -35,12 +37,20 @@ public class FeatureVO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public String getExplain() {
+		return explain;
+	}
 
-	public Set<FeatureRuleVO> getRules() {
+	public void setExplain(String explain) {
+		this.explain = explain;
+	}
+
+	public Collection<FeatureRuleVO> getRules() {
 		return rules;
 	}
 
-	public void setRules(Set<FeatureRuleVO> rules) {
+	public void setRules(Collection<FeatureRuleVO> rules) {
 		this.rules = rules;
 	}
 

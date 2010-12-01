@@ -9,14 +9,14 @@ import org.mxhero.console.backend.dao.ApplicationUserDao;
 import org.mxhero.console.backend.dao.CategoryDao;
 import org.mxhero.console.backend.dao.FeatureDao;
 import org.mxhero.console.backend.dao.FeatureRuleDao;
-import org.mxhero.console.backend.dao.LocalePropertyDao;
 import org.mxhero.console.backend.dao.SystemPropertyDao;
 import org.mxhero.console.backend.entity.Category;
 import org.mxhero.console.backend.entity.Feature;
 import org.mxhero.console.backend.entity.FeatureRule;
-import org.mxhero.console.backend.entity.LocaleProperty;
 import org.mxhero.console.backend.service.FeatureService;
 import org.mxhero.console.backend.vo.CategoryVO;
+import org.mxhero.console.backend.vo.FeatureRuleVO;
+import org.mxhero.console.backend.vo.FeatureVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,7 +36,7 @@ public class JpaFeatureService implements FeatureService {
 	
 	private FeatureRuleDao featureRuleDao;
 	
-	private LocalePropertyDao localePropertyDao;
+	private LocalePropertyHelper helper;
 	
 	private SystemPropertyDao systemPropertyDao;
 	
@@ -44,14 +44,14 @@ public class JpaFeatureService implements FeatureService {
 	
 	@Autowired
 	public JpaFeatureService(CategoryDao categoryDao, FeatureDao featureDao,
-			FeatureRuleDao featureRuleDao, LocalePropertyDao localePropertyDao,
+			FeatureRuleDao featureRuleDao, LocalePropertyHelper helper,
 			SystemPropertyDao systemPropertyDao,
 			ApplicationUserDao userDao) {
 		super();
 		this.categoryDao = categoryDao;
 		this.featureDao = featureDao;
 		this.featureRuleDao = featureRuleDao;
-		this.localePropertyDao = localePropertyDao;
+		this.helper = helper;
 		this.systemPropertyDao = systemPropertyDao;
 		this.userDao = userDao;
 	}
@@ -63,7 +63,7 @@ public class JpaFeatureService implements FeatureService {
 		List<Category> categories = categoryDao.readAll();
 				
 		for(Category category : categories){
-			if(category.getId()==unclassifiedCategoryId){
+			if(category.getId().equals(unclassifiedCategoryId)){
 				category.setFeatures(new HashSet<Feature>());
 				for(Feature feature : featureDao.findByNullCategory()){
 					category.getFeatures().add(feature);
@@ -85,7 +85,7 @@ public class JpaFeatureService implements FeatureService {
 		List<Category> categories = categoryDao.readAll();
 				
 		for(Category category : categories){
-			if(category.getId()==unclassifiedCategoryId){
+			if(category.getId().equals(unclassifiedCategoryId)){
 				category.setFeatures(new HashSet<Feature>());
 				for(Feature feature : featureDao.findByNullCategory()){
 					category.getFeatures().add(feature);
@@ -106,29 +106,36 @@ public class JpaFeatureService implements FeatureService {
 		String userLocale = userDao.finbByUserName(SecurityContextHolder.getContext().getAuthentication().getName()).getLocale();
 		String defaultLocale = systemPropertyDao.findByKey(DEFAULT_LANGUAGE).getPropertyValue();
 		for (Category category : entities){
-			CategoryVO categoryVO = new CategoryVO();
-			categoryVO.setIconsrc(category.getIconSource());
-			categoryVO.setId(category.getId());
-			categoryVO.setLabel(getValue(Category.class.getName(),category.getLabelKey(),userLocale,defaultLocale));
-			
+			if(category.getFeatures()!=null && category.getFeatures().size()>0){
+				CategoryVO categoryVO = new CategoryVO();
+				categoryVO.setIconsrc(category.getIconSource());
+				categoryVO.setId(category.getId());
+				categoryVO.setLabel(helper.getValue(Category.class.getName(),category.getLabelKey(),userLocale,defaultLocale));
+				categoryVO.setChilds(new ArrayList<FeatureVO>());
+				for(Feature feature : category.getFeatures()){
+					FeatureVO featureVO = new FeatureVO();
+					featureVO.setId(feature.getId());
+					featureVO.setLabel(helper.getValue(feature.getComponent(),feature.getLabelKey(),userLocale,defaultLocale));
+					featureVO.setDescription(helper.getValue(feature.getComponent(),feature.getDescriptionKey(),userLocale,defaultLocale));
+					featureVO.setExplain(helper.getValue(feature.getComponent(),feature.getExplainKey(),userLocale,defaultLocale));
+					if(feature.getRules()!=null && feature.getRules().size()>0){
+						featureVO.setRules(new ArrayList<FeatureRuleVO>());
+						for(FeatureRule rule : feature.getRules()){
+							FeatureRuleVO ruleVO = new FeatureRuleVO();
+							ruleVO.setCreated(rule.getCreated());
+							ruleVO.setUpdated(rule.getUpdated());
+							ruleVO.setId(rule.getId());
+							ruleVO.setName(rule.getLabel());
+							featureVO.getRules().add(ruleVO);
+						}
+					}
+					categoryVO.getChilds().add(featureVO);
+				}
+				categoryVOs.add(categoryVO);
+			}
 		}
 		 
 		return categoryVOs;
 	}
 
-	private String getValue(String component, String key, String userLocale, String defaultLocale ){
-		LocaleProperty localeProperty = null;
-		
-		localeProperty = localePropertyDao.findByComponentAndLocaleAndPropertyKey(component, userLocale, key);
-		if(localeProperty!=null){
-			return localeProperty.getPropertyValue();
-		}
-		
-		localeProperty = localePropertyDao.findByComponentAndLocaleAndPropertyKey(component, defaultLocale, key);
-		if(localeProperty!=null){
-			return localeProperty.getPropertyValue();
-		}
-		
-		return key;
-	}
 }
