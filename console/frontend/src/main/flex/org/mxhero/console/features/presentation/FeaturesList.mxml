@@ -26,5 +26,6 @@
 							   titleLabelFunction="{featuresList.model.getExtendedTitle}"
 							   defaultTitle="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.DEFAULT_TITLE)}"
 							   defaultDescription="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.DEFAULT_DESCRIPTION)}"
-							   columnsWidth="140"/>
+							   columnsWidth="140"
+							   orderChilds="true"/>
 </s:Group>

@@ -2,20 +2,23 @@
 <s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 width="100%" xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*">
+		 width="100%" 
+		 xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.controls.HRule;
+			import mx.events.ResizeEvent;
 			
 			[Bindable]
 			public var model:CategoryListPM= new CategoryListPM();
 			
 			private var _categoryList:Object;
-			
+
 			public function get clickHandler():Function{
 				return model.clickHandler;
 			}
@@ -72,12 +75,15 @@
 			{
 				var hrule:HRule;
 				innerGroup.removeAllElements();
+				model.categoriesUI.removeAll();
+				
 				if(value!=null){
 					for each(var category:Object in value){
 						var newCategoryRow:CategoryRow= new CategoryRow();
 						newCategoryRow.model=model;
 						newCategoryRow.category=category;
 						innerGroup.addElement(newCategoryRow);
+						model.categoriesUI.addItem(newCategoryRow.categoryContainer);
 						hrule = new HRule();
 						hrule.percentWidth=100;
 						hrule.height=1;
@@ -87,6 +93,16 @@
 				innerGroup.removeElementAt(innerGroup.numElements-1);
 				_categoryList = value;
 				invalidateDisplayList();
+			}
+
+			public function get orderChilds():Boolean
+			{
+				return model.orderChilds;
+			}
+
+			public function set orderChilds(value:Boolean):void
+			{
+				model.orderChilds = value;
 			}
 
 		]]>

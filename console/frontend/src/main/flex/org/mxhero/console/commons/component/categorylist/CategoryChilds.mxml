@@ -12,6 +12,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
 			import mx.controls.LinkButton;
 
 			[Bindable]
@@ -29,6 +32,23 @@
 			{
 				this.removeAllElements();
 				if(value!=null){
+					
+					if(model.orderChilds){
+						if(value is Array){
+							value = new ArrayCollection(value as Array);
+						}
+						if(!(value is ArrayCollection)){
+							return;
+						}
+						var dataSortField:SortField = new SortField();
+						dataSortField.name="label";
+						dataSortField.caseInsensitive=false;
+						var alphaSort:Sort = new Sort();
+						alphaSort.fields = [dataSortField];
+						
+						(value as ArrayCollection).sort=alphaSort;
+						(value as ArrayCollection).refresh();
+					}
 					for(var child:Object in value){
 						var childView:Child = new Child();
 						childView.model=model;

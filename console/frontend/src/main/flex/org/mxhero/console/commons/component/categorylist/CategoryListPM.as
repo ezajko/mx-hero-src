@@ -1,5 +1,6 @@
 package org.mxhero.console.commons.component.categorylist
 {
+	import mx.collections.ArrayCollection;
 
 	public class CategoryListPM
 	{
@@ -12,6 +13,13 @@ package org.mxhero.console.commons.component.categorylist
 		private var _defaultTitle:String="default";
 		
 		private var _defaultDescription:String="default";
+		
+		public var categoryWidth:Number=0;
+		
+		public var categoriesUI:ArrayCollection= new ArrayCollection();
+		
+		[Bindable]
+		public var orderChilds:Boolean=false;
 		
 		[Bindable]
 		public var titleLabelFunction:Function=getdefaultTitle;
@@ -119,6 +127,24 @@ package org.mxhero.console.commons.component.categorylist
 				return this.defaultTitle+" > "+this.selectedCategory.label+" > "+this.selectedChild.label;
 			} else {
 				return defaultTitle;
+			}
+		}
+		
+		public function resizeCategories():void
+		{
+			var hasChanged:Boolean=false;
+			for each(var category:Object in categoriesUI){
+				category.invalidateDisplayList();
+				if(category.width>categoryWidth){
+					categoryWidth=category.width;
+					hasChanged=true;
+				} else {
+					category.width=categoryWidth;
+				}
+				category.invalidateDisplayList();
+			}
+			if(hasChanged){
+				resizeCategories();
 			}
 		}
 	}
