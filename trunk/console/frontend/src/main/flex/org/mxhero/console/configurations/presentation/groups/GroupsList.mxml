@@ -26,6 +26,11 @@
 			[Bindable]
 			public var model:GroupsViewPM;
 			
+			protected function updatedDateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.updatedDate);
+			}
+			
+			
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.createdDate);
 			}
@@ -72,9 +77,7 @@
 			<mx:LinkButton id="newGroupLink"
 						   label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.ADD_NEW_GROUP_LABEL)}" 
 						   icon="{ImageResources.ADD_ICO}"
-						   fontWeight="bold"
-						   textRollOverColor="#FFFFFF"
-						   textSelectedColor="#FFFFFF"
+						   styleName="action"
 						   click="newGroupLink_clickHandler(event)"/>
 		</s:HGroup>
 		<mx:HRule height="1" width="100%"/>
@@ -115,7 +118,7 @@
 							   minWidth="100"/>
 			<mx:DataGridColumn dataField="updatedDate" 
 							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_UPDATED_LABEL)}" 
-							   labelFunction="dateLabelFunction"
+							   labelFunction="updatedDateLabelFunction"
 							   width="110" resizable="false"/>
 			<mx:DataGridColumn dataField="createdDate" 
 							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_LABEL)}"

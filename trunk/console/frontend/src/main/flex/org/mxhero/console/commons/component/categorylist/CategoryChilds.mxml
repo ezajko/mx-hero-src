@@ -5,7 +5,7 @@
 		 width="100%"
 		 columnWidth="{model.columnsWidth}"
 		 columnAlign="left"
-		 horizontalGap="5">
+		 horizontalGap="10">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>

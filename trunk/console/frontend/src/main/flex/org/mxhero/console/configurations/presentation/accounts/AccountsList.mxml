@@ -26,6 +26,10 @@
 			[Inject]
 			[Bindable]
 			public var model:AccountsViewPM;
+
+			protected function updatedDateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.updatedDate);
+			}
 			
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.createdDate);
@@ -99,18 +103,13 @@
 						   textAlign="left"
 						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}" 
 						   icon="{ImageResources.ADD_ICO}"
-						   fontWeight="bold"
 						   click="newAccountLink_clickHandler(event)"
-						   textRollOverColor="#FFFFFF"
-						   textSelectedColor="#FFFFFF"
+						   styleName="action"
 						   width="100%"/>
 			<mx:LinkButton id="uploadAccounstLink"
-						   textAlign="left"
 						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
 						   icon="{ImageResources.UPLOAD_ICO}"
-						   fontWeight="bold"
-						   textRollOverColor="#FFFFFF"
-						   textSelectedColor="#FFFFFF"
+						   styleName="action"
 						   click="uploadAccounstLink_clickHandler(event)"
 						   width="100%"/>
 		</s:VGroup>
@@ -183,7 +182,7 @@
 								   minWidth="100"/>
 				<mx:DataGridColumn dataField="updatedDate" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
-								   labelFunction="dateLabelFunction"
+								   labelFunction="updatedDateLabelFunction"
 								   width="110" resizable="false"/>
 				<mx:DataGridColumn dataField="createdDate" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"

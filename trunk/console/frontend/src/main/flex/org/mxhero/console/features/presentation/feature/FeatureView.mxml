@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:component="org.mxhero.console.commons.component.*"
+		 enabled="{!model.isUpdating}">
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+		<mx:DateFormatter id="creationDateFormatter" 
+						  formatString="DD-MM-YYYY"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.ListEvent;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.features.application.resources.FeatureViewProperties;
+			import org.mxhero.console.features.application.resources.FeaturesListProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:FeatureViewPM;
+
+			protected function createdLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.created);
+			}
+	
+			protected function updateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.updated);
+			}
+			
+			protected function newRuleLink_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+
+			protected function datagrid2_itemDoubleClickHandler(event:ListEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout gap="20" paddingLeft="10" paddingRight="10" paddingBottom="20" paddingTop="10"/>
+	</s:layout>
+	
+	<component:TitleExpanded width="100%"
+							 title="{model.selectedCategory.label+' > '+model.selectedFeature.realLabel}"
+							 description="{model.selectedFeature.description}"
+							 expandedDescription="{model.selectedFeature.explain}"
+							 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+							 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+							 enableExpanded="true"
+							 backLink="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.GOBACK_LABEL)}"
+							 backLinkFunction="{model.goBack}"
+							 backLinkTooltip="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.GOBACK_TOOLTIP)}"/>
+
+	<mx:LinkButton id="newRuleLink"
+				   label="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.ADD_NEW_FEATURE_LABEL)}" 
+				   icon="{ImageResources.ADD_ICO}"
+				   styleName="action"
+				   click="newRuleLink_clickHandler(event)"/>
+	
+	<mx:DataGrid dataProvider="{model.selectedFeature.rules}" 
+				 width="100%" 
+				 height="100%"
+				 minWidth="600"
+				 selectedItem="@{model.selectedRule}"
+				 itemDoubleClick="datagrid2_itemDoubleClickHandler(event)"
+				 doubleClickEnabled="true"
+				 mouseChildren="true">
+		<mx:columns>
+			<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
+				<mx:itemRenderer>
+					<fx:Component>
+						<s:MXDataGridItemRenderer width="100%">
+							<s:layout>
+								<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+							</s:layout>
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.features.application.resources.FeatureViewProperties;
+									import org.mxhero.console.features.application.resources.FeaturesImages;
+
+								]]>
+							</fx:Script>
+							<s:Group>
+								<s:layout>
+									<s:BasicLayout/>
+								</s:layout>
+								<component:GlowButton maxGlow="10.0" 
+													  click="{outerDocument.model.changeRuleStatus()}"
+													  visible="{!data.enabled}"
+													  source="{FeaturesImages.DISABLED}" toolTip="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_ENBABLE_TOOLTIP)}"/>
+								<component:GlowButton maxGlow="10.0" 
+													  click="{outerDocument.model.changeRuleStatus()}"
+													  visible="{data.enabled}"
+													  source="{FeaturesImages.ENABLED}" toolTip="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_DISABLE_TOOLTIP)}"/>						
+							
+							</s:Group>
+						</s:MXDataGridItemRenderer>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_FROM_LABEL)}" 
+							   width="160"/>
+			<mx:DataGridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_TO_LABEL)}" 
+							   width="160"/>
+			<mx:DataGridColumn dataField="name" 
+							   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_NAME_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="updated" 
+							   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_UPDATED_LABEL)}" 
+							   labelFunction="updateLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn dataField="created" 
+							   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_CREATED_LABEL)}"
+							   labelFunction="createdLabelFunction"
+							   width="110" resizable="false"/>
+			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.commons.resources.ImageResources;
+									import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+									
+								]]>
+							</fx:Script>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.editRule()}"
+												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+							<component:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.removeRule()}"
+												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+	
+</s:Group>

@@ -184,6 +184,16 @@ s|BorderContainer.messagePanel
 	borderStyle: inset;
 }
 
+mx|LinkButton.action
+{
+	color: #FFFFFF;
+	text-roll-over-color:#FFFFFF;
+	text-selected-color:#FFFFFF;
+	font-weight:bold;
+	text-align:left;
+	font-size:16;
+}
+
 mx|LinkBar.Dashboard
 {
 	borderVisible: false;

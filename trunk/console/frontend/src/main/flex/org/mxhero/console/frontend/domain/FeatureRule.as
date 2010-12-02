@@ -8,5 +8,6 @@ package org.mxhero.console.frontend.domain
 		public var name:String;
 		public var created:Date;
 		public var updated:Date;
+		public var enabled:Boolean;
 	}
 }

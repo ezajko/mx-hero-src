@@ -12,12 +12,12 @@ package org.mxhero.console.features.presentation
 	import org.mxhero.console.frontend.infrastructure.AuthorizeHelper;
 
 	[Landmark(name="main.dashboard.features")]
-	public class FeaturesViewPM
+	public class AllFeaturesViewPM
 	{
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		private function navigateTo(destination:String):void
+		public function navigateTo(destination:String):void
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}
