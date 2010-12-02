@@ -36,6 +36,9 @@ public class FeatureRule {
 	
 	@Column(name="updated", nullable=false)
 	private Calendar updated;
+	
+	@Column(name="enabled", nullable=false)
+	private Boolean enabled;
 
 	public Integer getId() {
 		return id;
@@ -83,6 +86,14 @@ public class FeatureRule {
 
 	public void setUpdated(Calendar updated) {
 		this.updated = updated;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	@Override

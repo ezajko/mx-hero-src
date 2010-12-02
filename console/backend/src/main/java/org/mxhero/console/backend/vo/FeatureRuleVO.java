@@ -11,6 +11,8 @@ public class FeatureRuleVO {
 	private Calendar created;
 	
 	private Calendar updated;
+	
+	private Boolean enabled;
 
 	public Integer getId() {
 		return id;
@@ -44,4 +46,12 @@ public class FeatureRuleVO {
 		this.updated = updated;
 	}
 
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+	
 }

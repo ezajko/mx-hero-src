@@ -126,6 +126,7 @@ public class JpaFeatureService implements FeatureService {
 							ruleVO.setUpdated(rule.getUpdated());
 							ruleVO.setId(rule.getId());
 							ruleVO.setName(rule.getLabel());
+							ruleVO.setEnabled(rule.getEnabled());
 							featureVO.getRules().add(ruleVO);
 						}
 					}
@@ -136,6 +137,54 @@ public class JpaFeatureService implements FeatureService {
 		}
 		 
 		return categoryVOs;
+	}
+
+	@Override
+	public void remove(Integer id) {
+		FeatureRule rule = featureRuleDao.readByPrimaryKey(id);
+		featureRuleDao.delete(rule);
+	}
+
+	@Override
+	public void toggleStatus(Integer id) {
+		FeatureRule rule = featureRuleDao.readByPrimaryKey(id);
+		rule.setEnabled(!rule.getEnabled());
+		featureRuleDao.save(rule);
+	}
+
+	@Override
+	public Collection<FeatureRuleVO> getRulesByDomainId(Integer domainId,
+			Integer featureId) {
+		Collection<FeatureRuleVO> ruleVOs = new ArrayList<FeatureRuleVO>();
+		
+		for(FeatureRule rule : this.featureRuleDao.findByFeatureIdAndDomainId(featureId, domainId)){
+			FeatureRuleVO ruleVO = new FeatureRuleVO();
+			ruleVO.setCreated(rule.getCreated());
+			ruleVO.setUpdated(rule.getUpdated());
+			ruleVO.setId(rule.getId());
+			ruleVO.setName(rule.getLabel());
+			ruleVO.setEnabled(rule.getEnabled());
+			ruleVOs.add(ruleVO);
+		}
+		
+		return ruleVOs;
+	}
+
+	@Override
+	public Collection<FeatureRuleVO> getRulesWithoutDomain(Integer featureId) {
+		Collection<FeatureRuleVO> ruleVOs = new ArrayList<FeatureRuleVO>();
+		
+		for(FeatureRule rule : this.featureRuleDao.findByFeatureIdAndNullDomain(featureId)){
+			FeatureRuleVO ruleVO = new FeatureRuleVO();
+			ruleVO.setCreated(rule.getCreated());
+			ruleVO.setUpdated(rule.getUpdated());
+			ruleVO.setId(rule.getId());
+			ruleVO.setName(rule.getLabel());
+			ruleVO.setEnabled(rule.getEnabled());
+			ruleVOs.add(ruleVO);
+		}
+		
+		return ruleVOs;
 	}
 
 }
