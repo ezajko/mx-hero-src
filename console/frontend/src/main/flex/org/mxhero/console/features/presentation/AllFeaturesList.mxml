@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*" xmlns:parsley="http://www.spicefactory.org/parsley">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 enabled="{!model.isUpdating}">
 	<fx:Declarations>
 		<parsley:Configure/>
 	</fx:Declarations>
@@ -12,7 +15,7 @@
 			
 			[Inject]
 			[Bindable]
-			public var model:FeaturesListPM;
+			public var model:AllFeaturesListPM;
 		]]>
 	</fx:Script>
 	
@@ -27,5 +30,6 @@
 							   defaultTitle="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.DEFAULT_TITLE)}"
 							   defaultDescription="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.DEFAULT_DESCRIPTION)}"
 							   columnsWidth="140"
-							   orderChilds="true"/>
+							   orderChilds="true"
+							   clickHandler="{model.childClickHandler}"/>
 </s:Group>

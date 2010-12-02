@@ -29,6 +29,10 @@
 				return creationDateFormatter.format(item.creationDate);
 			}
 
+			protected function updatedDateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.updatedDate);
+			}
+			
 			protected function filterBtt_clickHandler(event:MouseEvent):void
 			{
 				model.filterDomains(domainTI.text,emailTI.text,serverTI.text);
@@ -83,9 +87,7 @@
 			<mx:LinkButton id="newDomainLink"
 						label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.ADD_NEW_DOMAIN_LABEL)}" 
 						icon="{ImageResources.ADD_ICO}"
-						fontWeight="bold"
-						textRollOverColor="#FFFFFF"
-						textSelectedColor="#FFFFFF"
+						styleName="action"
 						click="newDomainLink_clickHandler(event)"/>
 		</s:HGroup>
 		<mx:HRule height="1" width="100%"/>
@@ -137,7 +139,7 @@
 							   minWidth="100"/>
 			<mx:DataGridColumn dataField="updatedDate" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_UPDATED_LABEL)}" 
-							   labelFunction="dateLabelFunction"
+							   labelFunction="updatedDateLabelFunction"
 							   width="110" resizable="false"/>
 			<mx:DataGridColumn dataField="creationDate" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_LABEL)}"

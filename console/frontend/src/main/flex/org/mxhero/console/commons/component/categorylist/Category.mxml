@@ -21,7 +21,7 @@
 	<s:layout>
 		<s:HorizontalLayout horizontalAlign="left" verticalAlign="middle"/>
 	</s:layout>
-	<mx:Image source="{category.iconsrc}"/>
+	<mx:Image source="{category.iconsrc}" minWidth="48"/>
 	<mx:Label styleName="categorylist_category" 
 			  text="{category.label}" 
 			  textFieldClass="mx.core.UIFTETextField"

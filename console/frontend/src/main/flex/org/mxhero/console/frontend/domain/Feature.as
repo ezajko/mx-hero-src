@@ -11,7 +11,7 @@ package org.mxhero.console.frontend.domain
 		public var description:String;
 		public var explain:String;
 		public var rules:ArrayCollection;
-
+		
 		public function get label():String
 		{
 			if(rules!=null && rules.length>0){
@@ -24,6 +24,17 @@ package org.mxhero.console.frontend.domain
 		{
 			_label = value;
 		}
+
+		public function get realLabel():String
+		{
+			return _label;
+		}
+
+		public function set realLabel(value:String):void
+		{
+			_label = value;
+		}
+
 
 	}
 }

@@ -26,7 +26,7 @@ package org.mxhero.console.configurations.presentation
 			authorizedDataSource=authorizeHelper.authorizeList(dataSource);
 		}
 		
-		public function childClickHandler(child:Object):void{
+		public function childClickHandler(child:Object,category:Object):void{
 			configurationsViewPM.navigateTo(child.navigateTo);
 		}
 	}

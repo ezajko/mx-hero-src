@@ -14,6 +14,7 @@ package org.mxhero.console.commons.component.categorylist
 		
 		private var _defaultDescription:String="default";
 		
+		[Bindable]
 		public var categoryWidth:Number=0;
 		
 		public var categoriesUI:ArrayCollection= new ArrayCollection();

@@ -36,10 +36,7 @@
 			
 			[Bindable]
 			public var child:Object;
-			
-			[Bindable]
-			public var category:Object;
-			
+
 			[Bindable]
 			public var glowColor:Number=0xFFFFFF;
 			
@@ -82,7 +79,7 @@
 			 width="{this.width}"
 			 buttonMode="true"
 			 mouseEnabled="true"
-			 click="model.clickHandler(child)"
+			 click="model.clickHandler(child,model.selectedCategory)"
 			 rollOverEffect="{glowOn}"
 			 rollOutEffect="{glowOff}"/>
 
