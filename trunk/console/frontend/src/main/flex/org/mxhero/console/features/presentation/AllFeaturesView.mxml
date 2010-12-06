@@ -7,7 +7,7 @@
 		 width="100%" 
 		 height="100%" 
 		 xmlns:presentation="org.mxhero.console.features.presentation.*" 
-		 xmlns:feature="org.mxhero.console.features.presentation.feature.*">
+		 xmlns:feature="org.mxhero.console.features.presentation.feature.*" xmlns:rule="org.mxhero.console.features.presentation.rule.*">
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.commons.component.categorylist.CategoryListPM;
@@ -47,6 +47,16 @@
 			<s:VerticalLayout/>
 		</s:layout>
 		<feature:FeatureView width="100%" height="100%"/>
+	</s:NavigatorContent>
+
+	<s:NavigatorContent automationName="{FeaturesDestinations.RULE}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<rule:RuleView width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
 </mx:ViewStack>

@@ -5,12 +5,14 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
-		xmlns:presentation1="org.mxhero.console.features.presentation.*" xmlns:feature="org.mxhero.console.features.presentation.feature.*" >
+		xmlns:presentation1="org.mxhero.console.features.presentation.*" xmlns:feature="org.mxhero.console.features.presentation.feature.*" xmlns:rule="org.mxhero.console.features.presentation.rule.*" >
 
 	<fx:Script>
 		<![CDATA[
 			import mx.rpc.remoting.RemoteObject;
 			
+			import org.mxhero.console.features.application.command.CreateDomainRuleCommand;
+			import org.mxhero.console.features.application.command.CreateNoDomainRuleCommand;
 			import org.mxhero.console.features.application.command.GetFeaturesByDomainIdCommand;
 			import org.mxhero.console.features.application.command.GetFeaturesCommand;
 			import org.mxhero.console.features.application.command.GetRulesByDomainIdCommand;
@@ -28,13 +30,22 @@
 		<parsley:DynamicCommand type="{ToggleRuleStatusCommand}"/>
 		<parsley:DynamicCommand type="{GetRulesByDomainIdCommand}"/>
 		<parsley:DynamicCommand type="{GetRulesCommand}"/>
+		<parsley:DynamicCommand type="{CreateDomainRuleCommand}"/>
+		<parsley:DynamicCommand type="{CreateNoDomainRuleCommand}"/>
 		
 		<presentation1:AllFeaturesViewPM/>
 		<presentation1:AllFeaturesListPM/>
 		<feature:FeatureViewPM/>
+		<rule:RuleViewPM/>
 		
 		<parsley:Object type="{RemoteObject}" id="featureService">
 			<parsley:Property name="destination" value="featureService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="ruleService">
+			<parsley:Property name="destination" value="ruleService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

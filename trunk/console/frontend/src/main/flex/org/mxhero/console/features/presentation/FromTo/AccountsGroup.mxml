@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 verticalAlign="middle" xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" xmlns:IPE="org.mxhero.console.commons.component.IPE.*">
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="inactive"/>
+		<s:State name="active"/>
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="inactive" toState="active">
+			<s:Fade target="{ipeDropDownList}" alphaFrom="0" alphaTo="1"/>
+		</s:Transition>
+	</s:transitions>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var parentStateFunction:Function;
+			
+			[Bindable]
+			public var childState:String;
+			
+			[Bindable]
+			public var cards:ArrayCollection = new ArrayCollection(
+				[ {label:"IT", data:1}, 
+					{label:"Sells", data:2}, 
+					{label:"Marketing", data:2},
+					{label:"Admin", data:2} ]);
+			
+			protected function application1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var sort:Sort=new Sort();
+				sort.fields=[new SortField("label")];
+				ipeDropDownList.dataProvider.sort=sort;
+			}
+			
+			protected function item_clickHandler(event:MouseEvent):void
+			{
+				parentStateFunction(childState);
+			}
+
+		]]>
+	</fx:Script>
+	
+	<FromTo:Item text="Group" 
+				 toolTip.inactive="Select a Group" 
+				 toolTip.active="Clear this selection"
+				 click="item_clickHandler(event)"
+				 width="100"/>
+	<IPE:IPEDropDownList id="ipeDropDownList"  
+						 currentState="edit"
+						 subStyles="item"
+						 dataProvider="{cards}"
+						 enableItemSelectionCheck="true" 
+						 enableLabelClickChangeStatus="true"
+						 enableEnterKeyChangeStatus="true"
+						 labelTooltip="Click here to edit this field"
+						 prompt="Select a Group"
+						 includeIn="active"
+						 width="150"/>
+</s:HGroup>

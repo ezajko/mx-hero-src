@@ -45,6 +45,28 @@ mx|global
 	textFieldClass: ClassReference("mx.core.UIFTETextField");
 }
 
+s|Label.item{
+	font-weight:bold;
+	color:#FFFFFF;
+}
+
+s|TextInput.item{
+	font-weight:bold;
+}
+
+s|ComboBox.item{
+	font-weight:bold;
+}
+
+s|DropDownList.item{
+	font-weight:bold;
+}
+
+mx|DateField{
+	textInputClass: ClassReference("mx.controls.MXFTETextInput");
+	textFieldClass: ClassReference("mx.core.UIFTETextField");
+}
+
 mx|DataGridColumn{
 	font-weight:"bold";
 	font-size:14;

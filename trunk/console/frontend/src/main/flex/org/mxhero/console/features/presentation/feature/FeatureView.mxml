@@ -35,13 +35,13 @@
 			
 			protected function newRuleLink_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
+				model.newRule();
 			}
 
 
 			protected function datagrid2_itemDoubleClickHandler(event:ListEvent):void
 			{
-				// TODO Auto-generated method stub
+				model.editRule();
 			}
 
 		]]>

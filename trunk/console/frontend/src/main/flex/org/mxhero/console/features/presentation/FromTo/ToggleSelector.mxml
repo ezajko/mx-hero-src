@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 gap="20" 
+		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*">
+
+	<fx:Script>
+		<![CDATA[
+			protected function clickHandler(fromState:String):void
+			{
+				if(currentState==fromState){
+					currentState="all";
+				} else {
+					currentState=fromState;
+				}
+			}
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+
+	<s:states>
+		<s:State name="all"/>
+		<s:State name="anyone"/>
+		<s:State name="domain"/>
+		<s:State name="group"/>
+		<s:State name="individual"/>
+	</s:states>
+	
+	<FromTo:Anyone id="anyoneFT" 
+				   click="clickHandler('anyone')" 
+				   excludeFrom="domain,group,individual" 
+				   currentState.anyone="active"/>
+	<FromTo:Domain id="domainFT" 
+				   parentStateFunction="{clickHandler}"
+				   childState="domain"
+				   excludeFrom="anyone,group,individual"/>
+	<FromTo:AccountsGroup id="groupFT" 
+						  parentStateFunction="{clickHandler}"
+						  childState="group"
+						  excludeFrom="anyone,domain,individual"/>
+	<FromTo:Individual id="individualFT" 
+					   parentStateFunction="{clickHandler}"
+					   childState="individual"
+					   excludeFrom="anyone,domain,group"/>
+	
+	<s:transitions>
+		<s:Transition fromState="all" toState="anyone"> 
+			<s:Sequence>
+				<s:Parallel>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="anyone" toState="all"> 
+			<s:Sequence>
+				<s:Parallel startDelay="100">
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="all" toState="domain"> 
+			<s:Sequence effectEnd="{domainFT.currentState='active'}">
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="domain" toState="all"> 
+			<s:Sequence effectStart="{domainFT.currentState='inactive'}">
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="all" toState="group"> 
+			<s:Sequence effectEnd="{groupFT.currentState='active'}">
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="group" toState="all"> 
+			<s:Sequence effectStart="{groupFT.currentState='inactive'}">
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="all" toState="individual"> 
+			<s:Sequence effectEnd="{individualFT.currentState='active'}">
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="individual" toState="all"> 
+			<s:Sequence effectStart="{individualFT.currentState='inactive'}">
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
+	
+</s:HGroup>

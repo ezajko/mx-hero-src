@@ -14,6 +14,7 @@ package org.mxhero.console.features.presentation.feature
 	import org.mxhero.console.features.application.event.ToggleRuleStatusEvent;
 	import org.mxhero.console.features.application.resources.FeatureViewProperties;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
+	import org.mxhero.console.features.presentation.rule.RuleViewPM;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
 	import org.mxhero.console.frontend.domain.Feature;
@@ -42,6 +43,10 @@ package org.mxhero.console.features.presentation.feature
 		[Bindable]
 		public var context:ApplicationContext;
 		
+		[Inject]
+		[Bindable]
+		public var ruleModel:RuleViewPM;
+		
 		[Bindable]
 		public var isUpdating:Boolean = false;
 		
@@ -50,10 +55,6 @@ package org.mxhero.console.features.presentation.feature
 		
 		public function goBack():void{
 			allFeatureView.navigateTo(FeaturesDestinations.LIST);
-		}
-		
-		public function editRule():void{
-			
 		}
 		
 		public function removeRule():void{
@@ -131,6 +132,21 @@ package org.mxhero.console.features.presentation.feature
 			isUpdating=false;
 		}
 		
+		
+		
+		public function editRule():void{
+			ruleModel.rule = (this.selectedRule as FeatureRule).clone();
+			ruleModel.feature = this.selectedFeature;
+			ruleModel.category = this.selectedCategory;
+			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
+		}
+		
+		public function newRule():void{
+			ruleModel.rule = new FeatureRule();
+			ruleModel.feature = this.selectedFeature;
+			ruleModel.category = this.selectedCategory;
+			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
+		}
 		
 	}
 }

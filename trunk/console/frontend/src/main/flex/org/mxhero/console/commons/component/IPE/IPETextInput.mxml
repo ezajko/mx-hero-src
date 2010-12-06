@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 currentStateChange="currentStateChangeHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.utils.CharacterUtil;
+			
+			import mx.events.StateChangeEvent;
+			import mx.validators.ValidationResult;
+			import mx.validators.Validator;
+			
+			[Bindable]
+			public var subStyles:String;
+			
+			[Bindable]
+			public var validator:Validator;
+		
+			[Bindable]
+			public var enableLabelClickChangeStatus:Boolean=false;
+			
+			public var enableEnterKeyChangeStatus:Boolean=false;
+			
+			[Bindable]
+			public var labelTooltip:String;
+			
+			[Bindable]
+			public var text:String;
+			
+			public function switchState():void{
+				if(currentState=="show"){
+					currentState="edit";
+				} else {
+					if(isValid()){
+						currentState="show";
+					}
+				}
+			}
+
+			public function isValid():Boolean{
+				if(validator!=null){
+					var results:Array=validator.validate(textInput.text).results;
+					if(results!=null && results.length>0){
+						for each(var result:ValidationResult in results){
+							if(result.isError){
+								textInput.errorString= result.errorMessage;
+							}
+						}
+						return false;
+					}
+				}
+				textInput.errorString="";
+				return true;
+			}
+			
+			
+			protected function label_clickHandler(event:MouseEvent):void
+			{
+				switchState();
+			}
+			
+
+			protected function textInput_keyUpHandler(event:KeyboardEvent):void
+			{
+				if(enableEnterKeyChangeStatus){
+					if(event.charCode==0x000D){
+						switchState();
+					}
+				}
+			}
+
+
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=="edit"){
+					textInput.setFocus();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="left"/>
+	</s:layout>
+	
+	<s:states>
+		<s:State name="show"/>
+		<s:State name="edit"/>
+	</s:states>
+	
+	<s:transitions > 
+		<s:Transition fromState="show" toState="edit"> 
+			<s:Sequence>
+				<s:Fade target="{textInput}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{label}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{textInput}" angleXFrom="270" angleXTo="360"  autoCenterTransform="true"/>
+						<s:Fade target="{textInput}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 				
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="edit" toState="show"> 
+			<s:Sequence>
+				<s:Fade target="{label}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{textInput}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{textInput}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{textInput}" alphaFrom="1" alphaTo="0"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="270" angleXTo="360" autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<s:Group>
+		<s:layout>
+			<s:BasicLayout/>
+		</s:layout>
+		<s:Label id="label" 
+				 styleName="{subStyles}"
+				 paddingLeft="4" 
+				 verticalAlign="middle" 
+				 includeIn="show" 
+				 text="{textInput.text}"
+				 height="{textInput.height}"
+				 click="label_clickHandler(event)"
+				 mouseEnabled="{enableLabelClickChangeStatus}"
+				 buttonMode="{enableLabelClickChangeStatus}"
+				 toolTip="{labelTooltip}"
+				 width="100%"/>
+		<s:TextInput 
+					id="textInput" 
+					styleName="{subStyles}"
+					includeIn="edit" 
+					keyUp.edit="textInput_keyUpHandler(event)"
+					text="@{text}"
+					width="100%"/>				
+	</s:Group>
+	
+</s:Group>

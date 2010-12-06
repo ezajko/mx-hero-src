@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 verticalAlign="middle" xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" xmlns:IPE="org.mxhero.console.commons.component.IPE.*">
+	
+	<fx:Declarations>
+		<mx:EmailValidator id="emailValidator" required="true"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var parentStateFunction:Function;
+			
+			[Bindable]
+			public var childState:String;
+			
+			protected function item_clickHandler(event:MouseEvent):void
+			{
+				parentStateFunction(childState);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="inactive"/>
+		<s:State name="active"/>
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="inactive" toState="active">
+			<s:Fade target="{ipeTextInput}" alphaFrom="0" alphaTo="1"/>
+		</s:Transition>
+	</s:transitions>
+	
+	<FromTo:Item text="Individual"
+				 toolTip.inactive="Select an Email Account" 
+				 toolTip.active="Clear this selection"
+				 click="item_clickHandler(event)"
+				 width="100"/>
+	
+	<IPE:IPETextInput
+		id="ipeTextInput"
+		subStyles="item"
+		currentState="edit"
+		enableLabelClickChangeStatus="true"
+		enableEnterKeyChangeStatus="true"
+		labelTooltip="Click here to edit this field"
+		validator="{emailValidator}"
+		includeIn="active"
+		width="150"/>
+</s:HGroup>

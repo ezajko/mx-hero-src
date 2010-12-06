@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 currentStateChange="currentStateChangeHandler(event)">
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.utils.CharacterUtil;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			import mx.validators.Validator;
+			
+			[Bindable]
+			public var subStyles:String;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var _dataProvider:ArrayCollection;
+			
+			public var itemNotSelectedError:String="You need to select a valid option";
+
+			public var enableItemSelectionCheck:Boolean=false;
+
+			[Bindable]
+			public var enableLabelClickChangeStatus:Boolean=false;
+
+			public var enableEnterKeyChangeStatus:Boolean=false;
+			
+			public var enableProviderFilter:Boolean=false;
+			
+			[Bindable]
+			public var selectedItem:Object;
+			
+			[Bindable]
+			public var labelTooltip:String;
+			
+			[Bindable]
+			public var selectedLabel:String;
+			
+			private var _sort:Sort;
+			
+			public function switchState():void{
+				if(currentState=="show"){
+					currentState="edit";
+				} else {
+					if(enableItemSelectionCheck){
+						if(_dataProvider.getItemIndex(comboBox.selectedItem)<0){
+							comboBox.errorString=itemNotSelectedError;
+							return;
+						}
+					}
+					comboBox.errorString="";
+					currentState="show";
+				}
+			}
+			
+			private function privateLabelFunction(item:Object):String{
+				if(comboBox.labelFunction!=null){
+					return comboBox.labelFunction(item);
+				}
+				if(item is String){
+					return item as String;
+				}
+				return item[comboBox.labelField];
+			}
+			
+
+			protected function comboBox_keyUpHandler(event:KeyboardEvent):void
+			{
+				if(enableProviderFilter){
+					if((!CharacterUtil.isWhitespace(event.charCode) && event.charCode!=0x0000)|| event.charCode==0x0020){
+						dataProvider.refresh();
+					}				
+				}
+				if(enableEnterKeyChangeStatus){
+					if(event.charCode==0x000D){
+						switchState();
+					}
+				}
+			}
+			
+			public function clearFilter(item:Object):Boolean{
+				return true;
+			}
+			
+			public function filterComboBox(item:Object):Boolean{
+				
+				if(comboBox==null || comboBox.textInput==null || comboBox.textInput.text==null || comboBox.textInput.text.length<1){
+					return true;
+				}
+				return ObjectUtil.stringCompare(privateLabelFunction(item).substring(0,comboBox.textInput.selectionAnchorPosition),
+										comboBox.textInput.text.substring(0,comboBox.textInput.selectionAnchorPosition))==0;
+			}
+
+			protected function label_clickHandler(event:MouseEvent):void
+			{
+				switchState();
+			}
+			
+			protected function comboBox_changeHandler(event:IndexChangeEvent):void
+			{
+				if(_dataProvider.getItemIndex(comboBox.selectedItem)<0){
+					this.selectedItem=null;
+				} else {
+					this.selectedItem=comboBox.selectedItem;
+					comboBox.errorString="";
+				}
+				this.selectedLabel=label.text;
+				this.switchState();
+			}
+			
+			protected function comboBox_valueCommitHandler(event:FlexEvent):void
+			{
+				if(_dataProvider.getItemIndex(comboBox.selectedItem)<0){
+					this.selectedItem=null;
+				} else {
+					this.selectedItem=comboBox.selectedItem;
+					comboBox.errorString="";
+				}
+				this.selectedLabel=label.text;
+				this.switchState();
+			}
+			
+			[Bindable]
+			public function get labelField():String{
+				return this.comboBox.labelField;
+			}
+
+			public function set labelField(value:String):void{
+				this.comboBox.labelField=value;
+			}
+
+			[Bindable]
+			public function get labelFunction():Function{
+				return this.comboBox.labelFunction;
+			}
+			
+			public function set labelFunction(value:Function):void{
+				this.comboBox.labelFunction=value;
+			}
+			
+			[Bindable]
+			public function get labelToItemFunction():Function{
+				return this.comboBox.labelToItemFunction;
+			}
+			
+			public function set labelToItemFunction(value:Function):void{
+				this.comboBox.labelToItemFunction=value;
+			}			
+
+			[Bindable]
+			public function get dataProvider():ArrayCollection
+			{
+				return _dataProvider;
+			}
+			
+			public function set dataProvider(value:ArrayCollection):void
+			{
+				if(value!=null){
+					_dataProvider = new ArrayCollection(value.source);
+					_dataProvider.filterFunction=filterComboBox;
+					_dataProvider.sort=value.sort;
+					_dataProvider.refresh();
+				}
+			}
+
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=='edit'){
+					_dataProvider.filterFunction=clearFilter;
+					_dataProvider.refresh();
+					_dataProvider.filterFunction=filterComboBox;
+					comboBox.textInput.setFocus();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="left" />
+	</s:layout>
+	
+	<s:states>
+		<s:State name="show"/>
+		<s:State name="edit"/>
+	</s:states>
+	
+	<s:transitions > 
+		<s:Transition fromState="show" toState="edit"> 
+			<s:Sequence>
+				<s:Fade target="{comboBox}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{label}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{comboBox}" angleXFrom="270" angleXTo="360"  autoCenterTransform="true"/>
+						<s:Fade target="{comboBox}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 				
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="edit" toState="show"> 
+			<s:Sequence>
+				<s:Fade target="{label}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{comboBox}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{comboBox}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{comboBox}" alphaFrom="1" alphaTo="0"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="270" angleXTo="360" autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<s:Group>
+		<s:layout>
+			<s:BasicLayout/>
+		</s:layout>
+		<s:Label id="label" paddingLeft="4"
+				 styleName="{subStyles}"
+				 visible.edit="false" verticalAlign="middle" 
+				 text="{privateLabelFunction(comboBox.selectedItem)}"
+				 height="{comboBox.height}"
+				 click="label_clickHandler(event)"
+				 mouseEnabled="{enableLabelClickChangeStatus}"
+				 buttonMode="{enableLabelClickChangeStatus}"
+				 toolTip="{labelTooltip}"
+				 width="100%"/>
+		<s:ComboBox id="comboBox" includeIn="edit" 
+					dataProvider="{this.dataProvider}"
+					styleName="{subStyles}"
+					keyUp.edit="comboBox_keyUpHandler(event)"
+					change="comboBox_changeHandler(event)"
+					valueCommit="comboBox_valueCommitHandler(event)"
+					width="{this.width}"/>				
+	</s:Group>
+		
+
+</s:Group>

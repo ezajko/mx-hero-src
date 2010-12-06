@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:component="org.mxhero.console.commons.component.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*"
+		 enabled="{!model.isUpdating}"
+		 maxWidth="600">
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
+
+			[Inject]
+			[Bindable]
+			public var model:RuleViewPM;
+			
+
+			protected function cancelBtt_clickHandler(event:MouseEvent):void
+			{
+				model.cancel();
+			}
+
+
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				model.save();
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout gap="20" paddingLeft="10" paddingRight="10" paddingBottom="20" paddingTop="10"/>
+	</s:layout>
+	
+	<component:TitleExpanded width="100%"
+							 title="{model.feature.realLabel}"
+							 description="{model.feature.description}"
+							 expandedDescription="{model.feature.explain}"
+							 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+							 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+							 enableExpanded="true"/>
+	<s:VGroup paddingLeft="30" width="100%" height="100%" gap="30">
+		<s:VGroup verticalAlign="top" gap="4" width="100%">
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label 
+					fontWeight="bold"
+					text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL)}"/>
+				<s:TextInput id="labelTi" text="@{model.rule.name}" width="360"/>
+			</s:HGroup>
+			<component:LabelExpanded width="100%"
+									 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+									 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+									 expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL_EXPLAIN)}"/>		
+		</s:VGroup>
+
+		<s:Label fontSize="16" 
+				 fontWeight="bold"
+				 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
+		
+		<FromTo:FromTo/>
+		
+		<mx:Spacer height="100%"/>
+		<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
+			<s:Button id="cancelBtt" 
+					  click="cancelBtt_clickHandler(event)"
+					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
+			<s:Button id="saveBtt" 
+					  click="saveBtt_clickHandler(event)"
+					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}"/>		
+		</s:HGroup>		
+	</s:VGroup>
+</s:Group>

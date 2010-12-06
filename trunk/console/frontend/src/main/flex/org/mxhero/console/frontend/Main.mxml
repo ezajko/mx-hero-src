@@ -26,6 +26,7 @@
 		[ResourceBundle("configurations_system")]
 		[ResourceBundle("features_list")]
 		[ResourceBundle("feature_view")]
+		[ResourceBundle("rule_view")]
 	</fx:Metadata>
 	
 	<fx:Declarations>

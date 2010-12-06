@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 currentStateChange="currentStateChangeHandler(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			
+			[Bindable]
+			public var subStyles:String;
+			
+			public var itemNotSelectedError:String="You need to select a date";
+			
+			[Bindable]
+			public var enableLabelClickChangeStatus:Boolean=false;
+			
+			public var enableEnterKeyChangeStatus:Boolean=false;
+			
+			public var enableItemSelectionCheck:Boolean=false;
+			
+			[Bindable]
+			public var labelTooltip:String;
+			
+			[Bindable]
+			public var text:String;
+			
+			public function switchState():void{
+				if(currentState=="show"){
+					currentState="edit";
+				} else {
+					if(enableItemSelectionCheck){
+						if(dateField.selectedDate==null){
+							dateField.errorString=itemNotSelectedError;
+							return;
+						}
+					}
+					dateField.errorString="";
+					currentState="show";
+				}
+			}
+			
+			protected function label_clickHandler(event:MouseEvent):void
+			{
+				switchState();
+			}
+			
+			protected function dateField_keyUpHandler(event:KeyboardEvent):void
+			{
+				if(enableEnterKeyChangeStatus){
+					if(event.charCode==0x000D){
+						switchState();
+					}
+				}
+			}
+
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=="edit"){
+					dateField.setFocus();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="left"/>
+	</s:layout>
+	
+	<s:states>
+		<s:State name="show"/>
+		<s:State name="edit"/>
+	</s:states>
+	
+	<s:transitions > 
+		<s:Transition fromState="show" toState="edit"> 
+			<s:Sequence>
+				<s:Fade target="{dateField}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{label}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{dateField}" angleXFrom="270" angleXTo="360"  autoCenterTransform="true"/>
+						<s:Fade target="{dateField}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 				
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="edit" toState="show"> 
+			<s:Sequence>
+				<s:Fade target="{label}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{dateField}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{dateField}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{dateField}" alphaFrom="1" alphaTo="0"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="270" angleXTo="360" autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<s:Group>
+		<s:layout>
+			<s:BasicLayout/>
+		</s:layout>
+		<s:Label id="label" 
+				 styleName="{subStyles}"
+				 paddingLeft="4" 
+				 verticalAlign="middle" 
+				 includeIn="show" 
+				 text="{dateField.text}"
+				 height="{dateField.height}"
+				 click="label_clickHandler(event)"
+				 mouseEnabled="{enableLabelClickChangeStatus}"
+				 buttonMode="{enableLabelClickChangeStatus}"
+				 toolTip="{labelTooltip}"
+				 width="100%"/>
+		
+		<mx:DateField
+			id="dateField"
+			styleName="{subStyles}"
+			includeIn="edit"
+			keyUp.edit="dateField_keyUpHandler(event)"
+			width="100%"/>
+						
+	</s:Group>
+	
+</s:Group>
