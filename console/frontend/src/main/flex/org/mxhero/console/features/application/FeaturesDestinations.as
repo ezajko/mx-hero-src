@@ -6,6 +6,7 @@ package org.mxhero.console.features.application
 
 		public static const LIST:String="main.dashboard.features.list";
 		public static const FEATURE_VIEW:String="main.dashboard.features.view";
+		public static const RULE:String="main.dashboard.features.rule";
 
 	}
 }

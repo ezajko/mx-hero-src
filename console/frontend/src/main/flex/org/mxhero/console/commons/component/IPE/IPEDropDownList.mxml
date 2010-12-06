@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 currentStateChange="currentStateChangeHandler(event)"
+		 minWidth="100">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.utils.CharacterUtil;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			import mx.utils.StringUtil;
+			import mx.validators.Validator;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			public var subStyles:String;
+			
+			[Bindable]
+			private var _dataProvider:ArrayCollection;
+			
+			public var itemNotSelectedError:String="You need to select a valid option";
+			
+			public var enableItemSelectionCheck:Boolean=false;
+			
+			[Bindable]
+			public var enableLabelClickChangeStatus:Boolean=false;
+			
+			public var enableEnterKeyChangeStatus:Boolean=false;
+			
+			[Bindable]
+			public var selectedItem:Object;
+			
+			[Bindable]
+			public var labelTooltip:String;
+			
+			[Bindable]
+			public var selectedLabel:String;
+			
+			[Bindable]
+			public var prompt:String;
+			
+			public function switchState():void{
+				if(currentState=="show"){
+					currentState="edit";
+				} else {
+					if(enableItemSelectionCheck){
+						if(dataProvider.getItemIndex(dropDownList.selectedItem)<0){
+							dropDownList.errorString=itemNotSelectedError;
+							return;
+						}
+					}
+					dropDownList.errorString="";
+					currentState="show";
+				}
+			}
+			
+			private function privateLabelFunction(item:Object):String{
+				if(dropDownList.labelFunction!=null){
+					return dropDownList.labelFunction(item);
+				}
+				if(item is String){
+					return item as String;
+				}
+				return item[dropDownList.labelField];
+			}
+			
+			
+			protected function dropDownList_keyUpHandler(event:KeyboardEvent):void
+			{
+				if(enableEnterKeyChangeStatus){
+					if(event.charCode==0x000D){
+						switchState();
+					}
+				}
+				if(Keyboard.DELETE==event.keyCode){
+					dropDownList.selectedIndex=-1;
+				}
+			}
+			
+			protected function label_clickHandler(event:MouseEvent):void
+			{
+				switchState();
+			}
+			
+			protected function dropDownList_changeHandler(event:IndexChangeEvent):void
+			{
+				if(dataProvider.getItemIndex(dropDownList.selectedItem)<0){
+					this.selectedItem=null;
+				} else {
+					this.selectedItem=dropDownList.selectedItem;
+					dropDownList.errorString="";
+				}
+				this.selectedLabel=label.text;
+				this.switchState();
+			}
+			
+			protected function dropDownList_valueCommitHandler(event:FlexEvent):void
+			{
+				if(dataProvider.getItemIndex(dropDownList.selectedItem)<0){
+					this.selectedItem=null;
+				} else {
+					this.selectedItem=dropDownList.selectedItem;
+					dropDownList.errorString="";
+				}
+				this.selectedLabel=label.text;
+				this.switchState();
+			}
+			
+			[Bindable]
+			public function get labelField():String{
+				return this.dropDownList.labelField;
+			}
+			
+			public function set labelField(value:String):void{
+				this.dropDownList.labelField=value;
+			}
+			
+			[Bindable]
+			public function get labelFunction():Function{
+				return this.dropDownList.labelFunction;
+			}
+			
+			public function set labelFunction(value:Function):void{
+				this.dropDownList.labelFunction=value;
+			}	
+			
+			[Bindable]
+			public function get dataProvider():ArrayCollection
+			{
+				return _dataProvider;
+			}
+			
+			public function set dataProvider(value:ArrayCollection):void
+			{
+				if(value!=null){
+					_dataProvider = new ArrayCollection(value.source);
+					_dataProvider.sort=value.sort;
+					_dataProvider.refresh();
+				}
+			}
+
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=="edit"){
+					dropDownList.setFocus();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="left"/>
+	</s:layout>
+	
+	<s:states>
+		<s:State name="show"/>
+		<s:State name="edit"/>
+	</s:states>
+	
+	<s:transitions > 
+		<s:Transition fromState="show" toState="edit"> 
+			<s:Sequence>
+				<s:Fade target="{dropDownList}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{label}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{dropDownList}" angleXFrom="270" angleXTo="360"  autoCenterTransform="true"/>
+						<s:Fade target="{dropDownList}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 				
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="edit" toState="show"> 
+			<s:Sequence>
+				<s:Fade target="{label}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Fade target="{dropDownList}" alphaFrom="0" alphaTo="1" duration="0" />
+				<s:Sequence>
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{dropDownList}" angleXFrom="0" angleXTo="90"  autoCenterTransform="true"/>
+						<s:Fade target="{dropDownList}" alphaFrom="1" alphaTo="0"/>
+					</s:Parallel> 
+					<s:Parallel duration="300">
+						<s:Rotate3D target="{label}" angleXFrom="270" angleXTo="360" autoCenterTransform="true"/>
+						<s:Fade target="{label}" alphaFrom="0" alphaTo="1"/>
+					</s:Parallel> 
+				</s:Sequence>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<s:Group>
+		<s:layout>
+			<s:BasicLayout/>
+		</s:layout>
+		<s:Label id="label" paddingLeft="4" 
+				 visible.edit="false" verticalAlign="middle" 
+				 styleName="{subStyles}"
+				 text="{privateLabelFunction(dropDownList.selectedItem)}"
+				 height="{dropDownList.height}"
+				 click="label_clickHandler(event)"
+				 mouseEnabled="{enableLabelClickChangeStatus}"
+				 buttonMode="{enableLabelClickChangeStatus}"
+				 toolTip="{labelTooltip}"
+				 width="100%"/>
+		<s:DropDownList id="dropDownList" includeIn="edit" 
+					dataProvider="{this.dataProvider}"
+					styleName="{subStyles}"
+					keyUp.edit="dropDownList_keyUpHandler(event)"
+					change="dropDownList_changeHandler(event)"
+					valueCommit="dropDownList_valueCommitHandler(event)"
+					prompt="{this.prompt}"
+					width="{this.width}"/>				
+	</s:Group>
+	
+</s:Group>
