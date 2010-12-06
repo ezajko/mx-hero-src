@@ -23,7 +23,7 @@ public class FeatureRule {
 	@Column(name="label", nullable=false, length=100)
 	private String label;
 	
-	@ManyToOne(cascade = {CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
 	@JoinColumn(name="feature_id",nullable=false)
 	private Feature feature;
 	
