@@ -47,6 +47,11 @@
 			[Bindable]
 			public var prompt:String;
 			
+			private var _labelFunction:Function;
+			
+			[Bindable]
+			public var labelField:String="label";
+			
 			public function switchState():void{
 				if(currentState=="show"){
 					currentState="edit";
@@ -113,24 +118,7 @@
 				this.selectedLabel=label.text;
 				this.switchState();
 			}
-			
-			[Bindable]
-			public function get labelField():String{
-				return this.dropDownList.labelField;
-			}
-			
-			public function set labelField(value:String):void{
-				this.dropDownList.labelField=value;
-			}
-			
-			[Bindable]
-			public function get labelFunction():Function{
-				return this.dropDownList.labelFunction;
-			}
-			
-			public function set labelFunction(value:Function):void{
-				this.dropDownList.labelFunction=value;
-			}	
+
 			
 			[Bindable]
 			public function get dataProvider():ArrayCollection
@@ -154,6 +142,26 @@
 				}
 			}
 
+			public function get labelFunction():Function
+			{
+				return _labelFunction;
+			}
+
+			public function set labelFunction(value:Function):void
+			{
+				_labelFunction = value;
+				if(dropDownList){
+					dropDownList.labelFunction=_labelFunction;
+				}
+			}
+
+			protected function dropDownList_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(_labelFunction!=null){
+					this.dropDownList.labelFunction=_labelFunction;
+				}
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -162,8 +170,8 @@
 	</s:layout>
 	
 	<s:states>
-		<s:State name="show"/>
 		<s:State name="edit"/>
+		<s:State name="show"/>
 	</s:states>
 	
 	<s:transitions > 
@@ -222,7 +230,9 @@
 					change="dropDownList_changeHandler(event)"
 					valueCommit="dropDownList_valueCommitHandler(event)"
 					prompt="{this.prompt}"
-					width="{this.width}"/>				
+					width="{this.width}"
+					labelField="{this.labelField}"
+					creationComplete="dropDownList_creationCompleteHandler(event)"/>				
 	</s:Group>
 	
 </s:Group>

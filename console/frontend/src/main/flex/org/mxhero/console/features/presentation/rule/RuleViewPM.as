@@ -1,8 +1,15 @@
 package org.mxhero.console.features.presentation.rule
 {
+	import flash.events.Event;
+	
+	import mx.collections.ArrayCollection;
+	
 	import org.mxhero.console.features.application.FeaturesDestinations;
 	import org.mxhero.console.features.application.event.CreateDomainRuleEvent;
 	import org.mxhero.console.features.application.event.CreateNoDomainRuleEvent;
+	import org.mxhero.console.features.application.event.EditRuleEvent;
+	import org.mxhero.console.features.application.event.GetDomainGroupsEvent;
+	import org.mxhero.console.features.application.event.GetDomainsEvent;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
@@ -40,6 +47,15 @@ package org.mxhero.console.features.presentation.rule
 			parent.navigateTo(FeaturesDestinations.FEATURE_VIEW);
 		}
 		
+		[Enter(time="every")]
+		public function every():void{
+			if(context.selectedDomain==null){
+				dispatcher(new GetDomainsEvent());
+			} else {
+				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.id));
+			}
+			
+		}
 		
 		public function save():void{
 			//new rule
@@ -52,7 +68,7 @@ package org.mxhero.console.features.presentation.rule
 			} 
 			//edit rule
 			else {
-				
+				dispatcher(new EditRuleEvent(rule));
 			}
 			isUpdating=true;
 		}
@@ -77,6 +93,33 @@ package org.mxhero.console.features.presentation.rule
 		[CommandError]
 		public function createNoDomainRuleError(fault:*,event:CreateNoDomainRuleEvent):void{
 			isUpdating=false;
+		}
+		
+		[CommandResult]
+		public function editRuleResult(result:*,event:EditRuleEvent):void{
+			parent.navigateTo(FeaturesDestinations.FEATURE_VIEW);
+			isUpdating=false;
+		}
+		
+		[CommandError]
+		public function editRuleError(fault:*,event:EditRuleEvent):void{
+			isUpdating=false;
+		}
+		
+		[Bindable(event="dataReloaded")]
+		public function get domains():ArrayCollection{
+			if(context.selectedDomain!=null){
+				var domains:ArrayCollection = new ArrayCollection();
+				domains.addItem(context.selectedDomain);
+				return domains;
+			} else {
+				return context.domains;
+			}
+		}
+		
+		[CommandResult]
+		public function getDomainsResult(result:*,event:GetDomainsEvent):void{
+			dispatcher(new Event("dataReloaded"));
 		}
 	}
 }

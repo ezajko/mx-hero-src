@@ -2,9 +2,14 @@
 <s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 verticalAlign="middle" xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" xmlns:IPE="org.mxhero.console.commons.component.IPE.*">
+		 verticalAlign="middle" 
+		 gap="20" 
+		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
+		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley">
 	
 	<fx:Declarations>
+		<parsley:Configure/>
 	</fx:Declarations>
 	
 	<s:states>
@@ -25,25 +30,17 @@
 			import mx.collections.SortField;
 			import mx.events.FlexEvent;
 			
+			import org.mxhero.console.features.presentation.rule.RuleViewPM;
+			
+			[Inject]
+			[Bindable]
+			public var model:RuleViewPM;
+			
 			[Bindable]
 			public var parentStateFunction:Function;
 			
 			[Bindable]
 			public var childState:String;
-			
-			[Bindable]
-			public var cards:ArrayCollection = new ArrayCollection(
-				[ {label:"IT", data:1}, 
-					{label:"Sells", data:2}, 
-					{label:"Marketing", data:2},
-					{label:"Admin", data:2} ]);
-			
-			protected function application1_creationCompleteHandler(event:FlexEvent):void
-			{
-				var sort:Sort=new Sort();
-				sort.fields=[new SortField("label")];
-				ipeDropDownList.dataProvider.sort=sort;
-			}
 			
 			protected function item_clickHandler(event:MouseEvent):void
 			{
@@ -58,15 +55,35 @@
 				 toolTip.active="Clear this selection"
 				 click="item_clickHandler(event)"
 				 width="100"/>
-	<IPE:IPEDropDownList id="ipeDropDownList"  
-						 currentState="edit"
-						 subStyles="item"
-						 dataProvider="{cards}"
-						 enableItemSelectionCheck="true" 
-						 enableLabelClickChangeStatus="true"
-						 enableEnterKeyChangeStatus="true"
-						 labelTooltip="Click here to edit this field"
-						 prompt="Select a Group"
-						 includeIn="active"
-						 width="150"/>
+	<s:BorderContainer id="ipeComboBox" 
+					   includeIn="active"
+					   backgroundColor="#7c7b7b"  
+					   borderVisible="true" 
+					   dropShadowVisible="true"
+					   borderStyle="solid"
+					   minHeight="0"
+					   buttonMode="true"
+					   borderColor="#cccccc" 
+					   cornerRadius="4"
+					   minWidth="200"
+					   height="100%">
+		<s:VGroup height="100%" width="100%" 
+				  horizontalAlign="center" 
+				  verticalAlign="middle"
+				  paddingLeft="5"
+				  paddingRight="5">
+			<IPE:IPEDropDownList id="ipeDropDownList"  
+								 currentState="edit"
+								 subStyles="item"
+								 dataProvider="{model.context.groups}"
+								 labelField="name"
+								 enableItemSelectionCheck="true" 
+								 enableLabelClickChangeStatus="true"
+								 enableEnterKeyChangeStatus="true"
+								 labelTooltip="Click here to edit this field"
+								 prompt="Select a Group"
+								 includeIn="active"
+								 width="100%"/>
+			</s:VGroup>
+		</s:BorderContainer>
 </s:HGroup>

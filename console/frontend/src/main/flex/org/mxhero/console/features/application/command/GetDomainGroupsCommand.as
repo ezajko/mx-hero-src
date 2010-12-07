@@ -1,18 +1,16 @@
-package org.mxhero.console.configurations.application.command
+package org.mxhero.console.features.application.command
 {
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
 	import mx.collections.SortField;
 	import mx.rpc.AsyncToken;
-	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.configurations.application.event.LoadAllGroupsEvent;
-	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
+	import org.mxhero.console.features.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Group;
 
-	public class LoadAllGroupsCommand
+	public class GetDomainGroupsCommand
 	{
 		[Inject(id="groupService")]
 		public var service:RemoteObject;
@@ -24,11 +22,11 @@ package org.mxhero.console.configurations.application.command
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		public function execute(event:LoadAllGroupsEvent):AsyncToken
+		public function execute(event:GetDomainGroupsEvent):AsyncToken
 		{
 			return service.findAll(event.domainId);
 		}
-
+		
 		public function result(result:*) : void {
 			if (result is Group){
 				context.groups=new ArrayCollection();
@@ -43,10 +41,5 @@ package org.mxhero.console.configurations.application.command
 				context.groups.refresh();
 			}
 		}
-		
-		public function error (fault:Fault) : void {
-			dispatcher(new ApplicationErrorMessage(fault.faultCode));
-		}
-		
 	}
 }

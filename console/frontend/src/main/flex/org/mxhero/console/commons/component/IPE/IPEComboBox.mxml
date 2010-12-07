@@ -2,7 +2,8 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 currentStateChange="currentStateChangeHandler(event)">
+		 currentStateChange="currentStateChangeHandler(event)"
+		 width="100%">
 	<fx:Declarations>
 		
 	</fx:Declarations>
@@ -17,6 +18,7 @@
 			import mx.events.StateChangeEvent;
 			import mx.utils.ObjectUtil;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			import mx.validators.Validator;
 			
 			[Bindable]
@@ -29,6 +31,8 @@
 			public var itemNotSelectedError:String="You need to select a valid option";
 
 			public var enableItemSelectionCheck:Boolean=false;
+			
+			public var validator:Validator;
 
 			[Bindable]
 			public var enableLabelClickChangeStatus:Boolean=false;
@@ -46,6 +50,11 @@
 			[Bindable]
 			public var selectedLabel:String;
 			
+			[Bindable]
+			public var labelField:String;
+			
+			private var _labelFunction:Function;
+			
 			private var _sort:Sort;
 			
 			public function switchState():void{
@@ -58,21 +67,50 @@
 							return;
 						}
 					}
-					comboBox.errorString="";
-					currentState="show";
+					if(isValid()){
+						comboBox.errorString="";
+						currentState="show";
+					}
+
 				}
 			}
 			
 			private function privateLabelFunction(item:Object):String{
+				var selectedText:String;
 				if(comboBox.labelFunction!=null){
-					return comboBox.labelFunction(item);
+					selectedText = comboBox.labelFunction(item);
+				}else if(item is String){
+					selectedText = item as String;
+				}else {
+					selectedText = item[comboBox.labelField];
 				}
-				if(item is String){
-					return item as String;
+				if(selectedText==null || selectedText.length<1){
+					return comboBox.textInput.text;
 				}
-				return item[comboBox.labelField];
+				return selectedText;
 			}
 			
+			public function isValid():Boolean{
+				if(validator!=null){
+					var textToValidate:String=null;
+					if(comboBox.selectedIndex>-1){
+						textToValidate=privateLabelFunction(comboBox.selectedItem);
+					} else {
+						textToValidate=comboBox.textInput.text;
+					}
+					var results:Array=validator.validate(textToValidate).results;
+					if(results!=null && results.length>0){
+						for each(var result:ValidationResult in results){
+							if(result.isError){
+								comboBox.errorString= result.errorMessage;
+							}
+						}
+						return false;
+					}
+				}
+				comboBox.errorString="";
+				return true;
+			}
 
 			protected function comboBox_keyUpHandler(event:KeyboardEvent):void
 			{
@@ -129,23 +167,18 @@
 				this.selectedLabel=label.text;
 				this.switchState();
 			}
-			
-			[Bindable]
-			public function get labelField():String{
-				return this.comboBox.labelField;
-			}
-
-			public function set labelField(value:String):void{
-				this.comboBox.labelField=value;
-			}
 
 			[Bindable]
 			public function get labelFunction():Function{
-				return this.comboBox.labelFunction;
+				return _labelFunction;
 			}
 			
 			public function set labelFunction(value:Function):void{
-				this.comboBox.labelFunction=value;
+
+				_labelFunction = value;
+				if(comboBox){
+					comboBox.labelFunction=_labelFunction;
+				}
 			}
 			
 			[Bindable]
@@ -180,6 +213,14 @@
 					_dataProvider.refresh();
 					_dataProvider.filterFunction=filterComboBox;
 					comboBox.textInput.setFocus();
+				}
+			}
+
+
+			protected function comboBox_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(_labelFunction!=null){
+					comboBox.labelFunction=_labelFunction;
 				}
 			}
 
@@ -243,14 +284,15 @@
 				 mouseEnabled="{enableLabelClickChangeStatus}"
 				 buttonMode="{enableLabelClickChangeStatus}"
 				 toolTip="{labelTooltip}"
-				 width="100%"/>
+				 width="{this.width}"/>
 		<s:ComboBox id="comboBox" includeIn="edit" 
 					dataProvider="{this.dataProvider}"
 					styleName="{subStyles}"
 					keyUp.edit="comboBox_keyUpHandler(event)"
 					change="comboBox_changeHandler(event)"
-					valueCommit="comboBox_valueCommitHandler(event)"
-					width="{this.width}"/>				
+					width="{this.width}"
+					labelField="{this.labelField}"
+					creationComplete="comboBox_creationCompleteHandler(event)"/>				
 	</s:Group>
 		
 

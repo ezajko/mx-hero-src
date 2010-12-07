@@ -4,11 +4,13 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 verticalAlign="middle"
 		 gap="20" 
-		 creationComplete="{creationComplete(event)}" 
 		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*" 
-		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*">
+		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley">
 
 	<fx:Declarations>
+		<parsley:Configure/>
+		<mx:StringValidator id="requiredValidator" required="true"/>
 	</fx:Declarations>
 	<s:states>
 		<s:State name="inactive"/>
@@ -17,7 +19,7 @@
 	
 	<s:transitions>
 		<s:Transition fromState="inactive" toState="active">
-			<s:Fade target="{ipeComboBox}" alphaFrom="0" alphaTo="1"/>
+			<s:Fade target="{comboBox}" alphaFrom="0" alphaTo="1"/>
 		</s:Transition>
 	</s:transitions>
 	
@@ -28,33 +30,20 @@
 			import mx.collections.SortField;
 			import mx.events.FlexEvent;
 			
+			import org.mxhero.console.features.presentation.rule.RuleViewPM;
+			
+			[Inject]
+			[Bindable]
+			public var model:RuleViewPM;
+			
 			[Bindable]
 			public var parentStateFunction:Function;
 			
 			public var childState:String;
 			
-			[Bindable]
-			private var sort:Sort=new Sort();
-			
-			[Bindable]
-			public var cards:ArrayCollection = new ArrayCollection(
-				[ {label:"example.com", data:5},
-					{label:"mxhero.com", data:1}, 
-					{label:"mxhero2.net", data:2}, 
-					{label:"inova.net", data:3},
-					{label:"mail.br", data:4}]);
-			
 			protected function item_clickHandler(event:MouseEvent):void
 			{
 				parentStateFunction(childState);
-			}
-			
-			protected function creationComplete(event:FlexEvent):void
-			{
-				var sort:Sort=new Sort();
-				sort.fields=[new SortField("label")];
-				cards.sort=sort;
-				
 			}
 
 		]]>
@@ -65,33 +54,35 @@
 				 toolTip.active="Clear this selection"
 				 click="item_clickHandler(event)"
 				 width="100"/>
-	<s:BorderContainer id="ipeComboBox" 
+	<s:BorderContainer id="comboBox" 
 					   includeIn="active"
 						backgroundColor="#7c7b7b"  
 						borderVisible="true" 
 						dropShadowVisible="true"
 						borderStyle="solid"
 						minHeight="0"
-						minWidth="0"
 						buttonMode="true"
 						borderColor="#cccccc" 
 						cornerRadius="4"
-						width="200"
+						minWidth="200"
 						height="100%">
 		<s:VGroup height="100%" width="100%" 
 				  horizontalAlign="center" 
 				  verticalAlign="middle"
 				  paddingLeft="5"
 				  paddingRight="5">
-			<IPE:IPEComboBox subStyles="item"
+			<IPE:IPEComboBox id="ipeComboBox"
+							 subStyles="item"
 							 currentState="edit"
-							 dataProvider="{cards}"
-							 enableItemSelectionCheck="true" 
+							 dataProvider="{model.domains}"
+							 enableItemSelectionCheck="false" 
 							 enableLabelClickChangeStatus="true"
 							 enableEnterKeyChangeStatus="true"
 							 enableProviderFilter="true"
+							 validator="{requiredValidator}"
 							 labelTooltip="Click here to edit this field"
-							 width="100%"/>					
+							 width="100%"
+							 labelField="domain"/>					
 		</s:VGroup>
 	</s:BorderContainer>
 

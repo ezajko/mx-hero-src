@@ -249,9 +249,10 @@ mx|FormItem
 {
 	fontSize: 14;
 }
-s|Button
+s|Button.rule
 {
-	fontSize: 14;
+	font-size:18;
+	font-weight:bold;
 }
 
 s|TitleWindow{
