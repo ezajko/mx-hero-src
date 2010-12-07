@@ -12,5 +12,9 @@ package org.mxhero.console.frontend.domain
 		public var groups:ArrayCollection;
 		
 		public var locales:ArrayCollection;
+		
+		public var accounts:ArrayCollection;
+		
+		public var domains:ArrayCollection;
 	}
 }
