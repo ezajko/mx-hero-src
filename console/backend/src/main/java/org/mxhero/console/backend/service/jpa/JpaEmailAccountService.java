@@ -168,4 +168,9 @@ public class JpaEmailAccountService implements EmailAccountService{
 		return errorEmailAccountsVOs;
 	}
 
+	@Override
+	public Collection<EmailAccountVO> findByDomain(Integer domainId) {
+		return this.emailAccountTranslator.translate(this.emailAccountDao.findAllByDomainIdWithoutGroup(domainId));
+	}
+
 }

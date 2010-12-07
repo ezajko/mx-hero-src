@@ -14,6 +14,9 @@ public interface EmailAccountService {
 	PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer groupId, Integer page, Integer pageSize);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
+	Collection<EmailAccountVO> findByDomain(Integer domaindId);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
 	void remove(Integer emailId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
