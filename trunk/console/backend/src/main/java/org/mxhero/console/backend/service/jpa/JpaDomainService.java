@@ -85,7 +85,7 @@ public class JpaDomainService implements DomainService {
 		
 		domain = new Domain();
 		domain.setCreationDate(Calendar.getInstance());
-		domain.setDomain(domainVO.getDomain());
+		domain.setDomain(domainVO.getDomain().toLowerCase());
 		domain.setServer(domainVO.getServer());
 		domain.setUpdatesDate(Calendar.getInstance());
 		
@@ -160,7 +160,7 @@ public class JpaDomainService implements DomainService {
 					}
 				} else {
 					domainAlias = new DomainAlias();
-					domainAlias.setAlias(alias);
+					domainAlias.setAlias(alias.toLowerCase());
 					domainAlias.setCreatedDate(Calendar.getInstance());
 					domainAlias.setDomain(domain);
 				}

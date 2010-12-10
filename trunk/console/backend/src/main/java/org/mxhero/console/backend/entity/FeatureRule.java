@@ -5,11 +5,13 @@ import java.util.Calendar;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -20,7 +22,7 @@ public class FeatureRule {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="label", nullable=false, length=100)
+	@Column(name="label",  length=100)
 	private String label;
 	
 	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})
@@ -40,6 +42,15 @@ public class FeatureRule {
 	@Column(name="enabled", nullable=false)
 	private Boolean enabled;
 
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+	@JoinColumn(name="from_direction_id")
+	private FeatureRuleDirection fromDirection;
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+	@JoinColumn(name="to_direction_id")
+	private FeatureRuleDirection toDirection;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -94,6 +105,22 @@ public class FeatureRule {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+	
+	public FeatureRuleDirection getFromDirection() {
+		return fromDirection;
+	}
+
+	public void setFromDirection(FeatureRuleDirection fromDirection) {
+		this.fromDirection = fromDirection;
+	}
+
+	public FeatureRuleDirection getToDirection() {
+		return toDirection;
+	}
+
+	public void setToDirection(FeatureRuleDirection toDirection) {
+		this.toDirection = toDirection;
 	}
 
 	@Override
