@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.service.jpa;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.mxhero.console.backend.entity.Category;
 import org.mxhero.console.backend.entity.Feature;
 import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.service.FeatureService;
+import org.mxhero.console.backend.translator.FeatureRuleTranslator;
 import org.mxhero.console.backend.vo.CategoryVO;
 import org.mxhero.console.backend.vo.FeatureRuleVO;
 import org.mxhero.console.backend.vo.FeatureVO;
@@ -42,11 +44,14 @@ public class JpaFeatureService implements FeatureService {
 	
 	private ApplicationUserDao userDao;
 	
+	private FeatureRuleTranslator ruleTranslator;
+	
 	@Autowired
 	public JpaFeatureService(CategoryDao categoryDao, FeatureDao featureDao,
 			FeatureRuleDao featureRuleDao, LocalePropertyHelper helper,
 			SystemPropertyDao systemPropertyDao,
-			ApplicationUserDao userDao) {
+			ApplicationUserDao userDao,
+			FeatureRuleTranslator ruleTranslator) {
 		super();
 		this.categoryDao = categoryDao;
 		this.featureDao = featureDao;
@@ -54,6 +59,7 @@ public class JpaFeatureService implements FeatureService {
 		this.helper = helper;
 		this.systemPropertyDao = systemPropertyDao;
 		this.userDao = userDao;
+		this.ruleTranslator = ruleTranslator;
 	}
 
 	@Override
@@ -118,18 +124,7 @@ public class JpaFeatureService implements FeatureService {
 					featureVO.setLabel(helper.getValue(feature.getComponent(),feature.getLabelKey(),userLocale,defaultLocale));
 					featureVO.setDescription(helper.getValue(feature.getComponent(),feature.getDescriptionKey(),userLocale,defaultLocale));
 					featureVO.setExplain(helper.getValue(feature.getComponent(),feature.getExplainKey(),userLocale,defaultLocale));
-					if(feature.getRules()!=null && feature.getRules().size()>0){
-						featureVO.setRules(new ArrayList<FeatureRuleVO>());
-						for(FeatureRule rule : feature.getRules()){
-							FeatureRuleVO ruleVO = new FeatureRuleVO();
-							ruleVO.setCreated(rule.getCreated());
-							ruleVO.setUpdated(rule.getUpdated());
-							ruleVO.setId(rule.getId());
-							ruleVO.setName(rule.getLabel());
-							ruleVO.setEnabled(rule.getEnabled());
-							featureVO.getRules().add(ruleVO);
-						}
-					}
+					featureVO.setRules(ruleTranslator.translate(feature.getRules()));
 					categoryVO.getChilds().add(featureVO);
 				}
 				categoryVOs.add(categoryVO);
@@ -149,42 +144,19 @@ public class JpaFeatureService implements FeatureService {
 	public void toggleStatus(Integer id) {
 		FeatureRule rule = featureRuleDao.readByPrimaryKey(id);
 		rule.setEnabled(!rule.getEnabled());
+		rule.setUpdated(Calendar.getInstance());
 		featureRuleDao.save(rule);
 	}
 
 	@Override
 	public Collection<FeatureRuleVO> getRulesByDomainId(Integer domainId,
 			Integer featureId) {
-		Collection<FeatureRuleVO> ruleVOs = new ArrayList<FeatureRuleVO>();
-		
-		for(FeatureRule rule : this.featureRuleDao.findByFeatureIdAndDomainId(featureId, domainId)){
-			FeatureRuleVO ruleVO = new FeatureRuleVO();
-			ruleVO.setCreated(rule.getCreated());
-			ruleVO.setUpdated(rule.getUpdated());
-			ruleVO.setId(rule.getId());
-			ruleVO.setName(rule.getLabel());
-			ruleVO.setEnabled(rule.getEnabled());
-			ruleVOs.add(ruleVO);
-		}
-		
-		return ruleVOs;
+		return ruleTranslator.translate(this.featureRuleDao.findByFeatureIdAndDomainId(featureId, domainId));
 	}
 
 	@Override
 	public Collection<FeatureRuleVO> getRulesWithoutDomain(Integer featureId) {
-		Collection<FeatureRuleVO> ruleVOs = new ArrayList<FeatureRuleVO>();
-		
-		for(FeatureRule rule : this.featureRuleDao.findByFeatureIdAndNullDomain(featureId)){
-			FeatureRuleVO ruleVO = new FeatureRuleVO();
-			ruleVO.setCreated(rule.getCreated());
-			ruleVO.setUpdated(rule.getUpdated());
-			ruleVO.setId(rule.getId());
-			ruleVO.setName(rule.getLabel());
-			ruleVO.setEnabled(rule.getEnabled());
-			ruleVOs.add(ruleVO);
-		}
-		
-		return ruleVOs;
+		return ruleTranslator.translate(this.featureRuleDao.findByFeatureIdAndNullDomain(featureId));
 	}
 
 }

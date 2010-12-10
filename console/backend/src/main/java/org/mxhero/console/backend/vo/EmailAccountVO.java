@@ -12,6 +12,8 @@ public class EmailAccountVO {
 	
 	private String account;
 	
+	private String domain;
+	
 	private Calendar createdDate;
 	
 	private Calendar updatedDate;
@@ -40,6 +42,14 @@ public class EmailAccountVO {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 	public String getAccount() {

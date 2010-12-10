@@ -101,7 +101,7 @@ public class JpaEmailAccountService implements EmailAccountService{
 		EmailAccount newEmailAccount = new EmailAccount();
 		newEmailAccount.setUpdatedDate(Calendar.getInstance());
 		newEmailAccount.setCreatedDate(Calendar.getInstance());
-		newEmailAccount.setAccount(emailAccountVO.getAccount());
+		newEmailAccount.setAccount(emailAccountVO.getAccount().toLowerCase());
 		newEmailAccount.setLastName(emailAccountVO.getLastName());
 		newEmailAccount.setName(emailAccountVO.getName());
 		newEmailAccount.setDomain(domainDao.readByPrimaryKey(domainId));
@@ -129,7 +129,7 @@ public class JpaEmailAccountService implements EmailAccountService{
 			if(emailAccountVO.getAccount()==null){
 				
 			}
-			newEmail.setAccount(emailAccountVO.getAccount());
+			newEmail.setAccount(emailAccountVO.getAccount().toLowerCase());
 			newEmail.setCreatedDate(Calendar.getInstance());
 			newEmail.setDomain(domainDao.readByPrimaryKey(domainId));
 			newEmail.setLastName(emailAccountVO.getLastName());
@@ -152,13 +152,13 @@ public class JpaEmailAccountService implements EmailAccountService{
 					emailAccountDao.save(emailAccount);
 				}catch(DataIntegrityViolationException e){
 					EmailAccountVO errorEmailAccountVO = new EmailAccountVO();
-					errorEmailAccountVO.setAccount(emailAccount.getAccount());
+					errorEmailAccountVO.setAccount(emailAccount.getAccount().toLowerCase());
 					errorEmailAccountVO.setName(emailAccount.getLastName());
 					errorEmailAccountVO.setLastName(emailAccount.getLastName());
 					errorEmailAccountsVOs.add(errorEmailAccountVO);
 				}catch(ConstraintViolationException e){
 					EmailAccountVO errorEmailAccountVO = new EmailAccountVO();
-					errorEmailAccountVO.setAccount(emailAccount.getAccount());
+					errorEmailAccountVO.setAccount(emailAccount.getAccount().toLowerCase());
 					errorEmailAccountVO.setName(emailAccount.getLastName());
 					errorEmailAccountVO.setLastName(emailAccount.getLastName());
 					errorEmailAccountsVOs.add(errorEmailAccountVO);
@@ -171,6 +171,11 @@ public class JpaEmailAccountService implements EmailAccountService{
 	@Override
 	public Collection<EmailAccountVO> findByDomain(Integer domainId) {
 		return this.emailAccountTranslator.translate(this.emailAccountDao.finbAllByDomainId(domainId));
+	}
+
+	@Override
+	public Collection<EmailAccountVO> findAll() {
+		return this.emailAccountTranslator.translate(this.emailAccountDao.readAll());
 	}
 
 }

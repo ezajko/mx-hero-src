@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface EmailAccountService {
 
+	@Secured("ROLE_ADMIN")
+	Collection<EmailAccountVO> findAll();
+	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer groupId, Integer page, Integer pageSize);
 	

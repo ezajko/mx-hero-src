@@ -14,6 +14,10 @@ public class FeatureRuleVO {
 	
 	private Boolean enabled;
 
+	private FeatureRuleDirectionVO fromDirection;
+	
+	private FeatureRuleDirectionVO toDirection;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -53,5 +57,21 @@ public class FeatureRuleVO {
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
-	
+
+	public FeatureRuleDirectionVO getFromDirection() {
+		return fromDirection;
+	}
+
+	public void setFromDirection(FeatureRuleDirectionVO fromDirection) {
+		this.fromDirection = fromDirection;
+	}
+
+	public FeatureRuleDirectionVO getToDirection() {
+		return toDirection;
+	}
+
+	public void setToDirection(FeatureRuleDirectionVO toDirection) {
+		this.toDirection = toDirection;
+	}
+
 }
