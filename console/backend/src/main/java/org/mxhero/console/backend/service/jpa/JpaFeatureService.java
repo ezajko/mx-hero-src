@@ -14,6 +14,7 @@ import org.mxhero.console.backend.dao.SystemPropertyDao;
 import org.mxhero.console.backend.entity.Category;
 import org.mxhero.console.backend.entity.Feature;
 import org.mxhero.console.backend.entity.FeatureRule;
+import org.mxhero.console.backend.entity.SystemProperty;
 import org.mxhero.console.backend.service.FeatureService;
 import org.mxhero.console.backend.translator.FeatureRuleTranslator;
 import org.mxhero.console.backend.vo.CategoryVO;
@@ -64,8 +65,12 @@ public class JpaFeatureService implements FeatureService {
 
 	@Override
 	public Collection<CategoryVO> findFeatures() {
+		SystemProperty property = systemPropertyDao.findByKey(UNCLASSIFIED_ID);
+		Integer unclassifiedCategoryId = null;
 		
-		Integer unclassifiedCategoryId = Integer.parseInt(systemPropertyDao.findByKey(UNCLASSIFIED_ID).getPropertyValue());
+		if(property!=null){
+			unclassifiedCategoryId = Integer.parseInt(property.getPropertyValue());
+		}
 		List<Category> categories = categoryDao.readAll();
 				
 		for(Category category : categories){
@@ -87,7 +92,12 @@ public class JpaFeatureService implements FeatureService {
 
 	@Override
 	public Collection<CategoryVO> findFeaturesByDomainId(Integer domainId) {
-		Integer unclassifiedCategoryId = Integer.parseInt(systemPropertyDao.findByKey(UNCLASSIFIED_ID).getPropertyValue());
+		SystemProperty property = systemPropertyDao.findByKey(UNCLASSIFIED_ID);
+		Integer unclassifiedCategoryId = null;
+		
+		if(property!=null){
+			unclassifiedCategoryId = Integer.parseInt(property.getPropertyValue());
+		}
 		List<Category> categories = categoryDao.readAll();
 				
 		for(Category category : categories){
