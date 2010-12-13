@@ -16,10 +16,14 @@
 			import mx.events.StateChangeEvent;
 			
 			import org.mxhero.console.features.application.resources.FeaturesImages;
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 
 			[Bindable]
 			public var direction:FeatureRuleDirection;
+			
+			[Bindable]
+			private var hasCompleted:Boolean;
 			
 			[Bindable]
 			public var isRestricted:Boolean=false;
@@ -133,7 +137,7 @@
 				if(direction.directionType==FeatureRuleDirection.ANYONE){
 					currentState="anyone";
 				} else if(direction.directionType==FeatureRuleDirection.DOMAIN && 
-					domainFT !=null){
+					domainFT !=null && domainFT.ipeComboBox!=null){
 					if(!isNaN(direction.valueId) && direction.valueId>-1){
 						for each(var domain:Object in domainFT.ipeComboBox.comboBox.dataProvider){
 							if(domain.id==direction.valueId){
@@ -199,7 +203,7 @@
 		visible="{isRestrictedVisible}" 
 		maxGlow="15.0"
 		excludeFrom="all"
-		toolTip="These e-mails selection are managed by you"
+		toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MANAGEL_TOOLTIP)}"
 		showEffect="{fadein}"
 		hideEffect="{fadeout}"/>
 	
@@ -246,7 +250,7 @@
 		</s:Transition>
 		<s:Transition fromState="individual" toState="all"> 
 			<s:Sequence effectStart="{individualFT.currentState='inactive'}">
-				<s:Parallel startDelay="100">
+				<s:Parallel startDelay="100" >
 					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
 				</s:Parallel>

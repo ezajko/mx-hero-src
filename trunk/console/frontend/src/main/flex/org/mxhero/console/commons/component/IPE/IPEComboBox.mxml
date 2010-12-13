@@ -83,7 +83,11 @@
 				var selectedText:String;
 				if(comboBox.labelFunction!=null){
 					selectedText = comboBox.labelFunction(item);
-				}else if(item is String){
+				}else if(_labelFunction!=null){
+					comboBox.labelFunction=_labelFunction;
+					selectedText = comboBox.labelFunction(item);
+				}
+				else if(item is String){
 					selectedText = item as String;
 				}else if(item != null){
 					selectedText = item[comboBox.labelField];
@@ -298,6 +302,7 @@
 					keyUp.edit="comboBox_keyUpHandler(event)"
 					change="comboBox_changeHandler(event)"
 					width="{this.width}"
+					requireSelection="true"
 					labelField="{this.labelField}"
 					valueCommit="comboBox_valueCommitHandler(event)"
 					creationComplete="comboBox_creationCompleteHandler(event)"/>				
