@@ -17,7 +17,7 @@ public class EmailAccountSpecs {
 		return new Specification<EmailAccount>() {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
-					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+					CriteriaQuery<?> query, CriteriaBuilder builder) {
 				return builder.like(root.get(EmailAccount_.name), "%"+name+"%");
 			}
 		};
@@ -27,7 +27,7 @@ public class EmailAccountSpecs {
 		return new Specification<EmailAccount>() {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
-					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+					CriteriaQuery<?> query, CriteriaBuilder builder) {
 				return builder.like(root.get(EmailAccount_.lastName), "%"+lastName+"%");
 			}
 		};
@@ -37,7 +37,7 @@ public class EmailAccountSpecs {
 		return new Specification<EmailAccount>() {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
-					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+					CriteriaQuery<?> query, CriteriaBuilder builder) {
 				return builder.like(root.get(EmailAccount_.account), "%"+account+"%");
 			}
 		};
@@ -47,7 +47,7 @@ public class EmailAccountSpecs {
 		return new Specification<EmailAccount>() {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
-					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+					CriteriaQuery<?> query, CriteriaBuilder builder) {
 				query.orderBy(builder.asc(root.get(EmailAccount_.account)));
 				return builder.equal(root.get(EmailAccount_.domain).get(Domain_.id), id);
 			}
@@ -59,7 +59,7 @@ public class EmailAccountSpecs {
 		return new Specification<EmailAccount>() {
 			@Override
 			public Predicate toPredicate(Root<EmailAccount> root,
-					CriteriaQuery<EmailAccount> query, CriteriaBuilder builder) {
+					CriteriaQuery<?> query, CriteriaBuilder builder) {
 				return builder.equal(root.get(EmailAccount_.group).get(Group_.id), id);
 			}
 		};

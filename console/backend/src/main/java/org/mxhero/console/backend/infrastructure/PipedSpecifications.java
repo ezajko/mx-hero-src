@@ -73,8 +73,8 @@ public class PipedSpecifications<T> implements Specification<T>{
      * .Root, javax.persistence.criteria.CriteriaQuery,
      * javax.persistence.criteria.CriteriaBuilder)
      */
-    public Predicate toPredicate(Root<T> root, CriteriaQuery<T> query,
-            CriteriaBuilder builder) {
+    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query,
+			CriteriaBuilder builder) {
     	
     	Predicate predicate=spec.toPredicate(root, query, builder);
     	for(AddedPredicate addedPredicate : addedPredicates){
@@ -116,5 +116,7 @@ public class PipedSpecifications<T> implements Specification<T>{
 		}
     	
     }
+
+
 	
 }

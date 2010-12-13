@@ -147,6 +147,10 @@ public class JpaFeatureService implements FeatureService {
 	@Override
 	public void remove(Integer id) {
 		FeatureRule rule = featureRuleDao.readByPrimaryKey(id);
+		if(rule.getDomain()!=null){
+			rule.getDomain().getRules().remove(rule);
+		}
+		rule.getFeature().getRules().remove(rule);
 		featureRuleDao.delete(rule);
 	}
 

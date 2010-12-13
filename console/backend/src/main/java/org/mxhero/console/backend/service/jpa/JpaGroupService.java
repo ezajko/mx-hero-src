@@ -5,10 +5,13 @@ import java.util.Collection;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.EmailAccountDao;
+import org.mxhero.console.backend.dao.FeatureRuleDao;
 import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.entity.EmailAccount;
+import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.entity.Group;
 import org.mxhero.console.backend.infrastructure.BusinessException;
+import org.mxhero.console.backend.service.FeatureService;
 import org.mxhero.console.backend.service.GroupService;
 import org.mxhero.console.backend.translator.EmailAccountTranslator;
 import org.mxhero.console.backend.translator.GroupTranslator;
@@ -34,18 +37,26 @@ public class JpaGroupService implements GroupService{
 	private GroupTranslator groupTranslator;
 	
 	private EmailAccountTranslator emailAccountTranslator;
+	
+	private FeatureRuleDao featureRuleDao;
+	
+	private FeatureService featureService;
 
 	@Autowired
 	public JpaGroupService(GroupDao groupDao, EmailAccountDao emailAccountDao,
 			GroupTranslator groupTranslator,
 			EmailAccountTranslator emailAccountTranslator,
-			DomainDao domainDao) {
+			DomainDao domainDao,
+			FeatureRuleDao featureRuleDao,
+			FeatureService featureService) {
 		super();
 		this.groupDao = groupDao;
 		this.emailAccountDao = emailAccountDao;
 		this.groupTranslator = groupTranslator;
 		this.emailAccountTranslator = emailAccountTranslator;
 		this.domainDao = domainDao;
+		this.featureRuleDao = featureRuleDao;
+		this.featureService = featureService;
 	}
 
 	@Override
@@ -66,7 +77,21 @@ public class JpaGroupService implements GroupService{
 
 	@Override
 	public void remove(Integer groupId) {
-		groupDao.delete(groupDao.readByPrimaryKey(groupId));
+		Group group = groupDao.readByPrimaryKey(groupId);
+		if(group!=null){
+			for(EmailAccount emailAccount : group.getMembers()){
+				emailAccount.setGroup(null);
+				emailAccountDao.save(emailAccount);
+			}
+			
+			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("group",group.getId())){
+				featureService.remove(rule.getId());
+			}
+			
+			group = groupDao.readByPrimaryKey(groupId);
+			groupDao.delete(group);
+		}
+		
 	}
 
 	@Override

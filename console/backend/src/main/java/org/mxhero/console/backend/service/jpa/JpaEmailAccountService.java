@@ -8,11 +8,14 @@ import javax.validation.ConstraintViolationException;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.EmailAccountDao;
+import org.mxhero.console.backend.dao.FeatureRuleDao;
 import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.entity.EmailAccount;
+import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.infrastructure.PipedSpecifications;
 import org.mxhero.console.backend.service.EmailAccountService;
+import org.mxhero.console.backend.service.FeatureService;
 import org.mxhero.console.backend.translator.EmailAccountTranslator;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.PageVO;
@@ -42,14 +45,22 @@ public class JpaEmailAccountService implements EmailAccountService{
 	
 	private GroupDao groupDao;
 	
+	private FeatureRuleDao featureRuleDao;
+	
+	private FeatureService featureService;
+	
 	@Autowired
 	public JpaEmailAccountService(EmailAccountDao emailAccountDao,
 			DomainDao domainDao, EmailAccountTranslator emailAccountTranslator,
-			GroupDao groupDao) {
+			GroupDao groupDao,
+			FeatureRuleDao featureRuleDao,
+			FeatureService featureService) {
 		this.emailAccountDao = emailAccountDao;
 		this.domainDao = domainDao;
 		this.emailAccountTranslator = emailAccountTranslator;
 		this.groupDao = groupDao;
+		this.featureRuleDao = featureRuleDao;
+		this.featureService = featureService;
 	}
 
 	public PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer groupId, Integer page, Integer pageSize) {
@@ -78,7 +89,14 @@ public class JpaEmailAccountService implements EmailAccountService{
 	@Override
 	public void remove(Integer emailId) {
 		EmailAccount emailAccount= emailAccountDao.readByPrimaryKey(emailId);
-		emailAccountDao.delete(emailAccount);
+		
+		if(emailAccount!=null){
+			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("individual",emailAccount.getId())){
+				featureService.remove(rule.getId());
+			}
+			
+			emailAccountDao.delete(emailAccount);
+		}
 	}
 
 	@Override
