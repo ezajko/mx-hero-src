@@ -8,6 +8,7 @@ import org.mxhero.console.backend.dao.FeatureRuleDao;
 import org.mxhero.console.backend.entity.Domain;
 import org.mxhero.console.backend.entity.Feature;
 import org.mxhero.console.backend.entity.FeatureRule;
+import org.mxhero.console.backend.entity.FeatureRuleDirection;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.RuleService;
 import org.mxhero.console.backend.vo.FeatureRuleVO;
@@ -53,9 +54,30 @@ public class JpaRuleService implements RuleService{
 		rule.setFeature(feature);
 		rule.setLabel(ruleVO.getName());
 		rule.setUpdated(Calendar.getInstance());
+		
+		FeatureRuleDirection fromDirection = new FeatureRuleDirection();
+		fromDirection.setDirectionType(ruleVO.getFromDirection().getDirectionType());
+		fromDirection.setFreeValue(ruleVO.getFromDirection().getFreeValue());
+		if(ruleVO.getFromDirection().getValueId()!=null &&
+				ruleVO.getFromDirection().getValueId()>-1){
+			fromDirection.setValueId(ruleVO.getFromDirection().getValueId());
+		}
+		fromDirection.setRule(rule);
+	
+		FeatureRuleDirection toDirection = new FeatureRuleDirection();
+		toDirection.setDirectionType(ruleVO.getToDirection().getDirectionType());
+		toDirection.setFreeValue(ruleVO.getToDirection().getFreeValue());
+		if(ruleVO.getToDirection().getValueId()!=null &&
+				ruleVO.getToDirection().getValueId()>-1){
+			toDirection.setValueId(ruleVO.getToDirection().getValueId());
+		}
+		toDirection.setRule(rule);
+		
+		rule.setFromDirection(fromDirection);
+		rule.setToDirection(toDirection);
+		
 		feature.getRules().add(rule);
 		featureDao.save(feature);
-		
 	}
 
 	@Override
@@ -91,6 +113,26 @@ public class JpaRuleService implements RuleService{
 		}
 		rule.setUpdated(Calendar.getInstance());
 		rule.setLabel(ruleVO.getName());
+		
+		rule.getFromDirection().setFreeValue(ruleVO.getFromDirection().getFreeValue());
+		rule.getFromDirection().setDirectionType(ruleVO.getFromDirection().getDirectionType());
+		if(ruleVO.getFromDirection().getValueId()!=null &&
+				ruleVO.getFromDirection().getValueId()>-1){
+			rule.getFromDirection().setValueId(ruleVO.getFromDirection().getValueId());
+		}else {
+			rule.getFromDirection().setValueId(null);
+		}
+
+		rule.getToDirection().setFreeValue(ruleVO.getToDirection().getFreeValue());
+		rule.getToDirection().setDirectionType(ruleVO.getToDirection().getDirectionType());
+		if(ruleVO.getToDirection().getValueId()!=null &&
+				ruleVO.getToDirection().getValueId()>-1){
+			rule.getToDirection().setValueId(ruleVO.getToDirection().getValueId());
+		}else {
+			rule.getToDirection().setValueId(null);
+		}
+		
+		
 		dao.save(rule);
 	}
 

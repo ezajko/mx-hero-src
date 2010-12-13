@@ -18,10 +18,10 @@ public class FeatureRuleDirection {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="directiom_type",length=100, unique=true, nullable=false)
+	@Column(name="directiom_type",length=100, nullable=false)
 	private String directionType;
 	
-	@Column(name="free_value",length=100, unique=true, nullable=false)
+	@Column(name="free_value",length=100, nullable=false)
 	private String freeValue;
 	
 	@Column(name="value_id")
