@@ -110,9 +110,11 @@
 				</mx:itemRenderer>
 			</mx:DataGridColumn>
 			<mx:DataGridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_FROM_LABEL)}" 
-							   width="160"/>
+							   width="160"
+							   dataField="fromDirection.freeValue"/>
 			<mx:DataGridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_TO_LABEL)}" 
-							   width="160"/>
+							   width="160"
+							   dataField="toDirection.freeValue"/>
 			<mx:DataGridColumn dataField="name" 
 							   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_NAME_LABEL)}" 
 							   minWidth="100"/>

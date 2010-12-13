@@ -42,8 +42,8 @@ package org.mxhero.console.features.application.command
 			if(context.domains!=null){
 				var sortByName:Sort=new Sort();
 				sortByName.fields=[new SortField("domain")];
-				context.groups.sort=sortByName;
-				context.groups.refresh();
+				context.domains.sort=sortByName;
+				context.domains.refresh();
 			}
 		}
 	}

@@ -29,7 +29,12 @@
 
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
-				model.save();
+				if(fromTo.isValid()){
+					saveBtt.errorString="";
+					model.save();
+				} else {
+					saveBtt.errorString=fromTo.errorMessage;
+				}
 			}
 
 		]]>
@@ -60,11 +65,15 @@
 										 expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL_EXPLAIN)}"/>		
 			</s:VGroup>
 	
-			<s:Label fontSize="16" 
-					 fontWeight="bold"
-					 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
-			
-			<FromTo:FromTo/>
+			<s:VGroup gap="0" width="100%">
+				<s:Label id="fromToTitle"
+						 fontSize="16" 
+						 fontWeight="bold"
+						 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
+	
+			</s:VGroup>
+
+			<FromTo:FromTo id="fromTo"/>
 			
 			<mx:Spacer height="100%"/>
 			<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">

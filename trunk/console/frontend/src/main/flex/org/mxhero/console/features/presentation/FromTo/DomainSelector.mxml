@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  gap="20" 
+		  xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
+		  xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*"
+		  currentStateChange="{notifyChange()}" xmlns:component="org.mxhero.console.commons.component.*"
+		  verticalAlign="middle">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.StateChangeEvent;
+			
+			import org.mxhero.console.features.application.resources.FeaturesImages;
+			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
+			
+			public var checkRestrictionFunction:Function;
+			
+			private var _direction:FeatureRuleDirection;
+			
+			[Bindable]
+			public var isRestricted:Boolean=false;
+					
+			public function chechRestriction():void{
+				if(checkRestrictionFunction!=null){
+					checkRestrictionFunction();
+				}
+			}
+			
+			protected function clickHandler(fromState:String):void
+			{
+				if(currentState==fromState){
+					currentState="all";
+				} else {
+					currentState=fromState;
+				}
+			}
+			
+			[Bindable(event="stateChanged")]
+			public function get isDomainManaged():Boolean
+			{
+				if(currentState=="all" || currentState=="anyone"){
+					return false;
+				} else if (currentState=="domain" && 
+							domainFT.ipeComboBox != null &&
+							domainFT.ipeComboBox.selectedItem!=null &&
+							domainFT.ipeComboBox.currentState=="show"){
+					return true;
+				} else if (currentState=="group" && 
+							groupFT.ipeDropDownList.selectedItem!=null &&
+							groupFT.ipeDropDownList.currentState=="show"){
+					return true;
+				} else if (currentState=="individual" && 
+							individualFT.ipeComboBox.selectedItem!=null &&
+							individualFT.ipeComboBox.currentState=="show"){
+					return true;
+				}
+				return false;
+			}
+			
+			[Bindable(event="stateChanged")]
+			public function get isSelected():Boolean
+			{
+				if(currentState=="anyone"){
+					return true;
+				} else if (currentState=="domain" &&
+					domainFT.ipeComboBox!=null &&
+					domainFT.ipeComboBox.currentState=="show"){
+					return true;
+				} else if (currentState=="group" &&
+					groupFT.ipeDropDownList!=null &&
+					groupFT.ipeDropDownList.currentState=="show"){
+					return true;
+				} else if (currentState=="individual" &&
+					individualFT.ipeComboBox!=null &&
+					individualFT.ipeComboBox.currentState=="show"){
+					return true;
+				}
+				return false;
+			}
+			
+			protected function notifyChange():void
+			{
+				dispatchEvent(new Event("stateChanged"));
+				chechRestriction();
+				if(currentState=="anyone"){
+					direction.directionType=FeatureRuleDirection.ANYONE;
+					direction.freeValue=FeatureRuleDirection.ANYONE;
+					direction.valueId=-1;
+				} else if (currentState=="domain" &&
+					domainFT.ipeComboBox != null &&
+					domainFT.ipeComboBox.currentState=="show"){
+					direction.directionType=FeatureRuleDirection.DOMAIN;
+					direction.freeValue=domainFT.ipeComboBox.selectedLabel;
+					if(domainFT.ipeComboBox.selectedItem!=null){
+						direction.valueId=domainFT.ipeComboBox.selectedItem.id;
+					} else {
+						direction.valueId=-1;
+					}
+				} else if (currentState=="group" &&
+					groupFT.ipeDropDownList!=null &&
+					groupFT.ipeDropDownList.currentState=="show"){
+					direction.directionType=FeatureRuleDirection.GROUP;
+					direction.freeValue=groupFT.ipeDropDownList.selectedLabel;
+					if(groupFT.ipeDropDownList.selectedItem!=null){
+						direction.valueId=groupFT.ipeDropDownList.selectedItem.id;
+					}else {
+						direction.valueId=-1;
+					}
+				} else if (currentState=="individual" && 
+					individualFT.ipeComboBox!=null &&
+					individualFT.ipeComboBox.currentState=="show"){
+					direction.directionType=FeatureRuleDirection.INDIVIDUAL;
+					direction.freeValue=individualFT.ipeComboBox.selectedLabel;
+					if(individualFT.ipeComboBox.selectedItem!=null){
+						direction.valueId=individualFT.ipeComboBox.selectedItem.id;
+					}else {
+						direction.valueId=-1;
+					}
+				}
+			}
+
+			private function elementNextState(isRestricted:Boolean):String{
+				if(isRestricted){
+					return "restricted";
+				}
+				return "active";
+			}
+			
+			[Bindable(event="stateChanged")]
+			private function get isRestrictedVisible():Boolean{
+				if(isDomainManaged || isRestricted){
+					return true;
+				}
+				return false;
+			}
+
+			[Bindable]
+			public function get direction():FeatureRuleDirection
+			{
+				return _direction;
+			}
+
+			public function set direction(value:FeatureRuleDirection):void
+			{
+				_direction = value;
+				if(_direction==null){
+					return;
+				}
+				if(_direction.directionType==FeatureRuleDirection.ANYONE){
+					currentState="anyone";
+				} else if(_direction.directionType==FeatureRuleDirection.DOMAIN && 
+					domainFT !=null && domainFT.ipeComboBox!=null){
+					currentState="domain";
+					domainFT.ipeComboBox.currentState="show";
+					if(!isNaN(_direction.valueId) && _direction.valueId>-1){
+						for each(var domain:Object in domainFT.ipeComboBox.comboBox.dataProvider){
+							if(domain.id==_direction.valueId){
+								domainFT.ipeComboBox.comboBox.selectedItem=domain;
+								break;
+							}
+						}
+					}
+				} else if(_direction.directionType==FeatureRuleDirection.GROUP &&
+					groupFT!=null && groupFT.ipeDropDownList!=null){
+					currentState="group";
+					groupFT.ipeDropDownList.currentState="show";
+					if(!isNaN(_direction.valueId) && _direction.valueId>-1){
+						for each(var group:Object in groupFT.ipeDropDownList.dropDownList.dataProvider){
+							if(group.id==_direction.valueId){
+								groupFT.ipeDropDownList.dropDownList.selectedItem=group;
+								break;
+							}
+						}
+					}
+				} else if(_direction.directionType==FeatureRuleDirection.INDIVIDUAL && 
+					individualFT !=null && individualFT.ipeComboBox!=null){
+					currentState="individual";
+					individualFT.ipeComboBox.currentState="show";
+					if(!isNaN(_direction.valueId) && _direction.valueId>-1){
+						for each(var account:Object in individualFT.ipeComboBox.comboBox.dataProvider){
+							if(account.id==_direction.valueId){
+								individualFT.ipeComboBox.comboBox.selectedItem=account;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="all"/>
+		<s:State name="anyone"/>
+		<s:State name="domain"/>
+		<s:State name="group"/>
+		<s:State name="individual"/>
+	</s:states>
+	
+	<element:Anyone id="anyoneFT" 
+					click="clickHandler('anyone')" 
+					excludeFrom="domain,group,individual" 
+					currentState.anyone="active"
+					enabled="{!isRestricted}"/>
+	<element:Domain id="domainFT" 
+					parentStateFunction="{clickHandler}"
+					childState="domain"
+					excludeFrom="anyone,group,individual"
+					notifyChange="{notifyChange}"/>
+	<element:AccountsGroup id="groupFT" 
+						   parentStateFunction="{clickHandler}"
+						   childState="group"
+						   excludeFrom="anyone,domain,individual"
+						   notifyChange="{notifyChange}"/>
+	<element:Individual id="individualFT" 
+						parentStateFunction="{clickHandler}"
+						childState="individual"
+						excludeFrom="anyone,domain,group"
+						notifyChange="{notifyChange}"/>
+	
+	<component:GlowButton 
+		source="{FeaturesImages.MANAGED}" 
+		visible="{isRestrictedVisible}" 
+		maxGlow="15.0"
+		excludeFrom="all"
+		toolTip="These e-mails selection are managed by you"
+		showEffect="{fadein}"
+		hideEffect="{fadeout}"/>
+	
+	<s:transitions>
+		<s:Transition fromState="all" toState="anyone"> 
+			<s:Sequence>
+				<s:Parallel>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="anyone" toState="all"> 
+			<s:Sequence>
+				<s:Parallel startDelay="100">
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="all" toState="domain"> 
+			<s:Sequence effectEnd="{domainFT.currentState=elementNextState(isRestricted)}">
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="domain" toState="all"> 
+			<s:Sequence effectStart="{domainFT.currentState='inactive'}">
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="all" toState="group"> 
+			<s:Sequence effectEnd="{groupFT.currentState='active'}">
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="group" toState="all"> 
+			<s:Sequence effectStart="{groupFT.currentState='inactive'}">
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="all" toState="individual"> 
+			<s:Sequence effectEnd="{individualFT.currentState=elementNextState(isRestricted)}">
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="individual" toState="all"> 
+			<s:Sequence effectStart="{individualFT.currentState='inactive'}">
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
+	
+</s:HGroup>

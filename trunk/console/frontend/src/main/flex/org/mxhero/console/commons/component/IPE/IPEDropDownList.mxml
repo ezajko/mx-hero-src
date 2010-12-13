@@ -24,7 +24,7 @@
 			public var subStyles:String;
 			
 			[Bindable]
-			private var _dataProvider:ArrayCollection;
+			private var _dataProvider:ArrayCollection=new ArrayCollection();
 			
 			public var itemNotSelectedError:String="You need to select a valid option";
 			

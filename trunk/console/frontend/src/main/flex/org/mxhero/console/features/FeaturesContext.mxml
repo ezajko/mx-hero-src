@@ -14,6 +14,7 @@
 			import org.mxhero.console.features.application.command.CreateDomainRuleCommand;
 			import org.mxhero.console.features.application.command.CreateNoDomainRuleCommand;
 			import org.mxhero.console.features.application.command.EditRuleCommand;
+			import org.mxhero.console.features.application.command.GetAccountsCommand;
 			import org.mxhero.console.features.application.command.GetDomainAccountsCommand;
 			import org.mxhero.console.features.application.command.GetDomainGroupsCommand;
 			import org.mxhero.console.features.application.command.GetDomainsCommand;
@@ -38,6 +39,7 @@
 		<parsley:DynamicCommand type="{CreateNoDomainRuleCommand}"/>
 		<parsley:DynamicCommand type="{EditRuleCommand}"/>
 		<parsley:DynamicCommand type="{GetDomainAccountsCommand}"/>
+		<parsley:DynamicCommand type="{GetAccountsCommand}"/>
 		<parsley:DynamicCommand type="{GetDomainsCommand}"/>
 		<parsley:DynamicCommand type="{GetDomainGroupsCommand}"/>
 		
