@@ -38,7 +38,7 @@ public class Feature {
 	@JoinColumn(name="category_id")
 	private Category category;
 	
-	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+	@OneToMany(mappedBy="feature", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private Set<FeatureRule> rules;
 
 	public Integer getId() {

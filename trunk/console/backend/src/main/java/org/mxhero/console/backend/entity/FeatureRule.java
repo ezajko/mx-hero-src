@@ -29,7 +29,7 @@ public class FeatureRule {
 	@JoinColumn(name="feature_id",nullable=false)
 	private Feature feature;
 	
-	@ManyToOne(cascade = {CascadeType.MERGE})
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
 	@JoinColumn(name="domain_id")
 	private Domain domain;
 	

@@ -27,7 +27,7 @@ public class FeatureRuleDirection {
 	@Column(name="value_id")
 	private Integer valueId;
 	
-	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE,CascadeType.PERSIST})
+	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE})
 	private FeatureRule rule;
 
 	public Integer getId() {

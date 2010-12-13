@@ -7,13 +7,16 @@ import java.util.HashSet;
 import org.mxhero.console.backend.dao.AuthorityDao;
 import org.mxhero.console.backend.dao.DomainAliasDao;
 import org.mxhero.console.backend.dao.DomainDao;
+import org.mxhero.console.backend.dao.FeatureRuleDao;
 import org.mxhero.console.backend.dao.SystemPropertyDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
 import org.mxhero.console.backend.entity.Domain;
 import org.mxhero.console.backend.entity.DomainAlias;
+import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.DomainService;
+import org.mxhero.console.backend.service.FeatureService;
 import org.mxhero.console.backend.translator.DomainTranslator;
 import org.mxhero.console.backend.vo.DomainVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +50,17 @@ public class JpaDomainService implements DomainService {
 	
 	private PasswordEncoder encoder;
 	
+	private FeatureService featureService;
+	
+	private FeatureRuleDao featureRuleDao;
+	
 	@Autowired(required=true)
 	public JpaDomainService(DomainDao dao, AuthorityDao authorityDao,
 			DomainAliasDao domainaliasDao, DomainTranslator domainTranslator,
 			PasswordEncoder encoder,
-			SystemPropertyDao systemPropertyDao) {
+			SystemPropertyDao systemPropertyDao,
+			FeatureService featureService,
+			FeatureRuleDao featureRuleDao) {
 		super();
 		this.dao = dao;
 		this.authorityDao = authorityDao;
@@ -59,6 +68,8 @@ public class JpaDomainService implements DomainService {
 		this.domainTranslator = domainTranslator;
 		this.encoder = encoder;
 		this.systemPropertyDao = systemPropertyDao;
+		this.featureService = featureService;
+		this.featureRuleDao = featureRuleDao;
 	}
 
 	@Override
@@ -71,7 +82,19 @@ public class JpaDomainService implements DomainService {
 	@Override
 	public void remove(Integer id) {
 		Domain domain = dao.readByPrimaryKey(id);
-		dao.delete(domain);
+		
+		if(domain!=null){
+			for(FeatureRule rule : domain.getRules()){
+				featureService.remove(rule.getId());
+			}
+			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("domain",domain.getId())){
+				featureService.remove(rule.getId());
+			}
+			
+			domain = dao.readByPrimaryKey(id);
+			dao.delete(domain);
+		}
+		
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class Domain {
 	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private Set<Group> groups;
 	
-	@OneToMany(mappedBy="domain", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="domain", cascade={CascadeType.REFRESH}, fetch=FetchType.EAGER)
 	private Set<FeatureRule> rules;
 	
 	public Integer getId() {

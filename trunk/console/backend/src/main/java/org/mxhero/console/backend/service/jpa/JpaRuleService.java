@@ -101,6 +101,28 @@ public class JpaRuleService implements RuleService{
 		rule.setFeature(feature);
 		rule.setLabel(ruleVO.getName());
 		rule.setUpdated(Calendar.getInstance());
+		
+		FeatureRuleDirection fromDirection = new FeatureRuleDirection();
+		fromDirection.setDirectionType(ruleVO.getFromDirection().getDirectionType());
+		fromDirection.setFreeValue(ruleVO.getFromDirection().getFreeValue());
+		if(ruleVO.getFromDirection().getValueId()!=null &&
+				ruleVO.getFromDirection().getValueId()>-1){
+			fromDirection.setValueId(ruleVO.getFromDirection().getValueId());
+		}
+		fromDirection.setRule(rule);
+	
+		FeatureRuleDirection toDirection = new FeatureRuleDirection();
+		toDirection.setDirectionType(ruleVO.getToDirection().getDirectionType());
+		toDirection.setFreeValue(ruleVO.getToDirection().getFreeValue());
+		if(ruleVO.getToDirection().getValueId()!=null &&
+				ruleVO.getToDirection().getValueId()>-1){
+			toDirection.setValueId(ruleVO.getToDirection().getValueId());
+		}
+		toDirection.setRule(rule);
+		
+		rule.setFromDirection(fromDirection);
+		rule.setToDirection(toDirection);
+		
 		feature.getRules().add(rule);
 		featureDao.save(feature);
 	}
