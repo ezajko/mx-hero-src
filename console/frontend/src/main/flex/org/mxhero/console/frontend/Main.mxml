@@ -59,6 +59,7 @@
 			import org.mxhero.console.frontend.domain.EmailAccount;
 			import org.mxhero.console.frontend.domain.Feature;
 			import org.mxhero.console.frontend.domain.FeatureRule;
+			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 			import org.mxhero.console.frontend.domain.Group;
 			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.domain.Page;
@@ -87,6 +88,7 @@
 				registerClassAlias("org.mxhero.console.backend.vo.CategoryVO",Category);
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureVO",Feature);
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleVO",FeatureRule);
+				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleDirectionVO",FeatureRuleDirection);
 			}
 			
 			[Inject]

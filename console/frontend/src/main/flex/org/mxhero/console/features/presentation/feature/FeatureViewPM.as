@@ -19,6 +19,7 @@ package org.mxhero.console.features.presentation.feature
 	import org.mxhero.console.frontend.domain.Category;
 	import org.mxhero.console.frontend.domain.Feature;
 	import org.mxhero.console.frontend.domain.FeatureRule;
+	import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 
 	[Landmark(name="main.dashboard.features.view")]
 	public class FeatureViewPM
@@ -89,6 +90,7 @@ package org.mxhero.console.features.presentation.feature
 		[Enter(time="every")]
 		public function every():void{
 			loadFeatures();
+			ruleModel.refresh();
 		}
 		
 		private function loadFeatures():void{
@@ -131,21 +133,23 @@ package org.mxhero.console.features.presentation.feature
 		public function findRulesError(fault:*,event:GetRulesEvent):void{
 			isUpdating=false;
 		}
-		
-		
-		
+
 		public function editRule():void{
 			ruleModel.rule = (this.selectedRule as FeatureRule).clone();
 			ruleModel.feature = this.selectedFeature;
 			ruleModel.category = this.selectedCategory;
 			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
+			ruleModel.refresh();
 		}
 		
 		public function newRule():void{
 			ruleModel.rule = new FeatureRule();
+			ruleModel.rule.fromDirection = new FeatureRuleDirection();
+			ruleModel.rule.toDirection = new FeatureRuleDirection();
 			ruleModel.feature = this.selectedFeature;
 			ruleModel.category = this.selectedCategory;
 			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
+			ruleModel.refresh();
 		}
 		
 	}

@@ -5,6 +5,7 @@ package org.mxhero.console.features.presentation
 	import mx.collections.SortField;
 	
 	import org.mxhero.console.features.application.FeaturesDestinations;
+	import org.mxhero.console.features.application.event.GetAccountsEvent;
 	import org.mxhero.console.features.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.features.application.event.GetFeaturesByDomainIdEvent;
 	import org.mxhero.console.features.application.event.GetFeaturesEvent;
@@ -45,6 +46,7 @@ package org.mxhero.console.features.presentation
 				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.id));
 			}else {
 				dispatcher(new GetFeaturesEvent());
+				dispatcher(new GetAccountsEvent());
 			}
 			isUpdating=true;
 		}
@@ -68,24 +70,6 @@ package org.mxhero.console.features.presentation
 		
 		[CommandError]
 		public function findFeaturesError(fault:*,event:GetFeaturesEvent):void{
-			isUpdating=false;
-		}
-		
-		[CommandResult]
-		public function findDomainAccountssResult(result:*,event:GetDomainAccountsEvent):void{
-			if(result is EmailAccount){
-				var accountsArray:ArrayCollection = new ArrayCollection();
-				accountsArray.addItem(result);
-				context.accounts=accountsArray;
-			} else {
-				context.accounts=result;
-			}
-			if(context.accounts!=null){
-				var sortByName:Sort=new Sort();
-				sortByName.fields=[new SortField("account")];
-				context.groups.sort=sortByName;
-				context.groups.refresh();
-			}
 			isUpdating=false;
 		}
 		

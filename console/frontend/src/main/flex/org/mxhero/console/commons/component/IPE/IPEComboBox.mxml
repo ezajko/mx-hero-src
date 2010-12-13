@@ -26,7 +26,7 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			private var _dataProvider:ArrayCollection;
+			private var _dataProvider:ArrayCollection = new ArrayCollection();
 			
 			public var itemNotSelectedError:String="You need to select a valid option";
 
@@ -69,6 +69,10 @@
 					}
 					if(isValid()){
 						comboBox.errorString="";
+						if(comboBox.selectedItem==null){
+							this.selectedLabel=privateLabelFunction(null);
+						}
+						
 						currentState="show";
 					}
 
@@ -81,7 +85,7 @@
 					selectedText = comboBox.labelFunction(item);
 				}else if(item is String){
 					selectedText = item as String;
-				}else {
+				}else if(item != null){
 					selectedText = item[comboBox.labelField];
 				}
 				if(selectedText==null || selectedText.length<1){
@@ -152,7 +156,7 @@
 					this.selectedItem=comboBox.selectedItem;
 					comboBox.errorString="";
 				}
-				this.selectedLabel=label.text;
+				this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
 				this.switchState();
 			}
 			
@@ -164,8 +168,7 @@
 					this.selectedItem=comboBox.selectedItem;
 					comboBox.errorString="";
 				}
-				this.selectedLabel=label.text;
-				this.switchState();
+				this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
 			}
 
 			[Bindable]
@@ -203,15 +206,19 @@
 					_dataProvider.filterFunction=filterComboBox;
 					_dataProvider.sort=value.sort;
 					_dataProvider.refresh();
+				} else {
+					_dataProvider=new ArrayCollection();
 				}
 			}
 
 			protected function currentStateChangeHandler(event:StateChangeEvent):void
 			{
 				if(event.newState=='edit'){
-					_dataProvider.filterFunction=clearFilter;
-					_dataProvider.refresh();
-					_dataProvider.filterFunction=filterComboBox;
+					if(_dataProvider!=null){
+						_dataProvider.filterFunction=clearFilter;
+						_dataProvider.refresh();
+						_dataProvider.filterFunction=filterComboBox;						
+					}
 					comboBox.textInput.setFocus();
 				}
 			}
@@ -278,7 +285,7 @@
 		<s:Label id="label" paddingLeft="4"
 				 styleName="{subStyles}"
 				 visible.edit="false" verticalAlign="middle" 
-				 text="{privateLabelFunction(comboBox.selectedItem)}"
+				 text="{selectedLabel}"
 				 height="{comboBox.height}"
 				 click="label_clickHandler(event)"
 				 mouseEnabled="{enableLabelClickChangeStatus}"
@@ -292,6 +299,7 @@
 					change="comboBox_changeHandler(event)"
 					width="{this.width}"
 					labelField="{this.labelField}"
+					valueCommit="comboBox_valueCommitHandler(event)"
 					creationComplete="comboBox_creationCompleteHandler(event)"/>				
 	</s:Group>
 		

@@ -11,6 +11,7 @@ package org.mxhero.console.features.presentation.rule
 	import org.mxhero.console.features.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.features.application.event.GetDomainsEvent;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
+	import org.mxhero.console.features.presentation.FromTo.FromTo;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
 	import org.mxhero.console.frontend.domain.Feature;
@@ -19,6 +20,8 @@ package org.mxhero.console.features.presentation.rule
 	[Landmark(name="main.dashboard.features.rule")]
 	public class RuleViewPM
 	{
+		
+		private static var _refreshFunction:Function;
 
 		[MessageDispatcher]
 		public var dispatcher:Function;
@@ -52,9 +55,11 @@ package org.mxhero.console.features.presentation.rule
 			if(context.selectedDomain==null){
 				dispatcher(new GetDomainsEvent());
 			} else {
+				var newDomains:ArrayCollection = new ArrayCollection();
+				newDomains.addItem(context.selectedDomain);
+				context.domains=newDomains;
 				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.id));
 			}
-			
 		}
 		
 		public function save():void{
@@ -105,21 +110,23 @@ package org.mxhero.console.features.presentation.rule
 		public function editRuleError(fault:*,event:EditRuleEvent):void{
 			isUpdating=false;
 		}
-		
-		[Bindable(event="dataReloaded")]
-		public function get domains():ArrayCollection{
-			if(context.selectedDomain!=null){
-				var domains:ArrayCollection = new ArrayCollection();
-				domains.addItem(context.selectedDomain);
-				return domains;
-			} else {
-				return context.domains;
+
+		public function refresh():void{
+			if(refreshFunction!=null){
+				refreshFunction();
 			}
 		}
-		
-		[CommandResult]
-		public function getDomainsResult(result:*,event:GetDomainsEvent):void{
-			dispatcher(new Event("dataReloaded"));
+
+		public static function get refreshFunction():Function
+		{
+			return _refreshFunction;
 		}
+
+		public static function set refreshFunction(value:Function):void
+		{
+			_refreshFunction = value;
+			refreshFunction();
+		}
+
 	}
 }

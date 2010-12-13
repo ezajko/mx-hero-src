@@ -2,7 +2,8 @@
 <s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 				   xmlns:s="library://ns.adobe.com/flex/spark" 
 				   xmlns:mx="library://ns.adobe.com/flex/mx" 
-				   xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*">
+				   xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
+				   xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*">
 
 	<fx:Declarations>
 	</fx:Declarations>
@@ -10,10 +11,12 @@
 	<s:states>
 		<s:State name="inactive"/>
 		<s:State name="active"/>
+		<s:State name="restricted"/>
 	</s:states>
 	
-		<FromTo:Item text="Anyone" 
+		<element:Item text="Anyone" 
 					 toolTip.inactive="Any email including external" 
 					 toolTip.active="Clear this selection"
-					 width="100"/>
+					 width="100"
+					 enabled.restricted="false"/>
 </s:HGroup>

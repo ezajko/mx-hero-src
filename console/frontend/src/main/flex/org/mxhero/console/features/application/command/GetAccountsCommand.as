@@ -7,25 +7,25 @@ package org.mxhero.console.features.application.command
 	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.features.application.event.GetDomainAccountsEvent;
+	import org.mxhero.console.features.application.event.GetAccountsEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.EmailAccount;
 
-	public class GetDomainAccountsCommand
+	public class GetAccountsCommand
 	{
 		[Inject(id="emailAccountService")]
 		public var service:RemoteObject;
 		
-		[Inject]
-		public var context:ApplicationContext;
-		
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		public function execute(event:GetDomainAccountsEvent):AsyncToken
+		[Inject]
+		public var context:ApplicationContext;
+		
+		public function execute(event:GetAccountsEvent):AsyncToken
 		{
-			return service.findByDomain(event.domainId);
+			return service.findAll();
 		}
 		
 		public function error (fault:Fault) : void {
@@ -45,8 +45,7 @@ package org.mxhero.console.features.application.command
 				sortByName.fields=[new SortField("domain"), new SortField("account")];
 				context.accounts.sort=sortByName;
 				context.accounts.refresh();
-			}		
+			}	
 		}
-
 	}
 }

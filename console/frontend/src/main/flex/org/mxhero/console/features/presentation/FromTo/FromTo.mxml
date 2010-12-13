@@ -3,17 +3,108 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 gap="20" 
-		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*">
+		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*"
+		 creationComplete="creationCompleteHandler(event)"
+		 xmlns:parsley="http://www.spicefactory.org/parsley">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<parsley:Configure/>
 	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.features.presentation.rule.RuleViewPM;
+			import org.mxhero.console.frontend.domain.ApplicationContext;
+
+			[Inject]
+			[Bindable]
+			public var model:RuleViewPM;
+			
+			[Inject]
+			[Bindable]
+			public var context:ApplicationContext;
+			
+			[Bindable]
+			private var upperSelector:Object;
+			[Bindable]
+			private var lowerSelector:Object;
+
+			[Bindable]
+			public var errorMessage:String;
+			
+			public function refresh():void{
+				if(context.selectedDomain!=null){
+					var domainSelector:DomainSelector = new DomainSelector();
+					domainSelector.checkRestrictionFunction=checkRestricted;
+					domainSelector.direction=model.rule.fromDirection;
+					upperSelector=domainSelector;
+					upperConteiner.removeAllElements();
+					upperConteiner.addElement(domainSelector);
+					domainSelector = new DomainSelector();
+					domainSelector.checkRestrictionFunction=checkRestricted;
+					domainSelector.direction=model.rule.toDirection;
+					lowerSelector=domainSelector;
+					lowerContainer.removeAllElements();
+					lowerContainer.addElement(domainSelector);
+				} else {
+					var adminSelector:AdminSelector = new AdminSelector();
+					adminSelector.checkRestrictionFunction=checkRestricted;
+					adminSelector.direction=model.rule.fromDirection;
+					upperSelector=adminSelector;
+					upperConteiner.removeAllElements();
+					upperConteiner.addElement(adminSelector);
+					adminSelector = new AdminSelector();
+					adminSelector.checkRestrictionFunction=checkRestricted;
+					adminSelector.direction=model.rule.toDirection;
+					lowerSelector=adminSelector;
+					lowerContainer.removeAllElements();
+					lowerContainer.addElement(adminSelector);
+				}
+			}
+
+			
+			public function checkRestricted():void{
+				if(upperSelector.isSelected==true && upperSelector.isDomainManaged==false){
+					lowerSelector.isRestricted=true;
+					upperSelector.isRestricted=false;
+				} else if(lowerSelector.isSelected==true && lowerSelector.isDomainManaged==false){
+					upperSelector.isRestricted=true;
+					lowerSelector.isRestricted=false;
+				} else {
+					lowerSelector.isRestricted=false;
+					upperSelector.isRestricted=false;
+				}
+			}
+			
+			public function isValid():Boolean{
+				errorMessage="";
+				if(upperSelector.isSelected==false || lowerSelector.isSelected==false){
+					errorMessage="You need to select both sides of the comunication";
+					return false;
+				}
+				if(upperSelector.isDomainManaged==false && lowerSelector.isDomainManaged==false){
+					errorMessage="At list one side must be managed";
+					return false;
+				}
+				return true;
+			}
+			
+
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				RuleViewPM.refreshFunction=refresh;
+			}
+
+		]]>
+	</fx:Script>
 	
 	<s:VGroup>
 		<s:HGroup gap="20">
 			<s:VGroup width="60" horizontalAlign="right" verticalAlign="middle" height="100%">
 				<s:Label text="From:" fontWeight="bold"/>
 			</s:VGroup>
-			<FromTo:ToggleSelector/>
+			<s:Group id="upperConteiner"/>
 		</s:HGroup>
 	</s:VGroup>
 
@@ -22,7 +113,7 @@
 			<s:VGroup width="60" horizontalAlign="right" verticalAlign="middle" height="100%">
 				<s:Label text="To:" fontWeight="bold"/>
 			</s:VGroup>
-			<FromTo:ToggleSelector/>
+			<s:Group id="lowerContainer"/>
 		</s:HGroup>
 	</s:VGroup>
 

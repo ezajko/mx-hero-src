@@ -11,6 +11,7 @@ package org.mxhero.console.frontend.domain
 		public var createdDate:Date;
 		public var updatedDate:Date;
 		public var groupId:Number;
+		public var domain:String;
 		
 		public function clone():EmailAccount{
 			var clonedEmailAccount:EmailAccount = new EmailAccount();
@@ -21,6 +22,7 @@ package org.mxhero.console.frontend.domain
 			clonedEmailAccount.name=this.name;
 			clonedEmailAccount.updatedDate=this.updatedDate;
 			clonedEmailAccount.groupId=this.groupId;
+			clonedEmailAccount.domain=this.domain;
 			return clonedEmailAccount;
 		}
 	}
