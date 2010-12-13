@@ -4,6 +4,11 @@
 				   xmlns:mx="library://ns.adobe.com/flex/mx" 
 				   xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
 				   xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
+		]]>
+	</fx:Script>
 
 	<fx:Declarations>
 	</fx:Declarations>
@@ -15,8 +20,8 @@
 	</s:states>
 	
 		<element:Item text="Anyone" 
-					 toolTip.inactive="Any email including external" 
-					 toolTip.active="Clear this selection"
+					 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ANYONE_TOOLTIP)}" 
+					 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 					 width="100"
 					 enabled.restricted="false"/>
 </s:HGroup>

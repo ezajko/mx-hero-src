@@ -7,7 +7,6 @@ package org.mxhero.console.features.presentation.feature
 	import mx.resources.ResourceManager;
 	
 	import org.mxhero.console.features.application.FeaturesDestinations;
-	import org.mxhero.console.features.application.event.GetFeaturesByDomainIdEvent;
 	import org.mxhero.console.features.application.event.GetRulesByDomainIdEvent;
 	import org.mxhero.console.features.application.event.GetRulesEvent;
 	import org.mxhero.console.features.application.event.RemoveRuleEvent;

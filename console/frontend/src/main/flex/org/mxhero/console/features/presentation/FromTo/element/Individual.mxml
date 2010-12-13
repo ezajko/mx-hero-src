@@ -6,7 +6,9 @@
 		 verticalAlign="middle" 
 		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
 		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*" 
-		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*">
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*"
+		 currentStateChange="currentStateChangeHandler(event)">
 	
 	<fx:Declarations>
 		<mx:EmailValidator id="emailValidator" required="true"/>
@@ -30,6 +32,7 @@
 			import mx.events.FlexEvent;
 			import mx.events.StateChangeEvent;
 			
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.features.presentation.rule.RuleViewPM;
 			
 			public var notifyChange:Function;
@@ -70,6 +73,17 @@
 				}
 			}
 
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=="inactive"){
+					ipeComboBox.selectedItem=null;
+					ipeComboBox.selectedLabel=null;
+					ipeComboBox.comboBox.textInput.text=null;
+					ipeComboBox.comboBox.selectedItem=null;
+					ipeComboBox.switchState();
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -80,8 +94,8 @@
 	</s:states>
 	
 	<element:Item text="Individual"
-				 toolTip.inactive="Select an Email Account" 
-				 toolTip.active="Clear this selection"
+				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_INDIVIDUAL_TOOLTIP)}" 
+				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				 click="item_clickHandler(event)"
 				 width="100"/>
 	
@@ -113,7 +127,8 @@
 							 enableProviderFilter="true"
 							 labelFunction="{accountLabelFunction}"
 							 validator="{emailValidator}"
-							 labelTooltip="Click here to edit this field"
+							 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_INDIVIDUAL_NOT_VALID)}"
+							 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 							 width="100%"
 							 currentStateChange="ipeComboBox_currentStateChangeHandler(event)"/>					
 		</s:VGroup>

@@ -116,7 +116,6 @@
 					dropDownList.errorString="";
 				}
 				this.selectedLabel=label.text;
-				this.switchState();
 			}
 
 			

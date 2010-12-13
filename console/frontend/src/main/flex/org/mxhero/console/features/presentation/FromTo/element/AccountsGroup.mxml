@@ -6,7 +6,9 @@
 		 gap="20" 
 		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*" 
 		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*" 
-		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*">
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:element="org.mxhero.console.features.presentation.FromTo.element.*"
+		 currentStateChange="currentStateChangeHandler(event)">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -31,6 +33,7 @@
 			import mx.events.FlexEvent;
 			import mx.events.StateChangeEvent;
 			
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.features.presentation.rule.RuleViewPM;
 			
 			[Inject]
@@ -56,16 +59,26 @@
 				}
 			}
 
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=="inactive"){
+					ipeDropDownList.selectedItem=null;
+					ipeDropDownList.selectedLabel=null;
+					ipeDropDownList.dropDownList.selectedItem=null;
+					ipeDropDownList.switchState();
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<element:Item text="Group" 
-				 toolTip.inactive="Select a Group" 
-				 toolTip.active="Clear this selection"
+				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_GROUP_TOOLTIP)}" 
+				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				 click="item_clickHandler(event)"
 				 width="100"/>
 	<s:BorderContainer id="dropDownList" 
-					   includeIn="active"
+					   excludeFrom="inactive"
 					   backgroundColor="#7c7b7b"  
 					   borderVisible="true" 
 					   dropShadowVisible="true"
@@ -89,9 +102,9 @@
 								 enableItemSelectionCheck="true" 
 								 enableLabelClickChangeStatus="true"
 								 enableEnterKeyChangeStatus="true"
-								 labelTooltip="Click here to edit this field"
-								 prompt="Select a Group"
-								 includeIn="active"
+								 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
+								 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_GROUP_NOT_VALID)}"
+								 prompt="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.GROUP_PROMT)}"
 								 width="100%"
 								 currentStateChange="ipeDropDownList_currentStateChangeHandler(event)"/>
 			</s:VGroup>

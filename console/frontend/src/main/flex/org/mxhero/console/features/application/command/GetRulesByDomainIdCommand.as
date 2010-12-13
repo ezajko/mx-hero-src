@@ -17,7 +17,7 @@ package org.mxhero.console.features.application.command
 		
 		public function execute(event:GetRulesByDomainIdEvent):AsyncToken
 		{
-			return service.GetRulesByDomainId(event.featureId,event.domainId);
+			return service.GetRulesByDomainId(event.domainId,event.featureId);
 		}
 		
 		public function error (fault:Fault) : void {
