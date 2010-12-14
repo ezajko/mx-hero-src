@@ -10,8 +10,8 @@ package org.mxhero.console.features.application.resources
 		[Bindable]
 		public static var ENABLED:Class; 
 		
-		[Embed(source="/images/features/managed.png")] 
+		[Embed(source="/images/features/restricted.png")] 
 		[Bindable]
-		public static var MANAGED:Class; 
+		public static var RESTRICTED:Class; 
 	}
 }

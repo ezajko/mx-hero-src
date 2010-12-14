@@ -28,7 +28,7 @@ package org.mxhero.console.features.application.resources
 		
 		public static const ITEM_INDIVIDUAL_NOT_VALID:String="item.individual.not.valid";
 		
-		public static const MANAGEL_TOOLTIP:String="managed.tooltip";
+		public static const RESTRICTED_TOOLTIP:String="restricted.tooltip";
 		
 		public static const GROUP_PROMT:String="group.promt";
 	}
