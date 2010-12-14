@@ -23,9 +23,8 @@
 			
 			[Bindable]
 			public var direction:FeatureRuleDirection;
-			
-			[Bindable]
-			public var isRestricted:Boolean=false;
+
+			private var _isRestricted:Boolean=false;
 					
 			public function chechRestriction():void{
 				if(checkRestrictionFunction!=null){
@@ -136,13 +135,10 @@
 			}
 			
 			[Bindable(event="stateChanged")]
-			private function get isRestrictedVisible():Boolean{
-				if(isDomainManaged || isRestricted){
-					return true;
-				}
-				return false;
+			private function isRestrictedVisible(isSelected:Boolean,isRestricted:Boolean):Boolean{
+				return (!isSelected && isRestricted);
 			}
-
+			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				if(direction==null){
@@ -199,6 +195,39 @@
 				}
 			}
 
+			[Bindable]
+			public function get isRestricted():Boolean
+			{
+				return _isRestricted;
+			}
+			
+			public function set isRestricted(value:Boolean):void
+			{
+				dispatchEvent(new Event("stateChanged"));
+				if(value==true && _isRestricted==false){
+					if(currentState=="anyone"){
+						currentState="all";
+					} else if(currentState=="domain"){
+						domainFT.currentState="restricted";
+						if(domainFT.ipeComboBox.comboBox.selectedItem==null){
+							domainFT.ipeComboBox.currentState="edit";
+							domainFT.ipeComboBox.comboBox.textInput.text="";
+						}
+					} else if(currentState=="individual"){
+						individualFT.currentState="restricted";
+						if(individualFT.ipeComboBox.comboBox.selectedItem==null){
+							individualFT.ipeComboBox.currentState="edit";
+						}
+					} 
+				}else if(value==false && _isRestricted==true){
+					if (currentState=="domain"){
+						domainFT.currentState="active";
+					} else if (currentState=="individual"){
+						individualFT.currentState="active";
+					}
+				}
+				_isRestricted = value;
+			}
 			
 		]]>
 	</fx:Script>
@@ -238,11 +267,10 @@
 						notifyChange="{notifyChange}"/>
 	
 	<component:GlowButton 
-		source="{FeaturesImages.MANAGED}" 
-		visible="{isRestrictedVisible}" 
+		source="{FeaturesImages.RESTRICTED}" 
+		visible="{isRestrictedVisible(isSelected,isRestricted)}" 
 		maxGlow="15.0"
-		excludeFrom="all"
-		toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MANAGEL_TOOLTIP)}"
+		toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RESTRICTED_TOOLTIP)}"
 		showEffect="{fadein}"
 		hideEffect="{fadeout}"/>
 	
