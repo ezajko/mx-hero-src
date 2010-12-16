@@ -6,7 +6,9 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
 		 xmlns:FromTo="org.mxhero.console.features.presentation.FromTo.*"
 		 enabled="{!model.isUpdating}"
-		 horizontalScrollPolicy="off">
+		 horizontalScrollPolicy="off" 
+		 xmlns:loader="org.mxhero.console.features.presentation.loader.*">
+	
 	<fx:Declarations>
 		<parsley:Configure/>
 	</fx:Declarations>
@@ -39,53 +41,62 @@
 
 		]]>
 	</fx:Script>
-	<s:Group width="800">
+	<s:Group width="100%">
 		<s:layout>
-			<s:VerticalLayout gap="20" paddingLeft="10" paddingRight="10" paddingBottom="20" paddingTop="10"/>
+			<s:VerticalLayout gap="20" horizontalAlign="center" 
+							  paddingLeft="10" paddingRight="10" 
+							  paddingBottom="20" paddingTop="10"/>
 		</s:layout>
 		
-		<component:TitleExpanded width="100%"
-								 title="{model.feature.realLabel}"
-								 description="{model.feature.description}"
-								 expandedDescription="{model.feature.explain}"
-								 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
-								 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
-								 enableExpanded="true"/>
-		<s:VGroup paddingLeft="30" width="100%" height="100%" gap="30">
-			<s:VGroup verticalAlign="top" gap="4" width="100%">
-				<s:HGroup width="100%" verticalAlign="middle">
-					<s:Label 
-						fontWeight="bold"
-						text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL)}"/>
-					<s:TextInput id="labelTi" text="@{model.rule.name}" width="360"/>
-				</s:HGroup>
-				<component:LabelExpanded width="100%"
-										 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
-										 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
-										 expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL_EXPLAIN)}"/>		
-			</s:VGroup>
-	
-			<s:VGroup gap="0" width="100%">
-				<s:Label id="fromToTitle"
-						 fontSize="16" 
-						 fontWeight="bold"
-						 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
-	
-			</s:VGroup>
-
-			<FromTo:FromTo id="fromTo"/>
+		<s:VGroup width="800" gap="20">
+			<component:TitleExpanded width="100%"
+									 title="{model.feature.realLabel}"
+									 description="{model.feature.description}"
+									 expandedDescription="{model.feature.explain}"
+									 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+									 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+									 enableExpanded="true"/>
 			
-			<mx:Spacer height="100%"/>
-			<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle">
-				<s:Button id="cancelBtt" 
-						  click="cancelBtt_clickHandler(event)"
-						  buttonMode="true"
-						  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
-				<s:Button id="saveBtt" 
-						  click="saveBtt_clickHandler(event)"
-						  buttonMode="true"
-						  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}"/>		
-			</s:HGroup>		
+			<s:VGroup paddingLeft="30" width="100%" height="100%" gap="30">
+				<s:VGroup verticalAlign="top" gap="4" width="100%">
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label 
+							fontWeight="bold"
+							text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL)}"/>
+						<s:TextInput id="labelTi" text="@{model.rule.name}" width="360"/>
+					</s:HGroup>
+					<component:LabelExpanded width="100%"
+											 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+											 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+											 expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL_EXPLAIN)}"/>		
+				</s:VGroup>
+				
+				<s:VGroup gap="0" width="100%">
+					<s:Label id="fromToTitle"
+							 fontSize="16" 
+							 fontWeight="bold"
+							 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
+					
+				</s:VGroup>
+				
+				<FromTo:FromTo id="fromTo"/>
+				
+				<loader:FeatureLoader url="{model.feature.moduleUrl}" 
+									  width="100%"/>
+				
+				<mx:Spacer height="100%"/>
+				<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="20">
+					<s:Button id="cancelBtt" 
+							  click="cancelBtt_clickHandler(event)"
+							  buttonMode="true"
+							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
+					<s:Button id="saveBtt" 
+							  click="saveBtt_clickHandler(event)"
+							  buttonMode="true"
+							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}"/>		
+				</s:HGroup>		
+			</s:VGroup>	
 		</s:VGroup>
+
 	</s:Group>
 </s:Scroller>

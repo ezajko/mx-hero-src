@@ -4,6 +4,16 @@ package org.mxhero.console.features.application.resources
 	{
 		public static const NAME:String="rule_view";
 		
+		public static const ANYONE_LABEL:String="anyone.label";
+		
+		public static const ALLDOMAINS_LABEL:String="alldomains.label";
+		
+		public static const DOMAIN_LABEL:String="domain.label";
+		
+		public static const GROUP_LABEL:String="group.label";
+		
+		public static const INDIVIDUAL_LABEL:String="inidividual.label";
+		
 		public static const RULE_LABEL:String="rule.label";
 		
 		public static const RULE_LABEL_EXPLAIN:String="rule.label.explain";
@@ -22,6 +32,8 @@ package org.mxhero.console.features.application.resources
 		
 		public static const ITEM_SELECT_INDIVIDUAL_TOOLTIP:String="item.select.individual.tooltip";
 		
+		public static const ITEM_SELECT_ALLDOMAINS_TOOLTIP:String="item.select.alldomains.tooltip";
+		
 		public static const ITEM_GROUP_NOT_VALID:String="item.group.not.valid";
 		
 		public static const ITEM_DOMAIN_NOT_VALID:String="item.domain.not.valid";
@@ -31,5 +43,10 @@ package org.mxhero.console.features.application.resources
 		public static const RESTRICTED_TOOLTIP:String="restricted.tooltip";
 		
 		public static const GROUP_PROMT:String="group.promt";
+		
+		public static const FEATURE_MODULE_LOADING:String="feature.module.loading";
+		
+		public static const FEATURE_MODULE_ERROR:String="feature.module.error";
+		
 	}
 }

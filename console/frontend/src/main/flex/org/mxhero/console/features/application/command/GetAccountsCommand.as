@@ -11,6 +11,7 @@ package org.mxhero.console.features.application.command
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.EmailAccount;
+	import org.mxhero.console.frontend.domain.Page;
 
 	public class GetAccountsCommand
 	{
@@ -32,20 +33,18 @@ package org.mxhero.console.features.application.command
 			dispatcher(new ApplicationErrorMessage(fault.faultCode));
 		}
 		
-		public function result (result:*):void{
-			if(result is EmailAccount){
-				var accountsArray:ArrayCollection = new ArrayCollection();
-				accountsArray.addItem(result);
-				context.accounts=accountsArray;
-			} else {
-				context.accounts=result;
+/*		public function result (result:*):void{
+
+			if(){
+				context.accounts=(result as Page).elements;
+	
+				if(context.accounts!=null){
+					var sortByName:Sort=new Sort();
+					sortByName.fields=[new SortField("domain"), new SortField("account")];
+					context.accounts.sort=sortByName;
+					context.accounts.refresh();
+				}	
 			}
-			if(context.accounts!=null){
-				var sortByName:Sort=new Sort();
-				sortByName.fields=[new SortField("domain"), new SortField("account")];
-				context.accounts.sort=sortByName;
-				context.accounts.refresh();
-			}	
-		}
+		}*/
 	}
 }
