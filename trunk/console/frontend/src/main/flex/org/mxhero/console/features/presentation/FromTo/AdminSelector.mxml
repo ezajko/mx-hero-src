@@ -49,6 +49,8 @@
 			{
 				if(currentState=="all" || currentState=="anyone"){
 					return false;
+				} else if (currentState=="alldomains"){
+					return true;
 				} else if (currentState=="domain" &&
 							domainFT.ipeComboBox != null &&
 							domainFT.ipeComboBox.selectedItem!=null &&
@@ -66,7 +68,7 @@
 			[Bindable(event="stateChanged")]
 			public function get isSelected():Boolean
 			{
-				if(currentState=="anyone"){
+				if(currentState=="anyone" || currentState=="alldomains"){
 					return true;
 				} else if (currentState=="domain" &&
 					domainFT.ipeComboBox != null &&
@@ -86,6 +88,10 @@
 				if(currentState=="anyone"){
 					direction.directionType=FeatureRuleDirection.ANYONE;
 					direction.freeValue=FeatureRuleDirection.ANYONE;
+					direction.valueId=-1;
+				} else if (currentState=="alldomains"){
+					direction.directionType=FeatureRuleDirection.ALLDOMAINS;
+					direction.freeValue=FeatureRuleDirection.ALLDOMAINS;
 					direction.valueId=-1;
 				} else if (currentState=="domain" &&
 					domainFT.ipeComboBox != null &&
@@ -160,6 +166,8 @@
 					individualFT.ipeComboBox.selectedLabel=direction.freeValue;		
 					individualFT.ipeComboBox.currentState="show";
 					currentState="individual";
+				} else if(direction.directionType==FeatureRuleDirection.ALLDOMAINS){
+					currentState="alldomains";
 				}
 			}
 
@@ -211,22 +219,27 @@
 		<s:State name="anyone"/>
 		<s:State name="domain"/>
 		<s:State name="individual"/>
+		<s:State name="alldomains"/>
 	</s:states>
 	
 	<element:Anyone id="anyoneFT" 
 				   click="clickHandler('anyone')" 
-				   excludeFrom="domain,individual" 
+				   excludeFrom="domain,individual,alldomains" 
 				   currentState.anyone="active"
 				   enabled="{!isRestricted}"/>
+	<element:AllDomains id="allDomainsFT"
+						click="clickHandler('alldomains')"
+						excludeFrom="domain,individual,anyone" 
+						currentState.alldomains="active"/>
 	<element:Domain id="domainFT" 
 				   parentStateFunction="{clickHandler}"
 				   childState="domain"
-				   excludeFrom="anyone,individual"
+				   excludeFrom="anyone,individual,alldomains"
 				   notifyChange="{notifyChange}"/>
 	<element:Individual id="individualFT" 
 					   parentStateFunction="{clickHandler}"
 					   childState="individual"
-					   excludeFrom="anyone,domain"
+					   excludeFrom="anyone,domain,alldomains"
 					   notifyChange="{notifyChange}"/>
 	
 	<component:GlowButton 
@@ -241,6 +254,7 @@
 		<s:Transition fromState="all" toState="anyone"> 
 			<s:Sequence>
 				<s:Parallel>
+					<s:Fade target="{allDomainsFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
 				</s:Parallel>
@@ -249,14 +263,34 @@
 		<s:Transition fromState="anyone" toState="all"> 
 			<s:Sequence>
 				<s:Parallel startDelay="100">
+					<s:Fade target="{allDomainsFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
 				</s:Parallel>
 			</s:Sequence>
 		</s:Transition>
+		<s:Transition fromState="all" toState="alldomains"> 
+			<s:Sequence>
+				<s:Parallel>
+					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
+					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="alldomains" toState="all"> 
+			<s:Sequence>
+				<s:Parallel startDelay="100">
+					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
+					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
+				</s:Parallel>
+			</s:Sequence>
+		</s:Transition>		
 		<s:Transition fromState="all" toState="domain"> 
 			<s:Sequence effectEnd="{domainFT.currentState=elementNextState(isRestricted)}">
 				<s:Parallel>
+					<s:Fade target="{allDomainsFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0"/>
 				</s:Parallel>
@@ -265,6 +299,7 @@
 		<s:Transition fromState="domain" toState="all"> 
 			<s:Sequence effectStart="{domainFT.currentState='inactive'}">
 				<s:Parallel startDelay="100">
+					<s:Fade target="{allDomainsFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1"/>
 				</s:Parallel>
@@ -273,6 +308,7 @@
 		<s:Transition fromState="all" toState="individual"> 
 			<s:Sequence effectEnd="{individualFT.currentState=elementNextState(isRestricted)}">
 				<s:Parallel>
+					<s:Fade target="{allDomainsFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
 				</s:Parallel>
@@ -281,6 +317,7 @@
 		<s:Transition fromState="individual" toState="all"> 
 			<s:Sequence effectStart="{individualFT.currentState='inactive'}">
 				<s:Parallel startDelay="100" >
+					<s:Fade target="{allDomainsFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>
 				</s:Parallel>

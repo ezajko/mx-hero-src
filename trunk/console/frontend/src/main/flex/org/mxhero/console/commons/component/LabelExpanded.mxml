@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx">
 
@@ -48,10 +48,6 @@
 		</s:Transition> 
 	</s:transitions> 
 	
-	<s:layout>
-		<s:VerticalLayout/>
-	</s:layout>
-	
 	<s:HGroup>
 		<s:Label text="{labelText}" styleName="labelexpanded_label"/>
 		<s:Label text.default="{explainText}" text.expanded="{hideText}" styleName="labelexpanded_explain" buttonMode="true" click="explain_clickHandler(event)"/>
@@ -60,4 +56,4 @@
 	<mx:Text text="{expandedText}" styleName="labelexpanded_expandedtext" id="expandedTextText" width="100%" includeIn="expanded"/>
 
 	
-</s:Group>
+</s:VGroup>

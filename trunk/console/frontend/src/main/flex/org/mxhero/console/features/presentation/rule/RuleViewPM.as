@@ -8,6 +8,8 @@ package org.mxhero.console.features.presentation.rule
 	import org.mxhero.console.features.application.event.CreateDomainRuleEvent;
 	import org.mxhero.console.features.application.event.CreateNoDomainRuleEvent;
 	import org.mxhero.console.features.application.event.EditRuleEvent;
+	import org.mxhero.console.features.application.event.GetAccountsEvent;
+	import org.mxhero.console.features.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.features.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.features.application.event.GetDomainsEvent;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
@@ -22,6 +24,8 @@ package org.mxhero.console.features.presentation.rule
 	{
 		
 		private static var _refreshFunction:Function;
+		
+		private static var _realoadExternal:Function;
 
 		[MessageDispatcher]
 		public var dispatcher:Function;
@@ -52,12 +56,17 @@ package org.mxhero.console.features.presentation.rule
 		
 		[Enter(time="every")]
 		public function every():void{
+			if(RuleViewPM.refreshFunction!=null){
+				RuleViewPM.refreshFunction();
+			}
 			if(context.selectedDomain==null){
 				dispatcher(new GetDomainsEvent());
+				dispatcher(new GetAccountsEvent());
 			} else {
 				var newDomains:ArrayCollection = new ArrayCollection();
 				newDomains.addItem(context.selectedDomain);
 				context.domains=newDomains;
+				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.id));
 				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.id));
 			}
 		}
@@ -115,6 +124,9 @@ package org.mxhero.console.features.presentation.rule
 			if(refreshFunction!=null){
 				refreshFunction();
 			}
+			if(realoadExternal!=null){
+				realoadExternal();
+			}
 		}
 
 		public static function get refreshFunction():Function
@@ -128,5 +140,17 @@ package org.mxhero.console.features.presentation.rule
 			refreshFunction();
 		}
 
+		public static function get realoadExternal():Function
+		{
+			return _realoadExternal;
+		}
+
+		public static function set realoadExternal(value:Function):void
+		{
+			_realoadExternal = value;
+			realoadExternal();
+		}
+
+		
 	}
 }

@@ -89,7 +89,6 @@ package org.mxhero.console.features.presentation.feature
 		[Enter(time="every")]
 		public function every():void{
 			loadFeatures();
-			ruleModel.refresh();
 		}
 		
 		private function loadFeatures():void{

@@ -43,10 +43,8 @@ package org.mxhero.console.features.presentation
 		public function every():void{
 			if(context.selectedDomain!=null){
 				dispatcher(new GetFeaturesByDomainIdEvent(context.selectedDomain.id));
-				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.id));
 			}else {
 				dispatcher(new GetFeaturesEvent());
-				dispatcher(new GetAccountsEvent());
 			}
 			isUpdating=true;
 		}
