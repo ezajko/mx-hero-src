@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+
+	<fx:Script>
+		<![CDATA[
+			
+			[Bindable]
+			public var labelText:String;
+			[Bindable]
+			public var explainText:String;
+			[Bindable]
+			public var hideText:String;
+			[Bindable]
+			public var expandedText:String;
+			
+			protected function explain_clickHandler(event:MouseEvent):void
+			{
+				if(currentState=="expanded"){
+					currentState="default"
+				} else {
+					currentState="expanded";
+				}
+			}
+		]]>
+	</fx:Script>
+
+	
+	<s:states> 
+		<s:State name="default"/>    
+		<s:State name="expanded"/> 
+	</s:states> 
+	
+	<s:transitions > 
+		<s:Transition fromState="default" toState="expanded"> 
+			<s:Sequence>
+				<s:Fade target="{expandedTextText}" alphaFrom="1" alphaTo="0" duration="0"/>
+				<s:Resize target="{this}" duration="200"/>
+				<s:Fade target="{expandedTextText}" alphaFrom="0" alphaTo="1" duration="200"/>
+			</s:Sequence>
+		</s:Transition> 
+		<s:Transition fromState="expanded" toState="default"> 
+			<s:Sequence>
+				<s:Fade target="{expandedTextText}" alphaFrom="1" alphaTo="0" duration="200" />
+				<s:Resize target="{this}" duration="200"/>
+			</s:Sequence>
+		</s:Transition> 
+	</s:transitions> 
+	
+	<s:HGroup>
+		<s:Label text="{labelText}" styleName="labelexpanded_label"/>
+		<s:Label text.default="{explainText}" text.expanded="{hideText}" styleName="labelexpanded_explain" buttonMode="true" click="explain_clickHandler(event)"/>
+	</s:HGroup>
+
+	<mx:Text text="{expandedText}" styleName="labelexpanded_expandedtext" id="expandedTextText" width="100%" includeIn="expanded"/>
+
+	
+</s:VGroup>
