@@ -5,7 +5,7 @@
 		 close="cancelBtt_clickHandler()" minWidth="550" minHeight="350"
 		 title="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
 		 creationComplete="{init()}"
-		 xmlns:component="org.mxhero.console.commons.component.*">
+		 xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -91,7 +91,7 @@
 	
 	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 	<s:VGroup paddingLeft="10" paddingBottom="10" paddingRight="10" paddingTop="0" gap="10">
-		<component:LabelExpanded width="100%" 
+		<component1:LabelExpanded width="100%" 
 								 labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_FILE_LABEL)}"
 								 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
 								 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
@@ -136,7 +136,7 @@
 										
 									]]>
 								</fx:Script>
-								<component:GlowButton maxGlow="10.0" 
+								<component1:GlowButton maxGlow="10.0" 
 													  click="{outerDocument.uploadedAccounts.removeItemAt(outerDocument.uploadedAccounts.getItemIndex(outerDocument.dg.selectedItem))}"
 													  source="{ImageResources.DELETE_ICO}"/>						
 							</mx:HBox>

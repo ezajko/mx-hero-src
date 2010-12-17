@@ -8,7 +8,7 @@
 		  currentStateChange="{notifyChange()}" 
 		  xmlns:component="org.mxhero.console.commons.component.*"
 		  verticalAlign="middle"
-		  creationComplete="creationCompleteHandler(event)">
+		  creationComplete="creationCompleteHandler(event)" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -266,7 +266,7 @@
 						excludeFrom="anyone,domain,group"
 						notifyChange="{notifyChange}"/>
 	
-	<component:GlowButton 
+	<component1:GlowButton 
 		source="{FeaturesImages.RESTRICTED}" 
 		visible="{isRestrictedVisible(isSelected,isRestricted)}" 
 		maxGlow="15.0"

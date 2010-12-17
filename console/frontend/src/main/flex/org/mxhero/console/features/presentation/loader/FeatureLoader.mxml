@@ -7,7 +7,7 @@
 				 loading="loadingHandler(event)"
 				 ready="readyHandler(event)" 
 				 xmlns:component="org.mxhero.console.commons.component.*"
-				 creationComplete="creationCompleteHandler(event)">
+				 creationComplete="creationCompleteHandler(event)" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -64,7 +64,7 @@
 					source="{this}" 
 					excludeFrom="loaded" 
 					labelPlacement="center"/>
-	<component:ReflectionManager id="reflectionManager" 
+	<component1:ReflectionManager id="reflectionManager" 
 								 target="{progress}" 
 								 falloff="0.65" 
 								 blurAmount="0.15" 
