@@ -8,7 +8,7 @@
 			   title.new="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.ADD_NEW_GROUP_LABEL)}" 
 			   title.edit="{group.name}"
 			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
-			   xmlns:parsley="http://www.spicefactory.org/parsley">
+			   xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -93,7 +93,7 @@
 			</mx:FormItem>
 		</s:HGroup>
 		<mx:Spacer height="10"/>
-		<component:LabelExpanded width="100%" explainText="(more)" hideText="(less)" labelText="Selecte members for this group" expandedText="Select with emails that doesn't have an account and drag them to the grid on the right. To select multiple accounts just click on them while you keep the control button on your keyboard pressed"/>
+		<component1:LabelExpanded width="100%" explainText="(more)" hideText="(less)" labelText="Selecte members for this group" expandedText="Select with emails that doesn't have an account and drag them to the grid on the right. To select multiple accounts just click on them while you keep the control button on your keyboard pressed"/>
 		<s:HGroup>
 			<s:VGroup>
 				<s:Label 

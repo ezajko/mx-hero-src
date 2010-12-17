@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
-		 xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:component="org.mxhero.console.commons.component.*"
+		 xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*"
 		 >
 	
 	<fx:Metadata>
@@ -134,6 +134,6 @@
 				</s:Group>
 			</mx:Form>
 		</s:Panel>
-	<component:ReflectionManager id="reflectionManager" target="{loginPanel}" falloff="0.65" blurAmount="0.15"/>
+	<component1:ReflectionManager id="reflectionManager" target="{loginPanel}" falloff="0.65" blurAmount="0.15"/>
 
 </s:Group>

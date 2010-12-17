@@ -9,7 +9,7 @@
 		 enabled="{!model.isLoading}"
 		 creationComplete="titlewindow1_creationCompleteHandler(event)"
 		 title.new="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.ADD_NEW_DOMAIN_LABEL)}"
-		 title.edit="{this.domainTi.text}">
+		 title.edit="{this.domainTi.text}" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -143,7 +143,7 @@
 	<s:HGroup paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20" gap="20">
 		<mx:Form paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" >
 			<s:VGroup width="100%">
-				<component:LabelExpanded width="100%" 
+				<component1:LabelExpanded width="100%" 
 										 labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_LABEL)}"
 										 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
 										 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
@@ -173,7 +173,7 @@
 		
 		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
 			<s:VGroup height="100%">
-				<component:LabelExpanded labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_LABEL)}" 
+				<component1:LabelExpanded labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_LABEL)}" 
 										 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 										 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 										 expandedText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}" 

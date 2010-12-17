@@ -12,7 +12,7 @@
 				   hideEffect="{hideEffect}"
 				   preinitialize="{this.visible=false}" 
 				   xmlns:component="org.mxhero.console.frontend.presentation.component.*" 
-				   xmlns:component1="org.mxhero.console.commons.component.*">
+				   xmlns:component1="org.mxhero.console.commons.component.*" xmlns:component2="org.mxhero.console.commons.feature.component.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -111,7 +111,7 @@
 				styleName="errorPanel" 
 				editable="false"
 				valueCommit="errorText_valueCommitHandler(event)"/>
-	<component1:GlowButton id="closeImage" 
+	<component2:GlowButton id="closeImage" 
 						   source="{ImageResources.CHECK_ICON}"  
 						   click="{model.clear()}"/>
 	

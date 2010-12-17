@@ -33,18 +33,21 @@ package org.mxhero.console.features.application.command
 			dispatcher(new ApplicationErrorMessage(fault.faultCode));
 		}
 		
-/*		public function result (result:*):void{
+		public function result (result:*):void{
 
-			if(){
-				context.accounts=(result as Page).elements;
-	
-				if(context.accounts!=null){
-					var sortByName:Sort=new Sort();
-					sortByName.fields=[new SortField("domain"), new SortField("account")];
-					context.accounts.sort=sortByName;
-					context.accounts.refresh();
-				}	
+			if(result is EmailAccount){
+				context.accounts=new ArrayCollection();
+				context.accounts.addItem(result);
+			}else {
+				context.accounts=result;
+			}		
+
+			if(context.accounts!=null){
+				var sortByName:Sort=new Sort();
+				sortByName.fields=[new SortField("domain"), new SortField("account")];
+				context.accounts.sort=sortByName;
+				context.accounts.refresh();
 			}
-		}*/
+		}
 	}
 }

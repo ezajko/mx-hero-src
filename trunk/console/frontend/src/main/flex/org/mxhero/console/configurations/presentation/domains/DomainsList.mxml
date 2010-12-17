@@ -3,7 +3,7 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
-		 xmlns:component="org.mxhero.console.commons.component.*">
+		 xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	<fx:Declarations>
 		<parsley:Configure/>
 		
@@ -156,13 +156,13 @@
 
 								]]>
 							</fx:Script>
-							<component:GlowButton maxGlow="10.0" 
+							<component1:GlowButton maxGlow="10.0" 
 												  click="{outerDocument.model.enterDomain()}"
 												  source="{ImageResources.ENTER_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_ENTER_LABEL)}"/>
-							<component:GlowButton maxGlow="10.0" 
+							<component1:GlowButton maxGlow="10.0" 
 												  click="{outerDocument.model.editDomain(outerDocument)}"
 												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
-							<component:GlowButton maxGlow="10.0" 
+							<component1:GlowButton maxGlow="10.0" 
 												  click="{outerDocument.model.removeDomain()}"
 												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
 						</mx:HBox>
