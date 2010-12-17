@@ -145,5 +145,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.mxhero.console</groupId>
+			<artifactId>commons</artifactId>
+			<version>${commons.version}</version>
+			<type>swc</type>
+		</dependency>
+
 	</dependencies>
 </project>

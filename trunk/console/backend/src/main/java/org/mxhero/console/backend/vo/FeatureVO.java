@@ -14,6 +14,8 @@ public class FeatureVO {
 	
 	private Collection<FeatureRuleVO> rules;
 
+	private String moduleUrl;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -52,6 +54,14 @@ public class FeatureVO {
 
 	public void setRules(Collection<FeatureRuleVO> rules) {
 		this.rules = rules;
+	}
+
+	public String getModuleUrl() {
+		return moduleUrl;
+	}
+
+	public void setModuleUrl(String moduleUrl) {
+		this.moduleUrl = moduleUrl;
 	}
 
 }

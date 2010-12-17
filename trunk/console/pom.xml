@@ -7,11 +7,13 @@
 	<packaging>pom</packaging>
 	<name>console</name>
 	<modules>
+		<module>commons</module>
 		<module>frontend</module>
 		<module>backend</module>
 	</modules>
 
 	<properties>
+		<commons.version>1.0.0.M1</commons.version>
 		<frontend.version>1.0.0.M1</frontend.version>
 		<backend.version>1.0.0.M1</backend.version>
 		<flex.sdk.version>4.1.0.16248</flex.sdk.version>

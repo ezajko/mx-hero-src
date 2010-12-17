@@ -38,6 +38,9 @@ public class Feature {
 	@JoinColumn(name="category_id")
 	private Category category;
 	
+	@Column(name="module_url", nullable=false, length=100)
+	private String moduleUrl;
+	
 	@OneToMany(mappedBy="feature", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private Set<FeatureRule> rules;
 
@@ -95,6 +98,14 @@ public class Feature {
 
 	public void setExplainKey(String explainKey) {
 		this.explainKey = explainKey;
+	}
+
+	public String getModuleUrl() {
+		return moduleUrl;
+	}
+
+	public void setModuleUrl(String moduleUrl) {
+		this.moduleUrl = moduleUrl;
 	}
 
 	@Override
