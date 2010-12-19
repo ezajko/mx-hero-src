@@ -9,6 +9,8 @@ public class FeatureRuleTranslator extends AbstractTranslator<FeatureRuleVO, Fea
 
 	private FeatureRuleDirectionTranslator directionTranslator = new FeatureRuleDirectionTranslator();
 	
+	private FeatureRulePropertyTranslator propertyTranslator = new FeatureRulePropertyTranslator();
+	
 	@Override
 	protected FeatureRuleVO doTranslate(FeatureRule entity) {
 		
@@ -21,6 +23,7 @@ public class FeatureRuleTranslator extends AbstractTranslator<FeatureRuleVO, Fea
 		ruleVO.setEnabled(entity.getEnabled());
 		ruleVO.setFromDirection(directionTranslator.translate(entity.getFromDirection()));
 		ruleVO.setToDirection(directionTranslator.translate(entity.getToDirection()));
+		ruleVO.setProperties(propertyTranslator.translate(entity.getProperties()));
 		
 		return ruleVO;
 	}
