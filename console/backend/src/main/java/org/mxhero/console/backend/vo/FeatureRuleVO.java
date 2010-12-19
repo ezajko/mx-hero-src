@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.vo;
 
 import java.util.Calendar;
+import java.util.Collection;
 
 public class FeatureRuleVO {
 
@@ -17,6 +18,8 @@ public class FeatureRuleVO {
 	private FeatureRuleDirectionVO fromDirection;
 	
 	private FeatureRuleDirectionVO toDirection;
+	
+	private Collection<FeatureRulePropertyVO> properties;
 	
 	public Integer getId() {
 		return id;
@@ -72,6 +75,14 @@ public class FeatureRuleVO {
 
 	public void setToDirection(FeatureRuleDirectionVO toDirection) {
 		this.toDirection = toDirection;
+	}
+
+	public Collection<FeatureRulePropertyVO> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Collection<FeatureRulePropertyVO> properties) {
+		this.properties = properties;
 	}
 
 }

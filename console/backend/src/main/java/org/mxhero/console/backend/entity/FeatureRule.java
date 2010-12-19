@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.entity;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -50,6 +52,9 @@ public class FeatureRule {
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	@JoinColumn(name="to_direction_id")
 	private FeatureRuleDirection toDirection;
+	
+	@OneToMany(mappedBy="rule", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+	private Set<FeatureRuleProperty> properties;
 	
 	public Integer getId() {
 		return id;
@@ -121,6 +126,14 @@ public class FeatureRule {
 
 	public void setToDirection(FeatureRuleDirection toDirection) {
 		this.toDirection = toDirection;
+	}
+	
+	public Set<FeatureRuleProperty> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Set<FeatureRuleProperty> properties) {
+		this.properties = properties;
 	}
 
 	@Override
