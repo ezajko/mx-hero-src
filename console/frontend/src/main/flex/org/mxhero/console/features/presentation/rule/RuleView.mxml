@@ -26,6 +26,7 @@
 			protected function cancelBtt_clickHandler(event:MouseEvent):void
 			{
 				model.cancel();
+				saveBtt.errorString="";
 			}
 
 
@@ -40,6 +41,7 @@
 					return;
 				}
 				model.rule.properties=featureLoader.featureModule.getProperties();
+				saveBtt.errorString="";
 				model.save();
 			}
 
@@ -67,7 +69,7 @@
 						<s:Label 
 							fontWeight="bold"
 							text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL)}"/>
-						<s:TextInput id="labelTi" text="@{model.rule.name}" width="360"/>
+						<s:TextInput id="labelTi" text="@{model.rule.name}" width="500"/>
 					</s:HGroup>
 					<component1:LabelExpanded width="100%"
 											 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
