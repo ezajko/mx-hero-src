@@ -50,6 +50,7 @@
 			import mx.resources.ResourceBundle;
 			import mx.resources.ResourceManager;
 			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
@@ -89,6 +90,7 @@
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureVO",Feature);
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleVO",FeatureRule);
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleDirectionVO",FeatureRuleDirection);
+				registerClassAlias("org.mxhero.console.backend.vo.FeatureRulePropertyVO",FeatureRuleProperty);
 			}
 			
 			[Inject]

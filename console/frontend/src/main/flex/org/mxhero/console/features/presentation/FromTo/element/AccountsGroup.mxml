@@ -76,7 +76,7 @@
 				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_GROUP_TOOLTIP)}" 
 				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				 click="item_clickHandler(event)"
-				 width="100"/>
+				 width="120"/>
 	<s:BorderContainer id="dropDownList" 
 					   excludeFrom="inactive"
 					   backgroundColor="#7c7b7b"  
@@ -87,7 +87,7 @@
 					   buttonMode="true"
 					   borderColor="#cccccc" 
 					   cornerRadius="4"
-					   minWidth="220"
+					   minWidth="240"
 					   height="100%">
 		<s:VGroup height="100%" width="100%" 
 				  horizontalAlign="center" 

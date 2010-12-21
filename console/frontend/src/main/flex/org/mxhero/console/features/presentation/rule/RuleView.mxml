@@ -31,12 +31,16 @@
 
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
-				if(fromTo.isValid()){
-					saveBtt.errorString="";
-					model.save();
-				} else {
+				if(!fromTo.isValid()){
 					saveBtt.errorString=fromTo.errorMessage;
+					return;
 				}
+				if(!featureLoader.featureModule.isValid()){
+					saveBtt.errorString=featureLoader.featureModule.getValidationError();
+					return;
+				}
+				model.rule.properties=featureLoader.featureModule.getProperties();
+				model.save();
 			}
 
 		]]>
@@ -48,7 +52,7 @@
 							  paddingBottom="20" paddingTop="10"/>
 		</s:layout>
 		
-		<s:VGroup width="800" gap="20">
+		<s:VGroup gap="20">
 			<component:TitleExpanded width="100%"
 									 title="{model.feature.realLabel}"
 									 description="{model.feature.description}"
@@ -81,7 +85,8 @@
 				
 				<FromTo:FromTo id="fromTo"/>
 				
-				<loader:FeatureLoader url="{model.feature.moduleUrl}" 
+				<loader:FeatureLoader id="featureLoader" 
+									  url="{model.feature.moduleUrl}" 
 									  width="100%"/>
 				
 				<mx:Spacer height="100%"/>
