@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.service.jpa;
 
 import java.util.Calendar;
+import java.util.HashSet;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.FeatureDao;
@@ -9,8 +10,10 @@ import org.mxhero.console.backend.entity.Domain;
 import org.mxhero.console.backend.entity.Feature;
 import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.entity.FeatureRuleDirection;
+import org.mxhero.console.backend.entity.FeatureRuleProperty;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.RuleService;
+import org.mxhero.console.backend.vo.FeatureRulePropertyVO;
 import org.mxhero.console.backend.vo.FeatureRuleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -76,6 +79,16 @@ public class JpaRuleService implements RuleService{
 		rule.setFromDirection(fromDirection);
 		rule.setToDirection(toDirection);
 		
+		rule.setProperties(new HashSet<FeatureRuleProperty>());
+		
+		for(FeatureRulePropertyVO propertyVO : ruleVO.getProperties()){
+			FeatureRuleProperty property = new FeatureRuleProperty();
+			property.setPropertyKey(propertyVO.getPropertyKey());
+			property.setPropertyValue(propertyVO.getPropertyValue());
+			property.setRule(rule);
+			rule.getProperties().add(property);
+		}
+
 		feature.getRules().add(rule);
 		featureDao.save(feature);
 	}
@@ -123,6 +136,16 @@ public class JpaRuleService implements RuleService{
 		rule.setFromDirection(fromDirection);
 		rule.setToDirection(toDirection);
 		
+		rule.setProperties(new HashSet<FeatureRuleProperty>());
+		
+		for(FeatureRulePropertyVO propertyVO : ruleVO.getProperties()){
+			FeatureRuleProperty property = new FeatureRuleProperty();
+			property.setPropertyKey(propertyVO.getPropertyKey());
+			property.setPropertyValue(propertyVO.getPropertyValue());
+			property.setRule(rule);
+			rule.getProperties().add(property);
+		}
+		
 		feature.getRules().add(rule);
 		featureDao.save(feature);
 	}
@@ -154,6 +177,15 @@ public class JpaRuleService implements RuleService{
 			rule.getToDirection().setValueId(null);
 		}
 		
+		rule.setProperties(new HashSet<FeatureRuleProperty>());
+		
+		for(FeatureRulePropertyVO propertyVO : ruleVO.getProperties()){
+			FeatureRuleProperty property = new FeatureRuleProperty();
+			property.setPropertyKey(propertyVO.getPropertyKey());
+			property.setPropertyValue(propertyVO.getPropertyValue());
+			property.setRule(rule);
+			rule.getProperties().add(property);
+		}
 		
 		dao.save(rule);
 	}
