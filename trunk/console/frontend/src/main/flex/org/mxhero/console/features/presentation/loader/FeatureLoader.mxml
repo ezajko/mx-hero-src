@@ -7,15 +7,23 @@
 				 loading="loadingHandler(event)"
 				 ready="readyHandler(event)" 
 				 xmlns:component="org.mxhero.console.commons.component.*"
-				 creationComplete="creationCompleteHandler(event)" xmlns:component1="org.mxhero.console.commons.feature.component.*">
+				 creationComplete="creationCompleteHandler(event)" xmlns:component1="org.mxhero.console.commons.feature.component.*" xmlns:parsley="http://www.spicefactory.org/parsley">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 			import mx.events.ModuleEvent;
 			
+			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.features.presentation.rule.RuleViewPM;
 
+			[Bindable]
+			public var featureModule:IFeature;
+			
+			[Inject]
+			[Bindable]
+			public var model:RuleViewPM;
+			
 			protected function errorHandler(event:ModuleEvent):void
 			{
 				progress.label=resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.FEATURE_MODULE_ERROR);
@@ -30,13 +38,15 @@
 			protected function loadingHandler(event:Event):void
 			{
 				currentState="loading";
+				this.featureModule=null;
 			}
 
 			protected function readyHandler(event:ModuleEvent):void
 			{
+				this.featureModule= this.child as IFeature;
 				currentState="loaded";
+				this.featureModule.setProperties(model.rule.properties);
 			}
-
 
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
@@ -50,8 +60,9 @@
 			
 		]]>
 	</fx:Script>
+	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<parsley:Configure/>
 	</fx:Declarations>
 	
 	<mx:states>

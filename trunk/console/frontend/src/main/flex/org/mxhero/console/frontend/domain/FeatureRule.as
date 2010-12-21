@@ -1,5 +1,9 @@
 package org.mxhero.console.frontend.domain
 {
+	import mx.collections.ArrayCollection;
+	
+	import org.mxhero.console.commons.feature.FeatureRuleProperty;
+
 	[Bindable]
 	[RemoteClass(alias="org.mxhero.console.backend.vo.FeatureRuleVO")]
 	public class FeatureRule
@@ -11,6 +15,7 @@ package org.mxhero.console.frontend.domain
 		public var enabled:Boolean;
 		public var fromDirection:FeatureRuleDirection;
 		public var toDirection:FeatureRuleDirection;
+		public var properties:ArrayCollection;
 		
 		public function clone():FeatureRule{
 			var newRule:FeatureRule = new FeatureRule();
@@ -28,6 +33,12 @@ package org.mxhero.console.frontend.domain
 				newRule.toDirection = this.toDirection.clone();
 			} else {
 				newRule.toDirection = new FeatureRuleDirection();
+			}
+			newRule.properties = new ArrayCollection();
+			if(this.properties!=null){
+				for each(var property:Object in this.properties){
+					newRule.properties.addItem((property as FeatureRuleProperty).clone());
+				}
 			}
 			return newRule;
 		}
