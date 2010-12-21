@@ -8,8 +8,10 @@ package org.mxhero.console.commons.feature
 	{
 		function isValid():Boolean;
 		
-		function setData(data:ArrayCollection):void;
+		function setProperties(data:ArrayCollection):void;
 		
-		function getData():ArrayCollection;
+		function getProperties():ArrayCollection;
+		
+		function getValidationError():String;
 	}
 }
