@@ -48,19 +48,19 @@
 		<modules:ModuleData 
 			id="configurations" 
 			name="configurations" 
-			path="org\mxhero\console\configurations\Configurations.swf"
+			path="org/mxhero/console/configurations/Configurations.swf"
 			ico="{ImageResources.CONFIGURATIONS_ICO}"/>
 		
 		<modules:ModuleData 
 			id="features" 
 			name="features" 
-			path="org\mxhero\console\features\Features.swf"
+			path="org/mxhero/console/features/Features.swf"
 			ico="{ImageResources.POLICIES_ICO}"/>
 		
 		<modules:ModuleData 
 			id="reports" 
 			name="reports" 
-			path="org\mxhero\console\reports\Reports.swf"
+			path="org/mxhero/console/reports/Reports.swf"
 			ico="{ImageResources.REPORTS_ICO}"/>
 		
 		<infrastructure:LanguageSettings defaultLocal="en_US"/>
@@ -75,7 +75,7 @@
 		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<s:AMFChannel uri="http://localhost:8080/mxhero/messagebroker/flex-amf"/>
+				<s:AMFChannel uri="http://10.30.2.240:8086/mxhero/messagebroker/flex-amf"/>
 			</s:channels>
 		</s:ChannelSet>
 
