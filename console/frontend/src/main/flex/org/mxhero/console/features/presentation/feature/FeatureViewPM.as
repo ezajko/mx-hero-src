@@ -144,6 +144,7 @@ package org.mxhero.console.features.presentation.feature
 			ruleModel.rule = new FeatureRule();
 			ruleModel.rule.fromDirection = new FeatureRuleDirection();
 			ruleModel.rule.toDirection = new FeatureRuleDirection();
+			ruleModel.rule.enabled=true;
 			ruleModel.feature = this.selectedFeature;
 			ruleModel.category = this.selectedCategory;
 			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
