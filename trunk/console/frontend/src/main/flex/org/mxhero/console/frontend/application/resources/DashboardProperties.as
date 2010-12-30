@@ -14,6 +14,8 @@ package org.mxhero.console.frontend.application.resources
 		
 		public static const LOGOUT_TOOLTIP:String="logout.tooltip";
 		
+		public static const LOGOUT_DOMAIN_TOOLTIP:String="logout.domain.tooltip";
+		
 		public static const DOMAIN_LEAVE_MESSAGE:String="domain.leave.message";
 
 	}

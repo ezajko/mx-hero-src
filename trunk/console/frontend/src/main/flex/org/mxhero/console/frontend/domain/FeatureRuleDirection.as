@@ -8,6 +8,7 @@ package org.mxhero.console.frontend.domain
 		public static const GROUP:String="group";
 		public static const INDIVIDUAL:String="individual";
 		public static const ANYONE:String="anyone";
+		public static const ANYONEELSE:String="anyoneelse";
 		public static const ALLDOMAINS:String="alldomains";
 		
 		public var id:Number;

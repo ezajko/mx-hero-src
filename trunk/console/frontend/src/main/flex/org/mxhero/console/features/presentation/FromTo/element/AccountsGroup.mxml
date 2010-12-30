@@ -72,7 +72,7 @@
 		]]>
 	</fx:Script>
 	
-	<element:Item text="Group" 
+	<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.GROUP_LABEL)}" 
 				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_GROUP_TOOLTIP)}" 
 				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				 click="item_clickHandler(event)"

@@ -98,22 +98,42 @@
 		<s:layout>
 			<s:VerticalLayout gap="5"/>
 		</s:layout>
-		<s:VGroup width="100%" paddingTop="10" horizontalAlign="left">
-			<mx:LinkButton id="newAccountLink"
-						   textAlign="left"
-						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}" 
-						   icon="{ImageResources.ADD_ICO}"
-						   click="newAccountLink_clickHandler(event)"
-						   styleName="action"
-						   width="100%"/>
+		<s:VGroup width="100%" paddingTop="10" 
+				  horizontalAlign="left" 
+				  paddingLeft="4" 
+				  paddingRight="4">
+			<s:BorderContainer
+					minHeight="0"
+					minWidth="0"
+					styleName="action"
+					width="100%">
+				<s:layout>
+					<s:VerticalLayout paddingBottom="2" paddingTop="2"/>
+				</s:layout>
+				<mx:LinkButton id="newAccountLink"
+							   textAlign="left"
+							   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}" 
+							   icon="{ImageResources.ADD_ICO}"
+							   click="newAccountLink_clickHandler(event)"
+							   styleName="action"
+							   width="100%"/>
+			</s:BorderContainer>
+			<s:BorderContainer
+				minHeight="0"
+				minWidth="0"
+				styleName="action"
+				width="100%">
+				<s:layout>
+					<s:VerticalLayout paddingBottom="2" paddingTop="2"/>
+				</s:layout>
 			<mx:LinkButton id="uploadAccounstLink"
 						   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_EMAILS_LABEL)}" 
 						   icon="{ImageResources.UPLOAD_ICO}"
 						   styleName="action"
 						   click="uploadAccounstLink_clickHandler(event)"
 						   width="100%"/>
+			</s:BorderContainer>
 		</s:VGroup>
-		<mx:HRule height="1" width="100%"/>
 		<mx:Form defaultButton="{filterBtt}" paddingTop="0" width="100%">
 			<mx:FormHeading
 				label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_TITLE)}"/>

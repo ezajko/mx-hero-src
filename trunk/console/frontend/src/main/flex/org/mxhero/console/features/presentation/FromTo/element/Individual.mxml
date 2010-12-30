@@ -124,7 +124,6 @@
 							 enableItemSelectionCheck.restricted="true"
 							 enableLabelClickChangeStatus="true"
 							 enableEnterKeyChangeStatus="true"
-							 enableProviderFilter="true"
 							 labelFunction="{accountLabelFunction}"
 							 validator="{emailValidator}"
 							 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_INDIVIDUAL_NOT_VALID)}"
