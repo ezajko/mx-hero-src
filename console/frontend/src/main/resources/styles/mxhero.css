@@ -216,6 +216,17 @@ mx|LinkButton.action
 	font-size:16;
 }
 
+s|BorderContainer.action{
+	backgroundColor:#333333;
+	borderVisible:true;
+	dropShadowVisible:true;
+	borderStyle:solid;
+	buttonMode:true;
+	borderColor:#cccccc;
+	cornerRadius:4;
+}
+
+
 mx|LinkBar.Dashboard
 {
 	borderVisible: false;

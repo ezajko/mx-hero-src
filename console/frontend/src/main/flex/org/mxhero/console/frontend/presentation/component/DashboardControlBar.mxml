@@ -98,9 +98,17 @@
 			 fontWeight="bold"/>
 	<s:Label text="{applicationContext.applicationUser.userName}"/>
 	<mx:Spacer width="5"/>
-	<component2:GlowButton source="{ImageResources.LOGOUT_ICON}" 
-						   glowColor="#ff0000" 
-						   maxGlow="15.0" 
-						   click="{model.logout()}" 
-						   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_TOOLTIP)}"/>
+	<s:Group>
+		<component2:GlowButton source="{ImageResources.LOGOUT_ICON}" 
+							   glowColor="#ff0000" 
+							   maxGlow="15.0" 
+							   click="{model.logout()}" 
+							   visible="{!model.hasToShowDomain(applicationContext.selectedDomain)}"
+							   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_TOOLTIP)}"/>
+		<component2:GlowButton source="{ImageResources.BACK_TO_ADMIN}" 
+							   maxGlow="15.0" 
+							   click="{model.logout()}" 
+							   visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"
+							   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_DOMAIN_TOOLTIP)}"/>
+	</s:Group>
 </s:BorderContainer>

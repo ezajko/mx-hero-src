@@ -61,5 +61,10 @@ package org.mxhero.console.commons.resources
 		[Embed(source="/images/trashcan.png")] 
 		[Bindable]
 		public static var TRASHCAN:Class; 	
+		
+		[Embed(source="/images/back_to_admin.png")] 
+		[Bindable]
+		public static var BACK_TO_ADMIN:Class; 	
+		
 	}
 }

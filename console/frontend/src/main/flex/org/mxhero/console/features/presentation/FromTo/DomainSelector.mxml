@@ -246,7 +246,8 @@
 	</s:states>
 	
 	<element:Anyone id="anyoneFT" 
-					click="clickHandler('anyone')" 
+					parentStateFunction="{clickHandler}"
+					childState="anyone"
 					excludeFrom="domain,group,individual" 
 					currentState.anyone="active"
 					enabled="{!isRestricted}"/>

@@ -40,8 +40,6 @@
 
 			public var enableEnterKeyChangeStatus:Boolean=false;
 			
-			public var enableProviderFilter:Boolean=false;
-			
 			[Bindable]
 			public var selectedItem:Object;
 			
@@ -128,29 +126,11 @@
 
 			protected function comboBox_keyUpHandler(event:KeyboardEvent):void
 			{
-				if(enableProviderFilter){
-					if((!CharacterUtil.isWhitespace(event.charCode) && event.charCode!=0x0000)|| event.charCode==0x0020){
-						dataProvider.refresh();
-					}				
-				}
 				if(enableEnterKeyChangeStatus){
 					if(event.charCode==0x000D){
 						switchState();
 					}
 				}
-			}
-			
-			public function clearFilter(item:Object):Boolean{
-				return true;
-			}
-			
-			public function filterComboBox(item:Object):Boolean{
-				
-				if(comboBox==null || comboBox.textInput==null || comboBox.textInput.text==null || comboBox.textInput.text.length<1){
-					return true;
-				}
-				return ObjectUtil.stringCompare(privateLabelFunction(item).substring(0,comboBox.textInput.selectionAnchorPosition),
-										comboBox.textInput.text.substring(0,comboBox.textInput.selectionAnchorPosition))==0;
 			}
 
 			protected function label_clickHandler(event:MouseEvent):void
@@ -172,7 +152,9 @@
 					this.selectedItem=comboBox.selectedItem;
 					comboBox.errorString="";
 				}
-				this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+				if(comboBox.selectedItem!=null){
+					this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+				}	
 				this.switchState();
 			}
 			
@@ -190,7 +172,9 @@
 					this.selectedItem=comboBox.selectedItem;
 					comboBox.errorString="";
 				}
-				this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+				if(comboBox.selectedItem!=null){
+					this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+				}
 			}
 
 			[Bindable]
@@ -225,9 +209,9 @@
 			{
 				if(value!=null){
 					_dataProvider = new ArrayCollection(value.source);
-					_dataProvider.filterFunction=filterComboBox;
 					_dataProvider.sort=value.sort;
 					_dataProvider.refresh();
+					_dataProvider.sort=null;
 				} else {
 					_dataProvider=new ArrayCollection();
 				}
@@ -236,11 +220,6 @@
 			protected function currentStateChangeHandler(event:StateChangeEvent):void
 			{
 				if(event.newState=='edit'){
-					if(_dataProvider!=null){
-						_dataProvider.filterFunction=clearFilter;
-						_dataProvider.refresh();
-						_dataProvider.filterFunction=filterComboBox;						
-					}
 					comboBox.textInput.setFocus();
 				}
 			}
@@ -320,7 +299,7 @@
 					keyUp.edit="comboBox_keyUpHandler(event)"
 					change="comboBox_changeHandler(event)"
 					width="{this.width}"
-					requireSelection="true"
+					requireSelection="false"
 					labelField="{this.labelField}"
 					valueCommit="comboBox_valueCommitHandler(event)"
 					creationComplete="comboBox_creationCompleteHandler(event)"/>				

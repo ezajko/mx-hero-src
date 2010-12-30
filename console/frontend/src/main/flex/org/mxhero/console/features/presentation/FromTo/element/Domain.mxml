@@ -81,7 +81,7 @@
 		]]>
 	</fx:Script>
 	
-	<element:Item text="Domain" 
+	<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.DOMAIN_LABEL)}" 
 				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_DOMAIN_TOOLTIP)}" 
 				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				 click="item_clickHandler(event)"
@@ -111,7 +111,6 @@
 							 enableItemSelectionCheck.restricted="true" 
 							 enableLabelClickChangeStatus="true"
 							 enableEnterKeyChangeStatus="true"
-							 enableProviderFilter="true"
 							 validator="{requiredValidator}"
 							 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 							 width="100%"
