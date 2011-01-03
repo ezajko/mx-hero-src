@@ -96,7 +96,7 @@
 					   contentBackgroundColor="#7C7B7B" 
 					   backgroundColor="#696969">
 		<s:layout>
-			<s:VerticalLayout gap="5"/>
+			<s:VerticalLayout gap="20"/>
 		</s:layout>
 		<s:VGroup width="100%" paddingTop="10" 
 				  horizontalAlign="left" 

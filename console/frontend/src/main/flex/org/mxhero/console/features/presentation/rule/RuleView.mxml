@@ -93,14 +93,14 @@
 				
 				<mx:Spacer height="100%"/>
 				<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="20">
-					<s:Button id="cancelBtt" 
-							  click="cancelBtt_clickHandler(event)"
-							  buttonMode="true"
-							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
 					<s:Button id="saveBtt" 
 							  click="saveBtt_clickHandler(event)"
 							  buttonMode="true"
 							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}"/>		
+					<s:Button id="cancelBtt" 
+							  click="cancelBtt_clickHandler(event)"
+							  buttonMode="true"
+							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
 				</s:HGroup>		
 			</s:VGroup>	
 		</s:VGroup>

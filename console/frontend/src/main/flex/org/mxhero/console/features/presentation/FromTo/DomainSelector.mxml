@@ -91,9 +91,15 @@
 				dispatchEvent(new Event("stateChanged"));
 				chechRestriction();
 				if(currentState=="anyone"){
-					direction.directionType=FeatureRuleDirection.ANYONE;
-					direction.freeValue=FeatureRuleDirection.ANYONE;
-					direction.valueId=-1;
+					if(anyoneFT.isSelected){
+						direction.directionType=FeatureRuleDirection.ANYONEELSE;
+						direction.freeValue=FeatureRuleDirection.ANYONEELSE;
+						direction.valueId=-1;
+					} else {
+						direction.directionType=FeatureRuleDirection.ANYONE;
+						direction.freeValue=FeatureRuleDirection.ANYONE;
+						direction.valueId=-1;
+					}
 				} else if (currentState=="domain" &&
 					domainFT.ipeComboBox != null &&
 					domainFT.ipeComboBox.currentState=="show"){
@@ -150,6 +156,10 @@
 				
 				if(direction.directionType==FeatureRuleDirection.ANYONE){
 					currentState="anyone";
+					anyoneFT.isSelected=false;
+				} else if(direction.directionType==FeatureRuleDirection.ANYONEELSE){
+					currentState="anyone";
+					anyoneFT.isSelected=true;
 				} else if(direction.directionType==FeatureRuleDirection.DOMAIN && 
 					domainFT !=null){
 					if(!isNaN(direction.valueId) && direction.valueId>-1){
@@ -250,7 +260,9 @@
 					childState="anyone"
 					excludeFrom="domain,group,individual" 
 					currentState.anyone="active"
+					notifyChange="{notifyChange}"
 					enabled="{!isRestricted}"/>
+	
 	<element:Domain id="domainFT" 
 					parentStateFunction="{clickHandler}"
 					childState="domain"
