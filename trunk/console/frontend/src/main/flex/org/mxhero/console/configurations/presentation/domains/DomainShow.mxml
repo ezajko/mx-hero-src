@@ -211,11 +211,11 @@
 	</s:HGroup>
 	
 	<s:HGroup horizontalAlign="right" width="100%" paddingLeft="20" paddingRight="20" paddingBottom="20" >
-		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
-				  click="cancelBtt_clickHandler(event)" 
-				  buttonMode="true"/>
 		<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
 				  click="saveBtt_clickHandler(event)"
+				  buttonMode="true"/>
+		<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
+				  click="cancelBtt_clickHandler(event)" 
 				  buttonMode="true"/>
 	</s:HGroup>
 	

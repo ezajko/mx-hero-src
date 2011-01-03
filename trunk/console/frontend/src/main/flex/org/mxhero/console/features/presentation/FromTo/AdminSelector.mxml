@@ -160,7 +160,6 @@
 						}
 					}
 					domainFT.ipeComboBox.selectedLabel=direction.freeValue;
-					domainFT.ipeComboBox.comboBox.textInput.text==direction.freeValue;
 					domainFT.ipeComboBox.currentState="show";
 					currentState="domain";
 				} else if(direction.directionType==FeatureRuleDirection.INDIVIDUAL && 
@@ -175,7 +174,6 @@
 						}
 					} 
 					individualFT.ipeComboBox.selectedLabel=direction.freeValue;		
-					individualFT.ipeComboBox.comboBox.textInput.text==direction.freeValue;
 					individualFT.ipeComboBox.currentState="show";
 					currentState="individual";
 				} else if(direction.directionType==FeatureRuleDirection.ALLDOMAINS){
