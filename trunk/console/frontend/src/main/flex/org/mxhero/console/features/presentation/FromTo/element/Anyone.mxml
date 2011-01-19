@@ -72,9 +72,9 @@
 			<s:CheckBox 
 						id="anyoneelse"
 						selected="@{isSelected}"
-						label="Except between domain's accounts"
+						label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_LABEL)}"
 						valueCommit="anyoneelse_valueCommitHandler(event)"
-						toolTip="Accounts from the same domain will be excluded from this rule"/>
+						toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_TOOLTIP)}"/>
 		</s:VGroup>
 	</s:BorderContainer>
 </s:HGroup>

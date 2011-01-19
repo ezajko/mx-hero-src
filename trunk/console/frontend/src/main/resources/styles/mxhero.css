@@ -92,7 +92,8 @@ mx|LinkButton.titleexpanded_back
 	padding-right:0;
 	padding-left:0;
 	text-selected-color:#FFFFFF;
-	text-roll-over-color:#FFFFFF;	
+	text-roll-over-color:#FFFFFF;
+	text-decoration:underline;
 }
 
 s|Label.titleexpanded_title
@@ -151,6 +152,17 @@ s|Label.categorylist_child
 	text-align:"left";
 	padding-bottom:4;
 	padding-top:4;
+}
+
+s|Label.domainList
+{
+	font-size:14;
+	font-weight:"bold";
+	text-align:"left";
+	padding-bottom:4;
+	padding-top:4;
+	padding-left:4;
+	text-decoration:underline;
 }
 
 mx|Label.categorylist_category

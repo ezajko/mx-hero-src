@@ -48,5 +48,23 @@ package org.mxhero.console.features.application.resources
 		
 		public static const FEATURE_MODULE_ERROR:String="feature.module.error";
 		
+		public static const ADMIN_RULE_RUN_BEFORE:String="admin.rule.run.before";
+			
+		public static const ADMIN_RULE_RUN_AFTER:String="admin.rule.run.after";
+		
+		public static const ANYONE_CHECKBOX_LABEL:String="anyone.checkbox.label";
+		
+		public static const ANYONE_CHECKBOX_TOOLTIP:String="anyone.checkbox.tooltip";
+		
+		public static const CANCEL_CHANGES_TEXT:String="cancel.changes.text";
+		
+		public static const FROM_LABEL:String="from.label";
+		
+		public static const TO_LABEL:String="to.label";
+		
+		public static const ERROR_FROM_TO_BOTH:String="error.from.to.both";
+		
+		public static const ERROR_FROM_TO_MANAGED:String="error.from.to.managed";
+		
 	}
 }

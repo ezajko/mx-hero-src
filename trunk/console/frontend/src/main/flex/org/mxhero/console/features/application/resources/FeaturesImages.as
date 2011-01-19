@@ -13,5 +13,9 @@ package org.mxhero.console.features.application.resources
 		[Embed(source="/images/features/restricted.png")] 
 		[Bindable]
 		public static var RESTRICTED:Class; 
+		
+		[Embed(source="/images/features/cancel.png")] 
+		[Bindable]
+		public static var CANCEL:Class; 
 	}
 }
