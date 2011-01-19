@@ -13,5 +13,13 @@ package org.mxhero.console.commons.feature
 		function getProperties():ArrayCollection;
 		
 		function getValidationError():String;
+		
+		function fixedTo():Boolean;
+		
+		function fixedFrom():Boolean;
+		
+		function fixedToValue():String;
+		
+		function fixedFromValue():String;
 	}
 }
