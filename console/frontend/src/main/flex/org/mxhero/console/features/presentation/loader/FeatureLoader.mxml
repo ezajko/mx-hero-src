@@ -7,7 +7,9 @@
 				 loading="loadingHandler(event)"
 				 ready="readyHandler(event)" 
 				 xmlns:component="org.mxhero.console.commons.component.*"
-				 creationComplete="creationCompleteHandler(event)" xmlns:component1="org.mxhero.console.commons.feature.component.*" xmlns:parsley="http://www.spicefactory.org/parsley">
+				 creationComplete="creationCompleteHandler(event)" 
+				 xmlns:component1="org.mxhero.console.commons.feature.component.*" 
+				 xmlns:parsley="http://www.spicefactory.org/parsley">
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -47,6 +49,7 @@
 				this.featureModule= this.child as IFeature;
 				currentState="loaded";
 				this.featureModule.setProperties(model.rule.properties);
+				model.refresh(false);
 			}
 
 			protected function creationCompleteHandler(event:FlexEvent):void

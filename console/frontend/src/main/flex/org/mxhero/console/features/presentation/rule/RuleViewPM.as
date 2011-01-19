@@ -120,11 +120,11 @@ package org.mxhero.console.features.presentation.rule
 			isUpdating=false;
 		}
 
-		public function refresh():void{
+		public function refresh(doExternal:Boolean=true):void{
 			if(refreshFunction!=null){
 				refreshFunction();
 			}
-			if(realoadExternal!=null){
+			if(realoadExternal!=null && doExternal){
 				realoadExternal();
 			}
 		}
