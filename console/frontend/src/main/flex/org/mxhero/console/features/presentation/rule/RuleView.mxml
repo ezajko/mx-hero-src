@@ -29,7 +29,7 @@
 			
 			protected function topCancelBtt_clickHandler(event:MouseEvent):void
 			{
-				Alert.show(RuleViewProperties.CANCEL_CHANGES_TEXT,"",Alert.OK|Alert.CANCEL,null,cancelHandler);
+				Alert.show(resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.CANCEL_CHANGES_TEXT),"",Alert.OK|Alert.CANCEL,null,cancelHandler);
 			}
 
 			public function cancelHandler(event:CloseEvent):void{
