@@ -13,7 +13,9 @@ import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
 import org.mxhero.console.backend.entity.Domain;
 import org.mxhero.console.backend.entity.DomainAlias;
+import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.entity.FeatureRule;
+import org.mxhero.console.backend.entity.Group;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.DomainService;
 import org.mxhero.console.backend.service.FeatureService;
@@ -89,6 +91,18 @@ public class JpaDomainService implements DomainService {
 			}
 			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("domain",domain.getId())){
 				featureService.remove(rule.getId());
+			}
+			
+			for(Group group : domain.getGroups()){
+				for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("group",group.getId())){
+					featureService.remove(rule.getId());
+				}
+			}
+			
+			for(EmailAccount account : domain.getEmailAccounts()){
+				for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("individual",account.getId())){
+					featureService.remove(rule.getId());
+				}
 			}
 			
 			domain = dao.readByPrimaryKey(id);

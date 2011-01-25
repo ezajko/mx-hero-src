@@ -13,9 +13,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="features")
+@Table(name="features",
+		uniqueConstraints={@UniqueConstraint(columnNames={"component","version"})})
 public class Feature {
 
 	@Id
@@ -31,6 +33,9 @@ public class Feature {
 	@Column(name="component", nullable=false, length=100)
 	private String component;
 	
+	@Column(name="version", nullable=false)
+	private Integer version;
+	
 	@Column(name="explain_key", length=50)
 	private String explainKey;
 	
@@ -40,6 +45,12 @@ public class Feature {
 	
 	@Column(name="module_url", nullable=false, length=100)
 	private String moduleUrl;
+	
+	@Column(name="module_report_url", nullable=false, length=100)
+	private String moduleReportUrl;
+	
+	@Column(name="base_priority", nullable=false)
+	private Long basePpriority;
 	
 	@OneToMany(mappedBy="feature", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private Set<FeatureRule> rules;
@@ -106,6 +117,30 @@ public class Feature {
 
 	public void setModuleUrl(String moduleUrl) {
 		this.moduleUrl = moduleUrl;
+	}
+	
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
+
+	public Long getBasePpriority() {
+		return basePpriority;
+	}
+
+	public void setBasePpriority(Long basePpriority) {
+		this.basePpriority = basePpriority;
+	}
+
+	public String getModuleReportUrl() {
+		return moduleReportUrl;
+	}
+
+	public void setModuleReportUrl(String moduleReportUrl) {
+		this.moduleReportUrl = moduleReportUrl;
 	}
 
 	@Override

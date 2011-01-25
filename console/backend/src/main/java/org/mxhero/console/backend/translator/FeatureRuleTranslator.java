@@ -21,6 +21,7 @@ public class FeatureRuleTranslator extends AbstractTranslator<FeatureRuleVO, Fea
 		ruleVO.setId(entity.getId());
 		ruleVO.setName(entity.getLabel());
 		ruleVO.setEnabled(entity.getEnabled());
+		ruleVO.setAdminOrder(entity.getAdminOrder());
 		ruleVO.setFromDirection(directionTranslator.translate(entity.getFromDirection()));
 		ruleVO.setToDirection(directionTranslator.translate(entity.getToDirection()));
 		ruleVO.setProperties(propertyTranslator.translate(entity.getProperties()));

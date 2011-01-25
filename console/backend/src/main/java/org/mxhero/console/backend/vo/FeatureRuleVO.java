@@ -14,6 +14,8 @@ public class FeatureRuleVO {
 	private Calendar updated;
 	
 	private Boolean enabled;
+	
+	private String adminOrder;
 
 	private FeatureRuleDirectionVO fromDirection;
 	
@@ -59,6 +61,14 @@ public class FeatureRuleVO {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getAdminOrder() {
+		return adminOrder;
+	}
+
+	public void setAdminOrder(String adminOrder) {
+		this.adminOrder = adminOrder;
 	}
 
 	public FeatureRuleDirectionVO getFromDirection() {
