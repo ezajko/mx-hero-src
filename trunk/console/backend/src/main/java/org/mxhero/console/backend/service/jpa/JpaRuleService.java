@@ -57,6 +57,7 @@ public class JpaRuleService implements RuleService{
 		rule.setFeature(feature);
 		rule.setLabel(ruleVO.getName());
 		rule.setUpdated(Calendar.getInstance());
+		rule.setAdminOrder(ruleVO.getAdminOrder());
 		
 		FeatureRuleDirection fromDirection = new FeatureRuleDirection();
 		fromDirection.setDirectionType(ruleVO.getFromDirection().getDirectionType());
@@ -158,6 +159,7 @@ public class JpaRuleService implements RuleService{
 		}
 		rule.setUpdated(Calendar.getInstance());
 		rule.setLabel(ruleVO.getName());
+		rule.setAdminOrder(ruleVO.getAdminOrder());
 		
 		rule.getFromDirection().setFreeValue(ruleVO.getFromDirection().getFreeValue());
 		rule.getFromDirection().setDirectionType(ruleVO.getFromDirection().getDirectionType());

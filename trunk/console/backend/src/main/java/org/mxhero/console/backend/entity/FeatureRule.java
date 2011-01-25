@@ -44,6 +44,8 @@ public class FeatureRule {
 	@Column(name="enabled", nullable=false)
 	private Boolean enabled;
 
+	@Column(name="admin_order",  length=20)
+	private String adminOrder;
 	
 	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	@JoinColumn(name="from_direction_id")
@@ -134,6 +136,14 @@ public class FeatureRule {
 
 	public void setProperties(Set<FeatureRuleProperty> properties) {
 		this.properties = properties;
+	}
+
+	public String getAdminOrder() {
+		return adminOrder;
+	}
+
+	public void setAdminOrder(String adminOrder) {
+		this.adminOrder = adminOrder;
 	}
 
 	@Override

@@ -132,6 +132,7 @@ public class JpaFeatureService implements FeatureService {
 					FeatureVO featureVO = new FeatureVO();
 					featureVO.setId(feature.getId());
 					featureVO.setModuleUrl(feature.getModuleUrl());
+					featureVO.setModuleReportUrl(feature.getModuleReportUrl());
 					featureVO.setLabel(helper.getValue(feature.getComponent(),feature.getLabelKey(),userLocale,defaultLocale));
 					featureVO.setDescription(helper.getValue(feature.getComponent(),feature.getDescriptionKey(),userLocale,defaultLocale));
 					featureVO.setExplain(helper.getValue(feature.getComponent(),feature.getExplainKey(),userLocale,defaultLocale));

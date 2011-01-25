@@ -16,6 +16,8 @@ public class FeatureVO {
 
 	private String moduleUrl;
 	
+	private String moduleReportUrl;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -62,6 +64,14 @@ public class FeatureVO {
 
 	public void setModuleUrl(String moduleUrl) {
 		this.moduleUrl = moduleUrl;
+	}
+
+	public String getModuleReportUrl() {
+		return moduleReportUrl;
+	}
+
+	public void setModuleReportUrl(String moduleReportUrl) {
+		this.moduleReportUrl = moduleReportUrl;
 	}
 
 }
