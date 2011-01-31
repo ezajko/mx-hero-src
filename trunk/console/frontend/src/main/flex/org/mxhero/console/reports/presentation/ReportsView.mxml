@@ -5,9 +5,13 @@
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
 			  creationPolicy="none"
 			  width="100%"
-			  height="100%">
+			  height="100%" 
+			  xmlns:presentation="org.mxhero.console.reports.presentation.*" xmlns:reports="org.mxhero.console.reports.presentation.reports.*">
+
 	<fx:Declarations>
 		<parsley:Configure/>
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
 	</fx:Declarations>
 	
 	<fx:Metadata>
@@ -24,8 +28,63 @@
 		]]>
 	</fx:Script>
 	
-	<s:NavigatorContent automationName="{ReportsDestinations.LIST}">
-		<s:Label text="list"/>
+	<s:NavigatorContent automationName="{ReportsDestinations.LIST}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>	
+		<presentation:ReportsList width="100%" height="100%"/>
 	</s:NavigatorContent>
 	
+	<s:NavigatorContent automationName="{ReportsDestinations.CUSTOM}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>	
+		<reports:Custom width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent automationName="{ReportsDestinations.GRAPH}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>	
+		<reports:Graph width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent automationName="{ReportsDestinations.QUEUE}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>	
+		<reports:Queue width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent automationName="{ReportsDestinations.THREATS}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>	
+		<reports:Threats width="100%" height="100%"/>
+	</s:NavigatorContent>
+	
+	<s:NavigatorContent automationName="{ReportsDestinations.TRAFFIC}" 
+						width="100%" height="100%"
+						showEffect="{fadein}"
+						hideEffect="{fadeout}">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>	
+		<reports:Traffic width="100%" height="100%"/>
+	</s:NavigatorContent>
 </mx:ViewStack>

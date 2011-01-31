@@ -5,16 +5,77 @@
 		xmlns:mx="library://ns.adobe.com/flex/mx" 
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
-		xmlns:presentation="org.mxhero.console.reports.presentation.*">
+		xmlns:presentation="org.mxhero.console.reports.presentation.*" xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:reports="org.mxhero.console.reports.presentation.reports.*">
 
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.reports.application.ReportsDestinations;
 		
+			[Bindable]
+			[Embed(source="/images/reports/platform.png")]
+			public static var PLATFORM:Class;
+			
+			[Bindable]
+			[Embed(source="/images/reports/social.png")]
+			public static var SOCIAL:Class;
+			
 		]]>
 	</fx:Script>
 
 	<fx:Declarations>
 		<presentation:ReportsViewPM/>
+		<presentation:ReportsListPM/>
+		<reports:CustomPM/>
+		<reports:GraphPM/>
+		<reports:QueuePM/>
+		<reports:ThreatsPM/>
+		<reports:TrafficPM/>
+		
+		<s:ArrayCollection id="reportsCategories">
+			<domain:LCCategory key="category.platform" 
+							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
+							   resource="reports_list" 
+							   iconsrc="{PLATFORM}">
+				<domain:childs>
+					<s:ArrayCollection>
+						<domain:LCChild key="category.platform.traffic" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.platform.traffic.description" 
+										resource="reports_list"
+										navigateTo="{ReportsDestinations.TRAFFIC}"/>
+						<domain:LCChild key="category.platform.threats" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.platform.threats.description" 
+										resource="reports_list"
+										navigateTo="{ReportsDestinations.THREATS}"/>
+						<domain:LCChild key="category.platform.queue" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.platform.queue.description" 
+										resource="reports_list"
+										navigateTo="{ReportsDestinations.QUEUE}"/>
+					</s:ArrayCollection>
+				</domain:childs>
+			</domain:LCCategory>
+			<domain:LCCategory key="category.social" 
+							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
+							   resource="reports_list" 
+							   iconsrc="{SOCIAL}">
+				<domain:childs>
+					<s:ArrayCollection>
+						<domain:LCChild key="category.social.custom" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.social.custom.description" 
+										resource="reports_list"
+										navigateTo="{ReportsDestinations.CUSTOM}"/>
+<!--						<domain:LCChild key="category.social.graph" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.social.graph.description" 
+										navigateTo="{ReportsDestinations.GRAPH}"
+										resource="reports_list"/> -->
+					</s:ArrayCollection>
+				</domain:childs>
+			</domain:LCCategory>
+		</s:ArrayCollection>
 	</fx:Declarations>
 
 </fx:Object>
