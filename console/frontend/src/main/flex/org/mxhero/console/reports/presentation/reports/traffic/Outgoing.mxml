@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="100%" 
+		 xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:cloudtag="org.mxhero.components.cloudtag.*">
+	
+	<fx:Declarations>
+		<mx:SeriesZoom id="zoomOut" 
+					   duration="600"
+					   verticalFocus="top" 
+					   horizontalFocus="center"
+					   relativeTo="chart"/>
+		
+		<mx:SeriesZoom id="zoomIn" 
+					   duration="800" 
+					   verticalFocus="top" 
+					   horizontalFocus="center"
+					   relativeTo="chart"/>
+		
+		<mx:SeriesSlide id="slideIn" 
+						duration="800" 
+						direction="up"/>
+		
+		<mx:SeriesSlide id="slideOut" 
+						duration="800" 
+						direction="down"/>
+		
+		<fx:Array id="bge">
+			<mx:GridLines 
+				horizontalChangeCount="1" 
+				verticalChangeCount="1"
+				gridDirection="both"
+				>
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:verticalStroke>
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+			</mx:GridLines>
+		</fx:Array>
+		
+		<s:ArrayCollection id="tags">
+			<fx:Array>
+				<fx:Object top="1" label="google@gmail.com"/>
+				<fx:Object top="2" label="external@email.com.br"/>
+				<fx:Object top="3" label="provider@example.com"/>
+				<fx:Object top="4" label="client@example.com"/>
+				<fx:Object top="5" label="jhonsmith@jrrt.com"/>
+				<fx:Object top="6" label="frodo@client.com"/>
+				<fx:Object top="7" label="sam@brasil.com"/>
+				<fx:Object top="8" label="galabriel@america.com"/>
+				<fx:Object top="9" label="bilbo@customer.com"/>
+				<fx:Object top="10" label="feanor@tolkien.com"/>
+			</fx:Array>
+		</s:ArrayCollection>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace chartClasses "mx.charts.chartClasses.*"; 
+		
+		mx|ColumnChart.myChart {
+			fontSize:14;
+			font-weight:bold;
+			data-tip-style-name:myDataTip;
+			axisTitleStyleName:axisTitles;
+		}
+		
+		.axisTitles {
+			color:#323232;
+			fontWeight:bold;
+			fontFamily:Ubuntu;
+			fontSize:16;
+		}
+		
+		
+		.myDataTip{
+			color:#000000;
+			font-style:italic;
+			font-weight:bold;
+			border-weight:2;
+		}
+		
+	</fx:Style>
+	
+	<s:states>
+		<s:State name="zoom_out"/>
+		<s:State name="zoom_in"/>
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import at.leichtgewicht.cloud.text.DefaultTextRenderer;
+			
+			import mx.charts.events.ChartItemEvent;
+			import mx.collections.ArrayCollection;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.reports.application.resources.ReportsImages;
+			import org.mxhero.console.reports.application.resources.ReportsListProperties;
+			import org.mxhero.console.reports.application.resources.TrafficProperties;
+			
+			private var basicDate:Date = new Date(new Date().fullYear,new Date().month,new Date().date);
+			public static const millisecondsPerDay:int = 1000 * 60 * 60 * 24;
+			public static const millisecondsPerHour:int = 1000 * 60 * 60;
+			
+			[Bindable]
+			private var dataAC:ArrayCollection = new ArrayCollection( [
+				{ Qty: 34, MB:75, Date: basicDate },
+				{ Qty: 22, MB:45, Date: new Date(basicDate.getTime()-millisecondsPerDay)},
+				{ Qty: 23, MB:51, Date: new Date(basicDate.getTime()-millisecondsPerDay*2) },
+				{ Qty: 37, MB:38, Date: new Date(basicDate.getTime()-millisecondsPerDay*3) },
+				{ Qty: 48, MB:60, Date: new Date(basicDate.getTime()-millisecondsPerDay*4) },
+				{ Qty: 57, MB:75, Date: new Date(basicDate.getTime()-millisecondsPerDay*5) },
+				{ Qty: 45, MB:66, Date: new Date(basicDate.getTime()-millisecondsPerDay*6) }]);
+			
+			
+			protected function getDrillDownData(externalDay:Date):ArrayCollection{
+				var day:Date = new Date(externalDay.getTime());
+				var drillDownAC:ArrayCollection = new ArrayCollection( [
+					{ Qty: 34, MB:68, Date: new Date(day.setUTCHours(0)) },
+					{ Qty: 34, MB:56, Date: new Date(day.setUTCHours(1)) },
+					{ Qty: 22, MB:33, Date: new Date(day.setUTCHours(2)) },
+					{ Qty: 23, MB:24, Date: new Date(day.setUTCHours(3)) },
+					{ Qty: 54, MB:55, Date: new Date(day.setUTCHours(4)) },
+					{ Qty: 61, MB:40, Date: new Date(day.setUTCHours(5)) },
+					{ Qty: 54, MB:45, Date: new Date(day.setUTCHours(6)) },
+					{ Qty: 51, MB:33, Date: new Date(day.setUTCHours(7)) },
+					{ Qty: 47, MB:42, Date: new Date(day.setUTCHours(8)) },
+					{ Qty: 41, MB:41, Date: new Date(day.setUTCHours(9)) },
+					{ Qty: 38, MB:38, Date: new Date(day.setUTCHours(10)) },
+					{ Qty: 32, MB:51, Date: new Date(day.setUTCHours(11)) },
+					{ Qty: 39, MB:52, Date: new Date(day.setUTCHours(12)) },
+					{ Qty: 43, MB:45, Date: new Date(day.setUTCHours(13)) },
+					{ Qty: 46, MB:42, Date: new Date(day.setUTCHours(14)) },
+					{ Qty: 52, MB:65, Date: new Date(day.setUTCHours(15)) },
+					{ Qty: 58, MB:59, Date: new Date(day.setUTCHours(16)) },
+					{ Qty: 63, MB:85, Date: new Date(day.setUTCHours(17)) },
+					{ Qty: 67, MB:55, Date: new Date(day.setUTCHours(18)) },
+					{ Qty: 70, MB:70, Date: new Date(day.setUTCHours(19)) },
+					{ Qty: 65, MB:65, Date: new Date(day.setUTCHours(20)) },
+					{ Qty: 72, MB:35, Date: new Date(day.setUTCHours(21)) },
+					{ Qty: 78, MB:22, Date: new Date(day.setUTCHours(22)) },
+					{ Qty: 80, MB:35, Date: new Date(day.setUTCHours(23)) }]);
+				
+				return drillDownAC;
+			}
+			
+			
+			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
+			{
+				linechart.dataProvider=getDrillDownData(event.hitData.item.Date)
+				linechart.doubleClickEnabled=false;
+				cserie.buttonMode=false;
+				cserie.toolTip="";
+				currentState="zoom_in";
+			}
+			
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				linechart.dataProvider=dataAC;
+				linechart.doubleClickEnabled=true;
+				cserie.buttonMode=true;
+				cserie.toolTip="Zoom In";
+				currentState="zoom_out";
+			}
+		]]>
+	</fx:Script>
+			
+	
+	<s:HGroup width="100%" height="50%" gap="30">
+		<s:VGroup width="60%" height="100%">
+			<s:HGroup horizontalAlign="right" 
+					  width="100%"
+					  paddingRight="5"
+					  paddingBottom="5"
+					  paddingLeft="50">
+				<s:Label text="Outgoing Emails" 
+						 fontWeight="bold" fontSize="16"
+						 color="#FFFFFF"
+						 textDecoration="underline"/>
+				<mx:Spacer width="100%"/>
+				<component:GlowButton
+					includeIn="zoom_in"
+					source="{ReportsImages.ZOOM_OUT}" 
+					click="button1_clickHandler(event)"
+					toolTip="Zoom Out"/>	
+				<component:GlowButton
+					source="{ReportsImages.EXPORT}" 
+					toolTip="Export"/>	
+				<component:GlowButton
+					source="{ReportsImages.REFRESH}" 
+					click="button1_clickHandler(event)"
+					toolTip="Refresh"/>	
+			</s:HGroup>
+			
+			<mx:ColumnChart id="linechart" color="0x323232" 
+							height="300" width="100%"
+							showDataTips="true" 
+							styleName="myChart"
+							dataProvider="{dataAC}"
+							axisTitleStyleName="axisTitles"
+							doubleClickEnabled.zoom_out="true"
+							doubleClickEnabled.zoom_in="false"
+							itemDoubleClick="linechart_itemDoubleClickHandler(event)"
+							backgroundElements="{bge}">
+				
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+				
+				<mx:horizontalAxis>
+					<mx:DateTimeAxis id="dateAxis2" 
+									 dataUnits.zoom_out="days"
+									 labelUnits.zoom_out="days"
+									 dataUnits.zoom_in="hours"
+									 labelUnits.zoom_in="hours"
+									 disabledDays="{[]}"
+									 autoAdjust="true"
+									 dataInterval="1"
+									 title.zoom_out="Date"
+									 title.zoom_in="Time"
+									 displayName.zoom_out="Date"
+									 displayName.zoom_in="Time"
+									 />
+				</mx:horizontalAxis>
+				
+				
+				<mx:verticalAxisRenderers>
+					<mx:AxisRenderer labelRotation="45" 
+									 axis="{qtyAxis2}" 
+									 color="#FFFFFF" 
+									 fontSize="14"
+									 />	   
+					<mx:AxisRenderer labelRotation="45" 
+									 axis="{mbAxis2}" 
+									 color="#FFFFFF" 
+									 fontSize="14"
+									 />	   
+				</mx:verticalAxisRenderers>
+				
+				<mx:horizontalAxisRenderers>
+					<mx:AxisRenderer labelRotation="45" 
+									 axis="{dateAxis2}" 
+									 color="#FFFFFF" 
+									 fontSize="14"
+									 />
+				</mx:horizontalAxisRenderers>
+				
+				
+				
+				<mx:fill>
+					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+				</mx:fill>
+				
+				<mx:series>
+					<mx:ColumnSeries xField="Date" yField="Qty" 
+									 showDataEffect.zoom_out="{slideIn}" 
+									 hideDataEffect.zoom_out="{slideOut}"
+									 showDataEffect.zoom_in="{zoomIn}" 
+									 hideDataEffect.zoom_in="{zoomOut}"
+									 id="cserie"
+									 buttonMode="true"
+									 toolTip.zoom_out="Zoom In"
+									 toolTip.zoom_in=""
+									 displayName="Outgoing">
+						<mx:stroke>
+							<s:SolidColorStroke color="#FFFFFF" caps="round" />
+						</mx:stroke>
+						<mx:fill>
+							<mx:SolidColor color="0x336699" alpha="0.6"/>
+						</mx:fill>
+						<mx:filters>
+							<s:DropShadowFilter
+								distance="8"
+								color="0x666666"
+								alpha=".8"/>
+						</mx:filters>
+						<mx:verticalAxis>
+							<mx:LinearAxis id="qtyAxis2" title="Emails" displayName="Emails"/>
+						</mx:verticalAxis>
+					</mx:ColumnSeries>
+				<mx:ColumnSeries xField="Date" yField="MB" 
+								 showDataEffect.zoom_out="{slideIn}" 
+								 hideDataEffect.zoom_out="{slideOut}"
+								 showDataEffect.zoom_in="{zoomIn}" 
+								 hideDataEffect.zoom_in="{zoomOut}"
+								 id="cserie2"
+								 buttonMode="true"
+								 toolTip.zoom_out="Zoom In"
+								 toolTip.zoom_in=""
+								 displayName="Incomming">
+					<mx:stroke>
+						<s:SolidColorStroke color="#FFFFFF" caps="round" />
+					</mx:stroke>
+					<mx:fill>
+						<mx:SolidColor color="yellow" alpha="0.6"/>
+					</mx:fill>
+					<mx:filters>
+						<s:DropShadowFilter
+							distance="8"
+							color="0x666666"
+							alpha=".8"/>
+					</mx:filters>
+					<mx:verticalAxis>
+						<mx:LinearAxis id="mbAxis2" title="Size(MB)"  displayName="Size(MB)"/>
+					</mx:verticalAxis>
+				</mx:ColumnSeries>
+				</mx:series>
+			</mx:ColumnChart>
+		</s:VGroup>
+		
+		<s:VGroup width="40%" height="100%">
+			<s:Label 
+				fontSize="18" fontWeight="bold" 
+				text="Most Frequent Recipients" />
+			<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+				<cloudtag:TagCloud
+					width="300"
+					height="240"
+					textMaxSize="120"
+					textMinSize="20"
+					textColor="#FFFFFF"
+					rotationMode="{DefaultTextRenderer.ROTATION_HORIZONTAL_ONLY}"
+					text="google@gmail.com google@gmail.com external@email.com.br galadriel@america.com provider@example.com provider@example.com provider@example.com jhonsmith@jrrt.com jhonsmith@jrrt.com bilbo@customer.com bilbo@customer.com sam@brasil.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com"/>
+			</s:HGroup>
+			
+		</s:VGroup>
+
+	</s:HGroup>
+</s:Group>

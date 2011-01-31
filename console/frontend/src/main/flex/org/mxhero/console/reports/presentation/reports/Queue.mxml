@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 		 
+		 horizontalScrollPolicy="off" 
+		 xmlns:component1="org.mxhero.console.commons.feature.component.*" 
+		 xmlns:cloudtag="org.mxhero.flex.component.cloudtag.*" 
+		 xmlns:traffic="org.mxhero.console.reports.presentation.reports.traffic.*" 
+		 xmlns:component="org.mxhero.console.commons.component.*" xmlns:threats="org.mxhero.console.reports.presentation.reports.threats.*" xmlns:element="org.mxhero.console.commons.FromTo.element.*">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.reports.application.resources.QueueProperties;
+			import org.mxhero.console.reports.application.resources.ReportsImages;
+			
+
+			public var REJECTED:Class=ReportsImages.REJECTED; 
+
+			public var WAITING:Class=ReportsImages.WAITING; 
+			
+			public var DELIVERED:Class=ReportsImages.DELIVERED; 
+			
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+		
+		<fx:XMLList id="treeData">
+			<node label="Outgoing Emails">
+				<node label="[17:27:14] Importante Email Subject">
+					<node label="[17:27:14] mmarmol@mxhero.com (delivered)" icon="DELIVERED"/>
+					<node label="[17:27:15] error@mxhero.com (waiting)" icon="WAITING"/>
+					<node label="[17:27:16] alex@inova.net (rejected)"  icon="REJECTED"/>
+				</node>
+				<node label="[18:27:14] Other Importante Email">
+					<node label="[18:27:14] mmarmol@mxhero.com (delivered)" icon="DELIVERED"/>
+					<node label="[18:27:15] error@mxhero.com (waiting)" icon="DELIVERED"/>
+				</node>
+				<node label="[19:27:14] Last Importante Subject">
+					<node label="[18:27:16] error@mxhero.com (waiting)" icon="WAITING"/>
+					<node label="[18:27:17] alex@inova.net (rejected)"  icon="REJECTED"/>
+				</node>
+			</node>    
+		</fx:XMLList>
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.reports.application.resources.ReportsListProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:QueuePM;
+			
+			
+		]]>
+	</fx:Script>
+	<s:VGroup gap="10" paddingLeft="10" 
+			  paddingRight="10" paddingBottom="10" 
+			  paddingTop="10" width="100%" height="100%">
+		
+		
+		<component:TitleExpanded width="100%"
+								 title="{resourceManager.getString(QueueProperties.NAME,QueueProperties.TITLE)}"
+								 description="{resourceManager.getString(QueueProperties.NAME,QueueProperties.DESCRIPTION)}"
+								 
+								 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+								 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+								 enableExpanded="false"
+								 backLink="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_LABEL)}"
+								 backLinkFunction="{model.goBack}"
+								 backLinkTooltip="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_TOOLTIP)}"/>
+		<mx:Spacer height="0"/>
+		
+		<element:Individual currentState="restricted"/>
+		
+		<s:HGroup width="100%" height="100%" gap="20">
+			
+			<mx:Tree folderClosedIcon="{ReportsImages.CLOSE}"
+					 folderOpenIcon="{ReportsImages.OPEN}"
+					 dataProvider="{treeData}"
+					 labelField="@label"
+					 showRoot="false"
+					 minWidth="500"
+					 height="100%"
+					 iconField="@icon"
+					 buttonMode="true"
+					 >
+
+			</mx:Tree>
+
+			
+		</s:HGroup>
+	</s:VGroup>
+</s:Scroller>

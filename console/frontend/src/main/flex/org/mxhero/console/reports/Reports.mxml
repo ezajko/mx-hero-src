@@ -4,7 +4,7 @@
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   xmlns:parsley="http://www.spicefactory.org/parsley" 
 		   xmlns:presentation="org.mxhero.console.reports.presentation.*"
-		   layout="absolute" 
+		   layout="vertical" 
 		   width="100%" 
 		   height="100%" 
 		   creationComplete="{ReportsViewPM.container=container}">
@@ -21,10 +21,6 @@
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.reports.presentation.ReportsViewPM;
-
-			[Inject]
-			[Bindable]
-			public var model:ReportsViewPM;
 			
 		]]>
 	</fx:Script>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Scroller xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley"		 
+		 horizontalScrollPolicy="off" 
+		 xmlns:component1="org.mxhero.console.commons.feature.component.*" 
+		 xmlns:component="org.mxhero.console.commons.component.*" 
+		 xmlns:FromTo="org.mxhero.console.commons.FromTo.*" xmlns:cloudtag="org.mxhero.components.cloudtag.*">
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+		
+		<mx:DateFormatter id="creationDateFormatter" 
+						  formatString="DD-MM-YYYY"/>
+		
+		<s:RadioButtonGroup id="time" />
+		
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import at.leichtgewicht.cloud.text.DefaultTextRenderer;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
+			import org.mxhero.console.reports.application.resources.CustomProperties;
+			import org.mxhero.console.reports.application.resources.ReportsListProperties;
+			import org.mxhero.console.reports.application.resources.ThreatsProperties;
+			import org.mxhero.console.reports.application.resources.TrafficProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:CustomPM;
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.date);
+			}
+			
+			[Bindable]
+			public var emails:ArrayCollection = new ArrayCollection([
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"dropped",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"rejected",date:new Date()},
+				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"dropped",date:new Date()}
+			]);
+
+			protected function fromTo_creationCompleteHandler(event:FlexEvent):void
+			{
+				CustomPM.refresh=fromTo.refresh;
+				fromTo.refresh();
+			}
+			
+			[Bindable]
+			public var fromDirection:FeatureRuleDirection=new FeatureRuleDirection();
+			[Bindable]
+			public var toDirection:FeatureRuleDirection=new FeatureRuleDirection();
+
+		]]>
+	</fx:Script>
+	<s:VGroup gap="10" paddingLeft="10" 
+			  paddingRight="10" paddingBottom="10" 
+			  paddingTop="10" width="100%" height="100%">
+		
+		
+		<component:TitleExpanded width="100%"
+								 title="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TITLE)}"
+								 description="{resourceManager.getString(CustomProperties.NAME,CustomProperties.DESCRIPTION)}"
+								 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+								 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+								 enableExpanded="false"
+								 backLink="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_LABEL)}"
+								 backLinkFunction="{model.goBack}"
+								 backLinkTooltip="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_TOOLTIP)}"/>
+		<mx:Spacer height="0"/>
+		
+		
+		<s:HGroup width="100%" height="100%" gap="20">
+			<s:VGroup height="100%" width="50%">
+				<FromTo:FromTo fromDirection="{fromDirection}"
+							   toDirection="{toDirection}"
+							   adminOrder="after"
+							   id="fromTo"
+							   showAdminPriority="false"
+							   creationComplete="fromTo_creationCompleteHandler(event)"/>
+				<s:HGroup paddingLeft="80" gap="20">
+					<s:RadioButton group="{time}" id="today" label="Today" selected="true"/>
+					<s:RadioButton group="{time}" id="range" label="Date Range"/>
+					<s:HGroup visible="{range.selected}" verticalAlign="middle">
+						<s:Label text="From:"/>
+						<mx:DateField id="fromDate" />
+						<s:Label text="To:"/>
+						<mx:DateField id="toDate"/>
+					</s:HGroup>
+				</s:HGroup>
+				
+				<mx:DataGrid width="100%" 
+							 borderStyle="solid" 
+							 borderColor="0x336699"
+							 dataProvider="{emails}"
+							 height="100%">
+					<mx:columns>
+						<mx:DataGridColumn dataField="date" headerText="Date" 
+										   labelFunction="dateLabelFunction"/>
+						<mx:DataGridColumn dataField="from" headerText="From"/>
+						<mx:DataGridColumn dataField="to" headerText="To"/>
+						<mx:DataGridColumn dataField="subject" headerText="Subject"/>
+						<mx:DataGridColumn dataField="state" headerText="State"/>
+					</mx:columns>
+				</mx:DataGrid>
+			</s:VGroup>
+			<s:VGroup height="100%" width="50%" gap="20">
+				<s:VGroup width="100%" height="100%">
+					<s:Label 
+						fontSize="18" fontWeight="bold" 
+						text="Most Frequent Senders" />
+					<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+						<cloudtag:TagCloud
+							width="300"
+							height="240"
+							textMaxSize="120"
+							textMinSize="20"
+							textColor="#FFFFFF"
+							rotationMode="{DefaultTextRenderer.ROTATION_HORIZONTAL_ONLY}"
+							text="google@gmail.com google@gmail.com external@email.com.br galadriel@america.com provider@example.com provider@example.com provider@example.com jhonsmith@jrrt.com jhonsmith@jrrt.com bilbo@customer.com bilbo@customer.com sam@brasil.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com"/>
+					</s:HGroup>
+					
+				</s:VGroup>
+				<s:VGroup width="100%" height="100%">
+					<s:Label 
+						fontSize="18" fontWeight="bold" 
+						text="Most Frequent Recipients" />
+					<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+						<cloudtag:TagCloud
+							width="300"
+							height="240"
+							textMaxSize="120"
+							textMinSize="20"
+							textColor="#FFFFFF"
+							rotationMode="{DefaultTextRenderer.ROTATION_HORIZONTAL_ONLY}"
+							text="google@gmail.com google@gmail.com external@email.com.br galadriel@america.com provider@example.com provider@example.com provider@example.com jhonsmith@jrrt.com jhonsmith@jrrt.com bilbo@customer.com bilbo@customer.com sam@brasil.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com"/>
+					</s:HGroup>
+					
+				</s:VGroup>
+			</s:VGroup>
+	
+		</s:HGroup>
+	</s:VGroup>
+</s:Scroller>

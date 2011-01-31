@@ -1,8 +1,10 @@
 package org.mxhero.console.reports.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
-
+	
 	import mx.core.Container;
+	
+	import org.mxhero.console.reports.application.ReportsDestinations;
 
 	[Landmark(name="main.dashboard.reports")]
 	public class ReportsViewPM
@@ -17,9 +19,10 @@ package org.mxhero.console.reports.presentation
 		public function enter():void
 		{
 			container.createComponentsFromDescriptors();
+			navigateTo(ReportsDestinations.LIST);
 		}
 		
-		private function navigateTo(destination:String):void
+		public function navigateTo(destination:String):void
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}
