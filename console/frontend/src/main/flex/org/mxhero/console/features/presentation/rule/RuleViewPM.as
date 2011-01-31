@@ -13,7 +13,7 @@ package org.mxhero.console.features.presentation.rule
 	import org.mxhero.console.features.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.features.application.event.GetDomainsEvent;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
-	import org.mxhero.console.features.presentation.FromTo.FromTo;
+	import org.mxhero.console.commons.FromTo.FromTo;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
 	import org.mxhero.console.frontend.domain.Feature;
