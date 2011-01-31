@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 gap="20" 
+		 xmlns:FromTo="org.mxhero.console.commons.FromTo.*"
+		 xmlns:parsley="http://www.spicefactory.org/parsley">
+	<fx:Declarations>
+		<parsley:Configure/>
+		<s:RadioButtonGroup id="priority"/>
+	</fx:Declarations>
+	
+	<s:states> 
+		<s:State name="admin"/>    
+		<s:State name="domain"/> 
+	</s:states> 
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			import org.mxhero.console.frontend.domain.ApplicationContext;
+			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
+
+			[Bindable]
+			public var toDirection:FeatureRuleDirection;
+			
+			[Bindable]
+			public var fromDirection:FeatureRuleDirection;
+			
+			[Bindable]
+			public var adminOrder:String;
+			
+			[Bindable]
+			public var isRefreshing:Boolean=false;
+			
+			[Inject]
+			[Bindable]
+			public var context:ApplicationContext;
+			
+			[Bindable]
+			private var upperSelector:Object;
+			[Bindable]
+			private var lowerSelector:Object;
+			
+			[Bindable]
+			public var feature:IFeature=null;
+			
+			[Bindable]
+			private var fromHeigth:Number=DEFAULT_MAX_HEIGHT;
+			
+			[Bindable]
+			private var toHeigth:Number=DEFAULT_MAX_HEIGHT;
+			
+			[Bindable]
+			private var priorityHeigth:Number=DEFAULT_MAX_HEIGHT;
+			
+			[Bindable]
+			public var errorMessage:String;
+			
+			[Bindable]
+			private var _showAdminPriority:Boolean=true;
+			
+			public function get showAdminPriority():Boolean{
+				return _showAdminPriority;
+			}
+			
+			public function set showAdminPriority(value:Boolean):void{
+				if(value){
+					priorityHeigth=DEFAULT_MAX_HEIGHT;
+				}else{
+					priorityHeigth=0;
+				}
+				_showAdminPriority=value;
+			}
+			
+			public function refresh():void{
+				isRefreshing=true;
+				fromHeigth=DEFAULT_MAX_HEIGHT;
+				toHeigth=DEFAULT_MAX_HEIGHT;
+				if(context.selectedDomain!=null){
+					currentState='domain';
+					var domainSelector:DomainSelector;
+					
+					domainSelector = new DomainSelector();
+					domainSelector.checkRestrictionFunction=checkRestricted;
+					domainSelector.direction=fromDirection;
+					if(feature!=null && feature.fixedFrom()){
+						if(feature.fixedFromValue()==FeatureRuleDirection.ANYONE){
+							domainSelector.direction.directionType=FeatureRuleDirection.ANYONE;
+							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
+							fromHeigth=0;
+						}else if(feature.fixedFromValue()==FeatureRuleDirection.ANYONEELSE){
+							domainSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
+							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
+							fromHeigth=0;
+						}
+					}
+					upperSelector=domainSelector;
+					upperConteiner.removeAllElements();
+					upperConteiner.addElement(domainSelector);
+					
+					domainSelector = new DomainSelector();
+					domainSelector.checkRestrictionFunction=checkRestricted;
+					domainSelector.direction=toDirection;
+					if(feature!=null && feature.fixedTo()){
+						if(feature.fixedToValue()==FeatureRuleDirection.ANYONE){
+							domainSelector.direction.directionType=FeatureRuleDirection.ANYONE;
+							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
+							toHeigth=0;
+						}else if(feature.fixedToValue()==FeatureRuleDirection.ANYONEELSE){
+							domainSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
+							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
+							toHeigth=0;
+						}
+						
+					}
+					lowerSelector=domainSelector;
+					lowerContainer.removeAllElements();
+					lowerContainer.addElement(domainSelector);
+					
+				} else {
+					currentState='admin';
+					var adminSelector:AdminSelector = new AdminSelector();
+					adminSelector.checkRestrictionFunction=checkRestricted;
+					adminSelector.direction=fromDirection;
+					if(feature!=null && feature.fixedFrom()){
+						if(feature.fixedFromValue()==FeatureRuleDirection.ANYONE){
+							adminSelector.direction.directionType=FeatureRuleDirection.ANYONE;
+							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
+							fromHeigth=0;
+						}else if(feature.fixedFromValue()==FeatureRuleDirection.ANYONEELSE){
+							adminSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
+							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
+							fromHeigth=0;
+						}
+					}
+					upperSelector=adminSelector;
+					upperConteiner.removeAllElements();
+					upperConteiner.addElement(adminSelector);
+					
+					
+					adminSelector = new AdminSelector();
+					adminSelector.checkRestrictionFunction=checkRestricted;
+					adminSelector.direction=toDirection;
+					if(feature!=null && feature.fixedTo()){
+						if(feature.fixedToValue()==FeatureRuleDirection.ANYONE){
+							adminSelector.direction.directionType=FeatureRuleDirection.ANYONE;
+							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
+							toHeigth=0;
+						}else if(feature.fixedToValue()==FeatureRuleDirection.ANYONEELSE){
+							adminSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
+							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
+							toHeigth=0;
+						}
+					}
+					lowerSelector=adminSelector;
+					lowerContainer.removeAllElements();
+					lowerContainer.addElement(adminSelector);
+					if(adminOrder=='after'){
+						afterRb.selected=true;
+					}else{
+						//if selected or not existence this should be true because 
+						//is also the default start value
+						beforeRb.selected=true;
+						adminOrder='before';
+					}
+				}
+				isRefreshing=false;
+			}
+
+			
+			public function checkRestricted():void{
+				if(upperSelector.isSelected==true && upperSelector.isDomainManaged==false){
+					lowerSelector.isRestricted=true;
+					upperSelector.isRestricted=false;
+				} else if(lowerSelector.isSelected==true && lowerSelector.isDomainManaged==false){
+					upperSelector.isRestricted=true;
+					lowerSelector.isRestricted=false;
+				} else {
+					lowerSelector.isRestricted=false;
+					upperSelector.isRestricted=false;
+				}
+			}
+			
+			public function isValid():Boolean{
+				errorMessage="";
+				if(upperSelector.isSelected==false || lowerSelector.isSelected==false){
+					errorMessage=resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ERROR_FROM_TO_BOTH);
+					return false;
+				}
+				if(upperSelector.isDomainManaged==false && lowerSelector.isDomainManaged==false){
+					errorMessage=resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ERROR_FROM_TO_MANAGED);
+					return false;
+				}
+				return true;
+			}
+			
+			protected function changeAdminOrder(order:String):void{
+				adminOrder=order;
+			}
+
+			private function hasToShowUp(feature:IFeature,refreshing:Boolean):Boolean{
+				if(feature==null){
+					return true;
+				}
+				return !feature.fixedFrom() && !refreshing;
+			}
+			
+			private function hasToShowDown(feature:IFeature,refreshing:Boolean):Boolean{
+				if(feature==null){
+					return true;
+				}
+				return !feature.fixedTo() && !refreshing;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup maxHeight="{fromHeigth}" visible="{hasToShowUp(feature,isRefreshing)}">
+		<s:HGroup gap="20">
+			<s:VGroup width="60" horizontalAlign="right" verticalAlign="middle" height="100%">
+				<s:Label text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.FROM_LABEL)}" 
+						 fontWeight="bold"/>
+			</s:VGroup>
+			<s:Group id="upperConteiner"/>
+		</s:HGroup>
+	</s:VGroup>
+
+	<s:VGroup maxHeight="{toHeigth}" visible="{hasToShowDown(feature,isRefreshing)}">
+		<s:HGroup gap="20">
+			<s:VGroup width="60" horizontalAlign="right" verticalAlign="middle" height="100%">
+				<s:Label text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.TO_LABEL)}" 
+						 fontWeight="bold"/>
+			</s:VGroup>
+			<s:Group id="lowerContainer"/>
+		</s:HGroup>
+	</s:VGroup>
+
+	<s:VGroup id="prioritySelection" excludeFrom="domain" maxHeight="{priorityHeigth}" visible="{_showAdminPriority}" >
+		<s:RadioButton id="beforeRb"
+					   label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ADMIN_RULE_RUN_BEFORE)}" 
+					   groupName="priority"
+					   change="{changeAdminOrder('before')}"/>
+		<s:RadioButton id="afterRb"
+					   label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ADMIN_RULE_RUN_AFTER)}" 
+					   groupName="priority"
+					   change="{changeAdminOrder('after')}"/>
+	</s:VGroup>
+	
+</s:VGroup>

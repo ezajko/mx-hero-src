@@ -11,7 +11,7 @@ package org.mxhero.console.commons.domain
 		
 		public var resource:String;
 		
-		public var iconsrc:String;
+		public var iconsrc:*;
 		
 		public var childs:ArrayCollection;
 		
