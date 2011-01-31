@@ -27,6 +27,12 @@
 		[ResourceBundle("features_list")]
 		[ResourceBundle("feature_view")]
 		[ResourceBundle("rule_view")]
+		[ResourceBundle("reports_list")]
+		[ResourceBundle("report_traffic")]
+		[ResourceBundle("report_threats")]
+		[ResourceBundle("report_queue")]
+		[ResourceBundle("report_custom")]
+		
 	</fx:Metadata>
 	
 	<fx:Declarations>
