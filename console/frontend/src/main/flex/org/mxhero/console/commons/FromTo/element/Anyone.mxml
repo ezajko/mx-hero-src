@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:FromTo="org.mxhero.console.commons.FromTo.*" 
+				   xmlns:element="org.mxhero.console.commons.FromTo.element.*"
+				   gap="20" 
+				   verticalAlign="middle">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			
+			public var parentStateFunction:Function;
+			
+			public var childState:String;
+			
+			public var notifyChange:Function;
+			
+			[Bindable]
+			public var isSelected:Boolean;
+			
+			protected function item_clickHandler(event:MouseEvent):void
+			{
+				if(parentStateFunction!=null){
+					parentStateFunction(childState);
+				}
+			}
+
+			protected function anyoneelse_valueCommitHandler(event:FlexEvent):void
+			{
+				this.isSelected=anyoneelse.selected;
+				notifyChange();
+			}
+
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+	</fx:Declarations>
+
+	<s:states>
+		<s:State name="inactive"/>
+		<s:State name="active"/>
+		<s:State name="restricted"/>
+	</s:states>
+	
+		<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_LABEL)}" 
+					 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ANYONE_TOOLTIP)}" 
+					 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
+					 width="120"
+					 click="item_clickHandler(event)"
+					 enabled.restricted="false"/>
+	<s:BorderContainer id="checkBox" 
+					   excludeFrom="inactive"
+					   backgroundColor="#7c7b7b"  
+					   borderVisible="true" 
+					   dropShadowVisible="true"
+					   borderStyle="solid"
+					   minHeight="0"
+					   buttonMode="true"
+					   borderColor="#cccccc" 
+					   cornerRadius="4"
+					   minWidth="260"
+					   height="100%">
+		<s:VGroup height="100%" width="100%" 
+				  horizontalAlign="center" 
+				  verticalAlign="middle"
+				  paddingLeft="5"
+				  paddingRight="5">
+			<s:CheckBox 
+						id="anyoneelse"
+						selected="@{isSelected}"
+						label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_LABEL)}"
+						valueCommit="anyoneelse_valueCommitHandler(event)"
+						toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_TOOLTIP)}"/>
+		</s:VGroup>
+	</s:BorderContainer>
+</s:HGroup>

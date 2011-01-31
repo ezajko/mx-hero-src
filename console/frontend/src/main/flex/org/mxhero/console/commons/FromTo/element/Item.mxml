@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   backgroundColor="#333333"  
+				   borderVisible="true" 
+				   dropShadowVisible="true"
+				   borderStyle="solid"
+				   minHeight="0"
+				   minWidth="0"
+				   buttonMode="true"
+				   borderColor="#cccccc" 
+				   cornerRadius="4">
+	<fx:Declarations>
+		<mx:Glow id="glowOn"
+				 alphaFrom="{minAlpha}"
+				 alphaTo="{maxAlpha}"
+				 blurXFrom="{minGlow}"
+				 blurXTo="{maxGlow}"
+				 blurYFrom="{minGlow}"
+				 blurYTo="{maxGlow}"
+				 color="{glowColor}"
+				 duration="{duration}"/>
+		
+		<mx:Glow id="glowOff" 
+				 alphaFrom="{maxAlpha}"
+				 alphaTo="{minAlpha}"
+				 blurXFrom="{maxGlow}"
+				 blurXTo="{minGlow}"
+				 blurYFrom="{maxGlow}"
+				 blurYTo="{minGlow}"
+				 color="{glowColor}"
+				 duration="{duration}"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var text:String;
+			
+			[Bindable]
+			public var child:Object;
+			
+			[Bindable]
+			public var glowColor:Number=0xFFFFFF;
+			
+			[Bindable]
+			public var minGlow:Number=1.0;
+			
+			[Bindable]
+			public var maxGlow:Number=10.0;
+			
+			[Bindable]
+			public var minAlpha:Number=0.0;
+			
+			[Bindable]
+			public var maxAlpha:Number=0.5;
+			
+			[Bindable]
+			public var duration:Number=300;
+			
+			private var lastColor:*;
+			
+			private function onRollOverHandler():void{
+				lastColor=label.getStyle("color");
+				label.setStyle("color",glowColor);
+			}
+			
+			private function onRollOutHandler():void{
+				label.setStyle("color",lastColor);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+	</s:layout>
+
+	<s:Label id="label" 
+			 text="{text}" 
+			 paddingLeft="10" paddingRight="10" 
+			 paddingBottom="10" paddingTop="10"
+			 rollOverEffect="{glowOn}"
+			 rollOutEffect="{glowOff}"
+			 rollOver="{onRollOverHandler()}"
+			 rollOut="{onRollOutHandler()}"
+			 fontWeight="bold"/>
+
+</s:BorderContainer>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 verticalAlign="middle" 
+		 gap="20" 
+		 xmlns:FromTo="org.mxhero.console.commons.FromTo.*" 
+		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:element="org.mxhero.console.commons.FromTo.element.*"
+		 currentStateChange="currentStateChangeHandler(event)">
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="active"/>
+		<s:State name="inactive"/>
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="inactive" toState="active">
+			<s:Fade target="{dropDownList}" alphaFrom="0" alphaTo="1"/>
+		</s:Transition>
+	</s:transitions>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			import org.mxhero.console.features.presentation.rule.RuleViewPM;
+			import org.mxhero.console.frontend.domain.ApplicationContext;
+			
+			[Inject]
+			[Bindable]
+			public var model:ApplicationContext;
+			
+			public var notifyChange:Function;
+
+			public var parentStateFunction:Function;
+			
+			[Bindable]
+			public var childState:String;
+			
+			protected function item_clickHandler(event:MouseEvent):void
+			{
+				parentStateFunction(childState);
+			}
+
+			protected function ipeDropDownList_currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(notifyChange!=null){
+					notifyChange();
+				}
+			}
+
+			protected function currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(event.newState=="inactive"){
+					ipeDropDownList.selectedItem=null;
+					ipeDropDownList.selectedLabel=null;
+					ipeDropDownList.dropDownList.selectedItem=null;
+					ipeDropDownList.switchState();
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.GROUP_LABEL)}" 
+				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_GROUP_TOOLTIP)}" 
+				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
+				 click="item_clickHandler(event)"
+				 width="120"/>
+	<s:BorderContainer id="dropDownList" 
+					   excludeFrom="inactive"
+					   backgroundColor="#7c7b7b"  
+					   borderVisible="true" 
+					   dropShadowVisible="true"
+					   borderStyle="solid"
+					   minHeight="0"
+					   buttonMode="true"
+					   borderColor="#cccccc" 
+					   cornerRadius="4"
+					   minWidth="260"
+					   height="100%">
+		<s:VGroup height="100%" width="100%" 
+				  horizontalAlign="center" 
+				  verticalAlign="middle"
+				  paddingLeft="5"
+				  paddingRight="5">
+			<IPE:IPEDropDownList id="ipeDropDownList"  
+								 currentState="edit"
+								 subStyles="item"
+								 dataProvider="{model.groups}"
+								 labelField="name"
+								 enableItemSelectionCheck="true" 
+								 enableLabelClickChangeStatus="true"
+								 enableEnterKeyChangeStatus="true"
+								 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
+								 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_GROUP_NOT_VALID)}"
+								 prompt="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.GROUP_PROMT)}"
+								 width="100%"
+								 currentStateChange="ipeDropDownList_currentStateChangeHandler(event)"/>
+			</s:VGroup>
+		</s:BorderContainer>
+</s:HGroup>
