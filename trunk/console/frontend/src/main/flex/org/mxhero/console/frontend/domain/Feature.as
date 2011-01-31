@@ -12,6 +12,7 @@ package org.mxhero.console.frontend.domain
 		public var explain:String;
 		public var rules:ArrayCollection;
 		public var moduleUrl:String;
+		public var moduleReportUrl:String;
 		
 		public function get label():String
 		{
