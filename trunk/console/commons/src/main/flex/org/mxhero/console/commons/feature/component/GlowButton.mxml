@@ -58,6 +58,10 @@
 			public var duration:Number=300;
 			
 			private function init():void{
+				unglowMe();
+			}
+			
+			public function unglowMe():void{
 				glowOff.duration=0;
 				glowOff.play([this]);
 				glowOff.duration=duration;
