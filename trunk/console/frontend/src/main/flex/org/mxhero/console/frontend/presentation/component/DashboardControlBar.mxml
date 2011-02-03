@@ -9,15 +9,7 @@
 	<s:layout>
 		<s:HorizontalLayout verticalAlign="middle"/>
 	</s:layout>
-	<fx:Script>
-		<![CDATA[
 
-			import org.mxhero.console.commons.resources.ImageResources;
-			import org.mxhero.console.frontend.application.resources.DashboardProperties;
-			import org.mxhero.console.frontend.infrastructure.AuthorizeHelper;
-
-		]]>
-	</fx:Script>
 	<fx:Declarations>
 		<parsley:Configure/>
 		<s:Sequence id="showEffect">
@@ -43,7 +35,15 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import com.adobe.cairngorm.navigation.NavigationEvent;
+			
+			import mx.events.ItemClickEvent;
 			import mx.resources.IResourceManager;
+			
+			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.features.application.FeaturesDestinations;
+			import org.mxhero.console.frontend.application.MainDestination;
+			import org.mxhero.console.frontend.application.resources.DashboardProperties;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.presentation.DashboardPM;
 			
@@ -76,14 +76,31 @@
 			[Bindable]
 			public var duration:Number=1000;
 			
+			private var prevIndex:Number=0;
+			
+			protected function linkBar_itemClickHandler(event:ItemClickEvent):void
+			{
+				if(prevIndex==event.index){
+					if(event.index==0){
+						model.dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
+					} else if (event.index==1){
+						model.dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.REPORTS));
+					} else if(event.index==2){
+						model.dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.CONFIGURATIONS));
+					}
+				}
+				prevIndex=event.index;
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<mx:Image source="{ImageResources.LOGO_IMG}"/>
 	<mx:Spacer width="20"/>
-	<mx:LinkBar id="linkBar" 
+	<component1:NoDisabledLinkBar id="linkBar" 
 				dataProvider="{dataProvider}" 
-				styleName="Dashboard" />
+				styleName="Dashboard" 
+				itemClick="linkBar_itemClickHandler(event)"/>
 	<mx:Spacer width="100%"/>
 	
 	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" 

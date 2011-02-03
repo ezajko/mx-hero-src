@@ -8,8 +8,6 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const DESCRIPTION:String="description";
 		
-		public static const EXPANDED_DESCRIPTION:String="expanded.description";
-		
 		public static const FORM_HOST_LABEL:String="form.host.label";
 		
 		public static const FORM_PORT_LABEL:String="form.port.label";
@@ -26,6 +24,8 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const FORM_MAIL_TITLE:String="form.mail.title";
 		
+		public static const FORM_MAIL_TITLE_EXPANDED:String="form.mail.title.expanded";
+		
 		public static const FORM_ADMIN_LABEL:String="form.admin.label";
 		
 		public static const FORM_UPDATE_MAIL_RESULT:String="form.update.mail.result";
@@ -34,5 +34,6 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const FORM_TEST_MAIL_RESULT:String="form.test.mail.result";
 		
+		public static const CANCEL_CHANGES_TEXT:String="cancel.changes.text";
 	}
 }

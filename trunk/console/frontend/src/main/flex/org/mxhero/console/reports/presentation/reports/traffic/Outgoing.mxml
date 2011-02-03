@@ -191,10 +191,12 @@
 						 textDecoration="underline"/>
 				<mx:Spacer width="100%"/>
 				<component:GlowButton
+					id="zoom_in_btt"
 					includeIn="zoom_in"
 					source="{ReportsImages.ZOOM_OUT}" 
 					click="button1_clickHandler(event)"
-					toolTip="Zoom Out"/>	
+					toolTip="Zoom Out"
+					addedEffect="{zoom_in_btt.glowOn}"/>	
 				<component:GlowButton
 					source="{ReportsImages.EXPORT}" 
 					toolTip="Export"/>	
@@ -323,11 +325,11 @@
 			</mx:ColumnChart>
 		</s:VGroup>
 		
-		<s:VGroup width="40%" height="100%">
+		<s:VGroup width="40%" height="100%" gap="20">
 			<s:Label 
 				fontSize="18" fontWeight="bold" 
 				text="Most Frequent Recipients" />
-			<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+			<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
 				<cloudtag:TagCloud
 					width="300"
 					height="240"

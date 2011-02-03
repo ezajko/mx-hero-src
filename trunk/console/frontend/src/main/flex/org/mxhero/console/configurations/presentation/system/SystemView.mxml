@@ -5,7 +5,7 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
 		 xmlns:component="org.mxhero.console.commons.component.*"
 		 xmlns:cairngorm="http://ns.adobe.com/cairngorm"
-		 enabled="{!model.isUpdating}">
+		 enabled="{!model.isUpdating}" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -54,6 +54,18 @@
 		]]>
 	</fx:Script>
 	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";		
+		
+		.customLabel
+		{
+			fontWeight:"bold";
+			color:#FFFFFF;
+		}
+		
+	</fx:Style>
+	
 	<s:layout>
 		<s:VerticalLayout gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10"/>
 	</s:layout>
@@ -61,71 +73,78 @@
 	<component:TitleExpanded width="100%"
 							 title="{resourceManager.getString(SystemProperties.NAME,SystemProperties.TITLE)}"
 							 description="{resourceManager.getString(SystemProperties.NAME,SystemProperties.DESCRIPTION)}"
-							 expandedDescription="{resourceManager.getString(SystemProperties.NAME,SystemProperties.EXPANDED_DESCRIPTION)}"
-							 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
-							 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
-							 enableExpanded="true"
+							 enableExpanded="false"
 							 backLink="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_LABEL)}"
 							 backLinkFunction="{model.goBack}"
 							 backLinkTooltip="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_TOOLTIP)}"/>
 	
 		<mx:Form>
-			<mx:FormHeading label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_MAIL_TITLE)}" 
-							color="#FFFFFF"
-							textAlign="left" paddingLeft="0" textIndent="0" leading="0"/>
-			<s:HGroup width="100%" verticalAlign="bottom" gap="40">
-
-				<mx:Form paddingBottom="0">
-					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_HOST_LABEL)}" width="100%">
-						<s:TextInput id="hostTi" 
-									 text="@{model.configuration.host}" 
-									 width="200"/>
-					</mx:FormItem>
-					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_ADMIN_LABEL)}" width="100%">
-						<s:TextInput id="adminTi" 
-									 text="@{model.configuration.adminMail}" 
-									 width="200"/>
-					</mx:FormItem>
-					<s:CheckBox id="checkAuthCb" 
-								selected="@{model.configuration.auth}"
-								change="{validateMailUpdate.validate()}"
-								label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_AUTH)}"/>
-					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_USER_LABEL)}" width="100%">
-						<s:TextInput id="userTi" 
-									 enabled="{this.checkAuthCb.selected}" 
-									 text="@{model.configuration.user}" 
-									 width="200"/>
-					</mx:FormItem>
-				</mx:Form>
-				
-				<mx:Form paddingBottom="0">
-					<mx:FormItem id="portItemPort" label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PORT_LABEL)}" width="100%">
-						<s:TextInput id="portTi" text="{model.configuration.port}" 
-									 width="200"/>
-					</mx:FormItem>	
-					<mx:Spacer height="{portItemPort.height}"/>
-					<s:CheckBox id="checkSslCb" 
-								selected="@{model.configuration.ssl}"
-								label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_SSL)}"/>
+			<component1:LabelExpanded 
+				width="100%"
+				labelText="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_MAIL_TITLE)}"
+				expandedLabelStyleName="customLabel"
+				explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+				hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+				expandedText="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_MAIL_TITLE_EXPANDED)}"/>
+			<s:VGroup width="100%" horizontalAlign="right" gap="20">
+				<s:HGroup width="100%" gap="20">
+					<mx:Form paddingBottom="0" verticalGap="10">
+						<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_HOST_LABEL)}" width="100%">
+							<s:TextInput id="hostTi" 
+										 text="@{model.configuration.host}" 
+										 width="200"/>
+						</mx:FormItem>
+						<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_ADMIN_LABEL)}" width="100%">
+							<s:TextInput id="adminTi" 
+										 text="@{model.configuration.adminMail}" 
+										 width="200"/>
+						</mx:FormItem>
+						<mx:FormItem width="100%">
+							<s:CheckBox id="checkAuthCb" 
+										selected="@{model.configuration.auth}"
+										change="{validateMailUpdate.validate()}"
+										label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_AUTH)}"/>
+	
+						</mx:FormItem>
+						<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_USER_LABEL)}" width="100%">
+							<s:TextInput id="userTi" 
+										 enabled="{this.checkAuthCb.selected}" 
+										 text="@{model.configuration.user}" 
+										 width="200"/>
+						</mx:FormItem>
+					</mx:Form>
 					
-					<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PASSWORD_LABEL)}" width="100%">
-						<s:TextInput id="passwordTi" 
-									 enabled="{this.checkAuthCb.selected}" 
-									 text="@{model.configuration.password}" 
-									 displayAsPassword="true" 
-									 width="200"/>
-					</mx:FormItem>
-				</mx:Form>
-
-				<s:Button id="testMailBtt" 
-						  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_TEST_MAIL_LABEL)}"
-						  click="testMailBtt_clickHandler(event)"
-						  buttonMode="true"/>
-				<s:Button id="updateMailBtt" 
-						  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_UPDATE_MAIL_LABEL)}"
-						  click="updateMailBtt_clickHandler(event)"
-						  buttonMode="true"/>
-			</s:HGroup>
+					<mx:Form paddingBottom="0"  verticalGap="10">
+						<mx:FormItem id="portItemPort" label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PORT_LABEL)}" width="100%">
+							<s:TextInput id="portTi" text="{model.configuration.port}" 
+										 width="200"/>
+						</mx:FormItem>	
+						<mx:Spacer height="{portItemPort.height}"/>
+						<mx:FormItem width="100%">
+							<s:CheckBox id="checkSslCb" 
+										selected="@{model.configuration.ssl}"
+										label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_CHECK_SSL)}"/>
+						</mx:FormItem>
+						<mx:FormItem label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_PASSWORD_LABEL)}" width="100%">
+							<s:TextInput id="passwordTi" 
+										 enabled="{this.checkAuthCb.selected}" 
+										 text="@{model.configuration.password}" 
+										 displayAsPassword="true" 
+										 width="200"/>
+						</mx:FormItem>
+					</mx:Form>
+				</s:HGroup>
+				<s:HGroup gap="20">
+					<s:Button id="testMailBtt" 
+							  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_TEST_MAIL_LABEL)}"
+							  click="testMailBtt_clickHandler(event)"
+							  buttonMode="true"/>
+					<s:Button id="updateMailBtt" 
+							  label="{resourceManager.getString(SystemProperties.NAME,SystemProperties.FORM_UPDATE_MAIL_LABEL)}"
+							  click="updateMailBtt_clickHandler(event)"
+							  buttonMode="true"/>
+				</s:HGroup>
+			</s:VGroup>
 		</mx:Form>
 	
 </s:Group>

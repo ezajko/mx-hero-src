@@ -8,7 +8,9 @@
 		 enabled="{!model.isUpdating}"
 		 horizontalScrollPolicy="off" 
 		 xmlns:loader="org.mxhero.console.features.presentation.loader.*" 
-		 xmlns:component1="org.mxhero.console.commons.feature.component.*">
+		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
+		 creationComplete="scroller1_creationCompleteHandler(event)"
+		 >
 
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -69,78 +71,89 @@
 			{
 				RuleViewPM.refreshFunction=fromTo.refresh;
 			}
+			
+			protected function scroller1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.addEventListener(MouseEvent.MOUSE_WHEEL,handleWheel,true,100);
+			}
+			
+			protected function handleWheel(event:MouseEvent):void{
+				event.delta*=4;
+			}
 
 		]]>
 	</fx:Script>
 	
 	<s:Group width="100%">
 		<s:layout>
-			<s:VerticalLayout gap="20" horizontalAlign="center" 
-							  paddingLeft="10" paddingRight="10" 
-							  paddingBottom="20" paddingTop="20"/>
+			<s:BasicLayout  />
 		</s:layout>
 		
-		<s:VGroup gap="20">
-			<s:HGroup verticalAlign="top" width="100%">
-				<component:TitleExpanded width="100%"
-										 title="{model.feature.realLabel}"
-										 description="{model.feature.description}"
-										 expandedDescription="{model.feature.explain}"
-										 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
-										 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
-										 enableExpanded="true"/>	
-				<component1:GlowButton id="topCancelBtt" source="{FeaturesImages.CANCEL}" buttonMode="true" click="topCancelBtt_clickHandler(event)"/>
-			</s:HGroup>
-
-			
-			<s:VGroup paddingLeft="30" width="100%" height="100%" gap="30">
-				<s:VGroup verticalAlign="top" gap="4" width="100%">
-					<s:HGroup width="100%" verticalAlign="middle">
-						<s:Label 
-							fontWeight="bold"
-							text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL)}"/>
-						<s:TextInput id="labelTi" text="@{model.rule.name}" width="500"/>
-					</s:HGroup>
-					<component1:LabelExpanded width="100%"
-											 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
-											 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
-											 expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL_EXPLAIN)}"/>		
-				</s:VGroup>
+		<s:VGroup width="100%" horizontalAlign="center">
+			<s:VGroup gap="20"  
+					  paddingLeft="10" paddingRight="10" 
+					  paddingBottom="20" paddingTop="20">
+				<s:HGroup verticalAlign="top" width="100%">
+					<component:TitleExpanded width="100%"
+											 title="{model.feature.realLabel}"
+											 description="{model.feature.description}"
+											 expandedDescription="{model.feature.explain}"
+											 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+											 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+											 enableExpanded="true"/>	
+					<component1:GlowButton id="topCancelBtt" source="{FeaturesImages.CANCEL}" buttonMode="true" click="topCancelBtt_clickHandler(event)"/>
+				</s:HGroup>
 				
-				<s:VGroup gap="0" width="100%">
-					<s:Label id="fromToTitle"
-							 fontSize="16" 
-							 fontWeight="bold"
-							 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
+				
+				<s:VGroup paddingLeft="30" width="100%" height="100%" gap="30">
+					<s:VGroup verticalAlign="top" gap="4" width="100%">
+						<s:HGroup width="100%" verticalAlign="middle">
+							<s:Label 
+								fontWeight="bold"
+								text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL)}"/>
+							<s:TextInput id="labelTi" text="@{model.rule.name}" width="450"/>
+						</s:HGroup>
+						<component1:LabelExpanded width="100%"
+												  explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+												  hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+												  expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RULE_LABEL_EXPLAIN)}"/>		
+					</s:VGroup>
 					
-				</s:VGroup>
-				
-				<FromTo:FromTo id="fromTo" 
-							   feature="{featureLoader.featureModule}"
-							   fromDirection="{model.rule.fromDirection}"
-							   toDirection="{model.rule.toDirection}"
-							   adminOrder="@{model.rule.adminOrder}"
-							   creationComplete="fromTo_creationCompleteHandler(event)"/>
-				
-				<loader:FeatureLoader id="featureLoader" 
-									  url="{model.feature.moduleUrl}" 
-									  width="100%"
-									  />
-				
-				<mx:Spacer height="100%"/>
-				<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="20">
-					<s:Button id="saveBtt" 
-							  click="saveBtt_clickHandler(event)"
-							  buttonMode="true"
-							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}"
-							  enabled="{featureLoader.currentState=='loaded'}"/>		
-					<s:Button id="cancelBtt" 
-							  click="cancelBtt_clickHandler(event)"
-							  buttonMode="true"
-							  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
-				</s:HGroup>		
-			</s:VGroup>	
+					<s:VGroup gap="0" width="100%">
+						<s:Label id="fromToTitle"
+								 fontSize="16" 
+								 fontWeight="bold"
+								 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
+						
+					</s:VGroup>
+					
+					<FromTo:FromTo id="fromTo" 
+								   feature="{featureLoader.featureModule}"
+								   fromDirection="{model.rule.fromDirection}"
+								   toDirection="{model.rule.toDirection}"
+								   adminOrder="@{model.rule.adminOrder}"
+								   showAdminPriority="false"
+								   creationComplete="fromTo_creationCompleteHandler(event)"/>
+					
+					<loader:FeatureLoader id="featureLoader" 
+										  url="{model.feature.moduleUrl}" 
+										  width="100%"
+										  />
+					
+					<mx:Spacer height="100%"/>
+					<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="20">
+						<s:Button id="saveBtt" 
+								  click="saveBtt_clickHandler(event)"
+								  buttonMode="true"
+								  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}"
+								  enabled="{featureLoader.currentState=='loaded'}"/>		
+						<s:Button id="cancelBtt" 
+								  click="cancelBtt_clickHandler(event)"
+								  buttonMode="true"
+								  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
+					</s:HGroup>		
+				</s:VGroup>	
+			</s:VGroup>
 		</s:VGroup>
-
 	</s:Group>
 </s:Scroller>
