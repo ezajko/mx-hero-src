@@ -41,11 +41,14 @@
 			import mx.resources.IResourceManager;
 			
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.configurations.Configurations;
+			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 			import org.mxhero.console.features.application.FeaturesDestinations;
 			import org.mxhero.console.frontend.application.MainDestination;
 			import org.mxhero.console.frontend.application.resources.DashboardProperties;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.presentation.DashboardPM;
+			import org.mxhero.console.reports.application.ReportsDestinations;
 			
 			[Bindable]
 			public var dataProvider:Object;
@@ -84,9 +87,9 @@
 					if(event.index==0){
 						model.dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
 					} else if (event.index==1){
-						model.dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.REPORTS));
+						model.dispatcher(NavigationEvent.createNavigateToEvent(ReportsDestinations.LIST));
 					} else if(event.index==2){
-						model.dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.CONFIGURATIONS));
+						model.dispatcher(NavigationEvent.createNavigateToEvent(ConfigurationsDestinations.LIST));
 					}
 				}
 				prevIndex=event.index;
