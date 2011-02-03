@@ -223,7 +223,9 @@
 		<s:HGroup gap="20">
 			<s:VGroup width="60" horizontalAlign="right" verticalAlign="middle" height="100%">
 				<s:Label text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.FROM_LABEL)}" 
-						 fontWeight="bold"/>
+						 fontWeight="bold"
+						 fontSize="18"
+						 color="#FFFFFF"/>
 			</s:VGroup>
 			<s:Group id="upperConteiner"/>
 		</s:HGroup>
@@ -233,13 +235,15 @@
 		<s:HGroup gap="20">
 			<s:VGroup width="60" horizontalAlign="right" verticalAlign="middle" height="100%">
 				<s:Label text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.TO_LABEL)}" 
-						 fontWeight="bold"/>
+						 fontWeight="bold"
+						 fontSize="18"
+						 color="#FFFFFF"/>
 			</s:VGroup>
 			<s:Group id="lowerContainer"/>
 		</s:HGroup>
 	</s:VGroup>
 
-	<s:VGroup id="prioritySelection" excludeFrom="domain" maxHeight="{priorityHeigth}" visible="{_showAdminPriority}" >
+	<s:VGroup id="prioritySelection" excludeFrom="domain" maxHeight="{priorityHeigth}" visible="{showAdminPriority}" >
 		<s:RadioButton id="beforeRb"
 					   label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ADMIN_RULE_RUN_BEFORE)}" 
 					   groupName="priority"

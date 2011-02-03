@@ -8,8 +8,6 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const DESCRIPTION:String="description";
 		
-		public static const EXPANDED_DESCRIPTION:String="expanded.description";
-		
 		public static const FORM_NAME_LABEL:String="form.name.label";
 		
 		public static const FORM_LASTNAME_LABEL:String="form.lastname.label";
@@ -39,5 +37,8 @@ package org.mxhero.console.configurations.application.resources
 		public static const FORM_PASSWORD_TITLE:String="form.password.title";
 		
 		public static const FORM_SOUNDS_ENABLED:String="form.sounds.enabled";
+		
+		public static const CANCEL_CHANGES_TEXT:String="cancel.changes.text";
+
 	}
 }

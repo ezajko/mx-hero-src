@@ -11,5 +11,20 @@ package org.mxhero.console.frontend.domain
 		public var user:String;
 		public var password:String;
 		public var adminMail:String;
+
+		public function clone():Configuration{
+			var clonedConfiguration:Configuration=new Configuration();
+			
+			clonedConfiguration.host=this.host;
+			clonedConfiguration.auth=this.auth;
+			clonedConfiguration.port=this.port;
+			clonedConfiguration.ssl=this.ssl;
+			clonedConfiguration.user=this.user;
+			clonedConfiguration.password=this.password;
+			clonedConfiguration.adminMail=this.adminMail;
+				
+			return clonedConfiguration;
+		}
+	
 	}
 }

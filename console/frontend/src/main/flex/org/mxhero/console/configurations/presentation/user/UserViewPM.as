@@ -1,6 +1,7 @@
 package org.mxhero.console.configurations.presentation.user
 {
 	import mx.controls.Alert;
+	import mx.events.CloseEvent;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
@@ -40,7 +41,21 @@ package org.mxhero.console.configurations.presentation.user
 		public var isUpdating:Boolean = false;
 		
 		public function goBack():void{
-			parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			if(	user.name != context.applicationUser.name ||
+				user.lastName != context.applicationUser.lastName ||
+				user.notifyEmail != context.applicationUser.notifyEmail ||
+				user.soundsEnabled != context.applicationUser.soundsEnabled ||
+				user.locale != context.applicationUser.locale){
+				Alert.show(rm.getString(UserProperties.NAME,UserProperties.CANCEL_CHANGES_TEXT),"",Alert.OK|Alert.CANCEL,null,cancelHandler);
+			} else {
+				parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			}
+		}
+		
+		public function cancelHandler(event:CloseEvent):void{
+			if(event.detail==Alert.OK){
+				parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			}
 		}
 		
 		[Enter(time="every")]
@@ -50,6 +65,7 @@ package org.mxhero.console.configurations.presentation.user
 			user.lastName = context.applicationUser.lastName;
 			user.notifyEmail = context.applicationUser.notifyEmail;
 			user.soundsEnabled = context.applicationUser.soundsEnabled;
+			user.locale = context.applicationUser.locale;
 			for each (var locale:Object in context.locales){
 				if(context.applicationUser.locale==locale.toString()){
 					selectedLocaleIndex=context.locales.getItemIndex(locale);

@@ -6,7 +6,10 @@
 		 horizontalScrollPolicy="off" 
 		 xmlns:component1="org.mxhero.console.commons.feature.component.*" 
 		 xmlns:cloudtag="org.mxhero.flex.component.cloudtag.*" 
-		 xmlns:traffic="org.mxhero.console.reports.presentation.reports.traffic.*" xmlns:component="org.mxhero.console.commons.component.*" xmlns:threats="org.mxhero.console.reports.presentation.reports.threats.*">
+		 xmlns:traffic="org.mxhero.console.reports.presentation.reports.traffic.*" 
+		 xmlns:component="org.mxhero.console.commons.component.*" 
+		 xmlns:threats="org.mxhero.console.reports.presentation.reports.threats.*"
+		 creationComplete="{scroller1_creationCompleteHandler(event)}">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -19,42 +22,55 @@
 			import org.mxhero.console.reports.application.resources.ReportsListProperties;
 			import org.mxhero.console.reports.application.resources.ThreatsProperties;
 			import org.mxhero.console.reports.application.resources.TrafficProperties;
+			import mx.events.FlexEvent;
 			
 			[Inject]
 			[Bindable]
 			public var model:ThreatsPM;
 			
+			protected function scroller1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.addEventListener(MouseEvent.MOUSE_WHEEL,handleWheel,true,100);
+			}
+			
+			protected function handleWheel(event:MouseEvent):void{
+				event.delta*=4;
+			}
 			
 		]]>
 	</fx:Script>
-	<s:VGroup gap="10" paddingLeft="10" 
-			  paddingRight="10" paddingBottom="10" 
-			  paddingTop="10" width="100%" height="100%">
-		
-		
-		<component:TitleExpanded width="100%"
-								 title="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.TITLE)}"
-								 description="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.DESCRIPTION)}"
-								
-								 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
-								 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
-								 enableExpanded="false"
-								 backLink="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_LABEL)}"
-								 backLinkFunction="{model.goBack}"
-								 backLinkTooltip="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_TOOLTIP)}"/>
-		<mx:Spacer height="0"/>
-		
-		
-		<s:HGroup width="100%" height="100%" gap="20">
+	
+	<s:Group width="100%" height="100%">
+		<s:VGroup gap="10" paddingLeft="10" 
+				  paddingRight="10" paddingBottom="10" 
+				  paddingTop="10" width="100%" height="100%">
 			
-			<threats:AntiSpam width="100%" height="50%"/>
-			<s:Line height="100%" >
-				<s:stroke>
-					<s:SolidColorStroke color="gray" alpha="1" weight="2"/>
-				</s:stroke>
-			</s:Line>
-			<threats:AntiVirus width="100%" height="50%"/>
 			
-		</s:HGroup>
-	</s:VGroup>
+			<component:TitleExpanded width="100%"
+									 title="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.TITLE)}"
+									 description="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.DESCRIPTION)}"
+									 
+									 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+									 reducedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}"
+									 enableExpanded="false"
+									 backLink="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_LABEL)}"
+									 backLinkFunction="{model.goBack}"
+									 backLinkTooltip="{resourceManager.getString(ReportsListProperties.NAME,ReportsListProperties.GOBACK_TOOLTIP)}"/>
+			<mx:Spacer height="0"/>
+			
+			
+			<s:HGroup width="100%" height="100%" gap="20">
+				
+				<threats:AntiSpam width="100%" height="50%"/>
+				<s:Line height="100%" >
+					<s:stroke>
+						<s:SolidColorStroke color="gray" alpha="1" weight="2"/>
+					</s:stroke>
+				</s:Line>
+				<threats:AntiVirus width="100%" height="50%"/>
+				
+			</s:HGroup>
+		</s:VGroup>
+	</s:Group>
+
 </s:Scroller>

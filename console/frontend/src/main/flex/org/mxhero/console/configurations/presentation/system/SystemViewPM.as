@@ -1,5 +1,7 @@
 package org.mxhero.console.configurations.presentation.system
 {
+	import mx.controls.Alert;
+	import mx.events.CloseEvent;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
@@ -15,6 +17,8 @@ package org.mxhero.console.configurations.presentation.system
 	[Landmark(name="main.dashboard.configurations.system")]
 	public class SystemViewPM
 	{
+		public var originalConfiguration:Configuration;
+		
 		[Inject]
 		[Bindable]
 		public var parentModel:ConfigurationsViewPM;
@@ -32,19 +36,41 @@ package org.mxhero.console.configurations.presentation.system
 		public var isUpdating:Boolean = false;
 		
 		public function goBack():void{
-			parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			if(	configuration.host!=originalConfiguration.host ||
+				configuration.auth!=originalConfiguration.auth ||
+				configuration.port!=originalConfiguration.port ||
+				configuration.ssl!=originalConfiguration.ssl ||
+				configuration.user!=originalConfiguration.user ||
+				configuration.password!=originalConfiguration.password ||
+				configuration.adminMail!=originalConfiguration.adminMail  ){
+				Alert.show(rm.getString(SystemProperties.NAME,SystemProperties.CANCEL_CHANGES_TEXT),"",Alert.OK|Alert.CANCEL,null,cancelHandler);
+			} else {
+				parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			}
+		}
+		
+		public function cancelHandler(event:CloseEvent):void{
+			if(event.detail==Alert.OK){
+				parentModel.navigateTo(ConfigurationsDestinations.LIST);
+			}
 		}
 		
 		[Enter(time="every")]
 		public function every():void{
+			configuration=null;
+			originalConfiguration=null;
 			dispatcher(new LoadConfigurationEvent());
 			isUpdating=true;
+			
 		}
 		
 		[CommandResult]
 		public function loadResult(result:*,event:LoadConfigurationEvent):void{
 			this.isUpdating=false;
-			this.configuration=result;
+			originalConfiguration=result;
+			if(originalConfiguration!=null){
+				configuration=originalConfiguration.clone();
+			}
 		}
 		
 		[CommandError]

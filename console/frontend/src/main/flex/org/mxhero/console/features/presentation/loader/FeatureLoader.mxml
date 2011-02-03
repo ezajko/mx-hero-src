@@ -79,9 +79,4 @@
 					source="{this}" 
 					excludeFrom="loaded" 
 					labelPlacement="center"/>
-	<component1:ReflectionManager id="reflectionManager" 
-								 target="{progress}" 
-								 falloff="0.65" 
-								 blurAmount="0.15" 
-								 excludeFrom="loaded"/>
 </mx:ModuleLoader>
