@@ -49,20 +49,27 @@
 			</mx:GridLines>
 		</fx:Array>
 		
-		<s:ArrayCollection id="tags">
-			<fx:Array>
-				<fx:Object top="1" label="google@gmail.com"/>
-				<fx:Object top="2" label="external@email.com.br"/>
-				<fx:Object top="3" label="provider@example.com"/>
-				<fx:Object top="4" label="client@example.com"/>
-				<fx:Object top="5" label="jhonsmith@jrrt.com"/>
-				<fx:Object top="6" label="frodo@client.com"/>
-				<fx:Object top="7" label="sam@brasil.com"/>
-				<fx:Object top="8" label="galabriel@america.com"/>
-				<fx:Object top="9" label="bilbo@customer.com"/>
-				<fx:Object top="10" label="feanor@tolkien.com"/>
-			</fx:Array>
-		</s:ArrayCollection>
+		<fx:Array id="bge2">
+			<mx:GridLines 
+				horizontalChangeCount="1" 
+				verticalChangeCount="1"
+				gridDirection="both"
+				>
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:verticalStroke>
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+			</mx:GridLines>
+		</fx:Array>
+		
 	</fx:Declarations>
 	
 	<fx:Style>
@@ -114,6 +121,19 @@
 			private var basicDate:Date = new Date(new Date().fullYear,new Date().month,new Date().date);
 			public static const millisecondsPerDay:int = 1000 * 60 * 60 * 24;
 			public static const millisecondsPerHour:int = 1000 * 60 * 60;
+			
+			[Bindable]
+			private var dataDestinationsAC:ArrayCollection = new ArrayCollection( [
+				{ Qty: 15, Email: 'max@backup.com'},
+				{ Qty: 18, Email: 'hulk@backup.com'},
+				{ Qty: 20, Email: 'thales@backup.com'},
+				{ Qty: 21, Email: 'jhon@backup.com'},
+				{ Qty: 28, Email: 'smith@backup.com' },
+				{ Qty: 32, Email: 'destination@example.com' },
+				{ Qty: 54, Email: 'marcelo@mxhero.com' },
+				{ Qty: 61, Email: 'alex@inova.net' },
+				{ Qty: 65, Email: 'bruno@mxhero.com'},
+				{ Qty: 85, Email: 'mmarmol@mxhero.com'}] );
 			
 			[Bindable]
 			private var dataAC:ArrayCollection = new ArrayCollection( [
@@ -331,20 +351,102 @@
 		
 
 		<s:VGroup width="40%" height="100%" gap="20">
-			<s:Label 
-				fontSize="18" fontWeight="bold" 
-				text="Most Frequent Senders" />
+			<s:Label text="Top Ten Senders" 
+					 fontWeight="bold" fontSize="16"
+					 color="#FFFFFF"
+					 textDecoration="underline"/>
 			<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
-				<cloudtag:TagCloud
-					width="300"
-					height="240"
-					textMaxSize="120"
-					textMinSize="20"
-					textColor="#FFFFFF"
-					rotationMode="{DefaultTextRenderer.ROTATION_HORIZONTAL_ONLY}"
-					text="google@gmail.com google@gmail.com external@email.com.br galadriel@america.com provider@example.com provider@example.com provider@example.com jhonsmith@jrrt.com jhonsmith@jrrt.com bilbo@customer.com bilbo@customer.com sam@brasil.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com mmarmol@mxhero.com alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net alex@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net marcelo@inova.net bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com bruno@mxhero.com"/>
+				<mx:BarChart id="linechartTo" color="0x323232" 
+							 height="100%" 
+							 width="100%"
+							 minHeight="200"
+							 showDataTips="true" 
+							 styleName="myChart"
+							 dataProvider="{dataDestinationsAC}"
+							 axisTitleStyleName="axisTitles"
+							 backgroundElements="{bge2}">
+					
+					<mx:filters>
+						<s:DropShadowFilter
+							distance="4"
+							color="0x666666"
+							alpha=".9"/>
+					</mx:filters>
+					
+					<mx:horizontalAxis>
+						
+						<mx:LinearAxis id="qtyAxisTo" 
+									   displayName="Amount"  
+									   title="Amount" 
+									   />
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxis>
+						
+						<mx:CategoryAxis
+							id="emailAxisTo"
+							categoryField="Email"
+							displayName="Email"
+							title="Email"
+							/>
+					</mx:verticalAxis>
+					
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer 
+							axis="{emailAxisTo}" 
+							color="#FFFFFF" 
+							fontSize="14"
+							/>
+					</mx:verticalAxisRenderers>
+					
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer 
+							axis="{qtyAxisTo}" 
+							color="#FFFFFF" 
+							fontSize="14"
+							/>	  
+						
+						
+					</mx:horizontalAxisRenderers>
+					
+					<mx:fill>
+						<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+					</mx:fill>
+					
+					<mx:series>
+						<mx:BarSeries xField="Qty" 
+									  yField="Email" 
+									  showDataEffect="{slideIn}" 
+									  hideDataEffect="{slideOut}"
+									  id="cserieTo"
+									  buttonMode="true"
+									  >
+							<mx:stroke>
+								<s:SolidColorStroke color="#FFFFFF" caps="round" />
+							</mx:stroke>
+							<mx:fills>
+								<mx:SolidColor color="0xFF99DD" alpha=".6"/>
+								<mx:SolidColor color="0xFF80D4" alpha=".6"/>
+								<mx:SolidColor color="0xFF66CC" alpha=".6"/>
+								<mx:SolidColor color="0xFF4DC3" alpha=".6"/>
+								<mx:SolidColor color="0xFF33BB" alpha=".6"/>
+								<mx:SolidColor color="0xFF1AB3" alpha=".6"/>
+								<mx:SolidColor color="0xFF00AA" alpha=".6"/>
+								<mx:SolidColor color="0xE60099" alpha=".6"/>
+								<mx:SolidColor color="0xCC0088" alpha=".6"/>
+								<mx:SolidColor color="0xB30077" alpha=".6"/>
+							</mx:fills>
+							<mx:filters>
+								<s:DropShadowFilter
+									distance="8"
+									color="0x666666"
+									alpha=".8"/>
+							</mx:filters>
+						</mx:BarSeries>
+					</mx:series>
+					
+				</mx:BarChart>			
 			</s:HGroup>
-			
 		</s:VGroup>
 
 	</s:HGroup>
