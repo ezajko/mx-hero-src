@@ -136,6 +136,7 @@ public class JpaFeatureService implements FeatureService {
 					featureVO.setLabel(helper.getValue(feature.getComponent(),feature.getLabelKey(),userLocale,defaultLocale));
 					featureVO.setDescription(helper.getValue(feature.getComponent(),feature.getDescriptionKey(),userLocale,defaultLocale));
 					featureVO.setExplain(helper.getValue(feature.getComponent(),feature.getExplainKey(),userLocale,defaultLocale));
+					featureVO.setDefaultAdminOrder(feature.getDefaultAdminOrder());
 					featureVO.setRules(ruleTranslator.translate(feature.getRules()));
 					categoryVO.getChilds().add(featureVO);
 				}

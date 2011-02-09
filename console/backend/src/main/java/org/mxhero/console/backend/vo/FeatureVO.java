@@ -2,6 +2,8 @@ package org.mxhero.console.backend.vo;
 
 import java.util.Collection;
 
+import javax.persistence.Column;
+
 public class FeatureVO {
 
 	private Integer id;
@@ -17,6 +19,8 @@ public class FeatureVO {
 	private String moduleUrl;
 	
 	private String moduleReportUrl;
+	
+	private String defaultAdminOrder;
 	
 	public Integer getId() {
 		return id;
@@ -72,6 +76,14 @@ public class FeatureVO {
 
 	public void setModuleReportUrl(String moduleReportUrl) {
 		this.moduleReportUrl = moduleReportUrl;
+	}
+
+	public String getDefaultAdminOrder() {
+		return defaultAdminOrder;
+	}
+
+	public void setDefaultAdminOrder(String defaultAdminOrder) {
+		this.defaultAdminOrder = defaultAdminOrder;
 	}
 
 }
