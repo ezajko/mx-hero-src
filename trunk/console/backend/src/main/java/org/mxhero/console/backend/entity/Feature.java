@@ -52,6 +52,9 @@ public class Feature {
 	@Column(name="base_priority", nullable=false)
 	private Long basePpriority;
 	
+	@Column(name="default_admin_order",  length=20)
+	private String defaultAdminOrder;
+	
 	@OneToMany(mappedBy="feature", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private Set<FeatureRule> rules;
 
@@ -141,6 +144,14 @@ public class Feature {
 
 	public void setModuleReportUrl(String moduleReportUrl) {
 		this.moduleReportUrl = moduleReportUrl;
+	}
+	
+	public String getDefaultAdminOrder() {
+		return defaultAdminOrder;
+	}
+
+	public void setDefaultAdminOrder(String defaultAdminOrder) {
+		this.defaultAdminOrder = defaultAdminOrder;
 	}
 
 	@Override
