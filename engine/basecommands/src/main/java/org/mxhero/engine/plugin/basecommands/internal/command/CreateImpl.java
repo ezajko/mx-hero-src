@@ -54,7 +54,6 @@ public class CreateImpl implements Create {
 		Result result = new Result();
 		Address sender = null;
 		Collection<Address> recipients = new ArrayList<Address>();
-		Collection<String> recipientsString = new ArrayList<String>();
 		MimeMessage newMessage = null;
 		MimeMail newMail = null;
 
@@ -81,7 +80,6 @@ public class CreateImpl implements Create {
 				try {
 					Address rcptAddress = new InternetAddress(recipient);
 					recipients.add(rcptAddress);
-					recipientsString.add(rcptAddress.toString());
 				} catch (AddressException e) {
 					log.warn("recipient is not valid");
 				}
@@ -96,30 +94,34 @@ public class CreateImpl implements Create {
 				recipientsArray[i] = address;
 				i++;
 			}
-			try {
-				newMessage = new MimeMessage(Session.getDefaultInstance(null));
-				newMessage.setSender(sender);
-				newMessage.setFrom(sender);
-				newMessage.setReplyTo(new Address[] { sender });
-				newMessage.addRecipients(RecipientType.TO, recipientsArray);
-				newMessage.setSubject(args[SUBJECT_PARAM_NUMBER]);
-				newMessage.setText(args[TEXT_PARAM_NUMBER]);
-				newMessage.setSentDate(Calendar.getInstance().getTime());
-				newMessage.saveChanges();
-				newMail = new MimeMail(sender.toString(), recipientsString,
-						newMessage, args[OUTSERVICE_PARAM_NUMBER]);
-				newMail.setPhase(RulePhase.SEND);
+			
+			for (Address recipient : recipientsArray){
+				try {
+					newMessage = new MimeMessage(Session.getDefaultInstance(null));
+					newMessage.setSender(sender);
+					newMessage.setFrom(sender);
+					newMessage.setReplyTo(new Address[] { sender });
+					newMessage.addRecipients(RecipientType.TO, recipientsArray);
+					newMessage.setSubject(args[SUBJECT_PARAM_NUMBER]);
+					newMessage.setText(args[TEXT_PARAM_NUMBER]);
+					newMessage.setSentDate(Calendar.getInstance().getTime());
+					newMessage.saveChanges();
+					newMail = new MimeMail(sender.toString(), recipient.toString(),
+							newMessage, args[OUTSERVICE_PARAM_NUMBER]);
+					newMail.setPhase(RulePhase.SEND);
+					
+					if (service == null) {
+						log.warn("core input service is not online");
+						return result;
+					}
+					service.addMail(newMail);
 
-			} catch (MessagingException e) {
-				log.warn("error while creating new message", e);
-				return result;
+				} catch (MessagingException e) {
+					log.warn("error while creating new message", e);
+					return result;
+				}
 			}
 
-			if (service == null) {
-				log.warn("core input service is not online");
-				return result;
-			}
-			service.addMail(newMail);
 			result.setResult(true);
 		}
 		return result;

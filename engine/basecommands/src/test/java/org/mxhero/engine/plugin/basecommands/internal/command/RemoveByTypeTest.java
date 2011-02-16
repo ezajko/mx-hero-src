@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.basecommands.internal.command;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -80,7 +79,7 @@ public class RemoveByTypeTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		log.debug(message.toString());
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		log.debug(mail.toString());
 		Result result = new RemoveByTypeImpl().exec(mail,"text/");
 		log.debug(result.toString());
@@ -114,7 +113,7 @@ public class RemoveByTypeTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertFalse((new RemoveByTypeImpl().exec(mail,"text/html")).isTrue());
 	}

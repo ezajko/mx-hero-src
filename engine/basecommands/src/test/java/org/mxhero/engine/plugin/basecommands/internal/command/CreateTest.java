@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -30,7 +29,7 @@ public class CreateTest {
 		message.setText("\n\r TEXTO \n\r");
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertFalse((new CreateImpl().exec(mail)).isTrue());
 		Assert.assertFalse((new CreateImpl().exec(mail,(String[])null)).isTrue());
@@ -65,7 +64,7 @@ public class CreateTest {
 		message.setText("\n\r TEXTO \n\r");
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertTrue(create.exec(mail, "sender@mxhero.com","recipient@mxhero.com","subject","text","service").isTrue());
 	}
