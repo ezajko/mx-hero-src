@@ -54,7 +54,7 @@ public class InputPoolTest {
 		message.saveChanges();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		message.writeTo(out);
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), out.toByteArray(), "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", out.toByteArray(), "service");
 		
 		InputQueue.getInstance().add(mail);
 		try {

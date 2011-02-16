@@ -60,8 +60,8 @@ public final class SMTPMessageListener implements MessageListener{
 		
 		MimeMail mail;
 		try {
-			Collection<String> originalRcpts = Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR));
-			mail = new MimeMail(from,originalRcpts,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
+			//Collection<String> originalRcpts = Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR));
+			mail = new MimeMail(from,recipient,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
 			mail.getMessage().setSender(new InternetAddress(from));
 		} catch (MessagingException e1) {
 			throw new IOException(e1);

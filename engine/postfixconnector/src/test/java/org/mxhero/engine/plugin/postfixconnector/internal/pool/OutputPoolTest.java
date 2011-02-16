@@ -47,7 +47,7 @@ public class OutputPoolTest {
 		message.saveChanges();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		message.writeTo(out);
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("xxxx@mxhero.com".split(",")), out.toByteArray(), "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "xxxx@mxhero.com", out.toByteArray(), "service");
 		mail.setRecipient("xxxx@mxhero.com");
 		OutputQueue.getInstance().add(mail);
 		try {
