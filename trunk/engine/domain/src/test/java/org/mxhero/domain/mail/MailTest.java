@@ -1,7 +1,6 @@
 package org.mxhero.domain.mail;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -24,9 +23,8 @@ public class MailTest {
 	
 	@Test
 	public void testMail() throws MessagingException, IOException{
-		MimeMail mail = new MimeMail("from",Arrays.asList("recipient;rec".split(";")),"content".getBytes(),"service");
+		MimeMail mail = new MimeMail("from","recipient;rec","content".getBytes(),"service");
 		Assert.assertNotNull(mail.getInitialSender());
-		Assert.assertNotNull(mail.getRecipients());
 		Assert.assertNotNull(mail.getResponseServiceId());
 		Assert.assertNotNull(mail.getMessage());
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
@@ -39,7 +37,7 @@ public class MailTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 
-		MimeMail mailStream = new MimeMail("from",Arrays.asList("recipient;rec".split(";")),message,"service");
+		MimeMail mailStream = new MimeMail("from","recipient;rec",message,"service");
 		log.info(mailStream.toString());
 	}
 	

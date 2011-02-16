@@ -2,7 +2,6 @@ package org.mxhero.engine.domain.mail;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -36,8 +35,6 @@ public final class MimeMail {
 	private String recipientId;
 	
 	private String recipientDomainId;
-	
-	private Collection<String> recipients;
 
 	private String responseServiceId;
 
@@ -58,7 +55,7 @@ public final class MimeMail {
 	 * @param responseServiceId
 	 * @throws MessagingException
 	 */
-	public MimeMail(String from, Collection<String> recipient, byte[] data,
+	public MimeMail(String from, String recipient, byte[] data,
 			String responseServiceId) throws MessagingException {
 		this(from, recipient, responseServiceId);
 		this.initialSize = data.length;
@@ -75,11 +72,10 @@ public final class MimeMail {
 	 * @param responseServiceId
 	 * @throws MessagingException
 	 */
-	@SuppressWarnings("unchecked")
-	public MimeMail(String from, Collection<String> recipients,
+	public MimeMail(String from, String recipient,
 			MimeMessage data, String responseServiceId)
 			throws MessagingException {
-		this(from, recipients, responseServiceId);
+		this(from, recipient, responseServiceId);
 		int headerSize = 0;
 		Enumeration e = data.getAllHeaderLines();
 		if (e.hasMoreElements()) {
@@ -98,12 +94,12 @@ public final class MimeMail {
 	 * @param recipients
 	 * @param responseServiceId
 	 */
-	private MimeMail(String from, Collection<String> recipients,
+	private MimeMail(String from, String recipient,
 			String responseServiceId) {
 		this.sequence = Sequencer.getInstance().getNextSequence();
 		this.time = new Timestamp(System.currentTimeMillis());
 		this.responseServiceId = responseServiceId;
-		this.recipients = recipients;
+		this.recipient = recipient;
 		this.initialSender = from;
 	}
 
@@ -126,21 +122,6 @@ public final class MimeMail {
 	 */
 	public void setRecipient(String recipient) {
 		this.recipient = recipient;
-	}
-
-	/**
-	 * @return
-	 */
-	public Collection<String> getRecipients() {
-		return this.recipients;
-	}
-
-	/**
-	 * @param recipients
-	 *            the recipients to set
-	 */
-	public void setRecipients(Collection<String> recipients) {
-		this.recipients = recipients;
 	}
 
 	/**
@@ -289,8 +270,7 @@ public final class MimeMail {
 						", status=").append(status).append(", statusReason=")
 				.append(statusReason).append(", initialSender=").append(
 						initialSender).append(", recipient=").append(recipient)
-				.append(", recipients=").append(recipients).append(
-						", initialSize=").append(initialSize).append(
+				.append(", initialSize=").append(initialSize).append(
 						", responseServiceId=").append(responseServiceId)
 				.append(", senderId=").append(senderId).append(
 						", senderDomainId=").append(senderDomainId).append(

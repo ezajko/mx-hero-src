@@ -10,9 +10,13 @@ public class InitialData {
 
 	private int initialSize;
 
-	private String initialSender;
+	private User sender;
+	
+	private Domain senderDomain;
 
-	private String initialRecipient;
+	private User recipient;
+	
+	private Domain recipientDomain;
 	
 	private Date sentDate;
 	
@@ -35,33 +39,61 @@ public class InitialData {
 	}
 
 	/**
-	 * @return the initialSender
+	 * @return
 	 */
-	public String getInitialSender() {
-		return initialSender;
+	public User getSender() {
+		return sender;
 	}
 
 	/**
-	 * @param initialSender the initialSender to set
+	 * @param sender
 	 */
-	public void setInitialSender(String initialSender) {
-		this.initialSender = initialSender;
+	public void setSender(User sender) {
+		this.sender = sender;
 	}
 
 	/**
-	 * @return the initialRecipient
+	 * @return
 	 */
-	public String getInitialRecipient() {
-		return initialRecipient;
+	public Domain getSenderDomain() {
+		return senderDomain;
 	}
 
 	/**
-	 * @param initialRecipient the initialRecipient to set
+	 * @param senderDomain
 	 */
-	public void setInitialRecipient(String initialRecipient) {
-		this.initialRecipient = initialRecipient;
+	public void setSenderDomain(Domain senderDomain) {
+		this.senderDomain = senderDomain;
 	}
-	
+
+	/**
+	 * @return
+	 */
+	public User getRecipient() {
+		return recipient;
+	}
+
+	/**
+	 * @param recipient
+	 */
+	public void setRecipient(User recipient) {
+		this.recipient = recipient;
+	}
+
+	/**
+	 * @return
+	 */
+	public Domain getRecipientDomain() {
+		return recipientDomain;
+	}
+
+	/**
+	 * @param recipientDomain
+	 */
+	public void setRecipientDomain(Domain recipientDomain) {
+		this.recipientDomain = recipientDomain;
+	}
+
 	/**
 	 * @return the sentDate
 	 */
