@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.spamd.internal.command;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -50,7 +49,7 @@ public class SpamAssassimScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		Result result = ctx.getBean(SpamAssassimScan.class).exec(mail);
 		Assert.assertFalse(result.isTrue());
 		log.info(result.toString());
@@ -63,7 +62,7 @@ public class SpamAssassimScanTest {
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()),is);
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		Result result = ctx.getBean(SpamAssassimScan.class).exec(mail);
 		Assert.assertTrue(result.isTrue());
 		log.info(result.toString());
@@ -82,7 +81,7 @@ public class SpamAssassimScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		Result result = ctx.getBean(SpamAssassimScan.class).exec(mail,"false");
 		Assert.assertFalse(result.isTrue());
 		log.info(result.toString());
@@ -101,7 +100,7 @@ public class SpamAssassimScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		Result result = ctx.getBean(SpamAssassimScan.class).exec(mail,"true","my-spam-flag","my-spam-status");
 		Assert.assertFalse(result.isTrue());
 		log.info(result.toString());
