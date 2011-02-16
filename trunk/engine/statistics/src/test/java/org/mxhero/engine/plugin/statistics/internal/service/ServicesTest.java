@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.statistics.internal.service;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -47,7 +46,7 @@ public class ServicesTest {
 		message.setText("some text");
 		message.setSubject("some subject");
 		message.saveChanges();
-		mail = new MimeMail("e@w.c", Arrays.asList(new String[] { "x@s.c" }), message, "");	
+		mail = new MimeMail("e@w.c","x@s.c", message, "");	
 		mail.setSenderDomainId("w.c");
 		mail.setSenderId("e@w.c");
 	}

@@ -38,7 +38,6 @@ public final class Utils {
 		record.setStateReason(mail.getStatusReason());
 		record.setSender(mail.getInitialSender());
 		record.setRecipient(mail.getRecipient());
-		record.setRecipients(Arrays.toString(mail.getRecipients().toArray()));
 		record.setBccRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.BCC));
 		record.setCcRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.CC));
 		record.setToRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.TO));

@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.statistics.internal.command;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -61,8 +60,7 @@ public class JpaLogStatTest {
 		message.setSubject("some subject");
 		message.saveChanges();
 
-		MimeMail mail = new MimeMail("e@w.c", Arrays
-				.asList(new String[] { "x@s.c" }), message, "");
+		MimeMail mail = new MimeMail("e@w.c","x@s.c", message, "");
 
 		LogRecord recordService = ctx.getBean(LogRecord.class);
 		recordService.log(mail);
