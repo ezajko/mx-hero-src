@@ -27,40 +27,6 @@ public class RecipientsVO extends Recipients{
 	public RecipientsVO(MimeMail mimeMail){
 		this.mimeMail = mimeMail;
 	}
-	
-	/**
-	 * @see org.mxhero.engine.domain.mail.business.Recipients#getRecipients()
-	 */
-	@Override
-	public Collection<String> getRecipients() {
-		return this.mimeMail.getRecipients();
-	}
-
-	/**
-	 * Should not be call, just override it for drools.
-	 * @see org.mxhero.engine.domain.mail.business.Recipients#setRecipients(java.util.Collection)
-	 */
-	@Override
-	public void setRecipients(Collection<String> recipients) {
-		log.warn(MailVO.CHANGE_ERROR+this);
-	}
-
-	/**
-	 * @see org.mxhero.engine.domain.mail.business.Recipients#getRecipientsStr()
-	 */
-	@Override
-	public String getRecipientsStr() {
-		return Arrays.toString(getRecipients().toArray());
-	}
-
-	/**
-	 * Should not be call, just override it for drools.
-	 * @see org.mxhero.engine.domain.mail.business.Recipients#setRecipientsStr(java.lang.String)
-	 */
-	@Override
-	public void setRecipientsStr(String recipientsStr) {
-		log.warn(MailVO.CHANGE_ERROR+this);
-	}
 
 	/**
 	 * @see org.mxhero.engine.domain.mail.business.Recipients#getAllRecipients()
@@ -279,7 +245,6 @@ public class RecipientsVO extends Recipients{
 				.append(getBccRecipientsStr())
 				.append(", getCcRecipientsStr()=").append(getCcRecipientsStr())
 				.append(", getNgRecipientsStr()=").append(getNgRecipientsStr())
-				.append(", getRecipientsStr()=").append(getRecipientsStr())
 				.append(", getToRecipientsStr()=").append(getToRecipientsStr())
 				.append("]");
 		return builder.toString();

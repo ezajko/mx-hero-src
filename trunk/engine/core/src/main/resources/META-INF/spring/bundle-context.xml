@@ -32,14 +32,7 @@
 	</osgi:service>
 	
 	<bean id="coreInputService" class="org.mxhero.engine.core.internal.service.CoreInputService">
-		<property name="inFilters">
-			<list>
-				<ref bean="addBccHeaderFilter"/>
-			</list>
-		</property>
 	</bean>
-
-	<bean id="addBccHeaderFilter" class="org.mxhero.engine.core.mail.filter.AddBccHeader"/>
 
 	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="corePropertyService">
 	   <osgi:service-properties>
@@ -93,13 +86,8 @@
 		<constructor-arg ref="bundleContext"/>
 		<property name="properties" ref="corePropertyService"/>
 		<property name="logStatService" ref="logStatService"/>
-		<property name="outFilters">
-			<list>
-				<ref bean="removeBccHeaderFilter"/>
-			</list>
-		</property>
+
 	</bean>
 
-	<bean id="removeBccHeaderFilter" class="org.mxhero.engine.core.mail.filter.RemoveBccHeader"/>
-	
+
 </beans>

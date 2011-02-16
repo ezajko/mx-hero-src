@@ -4,7 +4,6 @@ import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
-import org.mxhero.engine.core.internal.pool.spliter.Spliter;
 import org.mxhero.engine.core.internal.queue.InputQueue;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.MimeMail;
@@ -35,8 +34,6 @@ public final class SenderRuleTask implements Runnable {
 	private DomainFinder domainFinderService;
 
 	private UserFinder userFinderService;
-
-	private Spliter spliter;
 
 	private RulesProcessor processor;
 
@@ -77,6 +74,7 @@ public final class SenderRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
+			
 			processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);
 
@@ -85,18 +83,10 @@ public final class SenderRuleTask implements Runnable {
 			 * processing
 			 */
 			if (!mail.getStatus().equals(MailState.DROP)) {
-				if (spliter == null) {
-					mail.setPhase(RulePhase.RECEIVE);
-					InputQueue.getInstance().add(mail);
-					log.debug("Mail sent input queue again for recipeints processing "
+				mail.setPhase(RulePhase.RECEIVE);
+				InputQueue.getInstance().add(mail);
+				log.debug("Mail sent input queue again for recipeints processing "
 									+ mail);
-				} else {
-					for (MimeMail mailSplited : spliter.split(mail)) {
-						InputQueue.getInstance().add(mailSplited);
-						log.debug("Mail sent splited input queue again for recipeints processing "
-										+ mail);
-					}
-				}
 			} else {
 				if(getLogRecordService()!=null){
 					getLogRecordService().log(mail);
@@ -113,12 +103,6 @@ public final class SenderRuleTask implements Runnable {
 		}
 	}
 
-	/**
-	 * @param spliter
-	 */
-	public void setSpliter(Spliter spliter) {
-		this.spliter = spliter;
-	}
 
 	/**
 	 * @param filler

@@ -37,7 +37,7 @@ public class DefaultRulesProcessorTest {
 		Address[] address = new Address[1];
 		address[0]= new InternetAddress("xxxx@mxhero.com");
 		message.setRecipients(RecipientType.TO,address);
-		MimeMail mail = new MimeMail("xxxx@mxhero.com",  Arrays.asList("xxxx@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("xxxx@mxhero.com", "xxxx@mxhero.com", message, "service");
 
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -89,7 +89,7 @@ public class DefaultRulesProcessorTest {
 		Address[] address = new Address[1];
 		address[0]= new InternetAddress("xxxx@mxhero.com");
 		message.setRecipients(RecipientType.TO,address);
-		MimeMail mail = new MimeMail("xxxx@mxhero.com",  Arrays.asList("xxxx@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("xxxx@mxhero.com",  "xxxx@mxhero.com", message, "service");
 
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

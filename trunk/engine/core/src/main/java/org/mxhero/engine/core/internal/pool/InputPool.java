@@ -3,7 +3,6 @@ package org.mxhero.engine.core.internal.pool;
 import org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
-import org.mxhero.engine.core.internal.pool.spliter.Spliter;
 import org.mxhero.engine.core.internal.queue.InputQueue;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.finders.DomainFinder;
@@ -36,8 +35,6 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	private RulesProcessor processor;
 
 	private KnowledgeBaseLoader loader;
-
-	private Spliter spliter;
 
 	private SessionFiller filler;
 
@@ -83,7 +80,6 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 			SenderRuleTask task = new SenderRuleTask(loader.getBuilder()
 					.getKnowledgeBase(), object, domainFinderService,
 					userFinderService);
-			task.setSpliter(this.getSpliter());
 			task.setFiller(this.getFiller());
 			task.setProcessor(this.getProcessor());
 			task.setLogRecordService(getLogRecordService());
@@ -137,21 +133,6 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	 */
 	public void setProcessor(RulesProcessor processor) {
 		this.processor = processor;
-	}
-
-	/**
-	 * @return the spliter
-	 */
-	public Spliter getSpliter() {
-		return spliter;
-	}
-
-	/**
-	 * @param spliter
-	 *            the spliter to set
-	 */
-	public void setSpliter(Spliter spliter) {
-		this.spliter = spliter;
 	}
 
 	/**

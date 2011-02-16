@@ -16,6 +16,7 @@ public final class Core extends PropertiesService{
 
 	public static final String DROOLS_CHANGESET_PATH = "updatable.drools.changeset.path";
 	public static final String DROOLS_SCAN_INTERVAL = "updatable.drools.resource.scanner.interval";
+	public static final String DROOLS_RESOURCES_BACKUPDIR_BASE = "updatable.drools.resources.backupdir.base";
 	public static final String INPUTPOOL_COREPOOLSIZE = "updatable.inputpool.corepoolsize";
 	public static final String INPUTPOOL_MAXIMUMPOOLSIZE = "updatable.inputpool.maximumpoolsize";
 	public static final String INPUTPOOL_KEEPALIVETIME = "updatable.inputpool.keepalivetime";
@@ -48,7 +49,8 @@ public final class Core extends PropertiesService{
 	 * Returns the properties that are loaded from the classpath.
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	public static Dictionary getDefaults(){
 		Properties initialProperties = new Properties(); 
 		try {
