@@ -1,7 +1,6 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -42,7 +41,7 @@ public class AddTextTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertTrue((new AddTextImpl().exec(mail,"ADDED ON TOP","top")).isTrue());
 		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON TOP"));
@@ -60,7 +59,7 @@ public class AddTextTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertTrue((new AddTextImpl().exec(mail,"ADDED ON BOTTOM","bottom")).isTrue());
 		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON BOTTOM"));
@@ -78,7 +77,7 @@ public class AddTextTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com","mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertTrue((new AddTextImpl().exec(mail,"ADDED ON BOTTOM","bottom","html")).isTrue());
 		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON BOTTOM"));
@@ -97,7 +96,7 @@ public class AddTextTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		
 		Assert.assertTrue((new AddTextImpl().exec(mail,"<B>ADDED ON TOP</B>","top","hTmL")).isTrue());
 		Assert.assertTrue(mail.getMessage().getContent().toString().contains("ADDED ON TOP"));

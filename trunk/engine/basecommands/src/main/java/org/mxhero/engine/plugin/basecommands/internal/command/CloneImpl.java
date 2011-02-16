@@ -1,7 +1,5 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
-import java.util.Arrays;
-
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -88,8 +86,7 @@ public class CloneImpl implements Clone {
 			}
 
 			try {
-				clonedMail = new MimeMail(sender.toString(), Arrays
-						.asList(new String[] { recipient.toString() }),
+				clonedMail = new MimeMail(sender.toString(), recipient.toString(),
 						new MimeMessage(mail.getMessage()), outputService);
 				clonedMail.setPhase(args[PHASE_PARAM_NUMBER]);
 				if (args[0].equals(RulePhase.RECEIVE)) {

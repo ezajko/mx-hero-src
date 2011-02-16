@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -24,8 +23,7 @@ public class GetSizeTest {
 		message.setRecipient(RecipientType.TO, new InternetAddress("dest@dest.com"));
 		message.setSubject("test");
 		message.setText("some text");
-		MimeMail mail = new MimeMail("test@test.com",
-				Arrays.asList("dest@dest.com".split(",")),
+		MimeMail mail = new MimeMail("test@test.com","dest@dest.com",
 						message,
 						"service");
 		
