@@ -21,6 +21,7 @@ public abstract class DomainTranslator {
 		domain.setId(entity.getDomain());
 		//ALIASES
 		domain.setAliases(new ArrayList<String>());
+		domain.setManaged(true);
 		for(DbAlias dbAlias : entity.getAliases()){
 			domain.getAliases().add(dbAlias.getAlias());
 		}

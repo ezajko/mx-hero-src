@@ -19,6 +19,7 @@ public abstract class UserTranslate {
 		user.setMail(entity.getAccount()+"@"+entity.getDomain().getDomain());
 		user.setAliases(new ArrayList<String>());
 		user.getAliases().add(user.getMail());
+		user.setManaged(true);
 		for(DbAlias dbAlias : entity.getDomain().getAliases()){
 			user.getAliases().add(entity.getAccount()+"@"+dbAlias.getAlias());
 		}
