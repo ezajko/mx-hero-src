@@ -51,6 +51,7 @@
     <module>spamd</module>
     <module>statistics</module>
     <module>dbfinder</module>
+    <module>featuresfp</module>
   </modules>
 
   <build>
