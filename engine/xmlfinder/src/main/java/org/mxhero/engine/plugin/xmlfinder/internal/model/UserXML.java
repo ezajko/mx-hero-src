@@ -67,6 +67,7 @@ public class UserXML {
 		User user = new User();
 		user.setMail(mail);
 		user.setAliases(new ArrayList<String>());
+		user.setManaged(true);
 		if(aliases!=null){
 			user.getAliases().addAll(aliases);
 		}

@@ -117,6 +117,7 @@ public class DomainXML {
 		Domain domain = new Domain();
 		domain.setId(id);
 		domain.setAliases(new ArrayList<String>());
+		domain.setManaged(true);
 		if (aliases!=null){
 			domain.getAliases().addAll(aliases);
 		}
