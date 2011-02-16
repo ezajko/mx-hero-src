@@ -19,7 +19,7 @@ public class CoreInputServiceTest {
 	@Test
 	public void addMailTest() throws MessagingException{
 		InputService service = new CoreInputService();
-		MimeMail mail = new MimeMail("from@mail.com",Arrays.asList("to@mail.com;sss".split(";")),"mail data".getBytes(),"service");
+		MimeMail mail = new MimeMail("from@mail.com","to@mail.com","mail data".getBytes(),"service");
 		try{
 			service.addMail(null);
 			Assert.fail("We cant allow any null param");

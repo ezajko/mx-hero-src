@@ -15,11 +15,8 @@ import org.mxhero.engine.core.mail.SenderVO;
 import org.mxhero.engine.core.mail.SubjectVO;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
-import org.mxhero.engine.domain.mail.business.DomainList;
-import org.mxhero.engine.domain.mail.business.Group;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.business.User;
-import org.mxhero.engine.domain.mail.business.UserList;
 import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.properties.PropertiesService;
@@ -54,81 +51,19 @@ public class PhaseSessionFiller implements SessionFiller {
 	@Override
 	public String fill(StatefulKnowledgeSession ksession,
 			UserFinder userFinder, DomainFinder domainFinder, MimeMail mail) {
-		Domain domain = null;
-		User user = null;
-		String userMail = null;
+
 		String domainAgendaGroup = null;
+		InitialDataVO initialData = null;
 
-		if (mail != null) {
-			if (mail.getPhase().equals(RulePhase.SEND)) {
-				userMail = mail.getInitialSender();
-				mail.setSenderId(userMail);
-			} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
-				userMail = mail.getRecipient();
-				mail.setRecipientId(userMail);
-			}
-			log.debug("filling session for user:"+userMail);
+		
+		initialData = getInitialData(userFinder, domainFinder, mail);
+		
+		if(mail.getPhase().equals(RulePhase.SEND)){
+			domainAgendaGroup = mail.getSenderDomainId();
+		} else if (mail.getPhase().equals(RulePhase.RECEIVE)){
+			domainAgendaGroup = mail.getRecipientDomainId();
 		}
-
-		if (userMail != null) {
-			if (domainFinder != null) {
-
-				String domainId = userMail
-						.substring(userMail.indexOf(DIV_CHAR) + 1);
-				
-				if (mail.getPhase().equals(RulePhase.SEND)) {
-					mail.setSenderDomainId(domainId);
-				} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
-					mail.setRecipientDomainId(domainId);
-				}
-				
-				domain = domainFinder.getDomain(domainId);
-				if (domain != null) {
-					log.debug("domain found " + domain);
-					if (mail.getPhase().equals(RulePhase.SEND)) {
-						mail.setSenderDomainId(domain.getId());
-					} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
-						mail.setRecipientDomainId(domain.getId());
-					}
-					ksession.insert(domain);
-					if(domain.getGroups()!=null){
-						for (Group group : domain.getGroups()) {
-							ksession.insert(group);
-						}
-					}
-					if(domain.getLists()!=null){
-						for (DomainList domainList : domain.getLists()) {
-							ksession.insert(domainList);
-						}
-					}
-					if (userFinder != null) {
-						user = userFinder.getUser(userMail, domainId);
-						if (user != null) {
-							log.debug("user found " + user);
-							if (mail.getPhase().equals(RulePhase.SEND)) {
-								mail.setSenderId(user.getMail());
-							} else if (mail.getPhase().equals(RulePhase.RECEIVE)) {
-								mail.setRecipientId(user.getMail());
-							}
-							ksession.insert(user);
-							if(user.getLists()!=null){
-								for (UserList userList : user.getLists()) {
-									ksession.insert(userList);
-								}
-							}
-						}
-					}
-					/* add domain of the recipient agenda group */
-					domainAgendaGroup = domain.getId();
-				}
-			}
-
-			if (domainAgendaGroup == null) {
-				domainAgendaGroup = userMail.substring(userMail
-						.indexOf(DIV_CHAR) + 1);
-			}
-		}
-
+		
 		if(getLogRecordService()!=null){
 			getLogRecordService().log(mail);
 		}
@@ -138,7 +73,7 @@ public class PhaseSessionFiller implements SessionFiller {
 		}
 		
 		ksession.insert(new MailVO(mail));
-		ksession.insert(new InitialDataVO(mail));
+		ksession.insert(initialData);
 		ksession.insert(new HeadersVO(mail));
 		ksession.insert(new SenderVO(mail));
 		ksession.insert(new SubjectVO(mail));
@@ -156,6 +91,78 @@ public class PhaseSessionFiller implements SessionFiller {
 		return domainAgendaGroup;
 	}
 
+	
+	/**
+	 * @param userFinder
+	 * @param domainFinder
+	 * @param mail
+	 * @return
+	 */
+	private InitialDataVO getInitialData(UserFinder userFinder, DomainFinder domainFinder, MimeMail mail){
+		InitialDataVO initialData = null;
+		User sender = null;
+		Domain senderDomain = null;
+		User recipient = null;
+		Domain recipientDomain = null;
+		
+		if (mail != null) {
+			mail.setSenderId(mail.getInitialSender());
+			mail.setRecipientId(mail.getRecipient());
+			mail.setSenderDomainId(mail.getSenderId().substring(mail.getSenderId().indexOf(DIV_CHAR) + 1));
+			mail.setRecipientDomainId(mail.getRecipientId().substring(mail.getRecipientId().indexOf(DIV_CHAR) + 1));
+			
+			if (domainFinder != null) {
+				senderDomain = domainFinder.getDomain(mail.getSenderDomainId());
+				if(senderDomain!=null){
+					mail.setSenderDomainId(senderDomain.getId());
+					if (userFinder != null) {
+						sender = userFinder.getUser(mail.getSenderId(), mail.getSenderDomainId());
+						if(sender!=null){
+							mail.setSenderId(sender.getMail());
+						}
+					}
+				}
+				
+				recipientDomain = domainFinder.getDomain(mail.getRecipientDomainId());	
+				if(recipientDomain!=null){
+					mail.setRecipientDomainId(recipientDomain.getId());
+					if (userFinder != null) {
+						recipient = userFinder.getUser(mail.getRecipientId(), mail.getSenderDomainId());
+						if(sender!=null){
+							mail.setSenderId(sender.getMail());
+						}
+					}
+				}
+			}
+			
+			if (sender == null){
+				sender = new User();
+				sender.setMail(mail.getSenderId());
+				sender.setManaged(false);
+			}
+			if (recipient == null){
+				recipient = new User();
+				recipient.setMail(mail.getRecipientId());
+				recipient.setManaged(false);
+			}
+			if (senderDomain == null){
+				senderDomain = new Domain();
+				senderDomain.setId(mail.getSenderDomainId());
+				senderDomain.setManaged(false);
+			}
+			if(recipientDomain==null){
+				recipientDomain = new Domain();
+				recipientDomain.setId(mail.getRecipientDomainId());
+				recipientDomain.setManaged(false);
+			}
+			
+			initialData = new InitialDataVO(mail, sender, senderDomain, recipient, recipientDomain);
+		}
+		
+		return initialData;
+	}
+	
+	
 	/**
 	 * @return the logRecordService
 	 */

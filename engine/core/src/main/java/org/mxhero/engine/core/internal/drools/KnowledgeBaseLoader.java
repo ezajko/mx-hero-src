@@ -32,6 +32,8 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 	
 	private String filePath;
 	
+	private String backupdirbase;
+	
 	private boolean working = false;
 	
 	private PropertiesService properties;
@@ -67,6 +69,7 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 						File file = new File(filePath);
 						if (file.canRead()){
 							builder.setFilePath(filePath);
+							builder.setBackupdirbase(backupdirbase);
 							builder.buildBase();
 							log.debug("loaded "+builder.getKnowledgeBase().getKnowledgePackages().size()+" packages");
 						} else {
@@ -165,6 +168,14 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 		this.filePath = filePath;
 	}
 
+	public String getBackupdirbase() {
+		return backupdirbase;
+	}
+
+	public void setBackipdirbase(String backdirbase) {
+		this.backupdirbase = backdirbase;
+	}
+
 	/**
 	 * Updates times interval
 	 * @see org.mxhero.engine.domain.properties.PropertiesListener#updated()
@@ -173,10 +184,12 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 	public void updated() {
 		String newLoadTime = getProperties().getValue(Core.DROOLS_SCAN_INTERVAL);
 		this.filePath = getProperties().getValue(Core.DROOLS_CHANGESET_PATH);
+		this.backupdirbase = getProperties().getValue(Core.DROOLS_RESOURCES_BACKUPDIR_BASE);
 		
 		log.debug("updating");
 		log.debug("newLoadTime:"+newLoadTime);
 		log.debug("filePath:"+filePath);
+		log.debug("backupdirbase:"+this.backupdirbase);
 
 		if (newLoadTime!=null){
 			try{

@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.drools;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import org.drools.KnowledgeBase;
@@ -11,7 +13,8 @@ import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactoryService;
 import org.drools.util.ServiceRegistry;
-import org.mxhero.engine.domain.provider.ResourceProvider;
+import org.mxhero.engine.domain.provider.Resource;
+import org.mxhero.engine.domain.provider.ResourcesProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,9 +30,11 @@ public class KnowledgeBaseBuilder {
 
 	private String filePath;
 
+	private String backupdirbase;
+	
 	private ServiceRegistry registry;
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private List resourceProviders;
 
 	private KnowledgeBase knowledgeBase = null;
@@ -41,6 +46,9 @@ public class KnowledgeBaseBuilder {
 	 */
 	public void buildBase() {
 
+		String folder = Long.toString(System.currentTimeMillis());
+		folder = this.backupdirbase+"/"+folder;
+		
 		KnowledgeBuilderFactoryService knowledgeBuilderFactoryService = registry
 				.get(KnowledgeBuilderFactoryService.class);
 
@@ -60,9 +68,28 @@ public class KnowledgeBaseBuilder {
 				ResourceType.CHANGE_SET);
 
 		for(Object provider : resourceProviders){
+			new File(folder).mkdir();
 			try{
-				kbuilder.add(resourceFactoryService.newInputStreamResource(((ResourceProvider)provider).getResource()),
-						ResourceType.getResourceType(((ResourceProvider)provider).getResourceType()));
+				for (Resource resource :((ResourcesProvider)provider).getResources()){
+					
+					File resourceFile = new File(folder,resource.getName());
+					FileOutputStream fos = new FileOutputStream(resourceFile);
+					
+					byte[] buffer = new byte[1024];
+					int len = resource.getResource().read(buffer);
+					while (len != -1) {
+						fos.write(buffer, 0, len);
+					    len = resource.getResource().read(buffer);
+					}
+					
+					try{
+					kbuilder.add(resourceFactoryService.newInputStreamResource(resource.getResource()),
+							ResourceType.getResourceType(resource.getType()));
+					}catch (Exception e){
+						log.error("error while compiling resource "+resource.getName(),e);
+					}
+					
+				}				
 			}catch (Exception e) {
 				log.error("error while trying to load resource from external provider",e);
 			}
@@ -132,7 +159,7 @@ public class KnowledgeBaseBuilder {
 	/**
 	 * @return the resourceProviders
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public List getResourceProviders() {
 		return resourceProviders;
 	}
@@ -140,9 +167,17 @@ public class KnowledgeBaseBuilder {
 	/**
 	 * @param resourceProviders the resourceProviders to set
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public void setResourceProviders(List resourceProviders) {
 		this.resourceProviders = resourceProviders;
 	}
 
+	public String getBackupdirbase() {
+		return backupdirbase;
+	}
+
+	public void setBackupdirbase(String backupdirbase) {
+		this.backupdirbase = backupdirbase;
+	}
+	
 }

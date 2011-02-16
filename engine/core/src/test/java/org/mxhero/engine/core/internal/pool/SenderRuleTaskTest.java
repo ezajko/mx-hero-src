@@ -17,7 +17,6 @@ import org.drools.KnowledgeBaseFactory;
 import org.junit.Test;
 import org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.DefaultRulesProcessor;
-import org.mxhero.engine.core.internal.pool.spliter.RecipientSpliter;
 import org.mxhero.engine.core.internal.queue.InputQueue;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.MimeMail;
@@ -70,7 +69,7 @@ public class SenderRuleTaskTest {
 		Address[] address = new Address[1];
 		address[0]= new InternetAddress("xxxx@mxhero.com");
 		message.setRecipients(RecipientType.TO,address);
-		MimeMail mail = new MimeMail("xxxx@mxhero.com",  Arrays.asList("xxxx@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("xxxx@mxhero.com",  "xxxx@mxhero.com", message, "service");
 
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -97,11 +96,7 @@ public class SenderRuleTaskTest {
 				
 			}
 		});
-		
-		RecipientSpliter spliter = new RecipientSpliter();
-		
-		task.setSpliter(spliter);
-		
+	
 		Thread thread = new Thread(task);
 		thread.start();
 		

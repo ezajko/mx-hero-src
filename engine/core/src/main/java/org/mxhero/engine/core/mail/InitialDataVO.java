@@ -5,7 +5,9 @@ import java.util.Date;
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.business.Domain;
 import org.mxhero.engine.domain.mail.business.InitialData;
+import org.mxhero.engine.domain.mail.business.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +24,12 @@ public class InitialDataVO extends InitialData{
 	/**
 	 * @param mimemail
 	 */
-	public InitialDataVO(MimeMail mimemail){
+	public InitialDataVO(MimeMail mimemail, User sender, Domain senderDomain, User recipient, Domain recipientDomain){
 		this.mimeMail = mimemail;
+		this.setSender(sender);
+		this.setSenderDomain(senderDomain);
+		this.setRecipient(recipient);
+		this.setRecipientDomain(recipientDomain);
 	}
 	
 	/**
@@ -42,38 +48,32 @@ public class InitialDataVO extends InitialData{
 	public void setInitialSize(int initialSize) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
-	
-	/**
-	 * @see org.mxhero.engine.domain.mail.business.InitialData#getInitialSender()
-	 */
-	@Override
-	public String getInitialSender() {
-		return this.mimeMail.getInitialSender();
-	}
 
 	/**
-	 * Should not be call, just override it for drools.
-	 * @see org.mxhero.engine.domain.mail.business.InitialData#setInitialSender(java.lang.String)
+	 * @param sender
 	 */
-	@Override
-	public void setInitialSender(String initialSender) {
+	public void setSender(User sender) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
-	
+
 	/**
-	 * @see org.mxhero.engine.domain.mail.business.InitialData#getInitialRecipient()
+	 * @param senderDomain
 	 */
-	@Override
-	public String getInitialRecipient() {
-		return this.mimeMail.getRecipient();
+	public void setSenderDomain(Domain senderDomain) {
+		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 
 	/**
-	 * Should not be call, just override it for drools.
-	 * @see org.mxhero.engine.domain.mail.business.InitialData#setInitialRecipient(java.lang.String)
+	 * @param recipient
 	 */
-	@Override
-	public void setInitialRecipient(String initialRecipient) {
+	public void setRecipient(User recipient) {
+		log.warn(MailVO.CHANGE_ERROR+this);
+	}
+
+	/**
+	 * @param recipientDomain
+	 */
+	public void setRecipientDomain(Domain recipientDomain) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 	
@@ -142,20 +142,24 @@ public class InitialDataVO extends InitialData{
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 
-	/**
+	/** 
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("InitialDataVO [getPhase()=").append(getPhase()).append(
-				", getInitialSender()=").append(getInitialSender()).append(
-				", getInitialRecipient()=").append(getInitialRecipient())
-				.append(", getInitialSize()=").append(getInitialSize()).append(
-						", getSentDate()=").append(getSentDate()).append(
-						", getReceivedDate()=").append(getReceivedDate())
-				.append("]");
+		builder.append("InitialDataVO [getInitialSize()=")
+				.append(getInitialSize()).append(", getSentDate()=")
+				.append(getSentDate()).append(", getReceivedDate()=")
+				.append(getReceivedDate()).append(", getPhase()=")
+				.append(getPhase()).append(", getSender()=")
+				.append(getSender()).append(", getSenderDomain()=")
+				.append(getSenderDomain()).append(", getRecipient()=")
+				.append(getRecipient()).append(", getRecipientDomain()=")
+				.append(getRecipientDomain()).append("]");
 		return builder.toString();
 	}
+
 
 }
