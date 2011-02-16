@@ -7,11 +7,7 @@ import java.util.Collection;
  * @author mmarmol
  */
 public class Recipients {
-	
-	private Collection<String> recipients;
-	
-	private String recipientsStr;
-	
+
 	private Collection<String> allRecipients;
 	
 	private Collection<String> toRecipients;
@@ -31,34 +27,6 @@ public class Recipients {
 	private String ccRecipientsStr;
 	
 	private String ngRecipientsStr;
-
-	/**
-	 * @return the recipients
-	 */
-	public Collection<String> getRecipients() {
-		return recipients;
-	}
-
-	/**
-	 * @param recipients the recipients to set
-	 */
-	public void setRecipients(Collection<String> recipients) {
-		this.recipients = recipients;
-	}
-
-	/**
-	 * @return the recipientsStr
-	 */
-	public String getRecipientsStr() {
-		return recipientsStr;
-	}
-
-	/**
-	 * @param recipientsStr the recipientsStr to set
-	 */
-	public void setRecipientsStr(String recipientsStr) {
-		this.recipientsStr = recipientsStr;
-	}
 
 	/**
 	 * @return the allRecipients

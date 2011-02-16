@@ -11,6 +11,8 @@ public class Domain {
 
 	private String id;
 	
+	private Boolean managed;
+	
 	private Collection<String> aliases;
 	
 	private Collection<DomainList> lists;
@@ -74,14 +76,31 @@ public class Domain {
 	}
 
 	/**
+	 * @return
+	 */
+	public Boolean getManaged() {
+		return managed;
+	}
+
+	/**
+	 * @param managed
+	 */
+	public void setManaged(Boolean managed) {
+		this.managed = managed;
+	}
+
+	/** 
+	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Domain [id=").append(id).append(", aliases=").append(
-				aliases).append("]");
+		builder.append("Domain [id=").append(id).append(", managed=")
+				.append(managed).append(", aliases=").append(aliases)
+				.append(", lists=").append(lists).append(", groups=")
+				.append(groups).append("]");
 		return builder.toString();
-	}
+	}	
 
 }

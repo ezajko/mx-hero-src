@@ -14,6 +14,7 @@ public class User {
 	
 	private Collection<String> aliases;
 	
+	private Boolean managed;
 
 	/**
 	 * @return
@@ -55,6 +56,20 @@ public class User {
 	 */
 	public void setAliases(Collection<String> aliases) {
 		this.aliases = aliases;
+	}
+
+	/**
+	 * @return
+	 */
+	public Boolean getManaged() {
+		return managed;
+	}
+
+	/**
+	 * @param managed
+	 */
+	public void setManaged(Boolean managed) {
+		this.managed = managed;
 	}
 
 	/**

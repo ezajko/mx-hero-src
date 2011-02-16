@@ -40,4 +40,41 @@ public class Headers {
 		this.allHeadersStr = allHeadersStr;
 	}
 
+	/**
+	 * @param header
+	 * @param value
+	 */
+	public void addHeader(String header, String value){
+		
+	}
+
+	/**
+	 * @param header
+	 * @param Value
+	 */
+	public void setHeaderValue(String header, String Value){ 
+	}
+	
+	/**
+	 * @param header
+	 * @return
+	 */
+	public String getHeaderValue(String header){
+		return null;
+	}
+	
+	/**
+	 * @param header
+	 */
+	public void removeHeader(String header){
+		
+	}
+	
+	/**
+	 * @param header
+	 * @return
+	 */
+	public Boolean hasHeader(String header){
+		return false;
+	}
 }
