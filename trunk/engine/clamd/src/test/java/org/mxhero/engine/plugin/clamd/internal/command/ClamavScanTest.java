@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.clamd.internal.command;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -56,7 +55,7 @@ public class ClamavScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		scan.setProperties(new Clamd());
 		Result result = scan.exec(mail,"true");
@@ -98,7 +97,7 @@ public class ClamavScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		scan.setProperties(new Clamd());
 		Result result = scan.exec(mail,"true");
@@ -141,7 +140,7 @@ public class ClamavScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com","mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		scan.setProperties(new Clamd());
 		Result result = scan.exec(mail,"true");
@@ -189,7 +188,7 @@ public class ClamavScanTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", Arrays.asList("mmarmol@mxhero.com".split(",")), message, "service");
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		scan.setProperties(new Clamd());
 		Result result = scan.exec(mail,"false");
