@@ -52,9 +52,6 @@ public class Record implements Serializable{
 	@Column(name = "subject")
 	private String subject;
 
-	@Column(name = "recipients", length = 1024)
-	private String recipients;
-
 	@Column(name = "from_recipeints", length = 1024)
 	private String from;
 
@@ -215,20 +212,6 @@ public class Record implements Serializable{
 	 */
 	public void setRecipientDomainId(String recipientDomainId) {
 		this.recipientDomainId = recipientDomainId;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getRecipients() {
-		return recipients;
-	}
-
-	/**
-	 * @param recipients
-	 */
-	public void setRecipients(String recipients) {
-		this.recipients = recipients;
 	}
 
 	/**
