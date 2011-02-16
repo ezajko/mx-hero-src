@@ -114,23 +114,13 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 		// Prevent concurrent modifications
 		List<Delivery> list = new ArrayList<Delivery>(this.deliveries);
 
-		/*
-		 * will only call one delivery, and in recipient parameter it will pass
-		 * a string with all recipient separated with a ';' character
-		 */
-		String deliverTo = null;
-		for (Delivery delivery : list) {
-			if (deliverTo == null) {
-				deliverTo = delivery.getRecipient();
-			} else {
-				deliverTo = deliverTo + SPLIT_CHAR + delivery.getRecipient();
-			}
-		}
-		if (!deliverTo.isEmpty()) {
-			Delivery delivery = list.get(0);
-			delivery.getListener().deliver(getSessionContext(), this.from,
-					deliverTo,
-					SharedStreamUtils.getPrivateInputStream(useCopy, data));
+		for (Delivery delivery : list)
+		{				
+		    delivery.getListener().deliver(getSessionContext(), this.from, 
+		    		delivery.getRecipient(), SharedStreamUtils.getPrivateInputStream(useCopy, data));
+		    
+		    // Use a stream copy on second iteration if not the case yet
+		    useCopy = true;
 		}
 
 	}

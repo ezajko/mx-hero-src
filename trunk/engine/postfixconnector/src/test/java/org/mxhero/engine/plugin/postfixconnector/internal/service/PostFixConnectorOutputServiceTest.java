@@ -24,7 +24,7 @@ public class PostFixConnectorOutputServiceTest {
 		} catch (NullPointerException e){
 		}
 		Assert.assertEquals(0, OutputQueue.getInstance().size());
-		service.addOutMail(new MimeMail("f",Arrays.asList("r".split(";")),"c".getBytes(),"s"));
+		service.addOutMail(new MimeMail("f","r","c".getBytes(),"s"));
 		Assert.assertEquals(1, OutputQueue.getInstance().size());
 	}
 	
