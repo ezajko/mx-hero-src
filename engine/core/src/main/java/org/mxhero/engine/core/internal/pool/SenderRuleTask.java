@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
+import javax.mail.internet.MimeMessage;
+
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
@@ -83,8 +85,16 @@ public final class SenderRuleTask implements Runnable {
 			 * processing
 			 */
 			if (!mail.getStatus().equals(MailState.DROP)) {
-				mail.setPhase(RulePhase.RECEIVE);
-				InputQueue.getInstance().add(mail);
+				MimeMail splitedMail;
+				MimeMessage newMessage = new MimeMessage(mail.getMessage());
+				splitedMail = new MimeMail(mail.getInitialSender(),
+						mail.getRecipient(),
+						newMessage, 
+						mail.getResponseServiceId());
+				splitedMail.setPhase(RulePhase.RECEIVE);
+				splitedMail.setSenderId(mail.getSenderId());
+				splitedMail.setSenderDomainId(mail.getSenderDomainId());
+				InputQueue.getInstance().add(splitedMail);
 				log.debug("Mail sent input queue again for recipeints processing "
 									+ mail);
 			} else {

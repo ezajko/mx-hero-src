@@ -26,10 +26,10 @@ public class InitialDataVO extends InitialData{
 	 */
 	public InitialDataVO(MimeMail mimemail, User sender, Domain senderDomain, User recipient, Domain recipientDomain){
 		this.mimeMail = mimemail;
-		this.setSender(sender);
-		this.setSenderDomain(senderDomain);
-		this.setRecipient(recipient);
-		this.setRecipientDomain(recipientDomain);
+		super.setSender(sender);
+		super.setSenderDomain(senderDomain);
+		super.setRecipient(recipient);
+		super.setRecipientDomain(recipientDomain);
 	}
 	
 	/**

@@ -81,7 +81,7 @@
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://10.30.2.240/mxhero_dev" />
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/mxhero_dev" />
 		<property name="username" value="mxhero_dev" />
 		<property name="password" value="mxhero_dev" />
 		<property name="idleConnectionTestPeriod" value="60" />
