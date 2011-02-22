@@ -7,6 +7,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class to create entities from mails.
@@ -15,6 +17,9 @@ import org.mxhero.engine.domain.mail.MimeMail;
 public final class Utils {
 
 	private static final char DIV_CHAR = '@';
+	
+	private static Logger log = LoggerFactory.getLogger(Utils.class);
+	
 	
 	/**
 	 * private so it can be instantiated
@@ -77,28 +82,33 @@ public final class Utils {
 		try {
 			record.setMessageId(mail.getMessage().getMessageID());
 		} catch (MessagingException e1) {
+			log.error("could not read message id from email");
 			record.setMessageId("");
 		}
 		
 		try {
 			record.setFrom(Arrays.toString(mail.getMessage().getFrom()));
 		} catch (MessagingException e) {
+			log.error("could not read From from email");
 			record.setFrom("");
 		}
 		record.setSender(mail.getInitialSender());
 		try {
 			record.setReceivedDate(mail.getMessage().getReceivedDate());
 		} catch (MessagingException e) {
+			log.error("could not read ReceivedDate id from email");
 			record.setReceivedDate(null);
 		}
 		try {
 			record.setSentDate(mail.getMessage().getSentDate());
 		} catch (MessagingException e) {
+			log.error("could not read SentDate id from email");
 			record.setSentDate(null);
 		}
 		try {
 			record.setSubject(mail.getMessage().getSubject());
 		} catch (MessagingException e) {
+			log.error("could not read Subject id from email");
 			record.setSubject(null);
 		}
 		record.setBytesSize(mail.getInitialSize());

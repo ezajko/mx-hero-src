@@ -40,7 +40,7 @@
 	   </osgi:service-properties>
 	</osgi:service>
 	
-	<osgi:list id="resourceProviders" interface="org.mxhero.engine.domain.provider.ResourceProvider" cardinality="0..N"/>
+	<osgi:list id="resourceProviders" interface="org.mxhero.engine.domain.provider.ResourcesProvider" cardinality="0..N"/>
 	
 	<bean id="corePropertyService" class="org.mxhero.engine.core.internal.service.Core"/>
 
@@ -63,8 +63,6 @@
 	<bean id="drprocessor" class="org.mxhero.engine.core.internal.pool.processor.DefaultRulesProcessor">
 		<property name="properties" ref="corePropertyService"/>
 	</bean>
-	
-	<bean id="rspliter" class="org.mxhero.engine.core.internal.pool.spliter.RecipientSpliter"/>
 
 	<bean id="defaultCommandResolver" class="org.mxhero.engine.core.mail.command.DefaultCommandResolver" init-method="setResolver">
 		<constructor-arg ref="bundleContext"/>
@@ -75,7 +73,6 @@
 		<property name="domainFinderService" ref="domainFinder"/>
 		<property name="filler" ref="psfiller"/>
 		<property name="processor" ref="drprocessor"/>
-		<property name="spliter" ref="rspliter"/>
 		<property name="loader" ref="kbloader"/>
 		<property name="properties" ref="corePropertyService"/>
 		<property name="logRecordService" ref="logRecordService"/>

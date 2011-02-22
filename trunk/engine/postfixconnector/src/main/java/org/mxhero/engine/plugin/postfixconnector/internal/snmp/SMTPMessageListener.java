@@ -3,9 +3,7 @@ package org.mxhero.engine.plugin.postfixconnector.internal.snmp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 
 import javax.mail.MessagingException;
@@ -60,9 +58,9 @@ public final class SMTPMessageListener implements MessageListener{
 		
 		MimeMail mail;
 		try {
-			//Collection<String> originalRcpts = Arrays.asList(recipient.split(CustomDeliveryHandler.SPLIT_CHAR));
 			mail = new MimeMail(from,recipient,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
 			mail.getMessage().setSender(new InternetAddress(from));
+			mail.getMessage().saveChanges();
 		} catch (MessagingException e1) {
 			throw new IOException(e1);
 		}

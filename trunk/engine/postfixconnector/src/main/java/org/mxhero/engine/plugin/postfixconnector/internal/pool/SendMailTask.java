@@ -63,7 +63,6 @@ public final class SendMailTask implements Runnable {
 		    Transport t = session.getTransport("smtp");
 		    t.connect();
 		    log.debug(mail.getRecipient());
-		    log.debug("Message sent:"+mail);
 			t.sendMessage(msg, new Address[] { new InternetAddress(mail.getRecipient()) });
 		    t.close();
 		    log.debug("Message sent:"+mail);
