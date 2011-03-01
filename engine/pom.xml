@@ -33,7 +33,7 @@
   <name>org.mxhero.engine</name>
 
   <properties>
-    <bundles.configuration.location>/home/mxhero/workspaceMxHero/engine/configurations</bundles.configuration.location>
+    <bundles.configuration.location>C:\Users\chelo\development\engine\configurations</bundles.configuration.location>
   </properties>
 
   <packaging>pom</packaging>
