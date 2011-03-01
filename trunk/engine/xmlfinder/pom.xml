@@ -41,6 +41,10 @@
 
 	<packaging>bundle</packaging>
 
+	<build>
+		<finalName>${bundle.symbolicName}_${pom.version}</finalName>
+	</build>
+	
 	<dependencies>
 		<!--
 			| uncomment to add all imported (non-local) bundles to your
