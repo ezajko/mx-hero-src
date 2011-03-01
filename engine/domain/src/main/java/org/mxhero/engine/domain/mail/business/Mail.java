@@ -1,5 +1,7 @@
 package org.mxhero.engine.domain.mail.business;
 
+import java.util.Map;
+
 import org.mxhero.engine.domain.mail.command.Result;
 
 /**
@@ -13,6 +15,8 @@ public class Mail {
 	private String state = MailState.DELIVER;
 	
 	private String statusReason;
+	
+	private Map<String, String> properties;
 	
 	/**
 	 * 
@@ -68,6 +72,14 @@ public class Mail {
 	 */
 	public void setStatusReason(String statusReason) {
 		this.statusReason = statusReason;
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
 	}
 
 }

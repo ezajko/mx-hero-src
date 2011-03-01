@@ -14,6 +14,10 @@ public class User {
 	
 	private Collection<String> aliases;
 	
+	private Domain domain;
+	
+	private Group group;
+	
 	private Boolean managed;
 
 	/**
@@ -70,6 +74,50 @@ public class User {
 	 */
 	public void setManaged(Boolean managed) {
 		this.managed = managed;
+	}
+
+	public Domain getDomain() {
+		return domain;
+	}
+
+	public void setDomain(Domain domain) {
+		this.domain = domain;
+	}
+
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
+		result = prime * result + ((group == null) ? 0 : group.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (mail == null) {
+			if (other.mail != null)
+				return false;
+		} else if (!mail.equals(other.mail))
+			return false;
+		return true;
 	}
 
 	/**
