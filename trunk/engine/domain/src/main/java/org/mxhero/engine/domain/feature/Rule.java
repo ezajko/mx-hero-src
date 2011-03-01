@@ -1,6 +1,6 @@
 package org.mxhero.engine.domain.feature;
 
-import java.util.Set;
+import java.util.Collection;
 
 public interface Rule {
 
@@ -11,7 +11,9 @@ public interface Rule {
 	public RuleDirection getToDirection();
 
 	public String getAdminOrder();
+	
+	public String getDomain();
 
-	public Set<? extends RuleProperty> getProperties();
+	public Collection<? extends RuleProperty> getProperties();
 
 }

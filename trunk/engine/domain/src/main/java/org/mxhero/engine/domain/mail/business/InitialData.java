@@ -12,12 +12,8 @@ public class InitialData {
 
 	private User sender;
 	
-	private Domain senderDomain;
-
 	private User recipient;
-	
-	private Domain recipientDomain;
-	
+
 	private Date sentDate;
 	
 	private Date receivedDate;
@@ -52,19 +48,6 @@ public class InitialData {
 		this.sender = sender;
 	}
 
-	/**
-	 * @return
-	 */
-	public Domain getSenderDomain() {
-		return senderDomain;
-	}
-
-	/**
-	 * @param senderDomain
-	 */
-	public void setSenderDomain(Domain senderDomain) {
-		this.senderDomain = senderDomain;
-	}
 
 	/**
 	 * @return
@@ -78,20 +61,6 @@ public class InitialData {
 	 */
 	public void setRecipient(User recipient) {
 		this.recipient = recipient;
-	}
-
-	/**
-	 * @return
-	 */
-	public Domain getRecipientDomain() {
-		return recipientDomain;
-	}
-
-	/**
-	 * @param recipientDomain
-	 */
-	public void setRecipientDomain(Domain recipientDomain) {
-		this.recipientDomain = recipientDomain;
 	}
 
 	/**

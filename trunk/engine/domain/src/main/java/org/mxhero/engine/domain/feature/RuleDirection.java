@@ -5,5 +5,7 @@ public interface RuleDirection {
 	public String getDirectionType();
 
 	public String getFreeValue();
+	
+	public Integer getId();
 
 }

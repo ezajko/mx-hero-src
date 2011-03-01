@@ -3,6 +3,8 @@ package org.mxhero.engine.domain.mail;
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -40,6 +42,8 @@ public final class MimeMail {
 
 	private int initialSize;
 
+	private Map<String, String> properties = new HashMap<String, String>();
+	
 	private MimeMessage message;
 
 	private String phase = RulePhase.SEND;
@@ -257,6 +261,14 @@ public final class MimeMail {
 	 */
 	public void setRecipientDomainId(String recipientDomainId) {
 		this.recipientDomainId = recipientDomainId;
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
 	}
 
 	/**
