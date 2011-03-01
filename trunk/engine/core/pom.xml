@@ -35,6 +35,9 @@
 
 	<description>Is the main bundle of the project. In here incoming e-mails are processed using the business rules platform drools and delivered to the registered connector bundle for that email.</description>
 
+	<build>
+		<finalName>${bundle.symbolicName}_${pom.version}</finalName>
+	</build>
 
 	<name>${bundle.symbolicName}</name>
 
