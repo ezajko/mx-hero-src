@@ -1,7 +1,9 @@
 package org.mxhero.engine.core.internal.drools;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import org.drools.KnowledgeBase;
@@ -9,6 +11,7 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactoryService;
@@ -67,26 +70,34 @@ public class KnowledgeBaseBuilder {
 		kbuilder.add(resourceFactoryService.newFileSystemResource(filePath),
 				ResourceType.CHANGE_SET);
 
+		log.debug("total resourceProviders:"+resourceProviders.size());
 		for(Object provider : resourceProviders){
 			new File(folder).mkdir();
 			try{
-				for (Resource resource :((ResourcesProvider)provider).getResources()){
+				for (Resource resource : ((ResourcesProvider)provider).getResources()){
 					
-					File resourceFile = new File(folder,resource.getName());
-					FileOutputStream fos = new FileOutputStream(resourceFile);
-					
-					byte[] buffer = new byte[1024];
-					int len = resource.getResource().read(buffer);
-					while (len != -1) {
-						fos.write(buffer, 0, len);
-					    len = resource.getResource().read(buffer);
-					}
-					
-					try{
-					kbuilder.add(resourceFactoryService.newInputStreamResource(resource.getResource()),
-							ResourceType.getResourceType(resource.getType()));
-					}catch (Exception e){
-						log.error("error while compiling resource "+resource.getName(),e);
+					log.debug("resource:"+resource.getName());
+					if(resource.getResource()!=null){
+						byte[] buffer = new byte[1024];
+						File resourceFile = new File(folder,resource.getName());
+						FileOutputStream fos = new FileOutputStream(resourceFile);
+
+						int len = resource.getResource().read(buffer);
+						while (len != -1) {
+							fos.write(buffer, 0, len);
+						    len = resource.getResource().read(buffer);
+						}
+						
+						fos.close();
+						InputStream fis = new FileInputStream(resourceFile);
+						
+						try{
+						kbuilder.add(resourceFactoryService.newInputStreamResource(fis),
+								ResourceType.getResourceType(resource.getType()));
+						}catch (Exception e){
+							log.error("error while compiling resource "+resource.getName(),e);
+						}
+						
 					}
 					
 				}				
@@ -98,6 +109,9 @@ public class KnowledgeBaseBuilder {
 		if (kbuilder.hasErrors()) {
 			log.error("error while building rules data base:", kbuilder
 					.getErrors().toString());
+			for (KnowledgeBuilderError error : kbuilder.getErrors()){
+				log.error("error:"+error.getMessage());
+			}
 			return;
 		}
 

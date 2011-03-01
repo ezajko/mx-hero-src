@@ -24,12 +24,10 @@ public class InitialDataVO extends InitialData{
 	/**
 	 * @param mimemail
 	 */
-	public InitialDataVO(MimeMail mimemail, User sender, Domain senderDomain, User recipient, Domain recipientDomain){
+	public InitialDataVO(MimeMail mimemail, User sender, User recipient){
 		this.mimeMail = mimemail;
 		super.setSender(sender);
-		super.setSenderDomain(senderDomain);
 		super.setRecipient(recipient);
-		super.setRecipientDomain(recipientDomain);
 	}
 	
 	/**
@@ -154,10 +152,8 @@ public class InitialDataVO extends InitialData{
 				.append(getSentDate()).append(", getReceivedDate()=")
 				.append(getReceivedDate()).append(", getPhase()=")
 				.append(getPhase()).append(", getSender()=")
-				.append(getSender()).append(", getSenderDomain()=")
-				.append(getSenderDomain()).append(", getRecipient()=")
-				.append(getRecipient()).append(", getRecipientDomain()=")
-				.append(getRecipientDomain()).append("]");
+				.append(getSender()).append(", getRecipient()=")
+				.append(getRecipient()).append("]");
 		return builder.toString();
 	}
 

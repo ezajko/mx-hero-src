@@ -11,7 +11,6 @@ import org.mxhero.engine.core.mail.HeadersVO;
 import org.mxhero.engine.core.mail.InitialDataVO;
 import org.mxhero.engine.core.mail.MailVO;
 import org.mxhero.engine.core.mail.RecipientsVO;
-import org.mxhero.engine.core.mail.SenderVO;
 import org.mxhero.engine.core.mail.SubjectVO;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
@@ -75,7 +74,6 @@ public class PhaseSessionFiller implements SessionFiller {
 		ksession.insert(new MailVO(mail));
 		ksession.insert(initialData);
 		ksession.insert(new HeadersVO(mail));
-		ksession.insert(new SenderVO(mail));
 		ksession.insert(new SubjectVO(mail));
 		ksession.insert(new RecipientsVO(mail));
 		ksession.insert(new BodyVO(mail));
@@ -137,18 +135,8 @@ public class PhaseSessionFiller implements SessionFiller {
 						}
 					}
 				}
-			}
+			}			
 			
-			if (sender == null){
-				sender = new User();
-				sender.setMail(mail.getSenderId());
-				sender.setManaged(false);
-			}
-			if (recipient == null){
-				recipient = new User();
-				recipient.setMail(mail.getRecipientId());
-				recipient.setManaged(false);
-			}
 			if (senderDomain == null){
 				senderDomain = new Domain();
 				senderDomain.setId(mail.getSenderDomainId());
@@ -159,8 +147,20 @@ public class PhaseSessionFiller implements SessionFiller {
 				recipientDomain.setId(mail.getRecipientDomainId());
 				recipientDomain.setManaged(false);
 			}
+			if (sender == null){
+				sender = new User();
+				sender.setMail(mail.getSenderId());
+				sender.setManaged(false);
+				sender.setDomain(senderDomain);
+			}
+			if (recipient == null){
+				recipient = new User();
+				recipient.setMail(mail.getRecipientId());
+				recipient.setManaged(false);
+				recipient.setDomain(recipientDomain);
+			}
 			
-			initialData = new InitialDataVO(mail, sender, senderDomain, recipient, recipientDomain);
+			initialData = new InitialDataVO(mail, sender, recipient);
 		}
 		
 		return initialData;

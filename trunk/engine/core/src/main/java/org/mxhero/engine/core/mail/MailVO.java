@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.mail;
 
+import java.util.Map;
+
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.core.mail.command.CommandResolver;
@@ -109,6 +111,17 @@ public final class MailVO extends Mail {
 		this.mimeMail.setStatusReason(statusReason);
 	}
 
+	
+	@Override
+	public Map<String,String> getProperties(){
+		return mimeMail.getProperties();
+	}
+	
+	@Override
+	public void setProperties(Map<String,String> properties) {
+		log.warn(CHANGE_ERROR + this);
+	}
+	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
