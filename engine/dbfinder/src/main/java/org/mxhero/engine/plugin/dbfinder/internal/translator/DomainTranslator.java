@@ -29,7 +29,7 @@ public abstract class DomainTranslator {
 		domain.setGroups(new ArrayList<Group>());
 		for(DbGroup dbGroup : entity.getGroups()){
 			Group group = new Group();
-			group.setName(dbGroup.getName());
+			group.setName(dbGroup.getId()+dbGroup.getName());
 			group.setAliases(new ArrayList<String>());
 			group.setMails(new ArrayList<String>());
 			for(DbUser dbUser : dbGroup.getUsers()){
