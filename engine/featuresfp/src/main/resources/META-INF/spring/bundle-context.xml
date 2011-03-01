@@ -102,6 +102,7 @@
 
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
+		<property name="poolName" value="mxhero-featuresfp" />
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
 		<property name="jdbcUrl" value="${initial.jdbcUrl}" />
 		<property name="username" value="${initial.username}" />
