@@ -39,6 +39,10 @@
 
 	<packaging>bundle</packaging>
 
+	<build>
+		<finalName>${bundle.symbolicName}_${pom.version}</finalName>
+	</build>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.osgi</groupId>
