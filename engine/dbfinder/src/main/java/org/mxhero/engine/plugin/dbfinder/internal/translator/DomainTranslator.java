@@ -25,6 +25,7 @@ public abstract class DomainTranslator {
 		for(DbAlias dbAlias : entity.getAliases()){
 			domain.getAliases().add(dbAlias.getAlias());
 		}
+		domain.getAliases().add(domain.getId());
 		//GROUPS
 		domain.setGroups(new ArrayList<Group>());
 		for(DbGroup dbGroup : entity.getGroups()){
