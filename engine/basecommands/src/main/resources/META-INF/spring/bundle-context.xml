@@ -93,4 +93,17 @@
 
 	<bean id="removeByType" class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByTypeImpl"/>
 
+		<osgi:service ref="replay">
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.mail.command.Command</value>
+	  		<value>org.mxhero.engine.plugin.basecommands.command.Replay</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.basecommands.internal.command.ReplayImpl"/>
+   		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="replay" class="org.mxhero.engine.plugin.basecommands.internal.command.ReplayImpl"/>
+
+
 </beans>
