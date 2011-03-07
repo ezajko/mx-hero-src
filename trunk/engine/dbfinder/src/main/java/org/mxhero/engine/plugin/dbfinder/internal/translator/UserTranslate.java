@@ -18,18 +18,19 @@ public abstract class UserTranslate {
 		User user = internal(entity);
 		
 		user.setDomain(DomainTranslator.translate(entity.getDomain()));
-		Group group = new Group();
-		group.setName(entity.getGroup().getId()+entity.getGroup().getName());
-		group.setAliases(new ArrayList<String>());
-		group.setMails(new ArrayList<String>());
-		for(DbUser dbUser : entity.getGroup().getUsers()){
-			group.getMails().add(dbUser.getAccount()+"@"+entity.getGroup().getDomain().getDomain());
-			group.getAliases().add(dbUser.getAccount()+"@"+entity.getGroup().getDomain().getDomain());
-			for(String alias : user.getDomain().getAliases()){
-				group.getAliases().add(dbUser.getAccount()+"@"+alias);
+		if(entity.getGroup()!=null){
+			Group group = new Group();
+			group.setName(entity.getGroup().getId()+entity.getGroup().getName());
+			group.setAliases(new ArrayList<String>());
+			group.setMails(new ArrayList<String>());
+			for(DbUser dbUser : entity.getGroup().getUsers()){
+				group.getMails().add(dbUser.getAccount()+"@"+entity.getGroup().getDomain().getDomain());
+				group.getAliases().add(dbUser.getAccount()+"@"+entity.getGroup().getDomain().getDomain());
+				for(String alias : user.getDomain().getAliases()){
+					group.getAliases().add(dbUser.getAccount()+"@"+alias);
+				}
 			}
 		}
-
 		return user;
 	}
 	
