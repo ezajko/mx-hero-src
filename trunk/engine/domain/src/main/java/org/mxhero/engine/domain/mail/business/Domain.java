@@ -1,6 +1,7 @@
 package org.mxhero.engine.domain.mail.business;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Represents the Domain of a mail so it can be used in rules.
@@ -89,6 +90,33 @@ public class Domain {
 		this.managed = managed;
 	}
 
+	public boolean hasAlias(String alias){
+		if(this.getAliases()==null){
+			return false;
+		}
+		return this.getAliases().contains(alias);
+	}
+	
+	public boolean hasAlias(String[] aliases){
+		if(this.getAliases()==null || aliases==null){
+			return false;
+		}
+		for(String alias : aliases){
+			if(this.getAliases().contains(alias)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasAlias(List<String> aliases){
+		if(aliases==null){
+			return false;
+		}
+		return hasAlias((String[])aliases.toArray());
+	}
+	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

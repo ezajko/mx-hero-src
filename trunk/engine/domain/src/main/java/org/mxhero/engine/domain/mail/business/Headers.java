@@ -44,15 +44,20 @@ public class Headers {
 	 * @param header
 	 * @param value
 	 */
-	public void addHeader(String header, String value){
-		
+	public boolean addHeader(String header, String value){
+		return false;
 	}
 
+	public boolean addHeaderLine(String headerLine){
+		return false;
+	}
+	
 	/**
 	 * @param header
 	 * @param Value
 	 */
-	public void setHeaderValue(String header, String Value){ 
+	public boolean setHeaderValue(String header, String Value){ 
+		return false;
 	}
 	
 	/**
@@ -66,8 +71,8 @@ public class Headers {
 	/**
 	 * @param header
 	 */
-	public void removeHeader(String header){
-		
+	public boolean removeHeader(String header){
+		return false;
 	}
 	
 	/**
