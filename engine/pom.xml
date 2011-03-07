@@ -86,6 +86,7 @@
           <provision>
             <param>--platform=equinox</param>
             <param>--systemPackages=sun.misc</param>
+             <param>--log=debug</param>
           </provision>
         </configuration>
         <!--
