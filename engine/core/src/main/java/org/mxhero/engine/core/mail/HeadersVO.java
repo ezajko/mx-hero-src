@@ -74,23 +74,41 @@ public class HeadersVO extends Headers{
 	 * @param header
 	 * @param value
 	 */
-	public void addHeader(String header, String value){
+	public boolean addHeader(String header, String value){
 		try {
 			this.mimeMail.getMessage().addHeader(header, value);
+			return true;
 		} catch (MessagingException e) {
 			log.error(MailVO.MIME_ERROR+this,e);
+			return false;
 		}
 	}
 
 	/**
 	 * @param header
-	 * @param Value
 	 */
-	public void setHeaderValue(String header, String value){ 
+	public boolean addHeaderLine(String header){
 		try {
-			this.mimeMail.getMessage().setHeader(header, value);
+			this.mimeMail.getMessage().addHeaderLine(header);
+			return true;
 		} catch (MessagingException e) {
 			log.error(MailVO.MIME_ERROR+this,e);
+			return false;
+		}
+	}
+
+	
+	/**
+	 * @param header
+	 * @param Value
+	 */
+	public boolean setHeaderValue(String header, String value){ 
+		try {
+			this.mimeMail.getMessage().setHeader(header, value);
+			return true;
+		} catch (MessagingException e) {
+			log.error(MailVO.MIME_ERROR+this,e);
+			return false;
 		}
 	}
 	
@@ -101,10 +119,8 @@ public class HeadersVO extends Headers{
 	public String getHeaderValue(String header){
 		try {
 			String internetHeader = this.mimeMail.getMessage().getHeader(header,null);
-			if(internetHeader!=null && internetHeader.contains(":")){
-				String headerValue = internetHeader.split(":")[1];
-				return headerValue;
-			}
+			log.debug("header found:"+internetHeader+" for header:"+header);
+			return internetHeader;
 		} catch (MessagingException e) {
 			log.error(MailVO.MIME_ERROR+this,e);
 		}
@@ -114,11 +130,13 @@ public class HeadersVO extends Headers{
 	/**
 	 * @param header
 	 */
-	public void removeHeader(String header){
+	public boolean removeHeader(String header){
 		try {
 			this.mimeMail.getMessage().removeHeader(header);
+			return true;
 		} catch (MessagingException e) {
 			log.error(MailVO.MIME_ERROR+this,e);
+			return false;
 		}
 	}
 	
