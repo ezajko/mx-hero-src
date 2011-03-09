@@ -103,7 +103,8 @@
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="replay" class="org.mxhero.engine.plugin.basecommands.internal.command.ReplayImpl"/>
-
+	<bean id="replay" class="org.mxhero.engine.plugin.basecommands.internal.command.ReplayImpl">
+		<property name="service" ref="inputService"/>
+	</bean>
 
 </beans>

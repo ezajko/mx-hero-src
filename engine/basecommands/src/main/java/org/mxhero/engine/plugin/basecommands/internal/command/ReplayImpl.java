@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ReplayImpl implements Replay {
 
-	private static Logger log = LoggerFactory.getLogger(CloneImpl.class);
+	private static Logger log = LoggerFactory.getLogger(ReplayImpl.class);
 
 	private static final int MIM_PARAMANS = 3;
 	private static final int SENDER_PARAM_NUMBER = 0;

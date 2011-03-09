@@ -92,7 +92,7 @@ public class CloneImpl implements Clone {
 				if (args[0].equals(RulePhase.RECEIVE)) {
 					clonedMail.setRecipient(recipient.toString());
 				}
-				clonedMail.setProperties(mail.getProperties());
+				clonedMail.getProperties().putAll(mail.getProperties());
 			} catch (MessagingException e) {
 				log.warn("error while creating cloned message");
 				return result;
