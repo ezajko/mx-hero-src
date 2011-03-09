@@ -83,15 +83,7 @@ public class Mail {
 	}
 
 	public boolean drop(String reason){
-		synchronized (state) {
-			if(state.equals(MailState.DROP)){
-				return false;
-			}else{
-				state=MailState.DROP;
-				statusReason=reason;
-				return true;
-			}
-		}
+		return false ;
 	}
 	
 }
