@@ -6,6 +6,7 @@ import javax.mail.MessagingException;
 
 import org.mxhero.engine.core.mail.command.CommandResolver;
 import org.mxhero.engine.domain.mail.business.Mail;
+import org.mxhero.engine.domain.mail.business.MailState;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.slf4j.Logger;
@@ -111,6 +112,18 @@ public final class MailVO extends Mail {
 		this.mimeMail.setStatusReason(statusReason);
 	}
 
+	@Override
+	public boolean drop(String reason){
+		synchronized (this.mimeMail) {
+			if(this.getState().equals(MailState.DROP)){
+				return false;
+			}else{
+				this.setState(MailState.DROP);
+				this.setStatusReason(reason);
+				return true;
+			}
+		}
+	}
 	
 	@Override
 	public Map<String,String> getProperties(){
