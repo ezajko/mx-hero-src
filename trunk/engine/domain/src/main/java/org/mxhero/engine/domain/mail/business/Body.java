@@ -70,4 +70,20 @@ public class Body {
 		this.deepHtmlText = deepHtmlText;
 	}
 	
+	public boolean textHasAny(String[] words){
+		return false;
+	}
+	
+	public boolean textHasAll(String[] words){
+		return false;
+	}
+	
+	public boolean htmlTextHasAny(String[] words){
+		return false;
+	}
+	
+	public boolean htmlTextHasAll(String[] words){
+
+		return false;
+	}
 }

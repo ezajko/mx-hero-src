@@ -119,5 +119,40 @@ public class Attachments {
 	public void setExtensionsStr(String extensionsStr) {
 		this.extensionsStr = extensionsStr;
 	}
-
+	
+	public boolean hasMatchingType(String pattern){
+		return false;
+	}
+	
+	public boolean hasMatchingType(Collection<String> patterns){
+		return false;
+	}
+	
+	public boolean hasMatchingType(String[] patterns){
+		return false;
+	}
+	
+	public boolean hasMatchingName(String pattern){
+		return false;
+	}
+	
+	public boolean hasMatchingName(Collection<String> patterns){
+		return false;
+	}
+	
+	public boolean hasMatchingName(String[] patterns){
+		return false;
+	}
+	
+	public boolean hasMatchingExtension(String pattern){
+		return false;
+	}
+	
+	public boolean hasMatchingExtension(Collection<String> patterns){
+		return false;
+	}
+	
+	public boolean hasMatchingExtension(String[] patterns){
+		return false;
+	}
 }
