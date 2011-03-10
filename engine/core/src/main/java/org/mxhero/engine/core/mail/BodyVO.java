@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.mail;
 
+import java.util.regex.Pattern;
+
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Body;
 import org.slf4j.Logger;
@@ -90,6 +92,47 @@ public class BodyVO extends Body{
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 
+	
+	public boolean textHasAny(String[] words){
+		String text = this.getText();
+		for (String word : words){
+			if(Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean textHasAll(String[] words){
+		String text = this.getText();
+		for (String word : words){
+			if(!Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean htmlTextHasAny(String[] words){
+		String text = this.getHtmlText();
+		for (String word : words){
+			if(Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean htmlTextHasAll(String[] words){
+		String text = this.getHtmlText();
+		for (String word : words){
+			if(!Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
