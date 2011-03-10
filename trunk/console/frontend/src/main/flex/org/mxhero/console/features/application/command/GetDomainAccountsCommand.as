@@ -41,10 +41,10 @@ package org.mxhero.console.features.application.command
 				context.accounts=result;
 			}
 			if(context.accounts!=null){
-				var sortByName:Sort=new Sort();
-				sortByName.fields=[new SortField("domain"), new SortField("account")];
-				context.accounts.sort=sortByName;
-				context.accounts.refresh();
+				//var sortByName:Sort=new Sort();
+				//sortByName.fields=[new SortField("domain"), new SortField("account")];
+				//context.accounts.sort=sortByName;
+				//context.accounts.refresh();
 			}		
 		}
 

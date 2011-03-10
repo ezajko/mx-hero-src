@@ -40,10 +40,10 @@ package org.mxhero.console.features.application.command
 				context.domains=result;
 			}
 			if(context.domains!=null){
-				var sortByName:Sort=new Sort();
-				sortByName.fields=[new SortField("domain")];
-				context.domains.sort=sortByName;
-				context.domains.refresh();
+				//var sortByName:Sort=new Sort();
+				//sortByName.fields=[new SortField("domain")];
+				//context.domains.sort=sortByName;
+				//context.domains.refresh();
 			}
 		}
 	}

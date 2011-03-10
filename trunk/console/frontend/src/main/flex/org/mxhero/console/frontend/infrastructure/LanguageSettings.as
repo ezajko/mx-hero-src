@@ -10,7 +10,7 @@ package org.mxhero.console.frontend.infrastructure
 	public class LanguageSettings
 	{
 
-		private var _localChain:Array=ResourceManager.getInstance().localeChain;;
+		private var _localChain:Array=ResourceManager.getInstance().localeChain;
 		
 		private var _selectedLanguage:String;
 		

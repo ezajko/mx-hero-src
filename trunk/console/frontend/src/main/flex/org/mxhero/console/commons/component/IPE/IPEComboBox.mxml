@@ -209,9 +209,9 @@
 			{
 				if(value!=null){
 					_dataProvider = new ArrayCollection(value.source);
-					_dataProvider.sort=value.sort;
-					_dataProvider.refresh();
-					_dataProvider.sort=null;
+					//_dataProvider.sort=value.sort;
+					//_dataProvider.refresh();
+					//_dataProvider.sort=null;
 				} else {
 					_dataProvider=new ArrayCollection();
 				}
