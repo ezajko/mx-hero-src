@@ -2,8 +2,6 @@ package org.mxhero.console.backend.vo;
 
 import java.util.Collection;
 
-import javax.persistence.Column;
-
 public class FeatureVO {
 
 	private Integer id;

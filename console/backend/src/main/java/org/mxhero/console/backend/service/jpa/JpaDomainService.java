@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.synyx.hades.domain.Sort;
 
 @Service("domainService")
 @RemotingDestination(channels={"flex-amf"})
@@ -76,7 +77,7 @@ public class JpaDomainService implements DomainService {
 
 	@Override
 	public Collection<DomainVO> findAll() {
-		Collection<Domain> domains = dao.readAll();
+		Collection<Domain> domains = dao.readAll(new Sort("domain"));
 		Collection<DomainVO> domainsVO = domainTranslator.translate(domains);
 		return domainsVO;
 	}

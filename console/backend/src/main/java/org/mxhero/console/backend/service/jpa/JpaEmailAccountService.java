@@ -25,6 +25,7 @@ import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
 import org.synyx.hades.domain.Page;
 import org.synyx.hades.domain.PageRequest;
+import org.synyx.hades.domain.Sort;
 
 import static org.mxhero.console.backend.infrastructure.PipedSpecifications.*;
 import static org.mxhero.console.backend.dao.specs.EmailAccountSpecs.*;
@@ -193,7 +194,7 @@ public class JpaEmailAccountService implements EmailAccountService{
 
 	@Override
 	public Collection<EmailAccountVO> findAll() {
-		return this.emailAccountTranslator.translate(this.emailAccountDao.readAll());
+		return this.emailAccountTranslator.translate(this.emailAccountDao.readAll(new Sort("account","domain.domain")));
 	}
 
 }
