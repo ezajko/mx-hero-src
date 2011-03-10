@@ -9,6 +9,6 @@ import org.synyx.hades.dao.Query;
 
 public interface GroupDao extends GenericDao<Group, Integer>{
 
-	@Query("Select g From Group g WHERE g.domain.id = :domainId")
+	@Query("Select g From Group g WHERE g.domain.id = :domainId order by g.name")
 	List<Group> findByDomainId(@Param("domainId") Integer domainId);
 }

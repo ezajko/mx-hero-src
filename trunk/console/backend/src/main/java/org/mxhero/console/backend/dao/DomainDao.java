@@ -7,7 +7,7 @@ import org.synyx.hades.dao.Query;
 
 public interface DomainDao extends GenericDao<Domain, Integer> {
 
-	@Query("From Domain d WHERE d.domain = :domain")
+	@Query("From Domain d WHERE d.domain = :domain order by d.domain")
 	Domain finbByDomain(@Param("domain") String domain);
 	
 }
