@@ -37,10 +37,10 @@ package org.mxhero.console.configurations.application.command
 				context.groups=result;	
 			}
 			if(context.groups!=null){
-				var sortByName:Sort=new Sort();
-				sortByName.fields=[new SortField("name")];
-				context.groups.sort=sortByName;
-				context.groups.refresh();
+			//	var sortByName:Sort=new Sort();
+			//	sortByName.fields=[new SortField("name")];
+			//	context.groups.sort=sortByName;
+			//	context.groups.refresh();
 			}
 		}
 		
