@@ -88,7 +88,7 @@
 			  paddingTop="10">
 	<s:VGroup height="100%" width="50%">
 		<component:TitleExpanded width="100%"
-								 title="{model.selectedCategory.label+' > '+model.selectedFeature.realLabel}"
+								 title="{model.selectedCategory.label+' > '+ model.selectedFeature.simpleLabel}"
 								 description="{model.selectedFeature.description}"
 								 expandedDescription="{model.selectedFeature.explain}"
 								 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"

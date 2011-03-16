@@ -34,8 +34,10 @@
 
 			protected function progressHandler(event:ModuleEvent):void
 			{
-				progress.label=resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.FEATURE_MODULE_LOADING)
-					+" "+Math.round((event.bytesLoaded/event.bytesTotal) * 100) +"%";
+				if(progress!=null){
+					progress.label=resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.FEATURE_MODULE_LOADING)
+						+" "+Math.round((event.bytesLoaded/event.bytesTotal) * 100) +"%";
+				}
 			}
 
 			protected function loadingHandler(event:Event):void
@@ -75,7 +77,6 @@
 	</mx:states>
 	
 	<mx:ProgressBar id="progress" 
-					width="400" 
 					source="{this}" 
 					excludeFrom="loaded" 
 					labelPlacement="center"/>
