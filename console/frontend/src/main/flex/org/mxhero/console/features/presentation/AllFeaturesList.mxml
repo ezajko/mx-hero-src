@@ -4,7 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:categorylist="org.mxhero.console.commons.component.categorylist.*" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
-		 enabled="{!model.isUpdating}">
+		 enabled="{!model.isUpdating}"
+		 currentState="{model.state}">
 	<fx:Declarations>
 		<parsley:Configure/>
 	</fx:Declarations>
@@ -19,8 +20,13 @@
 		]]>
 	</fx:Script>
 	
+	<s:states>
+		<s:State name="loaded"/>
+		<s:State name="preloading"/>
+	</s:states>
+	
 	<s:layout>
-		<s:VerticalLayout/>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 	</s:layout>
 	
 	<categorylist:CategoryList id="featuresList" 
@@ -31,5 +37,11 @@
 							   defaultDescription="{resourceManager.getString(FeaturesListProperties.NAME,FeaturesListProperties.DEFAULT_DESCRIPTION)}"
 							   columnsWidth="140"
 							   orderChilds="true"
-							   clickHandler="{model.childClickHandler}"/>
+							   clickHandler="{model.childClickHandler}"
+							   excludeFrom="preloading"/>
+	<mx:ProgressBar width="300" 
+					label="{model.loading}"
+					excludeFrom="loaded" 
+					indeterminate="true"
+					labelPlacement="center"/>
 </s:Group>

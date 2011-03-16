@@ -95,7 +95,7 @@
 					  paddingBottom="20" paddingTop="20">
 				<s:HGroup verticalAlign="top" width="100%">
 					<component:TitleExpanded width="100%"
-											 title="{model.feature.realLabel}"
+											 title="{model.feature.simpleLabel}"
 											 description="{model.feature.description}"
 											 expandedDescription="{model.feature.explain}"
 											 expandedLabel="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"

@@ -32,6 +32,7 @@
 		[ResourceBundle("report_threats")]
 		[ResourceBundle("report_queue")]
 		[ResourceBundle("report_custom")]
+		[ResourceBundle("categories")]
 		
 	</fx:Metadata>
 	
