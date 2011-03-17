@@ -78,6 +78,7 @@ public final class Utils {
 			}
 		}
 		
+		record.setFlow(mail.getFlow());
 		
 		try {
 			record.setMessageId(mail.getMessage().getMessageID());
@@ -93,12 +94,7 @@ public final class Utils {
 			record.setFrom("");
 		}
 		record.setSender(mail.getInitialSender());
-		try {
-			record.setReceivedDate(mail.getMessage().getReceivedDate());
-		} catch (MessagingException e) {
-			log.error("could not read ReceivedDate id from email");
-			record.setReceivedDate(null);
-		}
+
 		try {
 			record.setSentDate(mail.getMessage().getSentDate());
 		} catch (MessagingException e) {
