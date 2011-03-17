@@ -11,6 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
+import org.mxhero.engine.domain.mail.business.MailFlow;
 import org.mxhero.engine.domain.mail.business.MailState;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 
@@ -49,6 +50,8 @@ public final class MimeMail {
 	private String phase = RulePhase.SEND;
 
 	private String status = MailState.DELIVER;
+	
+	private String flow = MailFlow.NONE;
 
 	private String statusReason;
 
@@ -269,6 +272,14 @@ public final class MimeMail {
 
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
+	}
+	
+	public String getFlow() {
+		return flow;
+	}
+
+	public void setFlow(String flow) {
+		this.flow = flow;
 	}
 
 	/**
