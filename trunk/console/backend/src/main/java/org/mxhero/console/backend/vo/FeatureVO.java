@@ -18,6 +18,8 @@ public class FeatureVO {
 	
 	private String moduleReportUrl;
 	
+	private String component;
+	
 	private String defaultAdminOrder;
 	
 	public Integer getId() {
@@ -74,6 +76,14 @@ public class FeatureVO {
 
 	public void setModuleReportUrl(String moduleReportUrl) {
 		this.moduleReportUrl = moduleReportUrl;
+	}
+
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
 	}
 
 	public String getDefaultAdminOrder() {
