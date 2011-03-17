@@ -14,6 +14,7 @@ import org.mxhero.engine.core.mail.RecipientsVO;
 import org.mxhero.engine.core.mail.SubjectVO;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
+import org.mxhero.engine.domain.mail.business.MailFlow;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.business.User;
 import org.mxhero.engine.domain.mail.finders.DomainFinder;
@@ -158,6 +159,16 @@ public class PhaseSessionFiller implements SessionFiller {
 				recipient.setMail(mail.getRecipientId());
 				recipient.setManaged(false);
 				recipient.setDomain(recipientDomain);
+			}
+			
+			if(sender.getManaged() && recipient.getManaged()){
+				mail.setFlow(MailFlow.BOTH);
+			}else if(sender.getManaged()){
+				mail.setFlow(MailFlow.OUT);
+			}else if(recipient.getManaged()){
+				mail.setFlow(MailFlow.IN);
+			}else {
+				mail.setFlow(MailFlow.NONE);
 			}
 			
 			initialData = new InitialDataVO(mail, sender, recipient);
