@@ -70,9 +70,6 @@ public class Record implements Serializable{
 	@Column(name = "sent_date")
 	private Date sentDate;
 
-	@Column(name = "received_date")
-	private Date receivedDate;
-
 	@Column(name = "bytes_size")
 	private Integer bytesSize;
 
@@ -82,6 +79,8 @@ public class Record implements Serializable{
 	@Column(name = "state_reason")
 	private String stateReason;
 
+	@Column(name = "flow", length = 10)
+	private String flow;
 
 	/**
 	 * @return
@@ -318,21 +317,6 @@ public class Record implements Serializable{
 	}
 
 	/**
-	 * @return the receivedDate
-	 */
-	public Date getReceivedDate() {
-		return receivedDate;
-	}
-
-	/**
-	 * @param receivedDate
-	 *            the receivedDate to set
-	 */
-	public void setReceivedDate(Date receivedDate) {
-		this.receivedDate = receivedDate;
-	}
-
-	/**
 	 * @return the bytesSize
 	 */
 	public Integer getBytesSize() {
@@ -375,6 +359,14 @@ public class Record implements Serializable{
 		this.stateReason = stateReason;
 	}
 
+	public String getFlow() {
+		return flow;
+	}
+
+	public void setFlow(String flow) {
+		this.flow = flow;
+	}
+
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -411,15 +403,14 @@ public class Record implements Serializable{
 		return true;
 	}
 
-	/**
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Record [id=").append(id).append(", messageId=").append(
-				messageId).append(", state=").append(state).append(", phase=")
-				.append(phase).append("]");
+		builder.append("Record [id=").append(id).append(", phase=")
+				.append(phase).append(", sender=").append(sender)
+				.append(", recipient=").append(recipient).append(", sentDate=")
+				.append(sentDate).append(", state=").append(state)
+				.append(", flow=").append(flow).append("]");
 		return builder.toString();
 	}
 
