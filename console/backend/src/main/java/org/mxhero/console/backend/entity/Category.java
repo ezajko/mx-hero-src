@@ -21,7 +21,7 @@ public class Category {
 	private Integer id;
 	
 	@Column(name="label_key", nullable=false, length=50)
-	private String LabelKey;
+	private String labelKey;
 	
 	@OneToMany(mappedBy="category", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<Feature> features;
@@ -38,11 +38,11 @@ public class Category {
 	}
 
 	public String getLabelKey() {
-		return LabelKey;
+		return labelKey;
 	}
 
 	public void setLabelKey(String labelKey) {
-		LabelKey = labelKey;
+		this.labelKey = labelKey;
 	}
 
 	public Set<Feature> getFeatures() {
