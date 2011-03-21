@@ -45,34 +45,51 @@
 	
 	<context:property-placeholder location="classpath*:META-INF/jdbc.properties" />
 
-	<hades:dao-config base-package="org.mxhero.console.backend.dao" />
+	<hades:dao-config base-package="org.mxhero.console.backend.dao" 
+	entity-manager-factory-ref="mxheroEmfb" 
+	transaction-manager-ref="mxheroTransactionManager"/>
 
 	<bean
 		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="emfb" />
+	<bean id="mxheroTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="mxheroEmfb" />
 	</bean>
 
-	<bean id="pum"
+	<bean id="statisticsTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="statisticsEmfb" />
+	</bean>
+
+	<bean id="mxheroPum"
 		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
 		<property name="persistenceXmlLocations">
 			<list>
 				<value>classpath*:META-INF/persistence.xml</value>
 			</list>
 		</property>
-		<property name="defaultDataSource" ref="dataSource" />
+		<property name="defaultDataSource" ref="mxheroDataSource" />
 	</bean>
 
-	<bean id="emfb"
+	<bean id="statisticsPum"
+		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
+		<property name="persistenceXmlLocations">
+			<list>
+				<value>classpath*:META-INF/statisticsPersistence.xml</value>
+			</list>
+		</property>
+		<property name="defaultDataSource" ref="statisticsDataSource" />
+	</bean>
+
+	<bean id="mxheroEmfb"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceUnitManager" ref="pum" />
+		<property name="persistenceUnitManager" ref="mxheroPum" />
+		<property name="persistenceUnitName" value="mxheroPer" /> 
 		<property name="jpaProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.generate_statistics">${initial.hibernate.generate_statistics}</prop>
-				<prop key="hibernate.hbm2ddl.auto">${initial.hibernate.hbm2ddl.auto}</prop>
-				<prop key="hibernate.format_sql">${initial.hibernate.format_sql}</prop>
+				<prop key="hibernate.generate_statistics">${mxhero.hibernate.generate_statistics}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${mxhero.hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.format_sql">${mxhero.hibernate.format_sql}</prop>
 			</props>
 		</property>
 		<property name="jpaDialect">
@@ -81,32 +98,78 @@
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="database" value="MYSQL" />
-				<property name="showSql" value="${initial.showSql}" />
+				<property name="showSql" value="${mxhero.showSql}" />
 			</bean>
 		</property>
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
-		<property name="targetDataSource">
-			<ref local="mainDataSource" />
+	<bean id="statisticsEmfb"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitManager" ref="statisticsPum" />
+		<property name="persistenceUnitName" value="statisticsPer" /> 
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.generate_statistics">${statistics.hibernate.generate_statistics}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${statistics.hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.format_sql">${statistics.hibernate.format_sql}</prop>
+			</props>
+		</property>
+		<property name="jpaDialect">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+		</property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="database" value="MYSQL" />
+				<property name="showSql" value="${statistics.showSql}" />
+			</bean>
 		</property>
 	</bean>
 
-	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+	<bean id="mxheroDataSource"
+		class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+		<property name="targetDataSource">
+			<ref local="mxheroMainDataSource" />
+		</property>
+	</bean>
+
+	<bean id="statisticsDataSource"
+		class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
+		<property name="targetDataSource">
+			<ref local="statisticsMainDataSource" />
+		</property>
+	</bean>
+
+	<bean id="mxheroMainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="${initial.jdbcUrl}" />
-		<property name="username" value="${initial.username}" />
-		<property name="password" value="${initial.password}" />
-		<property name="idleConnectionTestPeriod" value="${initial.idleConnectionTestPeriod}" />
-		<property name="idleMaxAge" value="${initial.idleMaxAge}" />
-		<property name="maxConnectionsPerPartition" value="${initial.maxConnectionsPerPartition}" />
-		<property name="minConnectionsPerPartition" value="${initial.minConnectionsPerPartition}" />
-		<property name="partitionCount" value="${initial.partitionCount}" />
-		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
-		<property name="statementsCacheSize" value="${initial.statementsCacheSize}" />
-		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
+		<property name="jdbcUrl" value="${mxhero.jdbcUrl}" />
+		<property name="username" value="${mxhero.username}" />
+		<property name="password" value="${mxhero.password}" />
+		<property name="idleConnectionTestPeriod" value="${mxhero.idleConnectionTestPeriod}" />
+		<property name="idleMaxAge" value="${mxhero.idleMaxAge}" />
+		<property name="maxConnectionsPerPartition" value="${mxhero.maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${mxhero.minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${mxhero.partitionCount}" />
+		<property name="acquireIncrement" value="${mxhero.acquireIncrement}" />
+		<property name="statementsCacheSize" value="${mxhero.statementsCacheSize}" />
+		<property name="releaseHelperThreads" value="${mxhero.releaseHelperThreads}" />
+	</bean>
+
+	<bean id="statisticsMainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="${statistics.jdbcUrl}" />
+		<property name="username" value="${statistics.username}" />
+		<property name="password" value="${statistics.password}" />
+		<property name="idleConnectionTestPeriod" value="${statistics.idleConnectionTestPeriod}" />
+		<property name="idleMaxAge" value="${statistics.idleMaxAge}" />
+		<property name="maxConnectionsPerPartition" value="${statistics.maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${statistics.minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${statistics.partitionCount}" />
+		<property name="acquireIncrement" value="${statistics.acquireIncrement}" />
+		<property name="statementsCacheSize" value="${statistics.statementsCacheSize}" />
+		<property name="releaseHelperThreads" value="${statistics.releaseHelperThreads}" />
 	</bean>
 
 </beans>
