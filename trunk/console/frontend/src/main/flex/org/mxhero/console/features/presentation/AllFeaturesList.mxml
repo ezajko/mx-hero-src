@@ -39,7 +39,7 @@
 							   orderChilds="true"
 							   clickHandler="{model.childClickHandler}"
 							   excludeFrom="preloading"/>
-	<mx:ProgressBar width="300" 
+	<mx:ProgressBar width="500" 
 					label="{model.loading}"
 					excludeFrom="loaded" 
 					indeterminate="true"
