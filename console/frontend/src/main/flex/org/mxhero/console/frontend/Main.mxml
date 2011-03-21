@@ -33,7 +33,7 @@
 		[ResourceBundle("report_queue")]
 		[ResourceBundle("report_custom")]
 		[ResourceBundle("categories")]
-		
+		[ResourceBundle("report_common")]
 	</fx:Metadata>
 	
 	<fx:Declarations>

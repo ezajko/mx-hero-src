@@ -9,7 +9,15 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.rpc.remoting.RemoteObject;
+			
 			import org.mxhero.console.reports.application.ReportsDestinations;
+			import org.mxhero.console.reports.application.command.GetIncommingByDayCommand;
+			import org.mxhero.console.reports.application.command.GetIncommingCommand;
+			import org.mxhero.console.reports.application.command.GetOutgoingCommand;
+			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersByDayCommand;
+			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersCommand;
+			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsCommand;
 		
 			[Bindable]
 			[Embed(source="/images/reports/platform.png")]
@@ -23,6 +31,13 @@
 	</fx:Script>
 
 	<fx:Declarations>
+		<parsley:DynamicCommand type="{GetIncommingCommand}"/>
+		<parsley:DynamicCommand type="{GetIncommingByDayCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenIncommingSendersCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenIncommingSendersByDayCommand}"/>
+		<parsley:DynamicCommand type="{GetOutgoingCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenOutgoingRecipientsCommand}"/>
+		
 		<presentation:ReportsViewPM/>
 		<presentation:ReportsListPM/>
 		<reports:CustomPM/>
@@ -76,6 +91,13 @@
 				</domain:childs>
 			</domain:LCCategory>
 		</s:ArrayCollection>
+		
+		<parsley:Object type="{RemoteObject}" id="trafficReportService">
+			<parsley:Property name="destination" value="trafficReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
 	</fx:Declarations>
 
 </fx:Object>
