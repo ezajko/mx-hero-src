@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="app_users")
+@Table(name="app_users",schema="mxhero")
 public class ApplicationUser {
 
 	@Id

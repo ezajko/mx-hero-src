@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="features_rules")
+@Table(name="features_rules",schema="mxhero")
 public class FeatureRule {
 
 	@Id

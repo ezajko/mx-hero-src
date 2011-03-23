@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="domains_aliases")
+@Table(name="domains_aliases",schema="mxhero")
 public class DomainAlias {
 	
 	@Id

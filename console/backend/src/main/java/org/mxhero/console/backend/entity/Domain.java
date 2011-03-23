@@ -15,7 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="domain")
+@Table(name="domain",schema="mxhero")
 public class Domain {
 	
 	@Id

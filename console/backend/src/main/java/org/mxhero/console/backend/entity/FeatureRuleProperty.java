@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="features_rules_properties")
+@Table(name="features_rules_properties",schema="mxhero")
 public class FeatureRuleProperty {
 	
 	@Id
