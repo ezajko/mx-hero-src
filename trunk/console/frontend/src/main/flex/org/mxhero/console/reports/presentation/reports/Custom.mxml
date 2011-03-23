@@ -8,23 +8,27 @@
 		 xmlns:component="org.mxhero.console.commons.component.*" 
 		 xmlns:FromTo="org.mxhero.console.commons.FromTo.*" 
 		 xmlns:cloudtag="org.mxhero.components.cloudtag.*"
-		 creationComplete="scroller1_creationCompleteHandler(event)">
+		 creationComplete="scroller1_creationCompleteHandler(event)" xmlns:element="org.mxhero.console.commons.FromTo.element.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
 		
-		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY"/>
+		<mx:DateFormatter id="creationDateFormatter"
+						  />
+		
+		<mx:DateFormatter id="creationHourFormatter"
+						  formatString="HH:NN:SS"
+						  />
 		
 		<s:RadioButtonGroup id="time" />
 		
 		<mx:SeriesSlide id="slideIn" 
 						duration="800" 
-						direction="up"/>
+						direction="right"/>
 		
 		<mx:SeriesSlide id="slideOut" 
 						duration="800" 
-						direction="down"/>
+						direction="left"/>
 		
 		<fx:Array id="bge1">
 			<mx:GridLines 
@@ -80,6 +84,7 @@
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 			import org.mxhero.console.reports.application.resources.CustomProperties;
+			import org.mxhero.console.reports.application.resources.ReportCommonProperties;
 			import org.mxhero.console.reports.application.resources.ReportsListProperties;
 			import org.mxhero.console.reports.application.resources.ThreatsProperties;
 			import org.mxhero.console.reports.application.resources.TrafficProperties;
@@ -88,60 +93,27 @@
 			[Bindable]
 			public var model:CustomPM;
 			
+			[Bindable]
+			private var startDate:Date;
+			
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
-				return creationDateFormatter.format(item.date);
+				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
 			}
-			
-			[Bindable]
-			private var dataDestinationsToAC:ArrayCollection = new ArrayCollection( [
-				{ Qty: 15, Email: 'max@backup.com'},
-				{ Qty: 18, Email: 'hulk@backup.com'},
-				{ Qty: 20, Email: 'thales@backup.com'},
-				{ Qty: 21, Email: 'jhon@backup.com'},
-				{ Qty: 28, Email: 'smith@backup.com' },
-				{ Qty: 32, Email: 'destination@example.com' },
-				{ Qty: 54, Email: 'marcelo@mxhero.com' },
-				{ Qty: 61, Email: 'alex@inova.net' },
-				{ Qty: 65, Email: 'bruno@mxhero.com'},
-				{ Qty: 85, Email: 'mmarmol@mxhero.com'}] );
-			
-			[Bindable]
-			private var dataDestinationsFromAC:ArrayCollection = new ArrayCollection( [
-				{ Qty: 15, Email: 'max@backup.com'},
-				{ Qty: 18, Email: 'hulk@backup.com'},
-				{ Qty: 20, Email: 'thales@backup.com'},
-				{ Qty: 21, Email: 'jhon@backup.com'},
-				{ Qty: 28, Email: 'smith@backup.com' },
-				{ Qty: 32, Email: 'destination@example.com' },
-				{ Qty: 54, Email: 'marcelo@mxhero.com' },
-				{ Qty: 61, Email: 'alex@inova.net' },
-				{ Qty: 65, Email: 'bruno@mxhero.com'},
-				{ Qty: 85, Email: 'mmarmol@mxhero.com'}] );
-			
-			[Bindable]
-			public var emails:ArrayCollection = new ArrayCollection([
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"dropped",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"delivered",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"rejected",date:new Date()},
-				{from:"example@example.com",to:"mmarmol@mxhero.com",subject:"Example Subject",state:"dropped",date:new Date()}
-			]);
 
 			protected function fromTo_creationCompleteHandler(event:FlexEvent):void
 			{
 				CustomPM.refresh=fromTo.refresh;
 				fromTo.refresh();
+				refreshDateRange();
 			}
 			
-			[Bindable]
-			public var fromDirection:FeatureRuleDirection=new FeatureRuleDirection();
-			[Bindable]
-			public var toDirection:FeatureRuleDirection=new FeatureRuleDirection();
+			private function refreshDateRange():void{
+				startDate=new Date();
+				startDate.time=startDate.time-24*60*60*1000*21;
+				fromDate.selectableRange={rangeStart:startDate, rangeEnd:toDate.selectedDate};
+				toDate.selectableRange = {rangeStart:startDate, rangeEnd:new Date()};
+				fromDate.selectedDate=(toDate.selectedDate.time>fromDate.selectedDate.time)?fromDate.selectedDate:toDate.selectedDate;
+			}
 			
 			protected function scroller1_creationCompleteHandler(event:FlexEvent):void
 			{
@@ -150,6 +122,20 @@
 			
 			protected function handleWheel(event:MouseEvent):void{
 				event.delta*=4;
+			}
+
+
+			protected function item1_clickHandler(event:MouseEvent):void
+			{
+				if(!fromTo.isValid()){
+					searchBtt.errorString=fromTo.errorMessage;
+					return;
+				}
+				if(today.selected){
+					model.filter(new Date(),new Date());
+				}else{
+					model.filter(fromDate.selectedDate,toDate.selectedDate);
+				}
 			}
 
 		]]>
@@ -174,37 +160,38 @@
 			
 			
 			<s:HGroup width="100%" height="100%" gap="20">
-				<s:VGroup height="100%" width="60%">
-					<FromTo:FromTo fromDirection="{fromDirection}"
-								   toDirection="{toDirection}"
+				<s:VGroup height="100%" width="60%" enabled="{!model.updatingEmails}">
+					<FromTo:FromTo fromDirection="{model.fromDirection}"
+								   toDirection="{model.toDirection}"
 								   adminOrder="after"
 								   id="fromTo"
 								   showAdminPriority="false"
 								   creationComplete="fromTo_creationCompleteHandler(event)"/>
 					<s:HGroup paddingLeft="80" gap="20">
-						<s:RadioButton group="{time}" id="today" label="Today" selected="true"/>
-						<s:RadioButton group="{time}" id="range" label="Date Range"/>
-						<s:HGroup visible="{range.selected}" verticalAlign="middle">
-							<s:Label text="From:"/>
+						<s:RadioButton group="{time}" id="today" label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TODAY_LABEL)}" selected="true"/>
+						<s:RadioButton group="{time}" id="range" label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.RANGE_LABEL)}"/>
+						<s:HGroup enabled="{range.selected}" verticalAlign="middle">
+							<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.RANGE_FROM_LABEL)}"/>
 							<mx:DateField id="fromDate" 
 										  selectedDate="{new Date()}"/>
-							<s:Label text="To:" />
+							<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.RANGE_TO_LABEL)}" />
 							<mx:DateField id="toDate"
-										  selectedDate="{new Date()}"/>
+										  selectedDate="{new Date()}"
+										  valueCommit="{refreshDateRange()}"/>
 						</s:HGroup>
+						<s:Button id="searchBtt" 
+								  label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.SEARCH_LABEL)}" 
+								  click="item1_clickHandler(event)" 
+								  enabled="{fromTo.isValid()}"
+								  />
 					</s:HGroup>
 					
 					<mx:DataGrid width="100%" 
 								 borderStyle="solid" 
 								 borderColor="0x336699"
-								 dataProvider="{emails}"
+								 dataProvider="{model.emails}"
 								 height="100%">
-						<mx:columns>
-							<mx:DataGridColumn dataField="date" headerText="Date" 
-											   labelFunction="dateLabelFunction"/>
-							<mx:DataGridColumn dataField="from" headerText="From"/>
-							<mx:DataGridColumn dataField="to" headerText="To"/>
-							<mx:DataGridColumn dataField="subject" headerText="Subject"/>
+						<mx:columns>						
 							<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
 								<mx:itemRenderer>
 									<fx:Component>
@@ -214,7 +201,14 @@
 											</s:layout>
 											<fx:Script>
 												<![CDATA[
+													import mx.resources.IResourceManager;
+													import mx.resources.ResourceManager;
+													
+													import org.mxhero.console.reports.application.resources.CustomProperties;
 													import org.mxhero.console.reports.application.resources.ReportsImages;
+													
+													[Bindable]
+													private var rm:IResourceManager = ResourceManager.getInstance();
 													
 												]]>
 											</fx:Script>
@@ -223,16 +217,117 @@
 													<s:BasicLayout/>
 												</s:layout>
 												<component1:GlowButton maxGlow="10.0" 
-																	   visible="{data.state=='delivered'}"
+																	   visible="{data.state!='drop'}"
 																	   source="{ReportsImages.DELIVERED_FROMTO}" 
-																	   toolTip="Email was delivered"/>
+																	   toolTip="{rm.getString(CustomProperties.NAME,CustomProperties.DELIVERED_TOOLTIP)}"
+																	   />
 												<component1:GlowButton maxGlow="10.0" 
-																	   visible="{data.state!='delivered'}"
+																	   visible="{data.state=='drop'}"
 																	   source="{ReportsImages.DROPPED_FROMTO}" 
-																	   toolTip="Email was dropped"/>						
+																	   toolTip="{rm.getString(CustomProperties.NAME,CustomProperties.DROPPED_TOOLTIP_START)}"/>						
 												
 											</s:Group>
 										</s:MXDataGridItemRenderer>
+									</fx:Component>
+								</mx:itemRenderer>
+							</mx:DataGridColumn>							
+							<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_DATE_LABEL)}" 
+											   labelFunction="dateLabelFunction"/>
+							<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_FROM_LABEL)}"/>
+							<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_TO_LABEL)}"/>
+							<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_SUBJECT_LABEL)}"/>
+							<mx:DataGridColumn width="70" sortable="false" resizable="false">
+								<mx:itemRenderer>
+									<fx:Component>
+										<mx:HBox minHeight="0" minWidth="0">
+											<fx:Declarations>
+												<mx:Glow id="glowOn"
+														 alphaFrom="{minAlpha}"
+														 alphaTo="{maxAlpha}"
+														 blurXFrom="{minGlow}"
+														 blurXTo="{maxGlow}"
+														 blurYFrom="{minGlow}"
+														 blurYTo="{maxGlow}"
+														 color="{glowColor}"
+														 duration="{duration}"/>
+												
+												<mx:Glow id="glowOff" 
+														 alphaFrom="{maxAlpha}"
+														 alphaTo="{minAlpha}"
+														 blurXFrom="{maxGlow}"
+														 blurXTo="{minGlow}"
+														 blurYFrom="{maxGlow}"
+														 blurYTo="{minGlow}"
+														 color="{glowColor}"
+														 duration="{duration}"/>
+											</fx:Declarations>
+											<fx:Script>
+												<![CDATA[
+													import mx.managers.PopUpManager;
+													import mx.resources.IResourceManager;
+													import mx.resources.ResourceManager;
+													
+													import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+													import org.mxhero.console.frontend.domain.Record;
+													import org.mxhero.console.reports.application.resources.CustomProperties;
+													import org.mxhero.console.reports.presentation.reports.custom.ShowEmail;
+													
+													[Bindable]
+													private var rm:IResourceManager=ResourceManager.getInstance();
+													
+													[Bindable]
+													public var glowColor:Number=0xFFFFFF;
+													
+													[Bindable]
+													public var minGlow:Number=1.0;
+													
+													[Bindable]
+													public var maxGlow:Number=10.0;
+													
+													[Bindable]
+													public var minAlpha:Number=0.0;
+													
+													[Bindable]
+													public var maxAlpha:Number=0.5;
+													
+													[Bindable]
+													public var duration:Number=300;
+													
+													private var lastColor:*;
+													
+													private function showEmail():void{
+														var emailWindow:ShowEmail = new ShowEmail();
+														emailWindow.email=data as Record;
+														PopUpManager.addPopUp(emailWindow,outerDocument,true);
+														PopUpManager.centerPopUp(emailWindow);
+														PopUpManager.centerPopUp(emailWindow);
+													}
+													
+													private function onRollOverHandler():void{
+														lastColor=childLabel.getStyle("color");
+														childLabel.setStyle("color",glowColor);
+													}
+													
+													private function onRollOutHandler():void{
+														childLabel.setStyle("color",lastColor);
+													}
+													
+												]]>
+											</fx:Script>
+											
+											<s:Label id="childLabel"
+													 styleName="domainList"
+													 text="{rm.getString(CustomProperties.NAME,CustomProperties.DETAILS_LABEL)}"
+													 rollOver="{onRollOverHandler();}"
+													 rollOut="{onRollOutHandler();}"
+													 buttonMode="true"
+													 mouseEnabled="true"
+													 click="{showEmail()}"
+													 rollOverEffect="{glowOn}"
+													 toolTip="{rm.getString(CustomProperties.NAME,CustomProperties.DETAILS_TOOLTIP)}"
+													 rollOutEffect="{glowOff}"/>
+											
+										</mx:HBox>
 									</fx:Component>
 								</mx:itemRenderer>
 							</mx:DataGridColumn>
@@ -241,7 +336,7 @@
 				</s:VGroup>
 				<s:VGroup height="100%" width="40%" >
 					<s:VGroup width="100%" height="50%" gap="20">
-						<s:Label text="Top Ten Senders" 
+						<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TOP_TEN_SENDERS_LABEL)}" 
 								 fontWeight="bold" fontSize="16"
 								 color="#FFFFFF"
 								 textDecoration="underline"/>
@@ -252,7 +347,7 @@
 										 minHeight="240"
 										 showDataTips="true" 
 										 styleName="myChart"
-										 dataProvider="{dataDestinationsFromAC}"
+										 dataProvider="{model.topTenSenders}"
 										 axisTitleStyleName="axisTitles"
 										 backgroundElements="{bge1}">
 								
@@ -266,8 +361,8 @@
 								<mx:horizontalAxis>
 									
 									<mx:LinearAxis id="qtyAxisFrom" 
-												   displayName="Amount"  
-												   title="Amount" 
+												   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
+												   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" 
 												   />
 								</mx:horizontalAxis>
 								
@@ -276,8 +371,8 @@
 									<mx:CategoryAxis
 										id="emailAxisFrom"
 										categoryField="Email"
-										displayName="Email"
-										title="Email"
+										displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+										title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
 										/>
 								</mx:verticalAxis>
 								
@@ -339,7 +434,7 @@
 						</s:HGroup>
 					</s:VGroup>
 					<s:VGroup width="100%" height="50%" gap="20">
-						<s:Label text="Top Ten Recipients" 
+						<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TOP_TEN_RECIPIENTS_LABEL)}" 
 								 fontWeight="bold" fontSize="16"
 								 color="#FFFFFF"
 								 textDecoration="underline"/>
@@ -350,7 +445,7 @@
 										 minHeight="240"
 										 showDataTips="true" 
 										 styleName="myChart"
-										 dataProvider="{dataDestinationsToAC}"
+										 dataProvider="{model.topTenRecipients}"
 										 axisTitleStyleName="axisTitles"
 										 backgroundElements="{bge2}">
 								
@@ -364,8 +459,8 @@
 								<mx:horizontalAxis>
 									
 									<mx:LinearAxis id="qtyAxisTo" 
-												   displayName="Amount"  
-												   title="Amount" 
+												   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
+												   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" 
 												   />
 								</mx:horizontalAxis>
 								
@@ -374,8 +469,8 @@
 									<mx:CategoryAxis
 										id="emailAxisTo"
 										categoryField="Email"
-										displayName="Email"
-										title="Email"
+										displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+										title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
 										/>
 								</mx:verticalAxis>
 								

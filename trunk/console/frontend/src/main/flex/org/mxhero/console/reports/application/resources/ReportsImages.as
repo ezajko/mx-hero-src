@@ -42,5 +42,9 @@ package org.mxhero.console.reports.application.resources
 		[Embed(source="/images/reports/fromto/delivered.png")] 
 		[Bindable]
 		public static var DELIVERED_FROMTO:Class; 
+		
+		[Embed(source="/images/reports/more.png")] 
+		[Bindable]
+		public static var MORE:Class; 
 	}
 }

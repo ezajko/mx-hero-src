@@ -168,10 +168,10 @@
 					click="button1_clickHandler(event)"
 					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_OUT)}"
 					addedEffect="{zoom_in_btt.glowOn}"/>	
-				<component:GlowButton
+<!--				<component:GlowButton
 					source="{ReportsImages.EXPORT}" 
 					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EXPORT)}"/>	
-				<component:GlowButton
+-->				<component:GlowButton
 					source="{ReportsImages.REFRESH}" 
 					click="button1_clickHandler(event)"
 					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.REFRESH)}"/>	
@@ -228,7 +228,7 @@
 					<mx:AxisRenderer labelRotation="45" 
 									 axis="{dateAxis2}" 
 									 color="#FFFFFF" 
-									 fontSize="14"
+									 fontSize="12"
 									 />
 				</mx:horizontalAxisRenderers>
 				
@@ -248,9 +248,7 @@
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie"
 									 buttonMode="true"
-									 toolTip.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_IN)}"
-									 toolTip.zoom_in="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.INCOMMING_LABEL)}"
-									 displayName="Incomming">
+									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.INCOMMING_LABEL)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
 						</mx:stroke>
@@ -276,8 +274,6 @@
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie2"
 									 buttonMode="true"
-									 toolTip.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_IN)}"
-									 toolTip.zoom_in=""
 									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.INCOMMING_LABEL)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />

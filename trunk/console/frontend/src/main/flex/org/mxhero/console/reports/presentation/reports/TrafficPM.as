@@ -6,9 +6,11 @@ package org.mxhero.console.reports.presentation.reports
 	import org.mxhero.console.reports.application.ReportsDestinations;
 	import org.mxhero.console.reports.application.event.GetIncommingByDayEvent;
 	import org.mxhero.console.reports.application.event.GetIncommingEvent;
+	import org.mxhero.console.reports.application.event.GetOutgoingByDayEvent;
 	import org.mxhero.console.reports.application.event.GetOutgoingEvent;
 	import org.mxhero.console.reports.application.event.GetTopTenIncommingSendersByDayEvent;
 	import org.mxhero.console.reports.application.event.GetTopTenIncommingSendersEvent;
+	import org.mxhero.console.reports.application.event.GetTopTenOutgoingRecipientsByDayEvent;
 	import org.mxhero.console.reports.application.event.GetTopTenOutgoingRecipientsEvent;
 	import org.mxhero.console.reports.presentation.ReportsViewPM;
 
@@ -89,6 +91,18 @@ package org.mxhero.console.reports.presentation.reports
 			updatingOutgoingRecipients=true;
 		}
 		
+		public function getOutgoingByDay(day:Date):void{
+			if(context.selectedDomain!=null){
+				dispatcher(new GetOutgoingByDayEvent(context.selectedDomain.domain,day));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,day));
+			}else{
+				dispatcher(new GetOutgoingByDayEvent(null,day));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(null,day));
+			}
+			updatingOutgoing=true;
+			updatingOutgoingRecipients=true;
+		}
+		
 		[CommandResult]
 		public function getIncommingResult(result:*,event:GetIncommingEvent):void{
 			this.incommingData=translateData(result);
@@ -162,6 +176,29 @@ package org.mxhero.console.reports.presentation.reports
 			updatingOutgoingRecipients=false;
 		}
 		
+		[CommandResult]
+		public function getOutgoingByDayResult(result:*,event:GetOutgoingByDayEvent):void{
+			this.outgoingData=translateDataByDay(result);
+			updatingOutgoing=false;
+		}
+		
+		[CommandError]
+		public function getOutgoingByDayError(fault:*,event:GetOutgoingByDayEvent):void{
+			this.outgoingData=new ArrayCollection();
+			updatingOutgoing=false;
+		}
+		
+		[CommandResult]
+		public function getOutgoingRecipientsByDayResult(result:*,event:GetTopTenOutgoingRecipientsByDayEvent):void{
+			this.outgoingRecipientsData=translateMail(result);
+			updatingOutgoingRecipients=false;
+		}
+		
+		[CommandError]
+		public function getOutgoingRecipientsByDayError(fault:*,event:GetTopTenOutgoingRecipientsByDayEvent):void{
+			this.outgoingRecipientsData=new ArrayCollection();
+			updatingOutgoingRecipients=false;
+		}
 		
 		private function translateData(result:*):ArrayCollection{
 			var newData:ArrayCollection = new ArrayCollection();

@@ -1,4 +1,4 @@
-package org.mxhero.console.features.application.event
+package org.mxhero.console.frontend.application.event
 {
 	public class GetDomainsEvent
 	{

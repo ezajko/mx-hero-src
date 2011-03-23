@@ -8,10 +8,10 @@ package org.mxhero.console.features.presentation.rule
 	import org.mxhero.console.features.application.event.CreateDomainRuleEvent;
 	import org.mxhero.console.features.application.event.CreateNoDomainRuleEvent;
 	import org.mxhero.console.features.application.event.EditRuleEvent;
-	import org.mxhero.console.features.application.event.GetAccountsEvent;
-	import org.mxhero.console.features.application.event.GetDomainAccountsEvent;
-	import org.mxhero.console.features.application.event.GetDomainGroupsEvent;
-	import org.mxhero.console.features.application.event.GetDomainsEvent;
+	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
+	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
+	import org.mxhero.console.frontend.application.event.GetDomainGroupsEvent;
+	import org.mxhero.console.frontend.application.event.GetDomainsEvent;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
 	import org.mxhero.console.commons.FromTo.FromTo;
 	import org.mxhero.console.frontend.domain.ApplicationContext;

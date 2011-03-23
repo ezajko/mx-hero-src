@@ -4,7 +4,7 @@
 				   xmlns:mx="library://ns.adobe.com/flex/mx" 
 				   xmlns:FromTo="org.mxhero.console.commons.FromTo.*" 
 				   xmlns:element="org.mxhero.console.commons.FromTo.element.*"
-				   gap="20" 
+				   gap="20"
 				   verticalAlign="middle">
 	<fx:Script>
 		<![CDATA[
@@ -45,6 +45,15 @@
 		<s:State name="active"/>
 		<s:State name="restricted"/>
 	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="inactive" toState="active">
+			<s:Fade target="{checkBox}" alphaFrom="0" alphaTo="1"/>
+		</s:Transition>
+		<s:Transition fromState="inactive" toState="restricted">
+			<s:Fade target="{checkBox}" alphaFrom="0" alphaTo="1"/>
+		</s:Transition>
+	</s:transitions>
 	
 		<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_LABEL)}" 
 					 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ANYONE_TOOLTIP)}" 

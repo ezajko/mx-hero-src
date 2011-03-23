@@ -1,4 +1,4 @@
-package org.mxhero.console.features.application.command
+package org.mxhero.console.frontend.application.command
 {
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
@@ -7,7 +7,7 @@ package org.mxhero.console.features.application.command
 	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.features.application.event.GetDomainAccountsEvent;
+	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.EmailAccount;
