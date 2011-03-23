@@ -12,12 +12,17 @@
 			import mx.rpc.remoting.RemoteObject;
 			
 			import org.mxhero.console.reports.application.ReportsDestinations;
+			import org.mxhero.console.reports.application.command.GetEmailsCommand;
 			import org.mxhero.console.reports.application.command.GetIncommingByDayCommand;
 			import org.mxhero.console.reports.application.command.GetIncommingCommand;
+			import org.mxhero.console.reports.application.command.GetOutgoingByDayCommand;
 			import org.mxhero.console.reports.application.command.GetOutgoingCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersByDayCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersCommand;
+			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsByDayCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsCommand;
+			import org.mxhero.console.reports.application.command.GetTopTenRecipientsCommand;
+			import org.mxhero.console.reports.application.command.GetTopTenSendersCommand;
 		
 			[Bindable]
 			[Embed(source="/images/reports/platform.png")]
@@ -36,7 +41,12 @@
 		<parsley:DynamicCommand type="{GetTopTenIncommingSendersCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenIncommingSendersByDayCommand}"/>
 		<parsley:DynamicCommand type="{GetOutgoingCommand}"/>
+		<parsley:DynamicCommand type="{GetOutgoingByDayCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenOutgoingRecipientsCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenOutgoingRecipientsByDayCommand}"/>
+		<parsley:DynamicCommand type="{GetEmailsCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenSendersCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenRecipientsCommand}"/>
 		
 		<presentation:ReportsViewPM/>
 		<presentation:ReportsListPM/>
@@ -94,6 +104,12 @@
 		
 		<parsley:Object type="{RemoteObject}" id="trafficReportService">
 			<parsley:Property name="destination" value="trafficReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="customReportService">
+			<parsley:Property name="destination" value="customReportService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

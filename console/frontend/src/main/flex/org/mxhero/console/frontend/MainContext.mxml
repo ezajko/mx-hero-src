@@ -18,6 +18,10 @@
 			import mx.utils.URLUtil;
 			
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.frontend.application.command.GetAccountsCommand;
+			import org.mxhero.console.frontend.application.command.GetDomainAccountsCommand;
+			import org.mxhero.console.frontend.application.command.GetDomainGroupsCommand;
+			import org.mxhero.console.frontend.application.command.GetDomainsCommand;
 			import org.mxhero.console.frontend.application.command.LoadInitialDataCommand;
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
@@ -38,7 +42,11 @@
 		<parsley:DynamicCommand type="{ LogoutCommand }"/>
 		<parsley:DynamicCommand type="{ RecoverPasswordCommand }"/>
 		<parsley:DynamicCommand type="{ LoadInitialDataCommand }" />
-
+		<parsley:DynamicCommand type="{ GetDomainAccountsCommand }"/>
+		<parsley:DynamicCommand type="{ GetAccountsCommand }"/>
+		<parsley:DynamicCommand type="{ GetDomainsCommand }"/>
+		<parsley:DynamicCommand type="{ GetDomainGroupsCommand }"/>
+		
 		<!--<data:DataCache/>-->
 		<domain:ApplicationContext/>
 		
@@ -79,10 +87,28 @@
 			channelSet="{channelSet}"
 			/>
 		
+		<parsley:Object type="{RemoteObject}" id="domainService">
+			<parsley:Property name="destination" value="domainService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="groupService">
+			<parsley:Property name="destination" value="groupService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="emailAccountService">
+			<parsley:Property name="destination" value="emailAccountService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<!--<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>-->
-				<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>
+				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
+				<!--<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>-->
 			</s:channels>
 		</s:ChannelSet>
 

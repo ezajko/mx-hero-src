@@ -128,6 +128,7 @@
 			import mx.collections.ArrayCollection;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.reports.application.resources.ReportCommonProperties;
 			import org.mxhero.console.reports.application.resources.ReportsImages;
 			import org.mxhero.console.reports.application.resources.ReportsListProperties;
 			import org.mxhero.console.reports.application.resources.TrafficProperties;
@@ -139,13 +140,12 @@
 			
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
 			{
-				//HERE
+				model.getOutgoingByDay(event.hitData.item.Date);
 				linechart.doubleClickEnabled=false;
 				cserie.buttonMode=false;
 				cserie.toolTip="";
 				currentState="zoom_in";
 			}
-			
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
@@ -177,15 +177,15 @@
 					includeIn="zoom_in"
 					source="{ReportsImages.ZOOM_OUT}" 
 					click="button1_clickHandler(event)"
-					toolTip="Zoom Out"
+					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_OUT)}"
 					addedEffect="{zoom_in_btt.glowOn}"/>	
-				<component:GlowButton
+<!--				<component:GlowButton
 					source="{ReportsImages.EXPORT}" 
-					toolTip="Export"/>	
+					toolTip="Export"/>	-->
 				<component:GlowButton
 					source="{ReportsImages.REFRESH}" 
 					click="button1_clickHandler(event)"
-					toolTip="Refresh"/>	
+					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.REFRESH)}"/>	
 			</s:HGroup>
 			
 			<mx:ColumnChart id="linechart" color="0x323232" 
@@ -215,10 +215,10 @@
 									 disabledDays="{[]}"
 									 autoAdjust="true"
 									 dataInterval="1"
-									 title.zoom_out="Date"
-									 title.zoom_in="Time"
-									 displayName.zoom_out="Date"
-									 displayName.zoom_in="Time"
+									 title.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
+									 title.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
+									 displayName.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
+									 displayName.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
 									 />
 				</mx:horizontalAxis>
 				
@@ -240,7 +240,7 @@
 					<mx:AxisRenderer labelRotation="45" 
 									 axis="{dateAxis2}" 
 									 color="#FFFFFF" 
-									 fontSize="14"
+									 fontSize="12"
 									 />
 				</mx:horizontalAxisRenderers>
 				
@@ -258,8 +258,6 @@
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie"
 									 buttonMode="true"
-									 toolTip.zoom_out="Zoom In"
-									 toolTip.zoom_in=""
 									 displayName="Outgoing">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
@@ -274,7 +272,9 @@
 								alpha=".8"/>
 						</mx:filters>
 						<mx:verticalAxis>
-							<mx:LinearAxis id="qtyAxis2" title="Emails" displayName="Emails"/>
+							<mx:LinearAxis id="qtyAxis2" 
+										   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}" 
+										   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
 						</mx:verticalAxis>
 					</mx:ColumnSeries>
 				<mx:ColumnSeries xField="Date" yField="MB" 
@@ -284,8 +284,6 @@
 								 hideDataEffect.zoom_in="{zoomOut}"
 								 id="cserie2"
 								 buttonMode="true"
-								 toolTip.zoom_out="Zoom In"
-								 toolTip.zoom_in=""
 								 displayName="Incomming">
 					<mx:stroke>
 						<s:SolidColorStroke color="#FFFFFF" caps="round" />
@@ -300,7 +298,9 @@
 							alpha=".8"/>
 					</mx:filters>
 					<mx:verticalAxis>
-						<mx:LinearAxis id="mbAxis2" title="Size(MB)"  displayName="Size(MB)"/>
+						<mx:LinearAxis id="mbAxis2" 
+									   title="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.SIZE_MB_LABEL)}"  
+									   displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.SIZE_MB_LABEL)}"/>
 					</mx:verticalAxis>
 				</mx:ColumnSeries>
 				</mx:series>
@@ -333,9 +333,8 @@
 					<mx:horizontalAxis>
 						
 						<mx:LinearAxis id="qtyAxisTo" 
-									   displayName="Amount"  
-									   title="Amount" 
-									   />
+									   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
+									   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" />
 					</mx:horizontalAxis>
 					
 					<mx:verticalAxis>
@@ -343,9 +342,8 @@
 						<mx:CategoryAxis
 							id="emailAxisTo"
 							categoryField="Email"
-							displayName="Email"
-							title="Email"
-							/>
+							displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+							title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
 					</mx:verticalAxis>
 					
 					<mx:verticalAxisRenderers>

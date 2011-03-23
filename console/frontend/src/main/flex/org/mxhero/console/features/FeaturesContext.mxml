@@ -14,10 +14,6 @@
 			import org.mxhero.console.features.application.command.CreateDomainRuleCommand;
 			import org.mxhero.console.features.application.command.CreateNoDomainRuleCommand;
 			import org.mxhero.console.features.application.command.EditRuleCommand;
-			import org.mxhero.console.features.application.command.GetAccountsCommand;
-			import org.mxhero.console.features.application.command.GetDomainAccountsCommand;
-			import org.mxhero.console.features.application.command.GetDomainGroupsCommand;
-			import org.mxhero.console.features.application.command.GetDomainsCommand;
 			import org.mxhero.console.features.application.command.GetFeaturesByDomainIdCommand;
 			import org.mxhero.console.features.application.command.GetFeaturesCommand;
 			import org.mxhero.console.features.application.command.GetRulesByDomainIdCommand;
@@ -38,10 +34,6 @@
 		<parsley:DynamicCommand type="{CreateDomainRuleCommand}"/>
 		<parsley:DynamicCommand type="{CreateNoDomainRuleCommand}"/>
 		<parsley:DynamicCommand type="{EditRuleCommand}"/>
-		<parsley:DynamicCommand type="{GetDomainAccountsCommand}"/>
-		<parsley:DynamicCommand type="{GetAccountsCommand}"/>
-		<parsley:DynamicCommand type="{GetDomainsCommand}"/>
-		<parsley:DynamicCommand type="{GetDomainGroupsCommand}"/>
 		
 		<presentation1:AllFeaturesViewPM/>
 		<presentation1:AllFeaturesListPM/>
@@ -56,24 +48,6 @@
 		
 		<parsley:Object type="{RemoteObject}" id="ruleService">
 			<parsley:Property name="destination" value="ruleService"/>
-			<parsley:Property name="showBusyCursor" value="true"/>
-			<parsley:Property name="channelSet" idRef="channelSet"/>
-		</parsley:Object>
-		
-		<parsley:Object type="{RemoteObject}" id="domainService">
-			<parsley:Property name="destination" value="domainService"/>
-			<parsley:Property name="showBusyCursor" value="true"/>
-			<parsley:Property name="channelSet" idRef="channelSet"/>
-		</parsley:Object>
-		
-		<parsley:Object type="{RemoteObject}" id="groupService">
-			<parsley:Property name="destination" value="groupService"/>
-			<parsley:Property name="showBusyCursor" value="true"/>
-			<parsley:Property name="channelSet" idRef="channelSet"/>
-		</parsley:Object>
-		
-		<parsley:Object type="{RemoteObject}" id="emailAccountService">
-			<parsley:Property name="destination" value="emailAccountService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

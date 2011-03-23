@@ -9,8 +9,8 @@ package org.mxhero.console.features.presentation
 	import mx.resources.ResourceManager;
 	
 	import org.mxhero.console.features.application.FeaturesDestinations;
-	import org.mxhero.console.features.application.event.GetAccountsEvent;
-	import org.mxhero.console.features.application.event.GetDomainAccountsEvent;
+	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
+	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.features.application.event.GetFeaturesByDomainIdEvent;
 	import org.mxhero.console.features.application.event.GetFeaturesEvent;
 	import org.mxhero.console.features.presentation.feature.FeatureViewPM;

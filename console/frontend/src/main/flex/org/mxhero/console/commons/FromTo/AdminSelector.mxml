@@ -8,6 +8,7 @@
 		 currentStateChange="{notifyChange()}" 
 		 xmlns:component="org.mxhero.console.commons.component.*"
 		 verticalAlign="middle"
+		 maxWidth="400"
 		 creationComplete="creationCompleteHandler(event)" 
 		 xmlns:component1="org.mxhero.console.commons.feature.component.*">
 
@@ -266,7 +267,7 @@
 	
 	<s:transitions>
 		<s:Transition fromState="all" toState="anyone"> 
-			<s:Sequence>
+			<s:Sequence effectStart="{anyoneFT.currentState='active'}">
 				<s:Parallel>
 					<s:Fade target="{allDomainsFT}" alphaFrom="1" alphaTo="0"/>
 					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0"/>
@@ -275,7 +276,7 @@
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="anyone" toState="all"> 
-			<s:Sequence>
+			<s:Sequence effectStart="{anyoneFT.currentState='inactive'}">
 				<s:Parallel startDelay="100">
 					<s:Fade target="{allDomainsFT}" alphaFrom="0" alphaTo="1"/>
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1"/>

@@ -34,6 +34,8 @@
 			import org.mxhero.console.commons.resources.ErrorsProperties;
 			import org.mxhero.console.configurations.application.resources.ConfigurationsListProperties;
 			import org.mxhero.console.configurations.application.resources.UserProperties;
+			import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
+			import org.mxhero.console.frontend.infrastructure.LanguageSettings;
 			
 			import spark.events.IndexChangeEvent;
 
@@ -79,6 +81,7 @@
 			protected function localeCb_changeHandler(event:IndexChangeEvent):void
 			{
 				this.model.user.locale=this.localeCb.selectedItem.toString();
+				this.model.dispatcher(new LanguageChangedMessage(this.model.user.locale));
 			}
 
 		]]>
