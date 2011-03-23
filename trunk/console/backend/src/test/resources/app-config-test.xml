@@ -45,6 +45,10 @@
 	
 	<context:property-placeholder location="classpath*:META-INF/jdbc.properties" />
 
+	<hades:dao-config base-package="org.mxhero.console.backend.statistics.dao" 
+	entity-manager-factory-ref="statisticsEmfb" 
+	transaction-manager-ref="statisticsTransactionManager"/>
+
 	<hades:dao-config base-package="org.mxhero.console.backend.dao" 
 	entity-manager-factory-ref="mxheroEmfb" 
 	transaction-manager-ref="mxheroTransactionManager"/>

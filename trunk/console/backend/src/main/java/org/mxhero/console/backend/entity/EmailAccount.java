@@ -15,7 +15,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="email_accounts",
+@Table(name="email_accounts",schema="mxhero",
 		uniqueConstraints={@UniqueConstraint(columnNames={"account","domain_id"})})
 public class EmailAccount {
 

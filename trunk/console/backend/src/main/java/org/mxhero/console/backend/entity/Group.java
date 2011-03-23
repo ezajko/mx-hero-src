@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="groups",
+@Table(name="groups",schema="mxhero",
 		uniqueConstraints={@UniqueConstraint(columnNames={"name","domain_id"})})
 public class Group {
 	

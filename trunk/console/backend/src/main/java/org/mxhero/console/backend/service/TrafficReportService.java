@@ -22,7 +22,13 @@ public interface TrafficReportService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection getOutgoing(String domain);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	Collection getOutgoingByDay(String domain, Calendar day);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection getTopTenOutgoingRecipients(String domain);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	Collection getTopTenOutgoingRecipientsByDay(String domain, Calendar day);
 }

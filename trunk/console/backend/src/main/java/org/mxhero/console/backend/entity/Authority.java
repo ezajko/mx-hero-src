@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-@Table(name="authorities")
+@Table(name="authorities",schema="mxhero")
 public class Authority implements GrantedAuthority{
 
 	public static final String ROLE_ADMIN="ROLE_ADMIN";

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="features",
+@Table(name="features",schema="mxhero",
 		uniqueConstraints={@UniqueConstraint(columnNames={"component","version"})})
 public class Feature {
 

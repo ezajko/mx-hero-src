@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="system_properties")
+@Table(name="system_properties",schema="mxhero")
 public class SystemProperty {
 
 	public final static String MAIL_SMTP_HOST="mail.smtp.host";
