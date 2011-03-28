@@ -4,12 +4,19 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 width="100%" height="100%" 
 		 xmlns:component="org.mxhero.console.commons.feature.component.*" 
-		 xmlns:cloudtag="org.mxhero.flex.component.cloudtag.*">
+		 xmlns:cloudtag="org.mxhero.flex.component.cloudtag.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 currentState="{model.stateSpam}">
 	
 	<fx:Declarations>
 		
-		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY"/>
+		<parsley:Configure/>
+		
+		<mx:DateFormatter id="creationDateFormatter"/>
+		
+		<mx:DateFormatter id="creationHourFormatter"
+						  formatString="HH:NN:SS"
+						  />
 		
 		<mx:SeriesZoom id="zoomOut" 
 					   duration="600"
@@ -93,91 +100,35 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			
+			import org.mxhero.console.reports.application.resources.ReportCommonProperties;
+			import org.mxhero.console.reports.application.resources.ThreatsProperties;
+			import org.mxhero.console.reports.presentation.reports.ThreatsPM;
+			
+			[Inject]
+			[Bindable]
+			public var model:ThreatsPM;
+			
 			import org.mxhero.console.reports.application.resources.ReportsImages;
 			
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
-				return creationDateFormatter.format(item.date);
+				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
 			}
 
-			private var basicDate:Date = new Date(new Date().fullYear,new Date().month,new Date().date);
-			public static const millisecondsPerDay:int = 1000 * 60 * 60 * 24;
-			public static const millisecondsPerHour:int = 1000 * 60 * 60;
-			
-			[Bindable]
-			public var emails:ArrayCollection = new ArrayCollection([
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()},
-				{from:"spam@spam.com",to:"mmarmol@mxhero.com",subject:"BUY VIAGRA",hits:"1000",date:new Date()}
-			]);
-			
-			
-			[Bindable]
-			private var dataAC:ArrayCollection = new ArrayCollection( [
-				{ Qty: 34, Date: basicDate },
-				{ Qty: 22, Date: new Date(basicDate.getTime()-millisecondsPerDay)},
-				{ Qty: 23, Date: new Date(basicDate.getTime()-millisecondsPerDay*2) },
-				{ Qty: 37, Date: new Date(basicDate.getTime()-millisecondsPerDay*3) },
-				{ Qty: 48, Date: new Date(basicDate.getTime()-millisecondsPerDay*4) },
-				{ Qty: 57, Date: new Date(basicDate.getTime()-millisecondsPerDay*5) },
-				{ Qty: 45, Date: new Date(basicDate.getTime()-millisecondsPerDay*6) }]);
-			
-			
-			protected function getDrillDownData(externalDay:Date):ArrayCollection{
-				var day:Date = new Date(externalDay.getTime());
-				var drillDownAC:ArrayCollection = new ArrayCollection( [
-					{ Qty: 34, Date: new Date(day.setUTCHours(0)) },
-					{ Qty: 34, Date: new Date(day.setUTCHours(1)) },
-					{ Qty: 22, Date: new Date(day.setUTCHours(2)) },
-					{ Qty: 23, Date: new Date(day.setUTCHours(3)) },
-					{ Qty: 54, Date: new Date(day.setUTCHours(4)) },
-					{ Qty: 61, Date: new Date(day.setUTCHours(5)) },
-					{ Qty: 54, Date: new Date(day.setUTCHours(6)) },
-					{ Qty: 51, Date: new Date(day.setUTCHours(7)) },
-					{ Qty: 47, Date: new Date(day.setUTCHours(8)) },
-					{ Qty: 41, Date: new Date(day.setUTCHours(9)) },
-					{ Qty: 38, Date: new Date(day.setUTCHours(10)) },
-					{ Qty: 32, Date: new Date(day.setUTCHours(11)) },
-					{ Qty: 39, Date: new Date(day.setUTCHours(12)) },
-					{ Qty: 43, Date: new Date(day.setUTCHours(13)) },
-					{ Qty: 46, Date: new Date(day.setUTCHours(14)) },
-					{ Qty: 52, Date: new Date(day.setUTCHours(15)) },
-					{ Qty: 58, Date: new Date(day.setUTCHours(16)) },
-					{ Qty: 63, Date: new Date(day.setUTCHours(17)) },
-					{ Qty: 67, Date: new Date(day.setUTCHours(18)) },
-					{ Qty: 70, Date: new Date(day.setUTCHours(19)) },
-					{ Qty: 65, Date: new Date(day.setUTCHours(20)) },
-					{ Qty: 72, Date: new Date(day.setUTCHours(21)) },
-					{ Qty: 78, Date: new Date(day.setUTCHours(22)) },
-					{ Qty: 80, Date: new Date(day.setUTCHours(23)) }]);
-				
-				return drillDownAC;
-			}
-			
-			
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
 			{
-				linechart.dataProvider=getDrillDownData(event.hitData.item.Date)
+				model.getSpamByDay(event.hitData.item.Date);
 				linechart.doubleClickEnabled=false;
 				cserie.buttonMode=false;
-				cserie.toolTip="";
-				currentState="zoom_in";
+				model.stateSpam="zoom_in";
 			}
 			
 			
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
-				linechart.dataProvider=dataAC;
 				linechart.doubleClickEnabled=true;
 				cserie.buttonMode=true;
-				cserie.toolTip="Zoom In";
-				currentState="zoom_out";
+				model.stateSpam="zoom_out";
+				model.getSpam();
 			}
 			
 		]]>
@@ -187,12 +138,12 @@
 	
 	<s:VGroup width="100%">
 		
-		<s:VGroup width="100%">
+		<s:VGroup width="100%" enabled="{!model.spamUpdating}">
 			<s:HGroup horizontalAlign="right" 
 					  width="100%"
 					  paddingRight="5"
 					  paddingBottom="5">
-				<s:Label text="Spam Detection" 
+				<s:Label text="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.SPAM_TITLE)}" 
 						 fontWeight="bold" fontSize="16"
 						 color="#FFFFFF"
 						 textDecoration="underline"/>
@@ -202,21 +153,21 @@
 					includeIn="zoom_in"
 					source="{ReportsImages.ZOOM_OUT}" 
 					click="button1_clickHandler(event)"
-					toolTip="Zoom Out"
+					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_OUT)}"
 					addedEffect="{zoom_in_btt.glowOn}"/>	
-				<component:GlowButton
+<!--				<component:GlowButton
 					source="{ReportsImages.EXPORT}" 
-					toolTip="Export"/>	
+					toolTip="Export"/>	-->
 				<component:GlowButton
 					source="{ReportsImages.REFRESH}" 
 					click="button1_clickHandler(event)"
-					toolTip="Refresh"/>	
+					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.REFRESH)}"/>	
 			</s:HGroup>
 			<mx:ColumnChart id="linechart" color="0x323232" 
 							height="280" width="100%"
 							showDataTips="true" 
 							styleName="myChart"
-							dataProvider="{dataAC}"
+							dataProvider="{model.spamHists}"
 							axisTitleStyleName="axisTitles"
 							doubleClickEnabled.zoom_out="true"
 							doubleClickEnabled.zoom_in="false"
@@ -239,15 +190,17 @@
 									 disabledDays="{[]}"
 									 autoAdjust="true"
 									 dataInterval="1"
-									 title.zoom_out="Date"
-									 title.zoom_in="Time"
-									 displayName.zoom_out="Date"
-									 displayName.zoom_in="Time"
+									 title.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
+									 title.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
+									 displayName.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
+									 displayName.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
 									 />
 				</mx:horizontalAxis>
 				
 				<mx:verticalAxis>
-					<mx:LinearAxis id="qtyAxis" title="Emails"  displayName="Emails"/>
+					<mx:LinearAxis id="qtyAxis" 
+								   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}" 
+								   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
 				</mx:verticalAxis>
 				
 				<mx:verticalAxisRenderers>
@@ -262,7 +215,7 @@
 					<mx:AxisRenderer labelRotation="45" 
 									 axis="{dateAxis}" 
 									 color="#FFFFFF" 
-									 fontSize="14"
+									 fontSize="12"
 									 />
 				</mx:horizontalAxisRenderers>
 				
@@ -280,9 +233,7 @@
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie"
 									 buttonMode="true"
-									 toolTip.zoom_out="Zoom In"
-									 toolTip.zoom_in=""
-									 displayName="Hits">
+									 displayName="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.HITS_TITLE)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
 						</mx:stroke>
@@ -301,20 +252,155 @@
 			</mx:ColumnChart>
 		</s:VGroup>
 
-		<s:Label text="Email Spam Detected" 
+		<s:Label text="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.SPAM_EMAIL_TITLE)}" 
 				 fontWeight="bold" fontSize="16"
 				 paddingLeft="50"/>
 		<s:HGroup width="100%" height="100%" verticalAlign="bottom"  paddingLeft="50">
 			<mx:DataGrid width="100%" 
 						 borderStyle="solid" 
 						 borderColor="0x336699"
-						 dataProvider="{emails}">
-				<mx:columns>
-					<mx:DataGridColumn dataField="date" headerText="Date" 
+						 dataProvider="{model.spamMails}"
+						 height="100%">
+				<mx:columns>						
+					<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
+						<mx:itemRenderer>
+							<fx:Component>
+								<s:MXDataGridItemRenderer width="100%">
+									<s:layout>
+										<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+									</s:layout>
+									<fx:Script>
+										<![CDATA[
+											import mx.resources.IResourceManager;
+											import mx.resources.ResourceManager;
+											
+											import org.mxhero.console.reports.application.resources.ReportCommonProperties;
+											import org.mxhero.console.reports.application.resources.ReportsImages;
+											
+											[Bindable]
+											private var rm:IResourceManager = ResourceManager.getInstance();
+											
+										]]>
+									</fx:Script>
+									<s:Group>
+										<s:layout>
+											<s:BasicLayout/>
+										</s:layout>
+										<component:GlowButton maxGlow="10.0" 
+															   visible="{data.state!='drop'}"
+															   source="{ReportsImages.DELIVERED_FROMTO}" 
+															   toolTip="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DELIVERED_TOOLTIP)}"
+															   />
+										<component:GlowButton maxGlow="10.0" 
+															   visible="{data.state=='drop'}"
+															   source="{ReportsImages.DROPPED_FROMTO}" 
+															   toolTip="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DROPPED_TOOLTIP_START)}"/>						
+										
+									</s:Group>
+								</s:MXDataGridItemRenderer>
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>							
+					<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_DATE_LABEL)}" 
 									   labelFunction="dateLabelFunction"/>
-					<mx:DataGridColumn dataField="from" headerText="From"/>
-					<mx:DataGridColumn dataField="to" headerText="To"/>
-					<mx:DataGridColumn dataField="subject" headerText="Subject"/>
+					<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_FROM_LABEL)}"/>
+					<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_TO_LABEL)}"/>
+					<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_SUBJECT_LABEL)}"/>
+					<mx:DataGridColumn width="70" sortable="false" resizable="false">
+						<mx:itemRenderer>
+							<fx:Component>
+								<mx:HBox minHeight="0" minWidth="0">
+									<fx:Declarations>
+										<mx:Glow id="glowOn"
+												 alphaFrom="{minAlpha}"
+												 alphaTo="{maxAlpha}"
+												 blurXFrom="{minGlow}"
+												 blurXTo="{maxGlow}"
+												 blurYFrom="{minGlow}"
+												 blurYTo="{maxGlow}"
+												 color="{glowColor}"
+												 duration="{duration}"/>
+										
+										<mx:Glow id="glowOff" 
+												 alphaFrom="{maxAlpha}"
+												 alphaTo="{minAlpha}"
+												 blurXFrom="{maxGlow}"
+												 blurXTo="{minGlow}"
+												 blurYFrom="{maxGlow}"
+												 blurYTo="{minGlow}"
+												 color="{glowColor}"
+												 duration="{duration}"/>
+									</fx:Declarations>
+									<fx:Script>
+										<![CDATA[
+											import mx.managers.PopUpManager;
+											import mx.resources.IResourceManager;
+											import mx.resources.ResourceManager;
+											
+											import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+											import org.mxhero.console.frontend.domain.Record;
+											import org.mxhero.console.reports.application.resources.ReportCommonProperties;
+											import org.mxhero.console.reports.presentation.reports.ShowEmail;
+											
+											[Bindable]
+											private var rm:IResourceManager=ResourceManager.getInstance();
+											
+											[Bindable]
+											public var glowColor:Number=0xFFFFFF;
+											
+											[Bindable]
+											public var minGlow:Number=1.0;
+											
+											[Bindable]
+											public var maxGlow:Number=10.0;
+											
+											[Bindable]
+											public var minAlpha:Number=0.0;
+											
+											[Bindable]
+											public var maxAlpha:Number=0.5;
+											
+											[Bindable]
+											public var duration:Number=300;
+											
+											private var lastColor:*;
+											
+											private function showEmail():void{
+												var emailWindow:ShowEmail = new ShowEmail();
+												emailWindow.email=data as Record;
+												PopUpManager.addPopUp(emailWindow,outerDocument,true);
+												PopUpManager.centerPopUp(emailWindow);
+												PopUpManager.centerPopUp(emailWindow);
+											}
+											
+											private function onRollOverHandler():void{
+												lastColor=childLabel.getStyle("color");
+												childLabel.setStyle("color",glowColor);
+											}
+											
+											private function onRollOutHandler():void{
+												childLabel.setStyle("color",lastColor);
+											}
+											
+										]]>
+									</fx:Script>
+									
+									<s:Label id="childLabel"
+											 styleName="domainList"
+											 text="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DETAILS_LABEL)}"
+											 rollOver="{onRollOverHandler();}"
+											 rollOut="{onRollOutHandler();}"
+											 buttonMode="true"
+											 mouseEnabled="true"
+											 click="{showEmail()}"
+											 rollOverEffect="{glowOn}"
+											 toolTip="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DETAILS_TOOLTIP)}"
+											 rollOutEffect="{glowOff}"/>
+									
+								</mx:HBox>
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
 				</mx:columns>
 			</mx:DataGrid>
 		</s:HGroup>

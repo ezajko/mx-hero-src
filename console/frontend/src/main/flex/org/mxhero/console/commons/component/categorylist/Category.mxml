@@ -9,6 +9,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			[Bindable]
 			public var model:CategoryListPM;
@@ -22,7 +23,8 @@
 	<s:layout>
 		<s:HorizontalLayout horizontalAlign="left" verticalAlign="middle"/>
 	</s:layout>
-	<mx:Image source="{category.iconsrc}" minWidth="48"/>
+	<mx:Image id="categoryImg" source="{category.iconsrc}" 
+			  minWidth="48" />
 	<mx:Label styleName="categorylist_category" 
 			  text="{category.label}" 
 			  textFieldClass="mx.core.UIFTETextField"

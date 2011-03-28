@@ -204,7 +204,7 @@
 													import mx.resources.IResourceManager;
 													import mx.resources.ResourceManager;
 													
-													import org.mxhero.console.reports.application.resources.CustomProperties;
+													import org.mxhero.console.reports.application.resources.ReportCommonProperties;
 													import org.mxhero.console.reports.application.resources.ReportsImages;
 													
 													[Bindable]
@@ -219,23 +219,23 @@
 												<component1:GlowButton maxGlow="10.0" 
 																	   visible="{data.state!='drop'}"
 																	   source="{ReportsImages.DELIVERED_FROMTO}" 
-																	   toolTip="{rm.getString(CustomProperties.NAME,CustomProperties.DELIVERED_TOOLTIP)}"
+																	   toolTip="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DELIVERED_TOOLTIP)}"
 																	   />
 												<component1:GlowButton maxGlow="10.0" 
 																	   visible="{data.state=='drop'}"
 																	   source="{ReportsImages.DROPPED_FROMTO}" 
-																	   toolTip="{rm.getString(CustomProperties.NAME,CustomProperties.DROPPED_TOOLTIP_START)}"/>						
+																	   toolTip="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DROPPED_TOOLTIP_START)}"/>						
 												
 											</s:Group>
 										</s:MXDataGridItemRenderer>
 									</fx:Component>
 								</mx:itemRenderer>
 							</mx:DataGridColumn>							
-							<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_DATE_LABEL)}" 
+							<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_DATE_LABEL)}" 
 											   labelFunction="dateLabelFunction"/>
-							<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_FROM_LABEL)}"/>
-							<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_TO_LABEL)}"/>
-							<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAIL_SUBJECT_LABEL)}"/>
+							<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_FROM_LABEL)}"/>
+							<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_TO_LABEL)}"/>
+							<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAIL_SUBJECT_LABEL)}"/>
 							<mx:DataGridColumn width="70" sortable="false" resizable="false">
 								<mx:itemRenderer>
 									<fx:Component>
@@ -269,8 +269,7 @@
 													
 													import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 													import org.mxhero.console.frontend.domain.Record;
-													import org.mxhero.console.reports.application.resources.CustomProperties;
-													import org.mxhero.console.reports.presentation.reports.custom.ShowEmail;
+													import org.mxhero.console.reports.application.resources.ReportCommonProperties;
 													
 													[Bindable]
 													private var rm:IResourceManager=ResourceManager.getInstance();
@@ -317,14 +316,14 @@
 											
 											<s:Label id="childLabel"
 													 styleName="domainList"
-													 text="{rm.getString(CustomProperties.NAME,CustomProperties.DETAILS_LABEL)}"
+													 text="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DETAILS_LABEL)}"
 													 rollOver="{onRollOverHandler();}"
 													 rollOut="{onRollOutHandler();}"
 													 buttonMode="true"
 													 mouseEnabled="true"
 													 click="{showEmail()}"
 													 rollOverEffect="{glowOn}"
-													 toolTip="{rm.getString(CustomProperties.NAME,CustomProperties.DETAILS_TOOLTIP)}"
+													 toolTip="{rm.getString(ReportCommonProperties.NAME,ReportCommonProperties.DETAILS_TOOLTIP)}"
 													 rollOutEffect="{glowOff}"/>
 											
 										</mx:HBox>

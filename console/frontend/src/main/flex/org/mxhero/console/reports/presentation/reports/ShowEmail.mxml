@@ -9,6 +9,7 @@
 			import mx.managers.PopUpManager;
 			
 			import org.mxhero.console.frontend.domain.Record;
+			import org.mxhero.console.reports.application.resources.ShowEmailProperties;
 			
 			[Bindable]
 			public var email:Record;
@@ -30,46 +31,46 @@
 		<s:VerticalLayout horizontalAlign="center" paddingBottom="20"/>
 	</s:layout>
 	<mx:Form width="100%" defaultButton="{closeBtt}">
-		<mx:FormItem label="Message-Id:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.MESSAGE_ID_LABEL)}" width="100%" labelWidth="110">
 			<s:TextInput editable="false" text="{email.messageId}" width="100%"/>
 		</mx:FormItem>		
-		<mx:FormItem label="From:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.FROM_LABEL)}" width="100%" labelWidth="110">
 			<s:TextInput editable="false" text="{email.from}" width="100%"/>
 		</mx:FormItem>
-		<mx:FormItem label="Sender:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SENDER_LABEL)}" width="100%" labelWidth="110">
 			<s:TextInput editable="false" text="{email.sender}" width="100%"/>
 		</mx:FormItem>
-		<mx:FormItem label="Recipient:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.RECIPIENT_LABEL)}" width="100%" labelWidth="110">
 			<s:TextInput editable="false" text="{email.recipient}" width="100%"/>
 		</mx:FormItem>
-		<mx:FormItem label="To:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.TO_LABEL)}" width="100%" labelWidth="110">
 			<s:TextArea editable="false" text="{email.toRecipients}" width="100%" heightInLines="2"/>
 		</mx:FormItem>
-		<mx:FormItem label="Cc:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.CC_LABEL)}" width="100%" labelWidth="110">
 			<s:TextArea editable="false" text="{email.ccRecipients}" width="100%" heightInLines="2"/>
 		</mx:FormItem>
-		<mx:FormItem label="Bcc:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.BCC_LABEL)}" width="100%" labelWidth="110">
 			<s:TextArea editable="false" text="{email.bccRecipients}" width="100%" heightInLines="2"/>
 		</mx:FormItem>
-		<mx:FormItem label="Subject:" width="100%" labelWidth="110">
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SUBJECT_LABEL)}" width="100%" labelWidth="110">
 			<s:TextInput editable="false" text="{email.subject}" width="100%"/>
 		</mx:FormItem>
 		<s:HGroup width="100%">
-			<mx:FormItem label="Phase:" width="100%" labelWidth="110">
+			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.PHASE_LABEL)}" width="100%" labelWidth="110">
 				<s:TextInput editable="false" text="{email.phase}"/>
 			</mx:FormItem>
-			<mx:FormItem label="Size(MB):" width="100%" labelWidth="110">
+			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SIZE_LABEL)}" width="100%" labelWidth="110">
 				<s:TextInput editable="false" text="{int((((email.bytesSize)/1024)/1024)*1000)/1000}"/>
 			</mx:FormItem>
 		</s:HGroup>
 		<s:HGroup width="100%">
-			<mx:FormItem label="State:" width="100%" labelWidth="110">
+			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_LABEL)}" width="100%" labelWidth="110">
 				<s:TextInput editable="false" text="{email.state}"/>
 			</mx:FormItem>
-			<mx:FormItem label="State Reason:" width="100%" labelWidth="110">
+			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_REASON_LABEL)}" width="100%" labelWidth="110">
 				<s:TextInput editable="false" text="{email.stateReason}" width="100%"/>
 			</mx:FormItem>
 		</s:HGroup>
 	</mx:Form>
-	<s:Button id="closeBtt" label="Close" click="closeEmail(event)"/>
+	<s:Button id="closeBtt" label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.CLOSE_BTT_LABEL)}" click="closeEmail(event)"/>
 </s:TitleWindow>

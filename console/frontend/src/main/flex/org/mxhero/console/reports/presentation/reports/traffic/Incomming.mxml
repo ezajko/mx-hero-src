@@ -6,6 +6,7 @@
 		 xmlns:component="org.mxhero.console.commons.feature.component.*" 
 		 xmlns:cloudtag="org.mxhero.components.cloudtag.*" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 currentState="{model.stateIncomming}"
 		 >
 	
 	<fx:Declarations>
@@ -132,8 +133,7 @@
 				model.getIncommingByDay(event.hitData.item.Date);
 				linechart.doubleClickEnabled=false;
 				cserie.buttonMode=false;
-				cserie.toolTip="";
-				currentState="zoom_in";
+				model.stateIncomming="zoom_in";
 			}
 			
 			
@@ -141,8 +141,7 @@
 			{
 				linechart.doubleClickEnabled=true;
 				cserie.buttonMode=true;
-				cserie.toolTip="Zoom In";
-				currentState="zoom_out";
+				model.stateIncomming="zoom_out";
 				model.getIncomming();
 			}
 		]]>

@@ -17,12 +17,18 @@
 			import org.mxhero.console.reports.application.command.GetIncommingCommand;
 			import org.mxhero.console.reports.application.command.GetOutgoingByDayCommand;
 			import org.mxhero.console.reports.application.command.GetOutgoingCommand;
+			import org.mxhero.console.reports.application.command.GetSpamEmailsCommand;
+			import org.mxhero.console.reports.application.command.GetSpamHitsCommand;
+			import org.mxhero.console.reports.application.command.GetSpamHitsDayCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersByDayCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsByDayCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenRecipientsCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenSendersCommand;
+			import org.mxhero.console.reports.application.command.GetVirusEmailsCommand;
+			import org.mxhero.console.reports.application.command.GetVirusHitsCommand;
+			import org.mxhero.console.reports.application.command.GetVirusHitsDayCommand;
 		
 			[Bindable]
 			[Embed(source="/images/reports/platform.png")]
@@ -47,6 +53,12 @@
 		<parsley:DynamicCommand type="{GetEmailsCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenSendersCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenRecipientsCommand}"/>
+		<parsley:DynamicCommand type="{GetSpamHitsCommand}"/>
+		<parsley:DynamicCommand type="{GetVirusHitsCommand}"/>
+		<parsley:DynamicCommand type="{GetVirusHitsDayCommand}"/>
+		<parsley:DynamicCommand type="{GetSpamHitsDayCommand}"/>
+		<parsley:DynamicCommand type="{GetVirusEmailsCommand}"/>
+		<parsley:DynamicCommand type="{GetSpamEmailsCommand}"/>
 		
 		<presentation:ReportsViewPM/>
 		<presentation:ReportsListPM/>
@@ -110,6 +122,12 @@
 		
 		<parsley:Object type="{RemoteObject}" id="customReportService">
 			<parsley:Property name="destination" value="customReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="threatsReportService">
+			<parsley:Property name="destination" value="threatsReportService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>
