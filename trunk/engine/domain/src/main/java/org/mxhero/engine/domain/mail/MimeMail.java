@@ -40,6 +40,8 @@ public final class MimeMail {
 	private String recipientDomainId;
 
 	private String responseServiceId;
+	
+	private String parentMessageId;
 
 	private int initialSize;
 
@@ -69,7 +71,7 @@ public final class MimeMail {
 		this.message = new MimeMessage(Session
 				.getDefaultInstance(new Properties()),
 				new ByteArrayInputStream(data));
-
+		this.setParentMessageId(message.getMessageID()+"-"+sequence);
 	}
 
 	/**
@@ -94,6 +96,7 @@ public final class MimeMail {
 		}
 		this.initialSize = data.getSize() + headerSize;
 		this.message = new MimeMessage(data);
+		this.setParentMessageId(message.getMessageID()+"-"+sequence);
 	}
 
 	/**
@@ -264,6 +267,14 @@ public final class MimeMail {
 	 */
 	public void setRecipientDomainId(String recipientDomainId) {
 		this.recipientDomainId = recipientDomainId;
+	}
+
+	public String getParentMessageId() {
+		return parentMessageId;
+	}
+
+	public void setParentMessageId(String parentMessageId) {
+		this.parentMessageId = parentMessageId;
 	}
 
 	public Map<String, String> getProperties() {
