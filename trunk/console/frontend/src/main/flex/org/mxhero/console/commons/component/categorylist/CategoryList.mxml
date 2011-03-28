@@ -12,6 +12,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.controls.HRule;
+			import mx.controls.SWFLoader;
 			import mx.events.ResizeEvent;
 			
 			[Bindable]
@@ -73,12 +74,17 @@
 
 			public function set categoryList(value:Object):void
 			{
+				_categoryList = value;
+				loadAllCategoriesImages();
+			}
+
+			private function initCategories(event:*=null):void{
 				var hrule:HRule;
 				innerGroup.removeAllElements();
 				model.categoriesUI.removeAll();
 				
-				if(value!=null){
-					for each(var category:Object in value){
+				if(_categoryList!=null){
+					for each(var category:Object in _categoryList){
 						var newCategoryRow:CategoryRow= new CategoryRow();
 						newCategoryRow.model=model;
 						newCategoryRow.category=category;
@@ -91,10 +97,23 @@
 					}
 				}
 				innerGroup.removeElementAt(innerGroup.numElements-1);
-				_categoryList = value;
+				
 				invalidateDisplayList();
 			}
-
+			
+			
+			private function loadAllCategoriesImages():void{
+				for each(var category:Object in _categoryList){
+					if(category.iconsrc is String){
+						var loader:SWFLoader = new SWFLoader();
+						loader.load(category.iconsrc);
+						loader.addEventListener(Event.COMPLETE,initCategories);
+					}
+				}
+				initCategories();
+			}
+			
+			
 			public function get orderChilds():Boolean
 			{
 				return model.orderChilds;

@@ -34,6 +34,17 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var updatingOutgoingRecipients:Boolean = false;
 		
+		private static const IN_DEFAULT:String = "zoom_out";
+		private static const OUT_DEFAULT:String = "zoom_out";
+		private static const IN_DAY:String = "zoom_in";
+		private static const OUT_DAY:String = "zoom_in";
+		
+		[Bindable]
+		public var stateIncomming:String = IN_DEFAULT;
+		
+		[Bindable]
+		public var stateOutgoing:String = OUT_DEFAULT;
+		
 		[Inject]
 		[Bindable]
 		public var parentModel:ReportsViewPM;
@@ -65,6 +76,8 @@ package org.mxhero.console.reports.presentation.reports
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
+			stateIncomming = IN_DEFAULT;
+			
 		}
 		
 		public function getIncommingByDay(day:Date):void{
@@ -77,6 +90,7 @@ package org.mxhero.console.reports.presentation.reports
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
+			stateIncomming = IN_DAY;
 		}
 		
 		public function getOutgoing():void{
@@ -89,6 +103,7 @@ package org.mxhero.console.reports.presentation.reports
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
+			stateOutgoing = OUT_DEFAULT;
 		}
 		
 		public function getOutgoingByDay(day:Date):void{
@@ -101,6 +116,7 @@ package org.mxhero.console.reports.presentation.reports
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
+			stateOutgoing = OUT_DAY;
 		}
 		
 		[CommandResult]
@@ -237,6 +253,7 @@ package org.mxhero.console.reports.presentation.reports
 						newData.addItem({Qty: object[0], Email:object[1]});
 					}
 				}
+				newData.source = newData.source.reverse();
 			}
 			return newData;
 		}

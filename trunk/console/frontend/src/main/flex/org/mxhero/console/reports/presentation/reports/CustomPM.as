@@ -54,6 +54,10 @@ package org.mxhero.console.reports.presentation.reports
 			if(refresh!=null){
 				refresh();
 			}
+			emails=null;
+			topTenSenders=null;
+			topTenRecipients=null;
+			
 			if(context.selectedDomain==null){
 				dispatcher(new GetDomainsEvent());
 				dispatcher(new GetAccountsEvent());
@@ -124,6 +128,7 @@ package org.mxhero.console.reports.presentation.reports
 						newData.addItem({Qty: object[0], Email:object[1]});
 					}
 				}
+				newData.source = newData.source.reverse();
 			}
 			return newData;
 		}
