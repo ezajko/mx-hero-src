@@ -28,6 +28,9 @@ public class Record implements Serializable{
 
 	@Column(name = "message_id", length = 1024, nullable=false)
 	private String messageId;
+	
+	@Column(name = "parent_message_id", length = 1024, nullable=false)
+	private String parentMessageId;
 
 	@Column(name = "phase", length = 10, nullable=false)
 	private String phase;
@@ -376,6 +379,14 @@ public class Record implements Serializable{
 
 	public void setStats(Set<Stat> stats) {
 		this.stats = stats;
+	}
+
+	public String getParentMessageId() {
+		return parentMessageId;
+	}
+
+	public void setParentMessageId(String parentMessageId) {
+		this.parentMessageId = parentMessageId;
 	}
 
 	/**

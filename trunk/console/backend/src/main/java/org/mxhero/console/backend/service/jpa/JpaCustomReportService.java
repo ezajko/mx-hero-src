@@ -21,13 +21,11 @@ import org.mxhero.console.backend.statistics.entity.RecordPk_;
 import org.mxhero.console.backend.statistics.entity.Record_;
 import org.mxhero.console.backend.translator.RecordTranslator;
 import org.mxhero.console.backend.vo.FeatureRuleDirectionVO;
-import org.mxhero.console.backend.vo.PageVO;
 import org.mxhero.console.backend.vo.RecordVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
-import org.synyx.hades.domain.PageRequest;
 import org.synyx.hades.domain.Specification;
 
 @Service("customReportService")
@@ -41,7 +39,7 @@ public class JpaCustomReportService implements CustomReportService{
 	private static final String ANYONEELSE="anyoneelse";
 	
 	@PersistenceContext(unitName = "statisticsPer")
-	protected EntityManager entityManager;
+	private EntityManager entityManager;
 	
 	private RecordDao recordDao;
 	
@@ -175,6 +173,14 @@ public class JpaCustomReportService implements CustomReportService{
 							,builder.equal(root.get(Record_.phase),"receive")));
 		
 		return predicate;
+	}
+
+	public EntityManager getEntityManager() {
+		return entityManager;
+	}
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
 	}
 	
 }

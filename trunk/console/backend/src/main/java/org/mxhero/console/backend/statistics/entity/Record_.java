@@ -2,6 +2,7 @@ package org.mxhero.console.backend.statistics.entity;
 
 import java.util.Calendar;
 
+import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
@@ -10,6 +11,7 @@ public abstract class Record_ {
 
 	public static volatile SingularAttribute<Record,RecordPk> id;
 	public static volatile SingularAttribute<Record,String> messageId;
+	public static volatile SingularAttribute<Record,String> parentMessageId;
 	public static volatile SingularAttribute<Record, String> phase;
 	public static volatile SingularAttribute<Record, String> sender;
 	public static volatile SingularAttribute<Record, String> senderId;
@@ -28,5 +30,6 @@ public abstract class Record_ {
 	public static volatile SingularAttribute<Record, String> state;
 	public static volatile SingularAttribute<Record, String> stateReason;
 	public static volatile SingularAttribute<Record, String> flow;
-	
+	public static volatile SetAttribute<Record, Stat> stats;
+
 }

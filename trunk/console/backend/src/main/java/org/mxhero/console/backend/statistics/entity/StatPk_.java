@@ -3,10 +3,10 @@ package org.mxhero.console.backend.statistics.entity;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@StaticMetamodel(Stat.class)
+@StaticMetamodel(StatPk.class)
 public class StatPk_ {
 
-	public static volatile SingularAttribute<Stat,String> key;
+	public static volatile SingularAttribute<StatPk,String> key;
 	
-	public static volatile SingularAttribute<Stat,RecordPk> recordId;
+	public static volatile SingularAttribute<StatPk,RecordPk> recordId;
 }
