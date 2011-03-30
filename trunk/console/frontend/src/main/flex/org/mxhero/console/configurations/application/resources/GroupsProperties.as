@@ -42,6 +42,10 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const SHOW_MEMBERS_LABEL:String="show.members.label";
 		
+		public static const SELECT_MEMBERS_LABEL:String="select.members.label";
+		
+		public static const SELECT_MEMBERS_EXPANDED:String="select.members.expanded";
+		
 		public static const SHOW_NO_GROUP_ACCOUNTS_LABEL:String="show.no.group.accounts.label";
 
 	}

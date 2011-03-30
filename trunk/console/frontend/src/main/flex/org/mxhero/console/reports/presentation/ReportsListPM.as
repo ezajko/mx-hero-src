@@ -1,5 +1,6 @@
 package org.mxhero.console.reports.presentation
 {
+	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.infrastructure.AuthorizeHelper;
 
 	[Landmark(name="main.dashboard.reports.list")]
@@ -28,6 +29,12 @@ package org.mxhero.console.reports.presentation
 		
 		public function childClickHandler(child:Object,category:Object):void{
 			reportsViewPM.navigateTo(child.navigateTo);
+		}
+		
+		[MessageHandler]
+		public function handleLanguageChange(message:LanguageChangedMessage):void{
+			this.authorizedDataSource=null;
+			this.authorizedDataSource=authorizeHelper.authorizeList(dataSource);
 		}
 	}
 }

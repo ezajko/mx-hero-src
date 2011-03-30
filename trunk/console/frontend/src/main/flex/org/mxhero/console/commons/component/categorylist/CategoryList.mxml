@@ -111,6 +111,7 @@
 					}
 				}
 				initCategories();
+				this.validateSize(true);
 			}
 			
 			

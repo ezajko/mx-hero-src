@@ -25,6 +25,7 @@
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.features.application.resources.FeaturesImages;
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 
 			[Inject]
 			[Bindable]
@@ -54,6 +55,7 @@
 
 				if(!fromTo.isValid()){
 					saveBtt.errorString=fromTo.errorMessage;
+					model.dispatcher(new ApplicationErrorMessage(fromTo.errorMessage,true));
 					return;
 				}
 

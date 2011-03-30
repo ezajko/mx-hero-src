@@ -11,6 +11,7 @@ package org.mxhero.console.configurations.presentation.user
 	import org.mxhero.console.configurations.application.resources.UserProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
 	import org.mxhero.console.frontend.application.message.ApplicationMessage;
+	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.ApplicationUser;
 
@@ -84,6 +85,7 @@ package org.mxhero.console.configurations.presentation.user
 		public function updateUserResult(result:*,event:EditApplicationUserEvent):void{
 			this.isUpdating=false;
 			this.context.applicationUser=result;
+			dispatcher(new LanguageChangedMessage(this.context.applicationUser.locale));
 			dispatcher(new ApplicationMessage(UserProperties.NAME,UserProperties.UPDATE_USER_RESULT));
 		}
 		

@@ -78,6 +78,7 @@
 	
 	<mx:ProgressBar id="progress" 
 					source="{this}" 
-					excludeFrom="loaded" 
+					excludeFrom="loaded"
+					color="#FFFFFF"
 					labelPlacement="center"/>
 </mx:ModuleLoader>

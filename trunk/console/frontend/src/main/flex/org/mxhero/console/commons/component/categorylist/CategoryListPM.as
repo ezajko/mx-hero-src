@@ -1,6 +1,10 @@
 package org.mxhero.console.commons.component.categorylist
 {
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	
 	import mx.collections.ArrayCollection;
+	import mx.resources.ResourceManager;
 
 	public class CategoryListPM
 	{
@@ -43,6 +47,15 @@ package org.mxhero.console.commons.component.categorylist
 		[Bindable]
 		public var clickHandler:Function=defaultClickHandler;
 		
+		
+		public function CategoryListPM(){
+			ResourceManager.getInstance().addEventListener("change",dispatchChange);
+		}
+		
+		private function dispatchChange(event:Event):void
+		{
+			dispatchEvent(new Event("change"));
+		}
 		public function defaultClickHandler(child:Object):void{
 			trace(child);
 		}
@@ -131,21 +144,26 @@ package org.mxhero.console.commons.component.categorylist
 			}
 		}
 		
+		private function searchMax():Number{
+			var _categoryWidth:Number=0;
+			for each(var category:Object in categoriesUI){
+				if(category.width>_categoryWidth){
+					_categoryWidth=category.width;
+				}
+			}
+			return _categoryWidth;
+		}
+		
+		
+		[Bindable("change")]
 		public function resizeCategories():void
 		{
-			var hasChanged:Boolean=false;
+			this.categoryWidth = searchMax();
 			for each(var category:Object in categoriesUI){
+				category.width=this.categoryWidth;
 				category.invalidateDisplayList();
-				if(category.width>categoryWidth){
-					categoryWidth=category.width;
-					hasChanged=true;
-				} else {
-					category.width=categoryWidth;
-				}
-				category.invalidateDisplayList();
-			}
-			if(hasChanged){
-				resizeCategories();
+				category.invalidateSize();
+				category.validateSize(true);
 			}
 		}
 	}

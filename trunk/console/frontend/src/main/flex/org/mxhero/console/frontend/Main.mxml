@@ -34,7 +34,7 @@
 		[ResourceBundle("report_custom")]
 		[ResourceBundle("categories")]
 		[ResourceBundle("report_common")]
-		[ResourceBundle("report_showemail")]
+
 	</fx:Metadata>
 	
 	<fx:Declarations>

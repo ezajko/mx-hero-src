@@ -16,6 +16,7 @@
 			
 			[Bindable]
 			public var category:Object;
+			
 
 		]]>
 	</fx:Script>
