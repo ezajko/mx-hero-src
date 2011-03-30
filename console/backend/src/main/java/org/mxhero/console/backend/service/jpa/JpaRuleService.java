@@ -2,6 +2,7 @@ package org.mxhero.console.backend.service.jpa;
 
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 
 import org.mxhero.console.backend.dao.DomainDao;
 import org.mxhero.console.backend.dao.FeatureDao;
@@ -26,6 +27,8 @@ public class JpaRuleService implements RuleService{
 	private static final String FEATURE_NOT_FOUND="feature.not.found";
 	
 	private static final String RULE_NOT_FOUND="rule.not.found";
+	
+	private static final String RULE_DIRECTION_EXISTS="rule.direction.exists";
 	
 	private FeatureRuleDao dao;
 	
@@ -90,6 +93,14 @@ public class JpaRuleService implements RuleService{
 			rule.getProperties().add(property);
 		}
 
+		
+		List<FeatureRule> rulesFound = dao.findCheckCreationAdmin(ruleVO.getFromDirection().getFreeValue(), 
+				ruleVO.getToDirection().getFreeValue(), 
+				featureId);
+		if(rulesFound!=null && rulesFound.size()>0){
+			throw new BusinessException(RULE_DIRECTION_EXISTS);
+		}
+		
 		feature.getRules().add(rule);
 		featureDao.save(feature);
 	}
@@ -146,6 +157,13 @@ public class JpaRuleService implements RuleService{
 			property.setRule(rule);
 			rule.getProperties().add(property);
 		}
+		List<FeatureRule> rulesFound = dao.findCheckCreation(ruleVO.getFromDirection().getFreeValue(), 
+				ruleVO.getToDirection().getFreeValue(), 
+				featureId, 
+				domainId);
+		if(rulesFound!=null && rulesFound.size()>0){
+			throw new BusinessException(RULE_DIRECTION_EXISTS);
+		}
 		
 		feature.getRules().add(rule);
 		featureDao.save(feature);
@@ -187,6 +205,25 @@ public class JpaRuleService implements RuleService{
 			property.setPropertyValue(propertyVO.getPropertyValue());
 			property.setRule(rule);
 			rule.getProperties().add(property);
+		}
+		
+
+		List<FeatureRule> rulesFound=null;
+		if(rule.getDomain()!=null){
+			rulesFound =dao.findCheckCreation(ruleVO.getFromDirection().getFreeValue(), 
+					ruleVO.getToDirection().getFreeValue(), 
+					rule.getFeature().getId(), 
+					rule.getDomain().getId());
+		}else{
+			rulesFound =dao.findCheckCreationAdmin(ruleVO.getFromDirection().getFreeValue(), 
+					ruleVO.getToDirection().getFreeValue(), 
+					rule.getFeature().getId());
+		}
+		
+
+		
+		if(rulesFound!=null && rulesFound.size()>0 && !rulesFound.get(0).getId().equals(rule.getId())){
+			throw new BusinessException(RULE_DIRECTION_EXISTS);
 		}
 		
 		dao.save(rule);

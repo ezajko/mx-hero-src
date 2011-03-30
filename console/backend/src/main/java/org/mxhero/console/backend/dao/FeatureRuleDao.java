@@ -19,4 +19,24 @@ public interface FeatureRuleDao extends GenericDao<FeatureRule, Integer>{
 	@Query("SELECT distinct frd.rule FROM FeatureRuleDirection frd WHERE frd.directionType = :directionType AND frd.valueId = :valueId")
 	List<FeatureRule> findByDirectionTypeAndValueId(@Param("directionType") String directionType,
 													@Param("valueId") Integer valueId);
+	
+	@Query("SELECT r FROM FeatureRule r " +
+			" WHERE (r.fromDirection.freeValue = :fromFreeValue OR (r.fromDirection.freeValue = 'anyoneelse' AND :fromFreeValue = 'anyone') OR (r.fromDirection.freeValue = 'anyone' AND :fromFreeValue = 'anyoneelse') )" +
+			" AND (r.toDirection.freeValue = :toFreeValue OR (r.toDirection.freeValue = 'anyoneelse' AND :toFreeValue = 'anyone') OR (r.toDirection.freeValue = 'anyone' AND :toFreeValue = 'anyoneelse') ) " +
+			" AND r.feature.id = :featureId " +
+			" AND r.domain.id = :domainId ")
+	List<FeatureRule> findCheckCreation(@Param("fromFreeValue") String fromFreeValue,
+										@Param("toFreeValue") String toFreeValue,
+										@Param("featureId") Integer featureId,
+										@Param("domainId") Integer domainId);
+	
+	@Query("SELECT r FROM FeatureRule r " +
+			" WHERE (r.fromDirection.freeValue = :fromFreeValue OR (r.fromDirection.freeValue = 'anyoneelse' AND :fromFreeValue = 'anyone') OR (r.fromDirection.freeValue = 'anyone' AND :fromFreeValue = 'anyoneelse') )" +
+			" AND (r.toDirection.freeValue = :toFreeValue OR (r.toDirection.freeValue = 'anyoneelse' AND :toFreeValue = 'anyone') OR (r.toDirection.freeValue = 'anyone' AND :toFreeValue = 'anyoneelse') ) " +
+			" AND r.feature.id = :featureId " +
+			" AND r.domain IS NULL ")
+	List<FeatureRule> findCheckCreationAdmin(@Param("fromFreeValue") String fromFreeValue,
+										@Param("toFreeValue") String toFreeValue,
+										@Param("featureId") Integer featureId);
+	
 }
