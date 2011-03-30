@@ -6,9 +6,12 @@ package org.mxhero.console.frontend.application.message
 		
 		private var _data:*;
 		
-		public function ApplicationErrorMessage(key:String)
+		public var isTextual:Boolean=false;
+		
+		public function ApplicationErrorMessage(key:String,isTextual:Boolean=false)
 		{
 			this._key = key;
+			this.isTextual=isTextual;
 		}
 		
 		public function get key():String

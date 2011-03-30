@@ -32,6 +32,14 @@
 						duration="800" 
 						direction="down"/>
 		
+		<mx:SeriesSlide id="slideInTop" 
+						duration="800" 
+						direction="right"/>
+		
+		<mx:SeriesSlide id="slideOutTop" 
+						duration="800" 
+						direction="left"/>
+		
 		<fx:Array id="bge">
 			<mx:GridLines 
 				horizontalChangeCount="1" 
@@ -364,8 +372,8 @@
 					<mx:series>
 						<mx:BarSeries xField="Qty" 
 									  yField="Email" 
-									  showDataEffect="{slideIn}" 
-									  hideDataEffect="{slideOut}"
+									  showDataEffect="{slideInTop}" 
+									  hideDataEffect="{slideOutTop}"
 									  id="cserieTo"
 									  buttonMode="true"
 									  >

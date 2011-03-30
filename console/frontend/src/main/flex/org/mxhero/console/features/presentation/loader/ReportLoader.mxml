@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:ModuleLoader xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				 xmlns:s="library://ns.adobe.com/flex/spark" 
+				 xmlns:mx="library://ns.adobe.com/flex/mx" 
+			error="errorHandler(event)"
+			progress="progressHandler(event)"
+			loading="loadingHandler(event)"
+			ready="readyHandler(event)" 
+			xmlns:component="org.mxhero.console.commons.component.*"
+			xmlns:component1="org.mxhero.console.commons.feature.component.*" 
+			xmlns:parsley="http://www.spicefactory.org/parsley">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.ModuleEvent;
+			
+			protected function errorHandler(event:ModuleEvent):void
+			{
+				progress.label="error"
+			}
+			
+			protected function progressHandler(event:ModuleEvent):void
+			{
+				if(progress!=null){
+					progress.label=Math.round((event.bytesLoaded/event.bytesTotal) * 100) +"%";
+				}
+			}
+			
+			protected function loadingHandler(event:Event):void
+			{
+				currentState="loading";
+			}
+			
+			protected function readyHandler(event:ModuleEvent):void
+			{
+				currentState="loaded";
+			}
+			
+			public function reload():void{
+				this.unloadModule();
+				this.loadModule();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
+	
+	<mx:states>
+		<s:State name="loading"/>
+		<s:State name="loaded"/>
+	</mx:states>
+	
+	<mx:ProgressBar id="progress" 
+					source="{this}" 
+					excludeFrom="loaded" 
+					color="#FFFFFF"
+					labelPlacement="center"/>
+</mx:ModuleLoader>

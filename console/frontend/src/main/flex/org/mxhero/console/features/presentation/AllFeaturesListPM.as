@@ -9,11 +9,12 @@ package org.mxhero.console.features.presentation
 	import mx.resources.ResourceManager;
 	
 	import org.mxhero.console.features.application.FeaturesDestinations;
-	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
-	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.features.application.event.GetFeaturesByDomainIdEvent;
 	import org.mxhero.console.features.application.event.GetFeaturesEvent;
 	import org.mxhero.console.features.presentation.feature.FeatureViewPM;
+	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
+	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
+	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
 	import org.mxhero.console.frontend.domain.EmailAccount;
@@ -45,6 +46,8 @@ package org.mxhero.console.features.presentation
 		
 		[Bindable]
 		public var categories:ArrayCollection;
+		
+		private var categoriesAux:ArrayCollection;
 		
 		[Inject]
 		[Bindable]
@@ -82,14 +85,20 @@ package org.mxhero.console.features.presentation
 		
 		[CommandResult]
 		public function findFeaturesResult(result:*,event:GetFeaturesEvent):void{
-			categories=result;
+			categoriesAux=result;
 			isUpdating=false;
-			preload(categories);
+			preload(categoriesAux);
 		}
 		
 		[CommandError]
 		public function findFeaturesError(fault:*,event:GetFeaturesEvent):void{
 			isUpdating=false;
+		}
+		
+		[MessageHandler]
+		public function handleLanguageChange(message:LanguageChangedMessage):void{
+			this.categories=null;
+			this.categories=categoriesAux;
 		}
 		
 		public function childClickHandler(child:Object,category:Object):void{
@@ -109,9 +118,9 @@ package org.mxhero.console.features.presentation
 			if(modulesToPreload.length>0){
 				this.state=PRELOADING;
 				preloadAll();
-				
 			}else{
 				this.state=LOADED;
+				categories=categoriesAux;
 			}
 		}
 		
@@ -127,11 +136,12 @@ package org.mxhero.console.features.presentation
 			}else{
 				this.state=LOADED;
 				loading="";
+				categories=categoriesAux;
 			}
 			if(e!=null && e.module.loaded && !loadedFeatures.contains(e.module.url)){
 				loadedFeatures.addItem(e.module.url);
 				ResourceManager.getInstance().update();
-				e.module.unload();
+				//e.module.unload();
 			}
 		}
 		

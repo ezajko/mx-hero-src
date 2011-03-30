@@ -1,5 +1,7 @@
 package org.mxhero.console.commons.domain
 {
+	import flash.events.Event;
+	
 	import mx.collections.ArrayCollection;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
@@ -23,8 +25,18 @@ package org.mxhero.console.commons.domain
 		
 		private var rm:IResourceManager=ResourceManager.getInstance();
 		
-		public function get label():String{
-			return rm.getString(resource,key);
+		public function LCCategory(){
+			rm.addEventListener("change",dispatchChange);
 		}
-	}
+		
+		private function dispatchChange(event:Event):void
+		{
+			dispatchEvent(new Event("change"));
+		}
+		
+		[Bindable("change")]
+		public function get label():String{
+				return rm.getString(resource,key);
+			}
+		}
 }

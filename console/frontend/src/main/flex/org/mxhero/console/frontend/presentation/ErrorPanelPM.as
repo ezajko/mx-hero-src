@@ -34,18 +34,23 @@ package org.mxhero.console.frontend.presentation
 		[MessageHandler]
 		public function handleError(message:ApplicationErrorMessage):void{
 			errorMessage=null;
-			if(message.key!=null){
-				//if user is logged, we need to log him out
-				if((message.key.toLowerCase()=='client.authentication'||
-					message.key.toLowerCase()=='channel.call.failed'||
-					message.key.toLowerCase()=='client.error.messagesend')
-				&& context.applicationUser!=null){
-					Alert.show(rm.getString(ErrorsProperties.NAME,ErrorsProperties.LOGOUT_MESSAGE),"",Alert.OK,null,logoutHandler);
-					return;
+			if(!message.isTextual){
+				if(message.key!=null){
+					//if user is logged, we need to log him out
+					if((message.key.toLowerCase()=='client.authentication'||
+						message.key.toLowerCase()=='channel.call.failed'||
+						message.key.toLowerCase()=='client.error.messagesend')
+						&& context.applicationUser!=null){
+						Alert.show(rm.getString(ErrorsProperties.NAME,ErrorsProperties.LOGOUT_MESSAGE),"",Alert.OK,null,logoutHandler);
+						return;
+					}
+					errorMessage=rm.getString(ErrorsProperties.NAME,message.key.toLowerCase());
+					
 				}
-				errorMessage=rm.getString(ErrorsProperties.NAME,message.key.toLowerCase());
-				
+			}else{
+				errorMessage=message.key;
 			}
+
 			if(errorMessage==null){
 				errorMessage=rm.getString(ErrorsProperties.NAME,ErrorsProperties.UNEXPECTED_ERROR_START)
 					+message.key

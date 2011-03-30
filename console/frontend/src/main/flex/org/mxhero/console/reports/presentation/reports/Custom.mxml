@@ -267,6 +267,7 @@
 													import mx.resources.IResourceManager;
 													import mx.resources.ResourceManager;
 													
+													import org.mxhero.console.commons.feature.component.ShowEmail;
 													import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 													import org.mxhero.console.frontend.domain.Record;
 													import org.mxhero.console.reports.application.resources.ReportCommonProperties;

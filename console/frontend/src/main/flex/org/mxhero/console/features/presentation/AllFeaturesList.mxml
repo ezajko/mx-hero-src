@@ -43,5 +43,6 @@
 					label="{model.loading}"
 					excludeFrom="loaded" 
 					indeterminate="true"
-					labelPlacement="center"/>
+					labelPlacement="center"
+					color="#FFFFFF"/>
 </s:Group>

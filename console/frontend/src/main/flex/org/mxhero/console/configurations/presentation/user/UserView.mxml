@@ -81,7 +81,6 @@
 			protected function localeCb_changeHandler(event:IndexChangeEvent):void
 			{
 				this.model.user.locale=this.localeCb.selectedItem.toString();
-				this.model.dispatcher(new LanguageChangedMessage(this.model.user.locale));
 			}
 
 		]]>

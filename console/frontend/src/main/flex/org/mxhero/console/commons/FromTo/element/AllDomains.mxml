@@ -21,6 +21,6 @@
 	<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ALLDOMAINS_LABEL)}" 
 				  toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ALLDOMAINS_TOOLTIP)}" 
 				  toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
-				  width="120"/>
+				  width="150"/>
 </s:HGroup>
 

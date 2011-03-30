@@ -77,7 +77,7 @@
 				 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_GROUP_TOOLTIP)}" 
 				 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				 click="item_clickHandler(event)"
-				 width="120"/>
+				 width="150"/>
 	<s:BorderContainer id="dropDownList" 
 					   excludeFrom="inactive"
 					   backgroundColor="#7c7b7b"  

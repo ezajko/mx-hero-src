@@ -58,7 +58,7 @@
 		<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_LABEL)}" 
 					 toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ANYONE_TOOLTIP)}" 
 					 toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
-					 width="120"
+					 width="150"
 					 click="item_clickHandler(event)"
 					 enabled.restricted="false"/>
 	<s:BorderContainer id="checkBox" 

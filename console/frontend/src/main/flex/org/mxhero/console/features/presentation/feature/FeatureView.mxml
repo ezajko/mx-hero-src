@@ -6,7 +6,7 @@
 		 xmlns:component="org.mxhero.console.commons.component.*"
 		 enabled="{!model.isUpdating}" 
 		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
-		 width="100%">
+		 width="100%" xmlns:loader="org.mxhero.console.features.presentation.loader.*">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -199,12 +199,13 @@
 		</mx:DataGrid>
 			
 	</s:VGroup>
-		<mx:ModuleLoader url="{model.selectedFeature.moduleReportUrl}" 
-						 height="100%" 
-						 width="100%"
-						 horizontalScrollPolicy="off"
-						 verticalScrollPolicy="off"
-						 error="{Alert.show(event.errorText)}"/>
+		<loader:ReportLoader
+			url="{model.selectedFeature.moduleReportUrl}"
+			height="100%" 
+			width="100%"
+			horizontalScrollPolicy="off"
+			verticalScrollPolicy="off"/>
+
 	</mx:HDividedBox>
 </s:Group>
 </s:Scroller>

@@ -93,7 +93,11 @@
 			</mx:FormItem>
 		</s:HGroup>
 		<mx:Spacer height="10"/>
-		<component1:LabelExpanded width="100%" explainText="(more)" hideText="(less)" labelText="Selecte members for this group" expandedText="Select with emails that doesn't have an account and drag them to the grid on the right. To select multiple accounts just click on them while you keep the control button on your keyboard pressed"/>
+		<component1:LabelExpanded width="100%" 
+								  explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+								  hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}" 
+								  labelText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SELECT_MEMBERS_LABEL)}" 
+								  expandedText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SELECT_MEMBERS_EXPANDED)}"/>
 		<s:HGroup>
 			<s:VGroup>
 				<s:Label 
