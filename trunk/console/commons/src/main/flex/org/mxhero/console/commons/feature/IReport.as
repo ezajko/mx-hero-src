@@ -10,5 +10,6 @@ package org.mxhero.console.commons.feature
 		
 		function setReportService(service:IReportService):void;
 
+		function refresh():void;
 	}
 }
