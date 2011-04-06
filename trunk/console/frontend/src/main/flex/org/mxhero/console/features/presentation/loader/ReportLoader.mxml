@@ -5,15 +5,38 @@
 			error="errorHandler(event)"
 			progress="progressHandler(event)"
 			loading="loadingHandler(event)"
-			ready="readyHandler(event)" 
+			ready="readyHandler(event)"
+			unload="unloadHandler(event)"
+			horizontalAlign="center"
+			verticalAlign="middle"
 			xmlns:component="org.mxhero.console.commons.component.*"
 			xmlns:component1="org.mxhero.console.commons.feature.component.*" 
-			xmlns:parsley="http://www.spicefactory.org/parsley">
+			xmlns:parsley="http://www.spicefactory.org/parsley"
+			creationComplete="moduleloader1_creationCompleteHandler(event)">
+	
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 			import mx.events.ModuleEvent;
+			
+			import org.mxhero.console.commons.feature.IReport;
+			import org.mxhero.console.features.presentation.feature.FeatureViewPM;
+			import org.mxhero.console.frontend.infrastructure.ReportServiceHandler;
+			
+			[Inject]
+			[Bindable]
+			public var reportService:ReportServiceHandler;
+			
+			private var reportModule:IReport;
+			
+			[Inject]
+			[Bindable]
+			public var model:FeatureViewPM;
 			
 			protected function errorHandler(event:ModuleEvent):void
 			{
@@ -30,18 +53,33 @@
 			protected function loadingHandler(event:Event):void
 			{
 				currentState="loading";
+				this.reportModule=null;
 			}
 			
 			protected function readyHandler(event:ModuleEvent):void
 			{
+				this.reportModule= this.child as IReport;
+				this.reportModule.setReportService(this.reportService);
 				currentState="loaded";
+				this.reportModule.refresh();
 			}
 			
-			public function reload():void{
+			public function unload():void{
+				this.reportModule=null;
 				this.unloadModule();
-				this.loadModule();
 			}
 			
+			protected function moduleloader1_creationCompleteHandler(event:FlexEvent):void
+			{
+				FeatureViewPM.unloadReport=this.unload;
+			}
+
+
+			protected function unloadHandler(event:ModuleEvent):void
+			{
+				this.reportModule=null;
+			}
+
 		]]>
 	</fx:Script>
 	

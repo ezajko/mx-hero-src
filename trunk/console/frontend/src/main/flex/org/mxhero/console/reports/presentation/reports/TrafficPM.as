@@ -45,6 +45,11 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var stateOutgoing:String = OUT_DEFAULT;
 		
+		[Bindable]
+		public var sinceDate:Date;
+		
+		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
+		
 		[Inject]
 		[Bindable]
 		public var parentModel:ReportsViewPM;
@@ -62,17 +67,20 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[Enter(time="every")]
 		public function every():void{
+			sinceDate=new Date();
+			sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+			sinceDate.setTime(sinceDate.setUTCHours(0,0,0,0));
 			getIncomming();
 			getOutgoing();
 		}
 		
 		public function getIncomming():void{
 			if(context.selectedDomain!=null){
-				dispatcher(new GetIncommingEvent(context.selectedDomain.domain));
-				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain));
+				dispatcher(new GetIncommingEvent(context.selectedDomain.domain,sinceDate));
+				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain,sinceDate));
 			}else{
-				dispatcher(new GetIncommingEvent());
-				dispatcher(new GetTopTenIncommingSendersEvent());
+				dispatcher(new GetIncommingEvent(null,sinceDate));
+				dispatcher(new GetTopTenIncommingSendersEvent(null,sinceDate));
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
@@ -95,11 +103,11 @@ package org.mxhero.console.reports.presentation.reports
 		
 		public function getOutgoing():void{
 			if(context.selectedDomain!=null){
-				dispatcher(new GetOutgoingEvent(context.selectedDomain.domain));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain));
+				dispatcher(new GetOutgoingEvent(context.selectedDomain.domain,sinceDate));
+				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain,sinceDate));
 			}else{
-				dispatcher(new GetOutgoingEvent());
-				dispatcher(new GetTopTenOutgoingRecipientsEvent());
+				dispatcher(new GetOutgoingEvent(null,sinceDate));
+				dispatcher(new GetTopTenOutgoingRecipientsEvent(null,sinceDate));
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;

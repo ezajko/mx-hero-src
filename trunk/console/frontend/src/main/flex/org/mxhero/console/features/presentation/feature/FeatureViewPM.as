@@ -50,10 +50,16 @@ package org.mxhero.console.features.presentation.feature
 		[Bindable]
 		public var isUpdating:Boolean = false;
 		
+		public static var unloadReport:Function;
+		
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
 		public function goBack():void{
+			selectedFeature=null;
+			if(unloadReport!=null){
+				unloadReport();
+			}
 			allFeatureView.navigateTo(FeaturesDestinations.LIST);
 		}
 		

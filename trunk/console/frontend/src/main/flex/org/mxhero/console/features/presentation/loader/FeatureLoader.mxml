@@ -9,7 +9,8 @@
 				 xmlns:component="org.mxhero.console.commons.component.*"
 				 creationComplete="creationCompleteHandler(event)" 
 				 xmlns:component1="org.mxhero.console.commons.feature.component.*" 
-				 xmlns:parsley="http://www.spicefactory.org/parsley">
+				 xmlns:parsley="http://www.spicefactory.org/parsley"
+				 applicationDomain="{ApplicationDomain.currentDomain}">
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
@@ -42,6 +43,7 @@
 
 			protected function loadingHandler(event:Event):void
 			{
+				this.applicationDomain=ApplicationDomain.currentDomain;
 				currentState="loading";
 				this.featureModule=null;
 			}

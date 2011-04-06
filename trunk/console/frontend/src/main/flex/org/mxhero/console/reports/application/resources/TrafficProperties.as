@@ -18,5 +18,7 @@ package org.mxhero.console.reports.application.resources
 		
 		public static const TOP_TEN_SENDERS_TITLE:String="top.ten.senders.title";
 		
+		public static const TOP_TEN_RECIPIENTS_TITLE:String="top.ten.recipients.title";
+		
 	}
 }
