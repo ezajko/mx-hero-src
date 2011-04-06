@@ -18,10 +18,8 @@ public class JpaTrafficReportService implements TrafficReportService {
 	@PersistenceContext(unitName = "statisticsPer")
 	protected EntityManager entityManager;
 
-	private static final int SINCE_DAYS = -7;
-
 	@Override
-	public Collection getIncomming(String domain) {
+	public Collection getIncomming(String domain,Calendar since) {
 		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date) date "
 				+ "FROM  mail_records "
 				+ "WHERE insert_date > :date_since "
@@ -34,13 +32,12 @@ public class JpaTrafficReportService implements TrafficReportService {
 		query = query + "GROUP BY DATE(insert_date) ";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		sinceDate.add(Calendar.DATE, SINCE_DAYS);
-		nativeQuery.setParameter("date_since", sinceDate);
+		since.set(Calendar.HOUR, 0);
+		since.set(Calendar.MINUTE, 0);
+		since.set(Calendar.SECOND, 0);
+		since.set(Calendar.MILLISECOND, 0);
+		
+		nativeQuery.setParameter("date_since", since);
 		if(domain!=null && !domain.isEmpty()){
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -84,7 +81,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getTopTenIncomingSenders(String domain) {
+	public Collection getTopTenIncomingSenders(String domain,Calendar since) {
 		String query = "SELECT count(*) count, sender_id "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
@@ -98,13 +95,11 @@ public class JpaTrafficReportService implements TrafficReportService {
 			+ "LIMIT 10";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		sinceDate.add(Calendar.DATE, SINCE_DAYS);
-		nativeQuery.setParameter("date_since", sinceDate);
+		since.set(Calendar.HOUR, 0);
+		since.set(Calendar.MINUTE, 0);
+		since.set(Calendar.SECOND, 0);
+		since.set(Calendar.MILLISECOND, 0);
+		nativeQuery.setParameter("date_since", since);
 		if(domain!=null && !domain.isEmpty()){
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -149,7 +144,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getOutgoing(String domain) {
+	public Collection getOutgoing(String domain, Calendar since) {
 		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date) date "
 			+ "FROM  mail_records "
 			+ "WHERE insert_date > :date_since "
@@ -160,13 +155,11 @@ public class JpaTrafficReportService implements TrafficReportService {
 		}
 		query = query + "GROUP BY DATE(insert_date) ";
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		sinceDate.add(Calendar.DATE, SINCE_DAYS);
-		nativeQuery.setParameter("date_since", sinceDate);
+		since.set(Calendar.HOUR, 0);
+		since.set(Calendar.MINUTE, 0);
+		since.set(Calendar.SECOND, 0);
+		since.set(Calendar.MILLISECOND, 0);
+		nativeQuery.setParameter("date_since", since);
 		if(domain!=null && !domain.isEmpty()){	
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -208,7 +201,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getTopTenOutgoingRecipients(String domain) {
+	public Collection getTopTenOutgoingRecipients(String domain, Calendar since) {
 		String query = "SELECT count(*) count, recipient_id "
 			+ "FROM  mail_records " + "WHERE insert_date > :date_since "
 			+ "AND (flow = 'both' OR flow = 'out') "
@@ -220,13 +213,11 @@ public class JpaTrafficReportService implements TrafficReportService {
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		sinceDate.add(Calendar.DATE, SINCE_DAYS);
-		nativeQuery.setParameter("date_since", sinceDate);
+		since.set(Calendar.HOUR, 0);
+		since.set(Calendar.MINUTE, 0);
+		since.set(Calendar.SECOND, 0);
+		since.set(Calendar.MILLISECOND, 0);
+		nativeQuery.setParameter("date_since", since);
 		if(domain!=null && !domain.isEmpty()){	
 			nativeQuery.setParameter("domain", domain);
 		}

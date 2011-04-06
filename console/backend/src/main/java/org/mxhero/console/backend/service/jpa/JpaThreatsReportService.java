@@ -42,7 +42,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	private RecordDao recordDao;
 	
 	private String mailQuerySql = " select record0_.* " 
-		+"from statistics.mail_records record0_ "
+		+" from statistics.mail_records record0_ "
 		+" inner join statistics.mail_records record2_ on record2_.parent_message_id=record0_.parent_message_id "
 		+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
 		+" and record2_.record_sequence=stats1_.record_sequence "
@@ -184,13 +184,22 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		until.add(Calendar.DAY_OF_MONTH, 1);
 		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
 
-		Query query = entityManager.createNativeQuery(mailQuerySql, Record.class);
+		String queryString = mailQuerySql;
+		if(domain!=null && domain.trim().length()>0){
+			queryString = queryString + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+		}
+		
+		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
 		query.setParameter(2, untilTime);
 		query.setParameter(3, sinceTime);
 		query.setParameter(4, untilTime);
 		query.setParameter(5, "spam.detected");
 		query.setParameter(6, "true");
+		if(domain!=null && domain.trim().length()>0){
+			query.setParameter(7, domain);
+			query.setParameter(8, domain);
+		}
 
 		return recordTranslator.translate(query.getResultList());
 
@@ -210,7 +219,12 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		until.add(Calendar.DAY_OF_MONTH, 1);
 		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
 
-		Query query = entityManager.createNativeQuery(mailQuerySql, Record.class);
+		String queryString = mailQuerySql;
+		if(domain!=null && domain.trim().length()>0){
+			queryString = queryString + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+		}
+		
+		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
 		query.setParameter(2, untilTime);
 		query.setParameter(3, sinceTime);
@@ -218,6 +232,11 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		query.setParameter(5, "virus.detected");
 		query.setParameter(6, "true");
 
+		if(domain!=null && domain.trim().length()>0){
+			query.setParameter(7, domain);
+			query.setParameter(8, domain);
+		}
+		
 		return recordTranslator.translate(query.getResultList());
 	}
 
