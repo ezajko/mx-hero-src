@@ -9,25 +9,25 @@ public interface TrafficReportService {
 
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getIncomming(String domain);
+	Collection getIncomming(String domain, Calendar since);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection getIncommingByDay(String domain, Calendar day);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getTopTenIncomingSenders(String domain);
+	Collection getTopTenIncomingSenders(String domain, Calendar since);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection getTopTenIncomingSendersByDay(String domain, Calendar day);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getOutgoing(String domain);
+	Collection getOutgoing(String domain, Calendar since);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection getOutgoingByDay(String domain, Calendar day);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getTopTenOutgoingRecipients(String domain);
+	Collection getTopTenOutgoingRecipients(String domain,Calendar since);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection getTopTenOutgoingRecipientsByDay(String domain, Calendar day);
