@@ -40,12 +40,14 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var virusMails:ArrayCollection;
 		
-		private var daysbefore:Number = 14*24*60*60*1000; 
+		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
 		
 		[Bindable]
 		public var virusUpdating:Boolean=false;
 		[Bindable]
 		public var spamUpdating:Boolean=false;
+		[Bindable]
+		public var sinceDate:Date;
 		
 		public function goBack():void{
 			parentModel.navigateTo(ReportsDestinations.LIST);
@@ -57,13 +59,14 @@ package org.mxhero.console.reports.presentation.reports
 			spamMails=null;
 			virusHists=null;
 			virusMails=null;
+			sinceDate = new Date();
+			sinceDate.setTime(sinceDate.setUTCHours(0,0,0,0));
+			sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
 			getVirus();
 			getSpam();
 		}
 		
 		public function getVirus():void{
-			var sinceDate:Date = new Date();
-			sinceDate.setTime(sinceDate.getTime()-daysbefore);
 			var domain:String = null;
 			
 			if(context.selectedDomain!=null){
@@ -76,8 +79,6 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function getSpam():void{
-			var sinceDate:Date = new Date();
-			sinceDate.setTime(sinceDate.getTime()-daysbefore);
 			var domain:String = null;
 			
 			if(context.selectedDomain!=null){

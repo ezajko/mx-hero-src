@@ -25,6 +25,7 @@
 			import org.mxhero.console.frontend.application.command.LoadInitialDataCommand;
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
+			import org.mxhero.console.frontend.application.command.ProcessQueryCommand;
 			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
 			
 		]]>
@@ -46,9 +47,11 @@
 		<parsley:DynamicCommand type="{ GetAccountsCommand }"/>
 		<parsley:DynamicCommand type="{ GetDomainsCommand }"/>
 		<parsley:DynamicCommand type="{ GetDomainGroupsCommand }"/>
+		<parsley:DynamicCommand type="{ ProcessQueryCommand }"/>
 		
 		<!--<data:DataCache/>-->
 		<domain:ApplicationContext/>
+		<infrastructure:ReportServiceHandler/>
 		
 		<fx:Array id="initialTasks">
 			<task1:LoadUserDataTask id="loadUserDataTask"/>
@@ -105,10 +108,16 @@
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>
 		
+		<parsley:Object type="{RemoteObject}" id="pluginReportService">
+			<parsley:Property name="destination" value="pluginReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
 				<!--<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>-->
-				<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>
+				<s:AMFChannel uri="{'http://10.30.2.200:8080/mxhero/messagebroker/flex-amf'}"/>
 			</s:channels>
 		</s:ChannelSet>
 

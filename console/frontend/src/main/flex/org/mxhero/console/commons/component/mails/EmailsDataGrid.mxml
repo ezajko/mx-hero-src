@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:DataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 xmlns:mx="library://ns.adobe.com/flex/mx"
+			 width="100%" 
+			 borderStyle="solid" 
+			 borderColor="0x336699"
+			 height="100%" xmlns:component="org.mxhero.console.commons.feature.component.*">
+	
+	<fx:Declarations>
+		<mx:DateFormatter id="creationDateFormatter"/>
+		
+		<mx:DateFormatter id="creationHourFormatter"
+						  formatString="HH:NN:SS"
+						  />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			
+			import org.mxhero.console.commons.component.mails.EmailsDataGridProperties;
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:columns>						
+		<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
+			<mx:itemRenderer>
+				<fx:Component>
+					<s:MXDataGridItemRenderer width="100%">
+						<s:layout>
+							<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
+						</s:layout>
+						<fx:Script>
+							<![CDATA[
+								import mx.resources.IResourceManager;
+								import mx.resources.ResourceManager;
+								
+								import org.mxhero.console.commons.component.mails.CommonsImages;
+								import org.mxhero.console.commons.component.mails.EmailsDataGridProperties;
+								
+								[Bindable]
+								private var rm:IResourceManager = ResourceManager.getInstance();
+								
+							]]>
+						</fx:Script>
+						<s:Group>
+							<s:layout>
+								<s:BasicLayout/>
+							</s:layout>
+							<component:GlowButton maxGlow="10.0" 
+												  visible="{data.state!='drop'}"
+												  source="{CommonsImages.DELIVERED}" 
+												  toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DELIVERED_TOOLTIP)}"
+												  />
+							<component:GlowButton maxGlow="10.0" 
+												  visible="{data.state=='drop'}"
+												  source="{CommonsImages.DROPPED}" 
+												  toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DROPPED_TOOLTIP_START)}"/>						
+							
+						</s:Group>
+					</s:MXDataGridItemRenderer>
+				</fx:Component>
+			</mx:itemRenderer>
+		</mx:DataGridColumn>							
+		<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
+						   labelFunction="dateLabelFunction"/>
+		<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
+		<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
+		<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
+		<mx:DataGridColumn width="70" sortable="false" resizable="false">
+			<mx:itemRenderer>
+				<fx:Component>
+					<mx:HBox minHeight="0" minWidth="0">
+						<fx:Declarations>
+							<mx:Glow id="glowOn"
+									 alphaFrom="{minAlpha}"
+									 alphaTo="{maxAlpha}"
+									 blurXFrom="{minGlow}"
+									 blurXTo="{maxGlow}"
+									 blurYFrom="{minGlow}"
+									 blurYTo="{maxGlow}"
+									 color="{glowColor}"
+									 duration="{duration}"/>
+							
+							<mx:Glow id="glowOff" 
+									 alphaFrom="{maxAlpha}"
+									 alphaTo="{minAlpha}"
+									 blurXFrom="{maxGlow}"
+									 blurXTo="{minGlow}"
+									 blurYFrom="{maxGlow}"
+									 blurYTo="{minGlow}"
+									 color="{glowColor}"
+									 duration="{duration}"/>
+						</fx:Declarations>
+						<fx:Script>
+							<![CDATA[
+								import mx.managers.PopUpManager;
+								import mx.resources.IResourceManager;
+								import mx.resources.ResourceManager;
+								
+								import org.mxhero.console.commons.component.mails.EmailsDataGridProperties;
+								import org.mxhero.console.commons.component.mails.ShowEmail;
+								
+								[Bindable]
+								private var rm:IResourceManager=ResourceManager.getInstance();
+								
+								[Bindable]
+								public var glowColor:Number=0xFFFFFF;
+								
+								[Bindable]
+								public var minGlow:Number=1.0;
+								
+								[Bindable]
+								public var maxGlow:Number=10.0;
+								
+								[Bindable]
+								public var minAlpha:Number=0.0;
+								
+								[Bindable]
+								public var maxAlpha:Number=0.5;
+								
+								[Bindable]
+								public var duration:Number=300;
+								
+								private var lastColor:*;
+								
+								private function showEmail():void{
+									var emailWindow:ShowEmail = new ShowEmail();
+									emailWindow.email=data;
+									PopUpManager.addPopUp(emailWindow,outerDocument.parentDocument as DisplayObject,true);
+									PopUpManager.centerPopUp(emailWindow);
+								}
+								
+								private function onRollOverHandler():void{
+									lastColor=childLabel.getStyle("color");
+									childLabel.setStyle("color",glowColor);
+								}
+								
+								private function onRollOutHandler():void{
+									childLabel.setStyle("color",lastColor);
+								}
+								
+							]]>
+						</fx:Script>
+						
+						<s:Label id="childLabel"
+								 styleName="domainList"
+								 text="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DETAILS_LABEL)}"
+								 rollOver="{onRollOverHandler();}"
+								 rollOut="{onRollOutHandler();}"
+								 buttonMode="true"
+								 mouseEnabled="true"
+								 click="{showEmail()}"
+								 rollOverEffect="{glowOn}"
+								 toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DETAILS_TOOLTIP)}"
+								 rollOutEffect="{glowOff}"/>
+						
+					</mx:HBox>
+				</fx:Component>
+			</mx:itemRenderer>
+		</mx:DataGridColumn>
+	</mx:columns>
+</mx:DataGrid>

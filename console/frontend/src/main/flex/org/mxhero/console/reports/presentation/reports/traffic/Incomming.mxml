@@ -136,8 +136,22 @@
 			[Bindable]
 			public var model:TrafficPM;
 
+			[Bindable]
+			public var dayFrom:Date;
+			[Bindable]
+			public var dayTo:Date;
+			
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
 			{
+				dayFrom= new Date();
+				dayFrom.setTime(event.hitData.item.Date.getTime());
+				dayFrom.setTime(dayFrom.setUTCHours(0,0,0,0));
+				dayTo= new Date();
+				dayTo.setTime(event.hitData.item.Date.getTime());
+				dayTo.setTime(dayTo.setUTCHours(0,0,0,0));
+				dayTo.setTime(dayTo.getTime()+24*60*60*1000);
+	
+				
 				model.getIncommingByDay(event.hitData.item.Date);
 				linechart.doubleClickEnabled=false;
 				cserie.buttonMode=false;
@@ -211,6 +225,10 @@
 									 disabledDays="{[]}"
 									 autoAdjust="true"
 									 dataInterval="1"
+									 maximum.zoom_out="{new Date()}"
+									 minimum.zoom_out="{model.sinceDate}"
+									 maximum.zoom_in="{dayTo}"
+									 minimum.zoom_in="{dayFrom}"
 									 title.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
 									 title.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
 									 displayName.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
