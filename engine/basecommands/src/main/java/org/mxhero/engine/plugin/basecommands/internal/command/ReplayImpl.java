@@ -107,28 +107,31 @@ public class ReplayImpl implements Replay {
 				outputService = mail.getResponseServiceId();
 			}
 
-			try {
-				MimeMessage replayMessage = (MimeMessage)mail.getMessage().reply(false);
-				replayMessage.setSender(sender);
-				replayMessage.setFrom(sender);
-				replayMessage.setReplyTo(new Address[]{sender});
-				replayMessage.setText(args[TEXT_PARAM_NUMBER]);
-				replayMail = new MimeMail(sender.toString(), recipient.toString(),
-						replayMessage, outputService);
-				replayMail.setPhase(args[PHASE_PARAM_NUMBER]);
-				if (args[0].equals(RulePhase.RECEIVE)) {
-					replayMail.setRecipient(recipient.toString());
+			if(!mail.getProperties().containsKey(Replay.class.getName())){
+				try {
+					MimeMessage replayMessage = (MimeMessage)mail.getMessage().reply(false);
+					replayMessage.setSender(sender);
+					replayMessage.setFrom(sender);
+					replayMessage.setReplyTo(new Address[]{sender});
+					replayMessage.setText(args[TEXT_PARAM_NUMBER]);
+					replayMail = new MimeMail(sender.toString(), recipient.toString(),
+							replayMessage, outputService);
+					replayMail.setPhase(args[PHASE_PARAM_NUMBER]);
+					replayMail.getProperties().put(Replay.class.getName(), recipient.toString());
+					if (args[0].equals(RulePhase.RECEIVE)) {
+						replayMail.setRecipient(recipient.toString());
+					}
+				} catch (MessagingException e) {
+					log.warn("error while creating replay message");
+					return result;
 				}
-			} catch (MessagingException e) {
-				log.warn("error while creating replay message");
-				return result;
+	
+				if (service == null) {
+					log.warn("core input service is not online");
+					return result;
+				}
+				service.addMail(replayMail);
 			}
-
-			if (service == null) {
-				log.warn("core input service is not online");
-				return result;
-			}
-			service.addMail(replayMail);
 			result.setResult(true);
 		}
 
