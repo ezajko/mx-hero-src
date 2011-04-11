@@ -11,6 +11,7 @@ import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.plugin.basecommands.command.Clone;
+import org.mxhero.engine.plugin.basecommands.command.Replay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,25 +86,28 @@ public class CloneImpl implements Clone {
 				outputService = mail.getResponseServiceId();
 			}
 
-			try {
-				clonedMail = new MimeMail(sender.toString(), recipient.toString(),
-						new MimeMessage(mail.getMessage()), outputService);
-				clonedMail.setParentMessageId(mail.getParentMessageId());
-				clonedMail.setPhase(args[PHASE_PARAM_NUMBER]);
-				if (args[0].equals(RulePhase.RECEIVE)) {
-					clonedMail.setRecipient(recipient.toString());
+			if(!mail.getProperties().containsKey(Replay.class.getName())){
+				try {
+					clonedMail = new MimeMail(sender.toString(), recipient.toString(),
+							new MimeMessage(mail.getMessage()), outputService);
+					clonedMail.setParentMessageId(mail.getParentMessageId());
+					clonedMail.setPhase(args[PHASE_PARAM_NUMBER]);
+					if (args[0].equals(RulePhase.RECEIVE)) {
+						clonedMail.setRecipient(recipient.toString());
+					}
+					clonedMail.getProperties().putAll(mail.getProperties());
+					clonedMail.getProperties().put(Replay.class.getName(), recipient.toString());
+				} catch (MessagingException e) {
+					log.warn("error while creating cloned message");
+					return result;
 				}
-				clonedMail.getProperties().putAll(mail.getProperties());
-			} catch (MessagingException e) {
-				log.warn("error while creating cloned message");
-				return result;
+	
+				if (service == null) {
+					log.warn("core input service is not online");
+					return result;
+				}
+				service.addMail(clonedMail);
 			}
-
-			if (service == null) {
-				log.warn("core input service is not online");
-				return result;
-			}
-			service.addMail(clonedMail);
 			result.setResult(true);
 		}
 
