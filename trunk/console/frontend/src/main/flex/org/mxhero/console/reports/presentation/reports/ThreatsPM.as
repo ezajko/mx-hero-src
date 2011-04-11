@@ -47,7 +47,9 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var spamUpdating:Boolean=false;
 		[Bindable]
-		public var sinceDate:Date;
+		public var sinceDate:Date=new Date();
+		[Bindable]
+		public var untilDate:Date=new Date();
 		
 		public function goBack():void{
 			parentModel.navigateTo(ReportsDestinations.LIST);
@@ -59,9 +61,11 @@ package org.mxhero.console.reports.presentation.reports
 			spamMails=null;
 			virusHists=null;
 			virusMails=null;
-			sinceDate = new Date();
+			untilDate.setTime(new Date());
+			untilDate.setTime(untilDate.setUTCHours(0,0,0,0));
+			untilDate.setTime(untilDate.getTime()+24*60*60*1000);
+			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
 			sinceDate.setTime(sinceDate.setUTCHours(0,0,0,0));
-			sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
 			getVirus();
 			getSpam();
 		}
