@@ -92,14 +92,18 @@ public class Domain {
 
 	public boolean hasAlias(String alias){
 		if(this.getAliases()==null){
-			return false;
+			return this.getId().equalsIgnoreCase(alias);
 		}
 		return this.getAliases().contains(alias);
 	}
 	
 	public boolean hasAlias(String[] aliases){
-		if(this.getAliases()==null || aliases==null){
-			return false;
+		if(this.getAliases()==null){
+			for(String alias : aliases){
+				if(this.getId().equalsIgnoreCase(alias)){
+					return true;
+				}
+			}
 		}
 		for(String alias : aliases){
 			if(this.getAliases().contains(alias)){

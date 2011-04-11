@@ -106,13 +106,21 @@ public class User {
 
 	public boolean hasAlias(String email){
 		if(this.getAliases()==null){
+			if(this.getMail()!=null){
+				this.getMail().equalsIgnoreCase(email);
+			}
 			return false;
 		}
 		return this.getAliases().contains(email);
 	}
 	
 	public boolean hasAlias( String[] emails){
-		if(this.getAliases()==null || emails==null){
+		if(this.getAliases()==null){
+			for(String email : emails){
+				if(this.getMail().equalsIgnoreCase(email)){
+					return true;
+				}
+			}
 			return false;
 		}
 		for(String email : emails){
