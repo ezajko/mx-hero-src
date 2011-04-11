@@ -192,7 +192,7 @@
 									 disabledDays="{[]}"
 									 autoAdjust="true"
 									 dataInterval="1"
-									 maximum.zoom_out="{new Date()}"
+									 maximum.zoom_out="{model.untilDate}"
 									 minimum.zoom_out="{model.sinceDate}"
 									 maximum.zoom_in="{dayTo}"
 									 minimum.zoom_in="{dayFrom}"

@@ -24,7 +24,7 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var incommingSendersData:ArrayCollection=new ArrayCollection();
 		[Bindable]
-		public var updatingIncomingSenders:Boolean = false;
+		public var updatingIncomingSenders:Boolean = false;		
 		[Bindable]
 		public var outgoingData:ArrayCollection=new ArrayCollection();
 		[Bindable]
@@ -46,7 +46,10 @@ package org.mxhero.console.reports.presentation.reports
 		public var stateOutgoing:String = OUT_DEFAULT;
 		
 		[Bindable]
-		public var sinceDate:Date;
+		public var sinceDate:Date=new Date();;
+		
+		[Bindable]
+		public var untilDate:Date=new Date();;
 		
 		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
 		
@@ -67,8 +70,10 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[Enter(time="every")]
 		public function every():void{
-			sinceDate=new Date();
-			sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+			untilDate.setTime(new Date());
+			untilDate.setTime(untilDate.setUTCHours(0,0,0,0));
+			untilDate.setTime(untilDate.getTime()+24*60*60*1000);
+			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
 			sinceDate.setTime(sinceDate.setUTCHours(0,0,0,0));
 			getIncomming();
 			getOutgoing();
@@ -129,7 +134,8 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[CommandResult]
 		public function getIncommingResult(result:*,event:GetIncommingEvent):void{
-			this.incommingData=translateData(result);
+			this.incommingData.removeAll();
+			this.incommingData.addAll(translateData(result));
 			updatingIncoming=false;
 		}
 		
@@ -147,7 +153,7 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[CommandError]
 		public function getIncommingByDayError(fault:*,event:GetIncommingByDayEvent):void{
-			this.incommingData=new ArrayCollection();
+			this.incommingData.removeAll();
 			updatingIncoming=false;
 		}
 		
@@ -178,7 +184,8 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[CommandResult]
 		public function getOutgoingResult(result:*,event:GetOutgoingEvent):void{
-			this.outgoingData=translateData(result);
+			this.outgoingData.removeAll();
+			this.outgoingData.addAll(translateData(result));
 			updatingOutgoing=false;
 		}
 		
@@ -208,7 +215,7 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[CommandError]
 		public function getOutgoingByDayError(fault:*,event:GetOutgoingByDayEvent):void{
-			this.outgoingData=new ArrayCollection();
+			this.outgoingData.removeAll();
 			updatingOutgoing=false;
 		}
 		

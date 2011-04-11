@@ -63,6 +63,9 @@ package org.mxhero.console.features.presentation
 		
 		[Enter(time="every")]
 		public function every():void{
+			categoriesAux=categories;
+			this.categories=null;
+			this.categories=categoriesAux;
 			if(context.selectedDomain!=null){
 				dispatcher(new GetFeaturesByDomainIdEvent(context.selectedDomain.id));
 			}else {

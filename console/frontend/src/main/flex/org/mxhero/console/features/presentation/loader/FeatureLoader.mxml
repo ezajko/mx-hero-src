@@ -52,7 +52,9 @@
 			{
 				this.featureModule= this.child as IFeature;
 				currentState="loaded";
-				this.featureModule.setProperties(model.rule.properties);
+				if(featureModule!=null){
+					this.featureModule.setProperties(model.rule.properties);
+				}
 				model.refresh(false);
 			}
 
