@@ -9,7 +9,7 @@ rule "$#RULE_NAME#$"
 		$#FROM_TO#$
 		$mail : Mail( state == ( MailState.DELIVER ) )
 		$headers : Headers( )
-		eval(!$mail.properties.containsKey("org.mxhero.feature.blocklist:$#AGENDA_GROUP#$"))
+		eval(!$mail.getProperties().containsKey("org.mxhero.feature.blocklist:$#AGENDA_GROUP#$"))
 		$#CHECK_DOMAINS#$
 		$#CHECK_EMAILS#$
 	then

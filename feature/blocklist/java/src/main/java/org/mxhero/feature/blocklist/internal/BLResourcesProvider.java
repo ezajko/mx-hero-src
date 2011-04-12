@@ -70,6 +70,9 @@ public class BLResourcesProvider extends StreamDRLProvider{
 	sb.replace(sb.indexOf(RULE_NAME), sb.indexOf(RULE_NAME)+RULE_NAME.length(), rule.getId().toString());
 	
 	sb.replace(sb.indexOf(AGENDA_GROUP), sb.indexOf(AGENDA_GROUP)+AGENDA_GROUP.length(), getAgendaGroup(domain, rule));
+	sb.replace(sb.indexOf(AGENDA_GROUP), sb.indexOf(AGENDA_GROUP)+AGENDA_GROUP.length(), getAgendaGroup(domain, rule));
+	sb.replace(sb.indexOf(AGENDA_GROUP), sb.indexOf(AGENDA_GROUP)+AGENDA_GROUP.length(), getAgendaGroup(domain, rule));
+
 	sb.replace(sb.indexOf(SALIENCE), sb.indexOf(SALIENCE)+SALIENCE.length(), ""+(getFeature().getBasePriority()+ getFromToConditions(rule.getFromDirection(), rule.getToDirection(), sb)));
 
 	
