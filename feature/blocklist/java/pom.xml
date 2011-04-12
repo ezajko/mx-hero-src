@@ -8,7 +8,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.mxhero.feature.blocklist</groupId>
-  <artifactId>java</artifactId>
+  <artifactId>blocklist-java</artifactId>
   <version>1.0.0</version>
 
   <name>${bundle.symbolicName} [${bundle.namespace}]</name>
