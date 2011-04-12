@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   width="100%"
+		   height="100%" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*" 
+		   xmlns:mails="org.mxhero.console.components.mails.*"
+		   implements="org.mxhero.console.commons.feature.IReport">
+	
+	<fx:Declarations>
+		
+		<mx:SeriesSlide id="slideIn" 
+						duration="800" 
+						direction="up"/>
+		
+		<mx:SeriesSlide id="slideOut" 
+						duration="800" 
+						direction="down"/>
+		
+		<fx:Array id="bge">
+			<mx:GridLines 
+				horizontalChangeCount="1" 
+				verticalChangeCount="1"
+				gridDirection="both"
+				>
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:verticalStroke>
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+			</mx:GridLines>
+		</fx:Array>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace chartClasses "mx.charts.chartClasses.*"; 
+		
+		mx|ColumnChart.myChart {
+			fontSize:14;
+			font-weight:bold;
+			data-tip-style-name:myDataTip;
+			axisTitleStyleName:axisTitles;
+		}
+		
+		.axisTitles {
+			color:#323232;
+			fontWeight:bold;
+			fontFamily:Ubuntu;
+			fontSize:16;
+		}
+		
+		
+		.myDataTip{
+			color:#000000;
+			font-style:italic;
+			font-weight:bold;
+			border-weight:2;
+		}
+		
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.events.ChartItemEvent;
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.IReport;
+			import org.mxhero.console.commons.feature.IReportService;
+			
+			
+			private static const DATA_QUERY:String = "data.query";
+			private static const EMAIL_QUERY:String = "email.query";
+			
+			private var _reportService:IReportService;
+			
+			[Bindable]
+			private var _data:ArrayCollection;
+			
+			private static const DAYSBEFORE:Number = 7*24*60*60*1000; 
+			
+			[Bindable]
+			private static var sinceDate:Date;
+			
+			[Bindable]
+			private var _emails:ArrayCollection;
+			
+			private var _dataQuery:String = " select count(record0_.insert_date) ,record0_.recipient_id " 
+				+" from statistics.mail_records record0_ "
+				+" inner join statistics.mail_stats stats1_ on record0_.insert_date=stats1_.insert_date "
+				+" and record0_.record_sequence=stats1_.record_sequence "
+				+" where record0_.insert_date > DATE(?) "
+				+" and stats1_.stat_key = 'org.mxhero.feature.restricteddelivery.sender' ";
+			
+			private var _emailsQuery:String = 
+				" SELECT record0_.message_id, record0_.from_recipeints, record0_.sender, record0_.recipient, " +
+				" record0_.to_recipeints, record0_.cc_recipeints, record0_.bcc_recipeints, " +
+				" record0_.subject, record0_.phase, record0_.bytes_size, record0_.state, " +
+				" record0_.state_reason, record0_.insert_date " 
+				+" from statistics.mail_records record0_ "
+				+" inner join statistics.mail_records record2_ on record2_.parent_message_id=record0_.parent_message_id "
+				+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
+				+" and record2_.record_sequence=stats1_.record_sequence "
+				+" where record0_.insert_date > DATE(?) "
+				+" and record2_.insert_date > DATE(?) "
+				+" and stats1_.stat_key = 'org.mxhero.feature.restricteddelivery.sender' "
+				+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' )";
+			
+			public function setResult(queryId:String, result:*):void{
+				if(queryId==DATA_QUERY){
+					var dataArray:Array = new Array();
+					for each(var dataRow:Object in result){
+						dataArray.push({Qty:dataRow[0],Email:dataRow[1]});
+					}
+					this._data=new ArrayCollection(dataArray.reverse());
+				}else if(queryId==EMAIL_QUERY){
+					var emailArray:ArrayCollection = new ArrayCollection();
+					for each(var row:Object in result){
+						emailArray.addItem({messageId:row[0],from:row[1],sender:[2]
+							,recipient:row[3],toRecipients:row[4]
+							,ccRecipients:row[5],bccRecipients:row[6]
+							,subject:row[7],phase:row[8],bytesSize:row[9]
+							,state:row[10],stateReason:row[11],insertDate:row[12]});
+					}
+					this._emails=emailArray;
+				}
+			}
+			
+			public function setReportService(service:IReportService):void{
+				_reportService=service;
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+			}
+			
+			
+			public function refresh():void
+			{
+				sinceDate=new Date();
+				sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+				sinceDate.setTime(sinceDate.setHours(0,0,0,0));
+				queryForData();
+				queryForEmails();
+			}
+			
+			private function queryForEmails():void{
+				var domain:String = _reportService.getDomain();
+				var params:Array = new Array();
+				var emailsQuery:String = _emailsQuery;
+				
+				params.push(sinceDate,sinceDate);
+				if(domain!=null){
+					params.push(domain,domain);
+					emailsQuery = emailsQuery + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+				}
+				_reportService.processQuery(EMAIL_QUERY,emailsQuery,params,this);
+				
+			}
+			
+			private function queryForData():void{
+				var domain:String = _reportService.getDomain();
+				var params:Array = new Array();
+				var dataQuery:String = _dataQuery;
+				
+				params.push(sinceDate);
+				if(domain!=null){
+					params.push(domain,domain);
+					dataQuery = dataQuery + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+				}
+				dataQuery = dataQuery + " group by record0_.recipient_id ORDER BY 1 DESC ";
+				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("restricteddelivery_report")]
+	</fx:Metadata>
+	
+	<s:HGroup horizontalAlign="right" 
+			  width="100%"
+			  paddingRight="5"
+			  paddingBottom="5"
+			  paddingTop="40">
+		<s:Label 
+			fontSize="18" fontWeight="bold" 
+			text="{resourceManager.getString('restricteddelivery_report','title')}" />
+		<mx:Spacer width="100%"/>
+	</s:HGroup>
+	
+	<s:VGroup width="100%" height="100%">
+		<mx:BarChart id="linechart" color="0x323232" 
+					 width="100%"
+					 minHeight="200"
+					 height="100%"
+					 showDataTips="true" 
+					 styleName="myChart"
+					 dataProvider="{_data}"
+					 axisTitleStyleName="axisTitles"
+					 backgroundElements="{bge}">
+			
+			<mx:filters>
+				<s:DropShadowFilter
+					distance="4"
+					color="0x666666"
+					alpha=".9"/>
+			</mx:filters>
+			
+			<mx:horizontalAxis>
+				
+				<mx:LinearAxis id="qtyAxis" 
+							   displayName="{resourceManager.getString('restricteddelivery_report','amount.axis')}"  
+							   title="{resourceManager.getString('restricteddelivery_report','amount.axis')}" 
+							   />
+			</mx:horizontalAxis>
+			
+			<mx:verticalAxis>
+				
+				<mx:CategoryAxis
+					id="emailAxis"
+					categoryField="Email"
+					displayName="{resourceManager.getString('restricteddelivery_report','emails.axis')}"
+					title="{resourceManager.getString('restricteddelivery_report','emails.axis')}"
+					/>
+			</mx:verticalAxis>
+			
+			<mx:verticalAxisRenderers>
+				<mx:AxisRenderer 
+					axis="{emailAxis}" 
+					color="#FFFFFF" 
+					fontSize="14"
+					/>
+			</mx:verticalAxisRenderers>
+			
+			<mx:horizontalAxisRenderers>
+				<mx:AxisRenderer 
+					axis="{qtyAxis}" 
+					color="#FFFFFF" 
+					fontSize="14"
+					/>	  
+				
+				
+			</mx:horizontalAxisRenderers>
+			
+			<mx:fill>
+				<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+			</mx:fill>
+			
+			<mx:series>
+				<mx:BarSeries xField="Qty" 
+							  yField="Email" 
+							  showDataEffect="{slideIn}" 
+							  hideDataEffect="{slideOut}"
+							  id="cserie"
+							  buttonMode="true"
+							  >
+					<mx:stroke>
+						<s:SolidColorStroke color="#FFFFFF" caps="round" />
+					</mx:stroke>
+					<mx:fills>
+						<mx:SolidColor color="0xCCD9FF" alpha=".6"/>
+						<mx:SolidColor color="0xB3C6FF" alpha=".6"/>
+						<mx:SolidColor color="0x99B3FF" alpha=".6"/>
+						<mx:SolidColor color="0x809FFF" alpha=".6"/>
+						<mx:SolidColor color="0x668CFF" alpha=".6"/>
+						<mx:SolidColor color="0x4D79FF" alpha=".6"/>
+						<mx:SolidColor color="0x3366FF" alpha=".6"/>
+						<mx:SolidColor color="0x1A53FF" alpha=".6"/>
+						<mx:SolidColor color="0x0040FF" alpha=".6"/>
+						<mx:SolidColor color="0x0039E6" alpha=".6"/>
+					</mx:fills>
+					<mx:filters>
+						<s:DropShadowFilter
+							distance="8"
+							color="0x666666"
+							alpha=".8"/>
+					</mx:filters>
+				</mx:BarSeries>
+			</mx:series>
+			
+		</mx:BarChart>
+		<s:Label text="{resourceManager.getString('restricteddelivery_report','emails.title')}" 
+				 fontWeight="bold" fontSize="16"
+				 paddingLeft="50"/>
+		<s:HGroup width="100%" paddingLeft="50" height="100%">
+			<mails:EmailsDataGrid dataProvider="{_emails}"  height="100%" width="100%"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+</mx:Module>
