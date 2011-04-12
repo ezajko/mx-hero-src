@@ -79,7 +79,7 @@ public class BLResourcesProvider extends StreamDRLProvider{
 			domainsExceptions = domainsExceptions+"\""+domainException+"\",";
 		}
 		domainsExceptions = domainsExceptions.substring(0,domainsExceptions.length()-1);
-		domainsExceptions = domainsExceptions+" } ) == false )";
+		domainsExceptions = domainsExceptions+" } ) == true )";
 		sb.replace(sb.indexOf(CHECK_DOMAINS), sb.indexOf(CHECK_DOMAINS)+CHECK_DOMAINS.length(), domainsExceptions);
 	} else {
 		sb.replace(sb.indexOf(CHECK_DOMAINS), sb.indexOf(CHECK_DOMAINS)+CHECK_DOMAINS.length(), "");
@@ -91,7 +91,7 @@ public class BLResourcesProvider extends StreamDRLProvider{
 			accountExceptions = accountExceptions+"\""+accountException+"\",";
 		}
 		accountExceptions = accountExceptions.substring(0,accountExceptions.length()-1);
-		accountExceptions = accountExceptions+" } ) == false) ";
+		accountExceptions = accountExceptions+" } ) == true) ";
 		sb.replace(sb.indexOf(CHECK_EMAILS), sb.indexOf(CHECK_EMAILS)+CHECK_EMAILS.length(), accountExceptions);
 		
 	} else {
