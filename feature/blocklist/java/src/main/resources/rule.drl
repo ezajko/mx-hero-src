@@ -10,8 +10,7 @@ rule "$#RULE_NAME#$"
 		$mail : Mail( state == ( MailState.DELIVER ) )
 		$headers : Headers( )
 		eval(!$mail.getProperties().containsKey("org.mxhero.feature.blocklist:$#AGENDA_GROUP#$"))
-		$#CHECK_DOMAINS#$
-		$#CHECK_EMAILS#$
+		$#CHECK#$
 	then
 		 $mail.getProperties().put("org.mxhero.feature.blocklist:$#AGENDA_GROUP#$","$#RULE_NAME#$");
 		 $headers.addHeader("X-mxHero-BlockList","rule:$#RULE_NAME#$");

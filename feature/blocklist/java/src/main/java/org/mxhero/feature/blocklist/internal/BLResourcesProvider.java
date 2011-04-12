@@ -19,8 +19,7 @@ public class BLResourcesProvider extends StreamDRLProvider{
 	private static final String AGENDA_GROUP = "$#AGENDA_GROUP#$";
 	private static final String SALIENCE = "$#SALIENCE#$";
 	
-	private static final String CHECK_DOMAINS = "$#CHECK_DOMAINS#$";
-	private static final String CHECK_EMAILS = "$#CHECK_EMAILS#$";
+	private static final String CHECK = "$#CHECK#$";
 
 	private static final String NOREPLAY_MAIL = "$#NOREPLAY_MAIL#$";
 	private static final String REPLAY_COMMAND_TEXT = "Result $replayResult = $mail.cmd(\"org.mxhero.engine.plugin.basecommands.command.Replay\",new String[]{\"$#NOREPLAY_MAIL#$\",\"$#REPLAY_TEXT#$\",RulePhase.SEND,$initialData.getSender().getMail()} );";
@@ -75,31 +74,32 @@ public class BLResourcesProvider extends StreamDRLProvider{
 
 	sb.replace(sb.indexOf(SALIENCE), sb.indexOf(SALIENCE)+SALIENCE.length(), ""+(getFeature().getBasePriority()+ getFromToConditions(rule.getFromDirection(), rule.getToDirection(), sb)));
 
+	String exceptions = "eval( ";
 	
 	if(domains.size()>0){
-		String domainsExceptions = "eval( $initialData.getSender().getDomain().hasAlias(new String[]{";
+		exceptions = exceptions+" $initialData.getSender().getDomain().hasAlias(new String[]{";
 		for(String domainException : domains){
-			domainsExceptions = domainsExceptions+"\""+domainException+"\",";
+			exceptions = exceptions+"\""+domainException+"\",";
 		}
-		domainsExceptions = domainsExceptions.substring(0,domainsExceptions.length()-1);
-		domainsExceptions = domainsExceptions+" } ) == true )";
-		sb.replace(sb.indexOf(CHECK_DOMAINS), sb.indexOf(CHECK_DOMAINS)+CHECK_DOMAINS.length(), domainsExceptions);
-	} else {
-		sb.replace(sb.indexOf(CHECK_DOMAINS), sb.indexOf(CHECK_DOMAINS)+CHECK_DOMAINS.length(), "");
+		exceptions = exceptions.substring(0,exceptions.length()-1);
+		exceptions = exceptions+" } ) == true ";
 	}
 
 	if(accounts.size()>0){
-		String accountExceptions = "eval( $initialData.getSender().hasAlias(new String[]{";
-		for(String accountException : accounts){
-			accountExceptions = accountExceptions+"\""+accountException+"\",";
+		if(domains.size()>0){
+			exceptions = exceptions + " || ";
 		}
-		accountExceptions = accountExceptions.substring(0,accountExceptions.length()-1);
-		accountExceptions = accountExceptions+" } ) == true) ";
-		sb.replace(sb.indexOf(CHECK_EMAILS), sb.indexOf(CHECK_EMAILS)+CHECK_EMAILS.length(), accountExceptions);
-		
-	} else {
-		sb.replace(sb.indexOf(CHECK_EMAILS), sb.indexOf(CHECK_EMAILS)+CHECK_EMAILS.length(), "");
+		exceptions = exceptions+" $initialData.getSender().hasAlias(new String[]{";
+		for(String accountException : accounts){
+			exceptions = exceptions+"\""+accountException+"\",";
+		}
+		exceptions = exceptions.substring(0,exceptions.length()-1);
+		exceptions = exceptions+" } ) == true ";
 	}
+	exceptions= exceptions +" )";
+	
+	sb.replace(sb.indexOf(CHECK), sb.indexOf(CHECK)+CHECK.length(), exceptions);
+
 	
 	if(action.equals(ACTION_DISCARD)){
 		sb.replace(sb.indexOf(REPLAY_COMMAND), sb.indexOf(REPLAY_COMMAND)+REPLAY_COMMAND.length(), "");
