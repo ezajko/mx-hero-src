@@ -1,0 +1,23 @@
+
+rule "$#RULE_NAME#$"
+	no-loop true
+	lock-on-active true
+	agenda-group "$#AGENDA_GROUP#$"
+	salience $#SALIENCE#$
+	dialect "java"
+	when
+		$#FROM_TO#$
+		$mail : Mail( state == ( MailState.DELIVER ) )
+		$headers : Headers( )
+		eval(!$mail.properties.containsKey("org.mxhero.feature.blocklist:$#AGENDA_GROUP#$"))
+		$#CHECK_DOMAINS#$
+		$#CHECK_EMAILS#$
+	then
+		 $mail.getProperties().put("org.mxhero.feature.blocklist:$#AGENDA_GROUP#$","$#RULE_NAME#$");
+		 $headers.addHeader("X-mxHero-BlockList","rule:$#RULE_NAME#$");
+		 $mail.drop("org.mxhero.feature.blocklist");
+		 $#REPLAY_COMMAND#$
+		 $mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat",new String[]{"org.mxhero.feature.blocklist.sender",$initialData.getSender().getMail()} );
+		 update( $mail );
+		 update( $headers );
+end
