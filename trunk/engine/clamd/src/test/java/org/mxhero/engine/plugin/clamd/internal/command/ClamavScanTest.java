@@ -61,7 +61,7 @@ public class ClamavScanTest {
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
 		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
-		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.HOSTNAME, "localhost");
 		clamdProperties.put(Clamd.PORT, "6665");
 		clamd.updated(clamdProperties);
 		scan.setProperties(clamd);
@@ -109,7 +109,7 @@ public class ClamavScanTest {
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
 		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
-		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.HOSTNAME, "localhost");
 		clamdProperties.put(Clamd.PORT, "6665");
 		clamd.updated(clamdProperties);
 		scan.setProperties(clamd);
@@ -158,7 +158,7 @@ public class ClamavScanTest {
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
 		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
-		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.HOSTNAME, "localhost");
 		clamdProperties.put(Clamd.PORT, "6665");
 		clamd.updated(clamdProperties);
 		scan.setProperties(clamd);
@@ -212,7 +212,7 @@ public class ClamavScanTest {
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
 		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
-		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.HOSTNAME, "localhost");
 		clamdProperties.put(Clamd.PORT, "6665");
 		clamd.updated(clamdProperties);
 		scan.setProperties(clamd);
