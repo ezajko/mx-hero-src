@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.plugin.clamd.internal.service.Clamd;
+import org.osgi.service.cm.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class ClamavScanTest {
 	private static Logger log = LoggerFactory.getLogger(ClamavScanTest.class);
 	
 	@Test
-	public void testOk() throws AddressException, MessagingException, URISyntaxException{
+	public void testOk() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -57,14 +58,20 @@ public class ClamavScanTest {
 
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
-		scan.setProperties(new Clamd());
+		Clamd clamd = new Clamd();
+		Properties clamdProperties = new Properties();
+		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
+		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.PORT, "6665");
+		clamd.updated(clamdProperties);
+		scan.setProperties(clamd);
 		Result result = scan.exec(mail,"true");
 		Assert.assertFalse(result.isTrue());
 		log.debug(result.toString());
 	}
 
 	@Test
-	public void testFound() throws AddressException, MessagingException, URISyntaxException{
+	public void testFound() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -99,7 +106,13 @@ public class ClamavScanTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
-		scan.setProperties(new Clamd());
+		Clamd clamd = new Clamd();
+		Properties clamdProperties = new Properties();
+		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
+		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.PORT, "6665");
+		clamd.updated(clamdProperties);
+		scan.setProperties(clamd);
 		Result result = scan.exec(mail,"true");
 		//cleaned the virus
 		Assert.assertFalse(result.isTrue());
@@ -107,7 +120,7 @@ public class ClamavScanTest {
 	}
 
 	@Test
-	public void testFoundAfterFound() throws AddressException, MessagingException, URISyntaxException{
+	public void testFoundAfterFound() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -142,20 +155,26 @@ public class ClamavScanTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com","mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
-		scan.setProperties(new Clamd());
+		Clamd clamd = new Clamd();
+		Properties clamdProperties = new Properties();
+		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
+		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.PORT, "6665");
+		clamd.updated(clamdProperties);
+		scan.setProperties(clamd);
 		Result result = scan.exec(mail,"true");
 		//cleaned the virus
 		Assert.assertFalse(result.isTrue());
 		log.debug(result.toString());
 		scan = new SingleClamavScan();
-		scan.setProperties(new Clamd());
+		scan.setProperties(clamd);
 		result = scan.exec(mail,"true");
 		Assert.assertFalse(result.isTrue());
 		log.debug(result.toString());
 	}
 
 	@Test
-	public void testFoundNoRemove() throws AddressException, MessagingException, URISyntaxException{
+	public void testFoundNoRemove() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -190,7 +209,13 @@ public class ClamavScanTest {
 		
 		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
 		SingleClamavScan scan = new SingleClamavScan();
-		scan.setProperties(new Clamd());
+		Clamd clamd = new Clamd();
+		Properties clamdProperties = new Properties();
+		clamdProperties.put(Clamd.CONNECTION_TIMEOUT, "15");
+		clamdProperties.put(Clamd.HOSTNAME, "10.30.2.200");
+		clamdProperties.put(Clamd.PORT, "6665");
+		clamd.updated(clamdProperties);
+		scan.setProperties(clamd);
 		Result result = scan.exec(mail,"false");
 		//virus found and not cleaned
 		Assert.assertTrue(result.isTrue());
