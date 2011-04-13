@@ -91,7 +91,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 			priority=priority+8;
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group id ? What the hell is group id !!!*/
-			ftsb.append(" sender.group.name == \"").append(from.getFreeValue()).append("\"");
+			ftsb.append(" sender.group!= null && sender.group.name == \"").append(from.getFreeValue()).append("\"");
 			priority=priority+16;
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
@@ -124,7 +124,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 			priority=priority+8;
 		}else if(to.getDirectionType().equals(GROUP)){
 			/*group id ? What the hell is group id !!!*/
-			ftsb.append(" recipient.group.name == \"").append(to.getFreeValue()).append("\"");
+			ftsb.append("  recipient.group!= null && recipient.group.name == \"").append(to.getFreeValue()).append("\"");
 			priority=priority+16;
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
