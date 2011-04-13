@@ -6,4 +6,4 @@ Import-Package: org.slf4j.*;resolution:=optional;provider=paxlogging,*
 
 Export-Package: org.mxhero.engine.plugin.clamd*
 
-Embed-Dependency: mina-core;groupId=org.apache.mina;inline=false
+Embed-Dependency: libclamav;groupId=net.taldius;inline=false

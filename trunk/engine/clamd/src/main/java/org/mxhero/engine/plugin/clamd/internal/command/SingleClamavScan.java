@@ -11,12 +11,14 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 
+import net.taldius.clamav.ScannerException;
+import net.taldius.clamav.impl.NetworkScanner;
+
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.MailState;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.plugin.clamd.command.ClamavScan;
-import org.mxhero.engine.plugin.clamd.internal.scanner.ClamAV;
 import org.mxhero.engine.plugin.clamd.internal.service.Clamd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,8 @@ public class SingleClamavScan implements ClamavScan {
 
 	private PropertiesService properties;
 
+	private boolean remove = false;
+	
 	/**
 	 * @see org.mxhero.engine.domain.mail.command.Command#exec(org.mxhero.engine.domain.mail.MimeMail,
 	 *      java.lang.String[])
@@ -58,7 +62,6 @@ public class SingleClamavScan implements ClamavScan {
 	public Result exec(MimeMail mail, String... args) {
 		Result result = new Result();
 		result.setResult(false);
-		boolean remove = false;
 		boolean addHeader = true;
 		String headerName = DEFAULT_VIRUS_HEADER;
 		if (!properties.getValue(Clamd.VIRUS_HEADER, DEFAULT_VIRUS_HEADER)
@@ -98,20 +101,9 @@ public class SingleClamavScan implements ClamavScan {
 			if (addHeader) {
 				mail.getMessage().setHeader(headerName, STATUS_NOT_SCANNED);
 			}
-			if (remove) {
-				scanAndremove(mail.getMessage(), null, results);
-			} else {
-				ClamAV scanner = new ClamAV(mail.getMessage());
-				scanner.setProperties(properties);
-				String scanResult = scanner.scan();
-				if (scanResult.substring(
-						scanResult.length() - FOUND_STRING.length()).equals(
-						FOUND_STRING)) {
-					results.add("type:" + mail.getMessage().getContentType()
-							+ "; fileName:" + mail.getMessage().getFileName()
-							+ "; " + scanResult);
-				}
-			}
+
+			scanAndremove(mail.getMessage(), null, results);
+			
 			if (results.size() > 0 && !remove) {
 				result.setResult(true);
 				if (addHeader) {
@@ -132,6 +124,8 @@ public class SingleClamavScan implements ClamavScan {
 			log.error("error while scanning", e);
 		} catch (IOException e) {
 			log.error("error while scanning", e);
+		} catch (ScannerException e) {
+			log.error("error while scanning", e);
 		}
 
 		return result;
@@ -144,9 +138,10 @@ public class SingleClamavScan implements ClamavScan {
 	 * @param results for each file analyzed we return the name, type and result of the analysis.
 	 * @throws MessagingException
 	 * @throws IOException
+	 * @throws ScannerException 
 	 */
 	private void scanAndremove(Part part, Multipart parent,
-			Collection<String> results) throws MessagingException, IOException {
+			Collection<String> results) throws MessagingException, IOException, ScannerException {
 		log.debug("scanning part");
 		if (part.isMimeType(MULTIPART_TYPE)) {
 			Multipart mp = (Multipart) part.getContent();
@@ -175,13 +170,20 @@ public class SingleClamavScan implements ClamavScan {
 						Part.ATTACHMENT)))
 				|| (part.getContentType() != null && part.getContentType()
 						.trim().startsWith(APPLICATION_TYPE))) {
-			ClamAV scanner = new ClamAV(part);
-			scanner.setProperties(properties);
-			String scanResult = scanner.scan();
+			
+			NetworkScanner  scanner = new NetworkScanner();
+			scanner.setClamdHost(properties.getValue(Clamd.HOSTNAME));
+			scanner.setClamdPort(Integer.parseInt(properties.getValue(Clamd.PORT)));
+			scanner.setConnectionTimeout(Integer.parseInt(properties.getValue(Clamd.CONNECTION_TIMEOUT)));
+			scanner.performScan(part.getInputStream());
+			String scanResult = scanner.getMessage();
+			
 			if (scanResult.substring(
 					scanResult.length() - FOUND_STRING.length()).equals(
 					FOUND_STRING)) {
-				parent.removeBodyPart((BodyPart) part);
+				if(remove){
+					parent.removeBodyPart((BodyPart) part);
+				}
 				results.add("type:" + part.getContentType() + "; fileName:"
 						+ part.getFileName() + "; " + scanResult);
 			}
