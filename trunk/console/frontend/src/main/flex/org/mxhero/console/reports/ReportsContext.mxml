@@ -85,11 +85,11 @@
 										keyDescription="category.platform.threats.description" 
 										resource="reports_list"
 										navigateTo="{ReportsDestinations.THREATS}"/>
-						<domain:LCChild key="category.platform.queue" 
+<!--						<domain:LCChild key="category.platform.queue" 
 										requiredAuthority="ROLE_DOMAIN_ADMIN" 
 										keyDescription="category.platform.queue.description" 
 										resource="reports_list"
-										navigateTo="{ReportsDestinations.QUEUE}"/>
+										navigateTo="{ReportsDestinations.QUEUE}"/>-->
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>

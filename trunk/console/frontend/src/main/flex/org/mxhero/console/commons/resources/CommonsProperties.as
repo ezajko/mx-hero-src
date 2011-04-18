@@ -19,6 +19,8 @@ package org.mxhero.console.commons.resources
 		public static const LOCALES:String="locales";
 		
 		public static const DRAG_HERE:String="drag.here";
+		
+		public static const COPYRIGHT:String="copyright.text";
 
 	}
 }

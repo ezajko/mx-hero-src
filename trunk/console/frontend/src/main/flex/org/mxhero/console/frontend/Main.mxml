@@ -34,6 +34,7 @@
 		[ResourceBundle("report_custom")]
 		[ResourceBundle("categories")]
 		[ResourceBundle("report_common")]
+		[ResourceBundle("report_email_commons")]
 
 	</fx:Metadata>
 	
@@ -52,6 +53,7 @@
 		<![CDATA[
 			import flash.net.registerClassAlias;
 			
+			import mx.controls.Alert;
 			import mx.core.Application;
 			import mx.logging.LogEventLevel;
 			import mx.managers.ToolTipManager;
@@ -59,6 +61,7 @@
 			import mx.resources.ResourceManager;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
@@ -78,6 +81,7 @@
 			private function init():void{
 				modifyTooltips();
 				registerClasses();
+				Alert.buttonWidth=100;
 			}
 			
 			private function modifyTooltips():void{
@@ -125,4 +129,8 @@
 	
 	<presentation:MainView width="100%" height="100%" styleName="mxhero"/>
 	
+	<s:HGroup width="100%" horizontalAlign="left" paddingLeft="5">
+		<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COPYRIGHT)}" fontSize="10" fontStyle="italic"/>
+	</s:HGroup>
+
 </s:Application>

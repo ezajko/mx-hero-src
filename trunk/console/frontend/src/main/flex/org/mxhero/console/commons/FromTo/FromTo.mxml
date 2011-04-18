@@ -55,7 +55,7 @@
 			private var toHeigth:Number=DEFAULT_MAX_HEIGHT;
 			
 			[Bindable]
-			private var priorityHeigth:Number=DEFAULT_MAX_HEIGHT;
+			private var priorityHeigth:Number=0;
 			
 			[Bindable]
 			public var errorMessage:String;
@@ -63,6 +63,7 @@
 			[Bindable]
 			private var _showAdminPriority:Boolean=true;
 			
+			[Bindable]
 			public function get showAdminPriority():Boolean{
 				return _showAdminPriority;
 			}

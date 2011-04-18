@@ -5,6 +5,7 @@ package org.mxhero.console.features.presentation
 	import mx.collections.SortField;
 	import mx.events.ModuleEvent;
 	import mx.modules.IModuleInfo;
+	import mx.modules.Module;
 	import mx.modules.ModuleManager;
 	import mx.resources.ResourceManager;
 	
@@ -14,6 +15,7 @@ package org.mxhero.console.features.presentation
 	import org.mxhero.console.features.presentation.feature.FeatureViewPM;
 	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
 	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
@@ -61,6 +63,9 @@ package org.mxhero.console.features.presentation
 		[Bindable]
 		public var allFeaturesView:AllFeaturesViewPM;
 		
+		
+		private var module:IModuleInfo;
+		
 		[Enter(time="every")]
 		public function every():void{
 			categoriesAux=categories;
@@ -76,9 +81,10 @@ package org.mxhero.console.features.presentation
 		
 		[CommandResult]
 		public function findFeaturesByDomainIdResult(result:*,event:GetFeaturesByDomainIdEvent):void{
-			categories=result;
+			categoriesAux=result;
 			isUpdating=false;
-			preload(categories);
+			categories=categoriesAux;
+			preload(categoriesAux);
 		}
 		
 		[CommandError]
@@ -90,6 +96,7 @@ package org.mxhero.console.features.presentation
 		public function findFeaturesResult(result:*,event:GetFeaturesEvent):void{
 			categoriesAux=result;
 			isUpdating=false;
+			categories=categoriesAux;
 			preload(categoriesAux);
 		}
 		
@@ -118,34 +125,36 @@ package org.mxhero.console.features.presentation
 					}
 				}
 			}
-			if(modulesToPreload.length>0){
-				this.state=PRELOADING;
-				preloadAll();
-			}else{
+			this.state=PRELOADING;
+			loadNext();
+		}
+		
+		private function loadNext(e:ModuleEvent=null):void{
+		
+			if(e!=null){
+				ResourceManager.getInstance().update();
+				e.module.removeEventListener(ModuleEvent.READY,loadNext);
+				e.module.removeEventListener(ModuleEvent.ERROR,loadNext);
+				e.module.addEventListener(ModuleEvent.PROGRESS,checkLoading);
+				if(!loadedFeatures.contains(e.module.url)){
+					loadedFeatures.addItem(e.module.url);
+				}
+			}
+			if(modulesToPreload!=null && modulesToPreload.length>0){
+				module= ModuleManager.getModule(modulesToPreload.pop() as String);
+				loading=module.url+" 0%";
+				module.addEventListener(ModuleEvent.READY,loadNext);
+				module.addEventListener(ModuleEvent.ERROR,loadNext);
+				module.addEventListener(ModuleEvent.PROGRESS,checkLoading);
+				module.load();
+			}else {
 				this.state=LOADED;
 				categories=categoriesAux;
 			}
 		}
 		
-		private function preloadAll(e:ModuleEvent=null):void{
-			if(modulesToPreload!=null && modulesToPreload.length>0){
-				var moduleUrl:String = modulesToPreload.pop() as String;
-				var module:IModuleInfo = ModuleManager.getModule(moduleUrl);
-				if(module!=null){
-					module.addEventListener(ModuleEvent.READY,preloadAll);
-					loading=module.url;
-					module.load();
-				}
-			}else{
-				this.state=LOADED;
-				loading="";
-				categories=categoriesAux;
-			}
-			if(e!=null && e.module.loaded && !loadedFeatures.contains(e.module.url)){
-				loadedFeatures.addItem(e.module.url);
-				ResourceManager.getInstance().update();
-				//e.module.unload();
-			}
+		private function checkLoading(e:ModuleEvent):void{
+			loading=e.module.url+" "+int(e.bytesLoaded/e.bytesTotal*100)+"%";
 		}
 		
 	}

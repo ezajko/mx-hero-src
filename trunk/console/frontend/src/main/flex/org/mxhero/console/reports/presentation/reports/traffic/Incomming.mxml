@@ -4,7 +4,6 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 width="100%" height="100%" 
 		 xmlns:component="org.mxhero.console.commons.feature.component.*" 
-		 xmlns:cloudtag="org.mxhero.components.cloudtag.*" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
 		 currentState="{model.stateIncomming}"
 		 >
@@ -120,8 +119,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import at.leichtgewicht.cloud.text.DefaultTextRenderer;
-			
 			import mx.charts.events.ChartItemEvent;
 			import mx.collections.ArrayCollection;
 			
@@ -141,6 +138,8 @@
 			[Bindable]
 			public var dayTo:Date;
 			
+			private var cursorId:int;
+			
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
 			{
 				dayFrom= new Date();
@@ -150,8 +149,9 @@
 				dayTo.setTime(event.hitData.item.Date.getTime());
 				dayTo.setTime(dayTo.setUTCHours(0,0,0,0));
 				dayTo.setTime(dayTo.getTime()+24*60*60*1000);
-	
-				
+
+				cursorManager.removeCursor(cursorId);
+					
 				model.getIncommingByDay(event.hitData.item.Date);
 				linechart.doubleClickEnabled=false;
 				cserie.buttonMode=false;
@@ -272,7 +272,9 @@
 									 showDataEffect.zoom_in="{zoomIn}" 
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie"
-									 buttonMode="true"
+									 buttonMode.zoom_out="true"
+									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
+									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
 									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.INCOMMING_LABEL)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
@@ -298,7 +300,9 @@
 									 showDataEffect.zoom_in="{zoomIn}" 
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie2"
-									 buttonMode="true"
+									 buttonMode.zoom_out="true"
+									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
+									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
 									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.INCOMMING_LABEL)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
@@ -393,7 +397,6 @@
 									  showDataEffect="{slideInTop}" 
 									  hideDataEffect="{slideOutTop}"
 									  id="cserieTo"
-									  buttonMode="true"
 									  >
 							<mx:stroke>
 								<s:SolidColorStroke color="#FFFFFF" caps="round" />

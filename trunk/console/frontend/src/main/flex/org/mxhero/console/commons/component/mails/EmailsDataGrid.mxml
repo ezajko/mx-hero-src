@@ -51,15 +51,12 @@
 							<s:layout>
 								<s:BasicLayout/>
 							</s:layout>
-							<component:GlowButton maxGlow="10.0" 
-												  visible="{data.state!='drop'}"
-												  source="{CommonsImages.DELIVERED}" 
-												  toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DELIVERED_TOOLTIP)}"
-												  />
-							<component:GlowButton maxGlow="10.0" 
-												  visible="{data.state=='drop'}"
-												  source="{CommonsImages.DROPPED}" 
-												  toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DROPPED_TOOLTIP_START)}"/>						
+							<mx:Image 	visible="{data.state!='drop'}"
+										source="{CommonsImages.DELIVERED}" 
+										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DELIVERED_TOOLTIP)}"/>
+							<mx:Image 	visible="{data.state=='drop'}"
+										source="{CommonsImages.DROPPED}" 
+										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DROPPED_TOOLTIP_START)}"/>						
 							
 						</s:Group>
 					</s:MXDataGridItemRenderer>

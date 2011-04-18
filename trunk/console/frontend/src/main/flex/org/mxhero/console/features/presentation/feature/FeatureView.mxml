@@ -11,7 +11,7 @@
 	<fx:Declarations>
 		<parsley:Configure/>
 		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY"/>
+						  formatString="DD-MM-YYYY HH:NN"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -165,16 +165,12 @@
 				<mx:DataGridColumn dataField="updated" 
 								   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_UPDATED_LABEL)}" 
 								   labelFunction="updateLabelFunction"
-								   width="110" 
-								   minWidth="110"
-								   resizable="false"/>
+								   minWidth="110"/>
 				<mx:DataGridColumn dataField="created" 
 								   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_CREATED_LABEL)}"
 								   labelFunction="createdLabelFunction"
-								   width="110" 
-								   minWidth="110"
-								   resizable="false"/>
-				<mx:DataGridColumn  width="72" minWidth="72" sortable="false" resizable="false">
+								   minWidth="110"/>
+				<mx:DataGridColumn  width="86" minWidth="86" sortable="false" resizable="false">
 					<mx:itemRenderer>
 						<fx:Component>
 							<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">

@@ -137,7 +137,6 @@ package org.mxhero.console.features.presentation.rule
 		public static function set refreshFunction(value:Function):void
 		{
 			_refreshFunction = value;
-			refreshFunction();
 		}
 
 		public static function get realoadExternal():Function

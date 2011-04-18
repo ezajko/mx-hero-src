@@ -80,7 +80,9 @@
 				if(currentState=="new"){
 					groupDdl.selectedIndex=-1;
 					account.groupId=-1;
+					callLater(this.emailTi.setFocus);
 				} else {
+					callLater(this.nameTi.setFocus);
 					groupDdl.selectedIndex=-1;
 					for each(var group:Object in groupDdl.dataProvider){
 						if(group.id==account.groupId){
