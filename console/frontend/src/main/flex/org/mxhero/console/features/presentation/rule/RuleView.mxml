@@ -71,7 +71,12 @@
 
 			protected function fromTo_creationCompleteHandler(event:FlexEvent):void
 			{
-				RuleViewPM.refreshFunction=fromTo.refresh;
+				RuleViewPM.refreshFunction=this.refresh;
+			}
+			
+			public function refresh():void{
+				callLater(labelTi.setFocus);
+				fromTo.refresh();
 			}
 			
 			protected function scroller1_creationCompleteHandler(event:FlexEvent):void
@@ -88,10 +93,10 @@
 	
 	<s:Group width="100%">
 		<s:layout>
-			<s:BasicLayout  />
+			<s:VerticalLayout horizontalAlign="center"/>
 		</s:layout>
 		
-		<s:VGroup width="100%" horizontalAlign="center">
+		<s:VGroup width="800" horizontalAlign="center">
 			<s:VGroup gap="20"  
 					  paddingLeft="10" paddingRight="10" 
 					  paddingBottom="20" paddingTop="20">
@@ -135,6 +140,7 @@
 								   toDirection="{model.rule.toDirection}"
 								   adminOrder="@{model.rule.adminOrder}"
 								   showAdminPriority="false"
+								   visible="{featureLoader.loaded}"
 								   creationComplete="fromTo_creationCompleteHandler(event)"/>
 					
 					<loader:FeatureLoader id="featureLoader" 

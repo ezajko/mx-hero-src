@@ -107,7 +107,7 @@
 			[Bindable]
 			public var dayTo:Date;
 			
-			
+			private var cursorId:int;
 
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
 			{
@@ -118,6 +118,9 @@
 				dayTo.setTime(event.hitData.item.Date.getTime());
 				dayTo.setTime(dayTo.setUTCHours(0,0,0,0));
 				dayTo.setTime(dayTo.getTime()+24*60*60*1000);
+				
+				cursorManager.removeCursor(cursorId);
+				
 				model.getSpamByDay(event.hitData.item.Date);
 				linechart.doubleClickEnabled=false;
 				cserie.buttonMode=false;
@@ -238,7 +241,9 @@
 									 showDataEffect.zoom_in="{zoomIn}" 
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie"
-									 buttonMode="true"
+									 buttonMode.zoom_out="true"
+									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
+									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
 									 displayName="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.HITS_TITLE)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />

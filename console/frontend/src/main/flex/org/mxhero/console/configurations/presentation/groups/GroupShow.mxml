@@ -5,6 +5,7 @@
 			   close="{cancelBtt_clickHandler()}"
 			   enabled="{!model.isLoading}"
 			   xmlns:component="org.mxhero.console.commons.component.*"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)"
 			   title.new="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.ADD_NEW_GROUP_LABEL)}" 
 			   title.edit="{group.name}"
 			   xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
@@ -13,6 +14,7 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			import mx.managers.PopUpManager;
 			
@@ -54,6 +56,16 @@
 			{
 				model.noGroupAccounts.removeItemAt(model.noGroupAccounts.getItemIndex(event.itemRenderer.data));
 				model.groupAccounts.addItem(event.itemRenderer.data);
+			}
+
+
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(currentState=="new"){
+					callLater(this.nameTi.setFocus);
+				}else{
+					callLater(this.descriptionTi.setFocus);
+				}
 			}
 
 		]]>

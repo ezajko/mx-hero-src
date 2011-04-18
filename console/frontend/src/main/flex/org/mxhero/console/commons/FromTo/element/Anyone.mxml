@@ -61,6 +61,7 @@
 					 width="150"
 					 click="item_clickHandler(event)"
 					 enabled.restricted="false"/>
+	
 	<s:BorderContainer id="checkBox" 
 					   excludeFrom="inactive"
 					   backgroundColor="#7c7b7b"  

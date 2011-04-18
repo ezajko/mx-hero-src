@@ -13,6 +13,10 @@ package org.mxhero.console.reports.application.resources
 		[Embed(source="/images/reports/zoom_out.png")] 
 		[Bindable]
 		public static var ZOOM_OUT:Class; 
+		
+		[Embed(source="/images/reports/zoom_in.png")] 
+		[Bindable]
+		public static var ZOOM_IN:Class; 
 
 		
 		[Embed(source="/images/reports/queue/close.png")] 

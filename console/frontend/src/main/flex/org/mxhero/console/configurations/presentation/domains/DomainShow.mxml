@@ -65,6 +65,7 @@
 				}else{
 					administratorCheck.selected=false;
 				}
+				callLater(this.serverTi.setFocus);
 				PopUpManager.centerPopUp(this);
 			}
 

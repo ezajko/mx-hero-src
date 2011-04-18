@@ -6,6 +6,7 @@
 				 progress="progressHandler(event)"
 				 loading="loadingHandler(event)"
 				 ready="readyHandler(event)" 
+				 unload="moduleloader1_unloadHandler(event)"
 				 xmlns:component="org.mxhero.console.commons.component.*"
 				 creationComplete="creationCompleteHandler(event)" 
 				 xmlns:component1="org.mxhero.console.commons.feature.component.*" 
@@ -28,9 +29,13 @@
 			[Bindable]
 			public var model:RuleViewPM;
 			
+			[Bindable]
+			public var loaded:Boolean=false;
+			
 			protected function errorHandler(event:ModuleEvent):void
 			{
 				progress.label=resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.FEATURE_MODULE_ERROR);
+				loaded=false;
 			}
 
 			protected function progressHandler(event:ModuleEvent):void
@@ -43,6 +48,7 @@
 
 			protected function loadingHandler(event:Event):void
 			{
+				loaded=false;
 				this.applicationDomain=ApplicationDomain.currentDomain;
 				currentState="loading";
 				this.featureModule=null;
@@ -55,6 +61,7 @@
 				if(featureModule!=null){
 					this.featureModule.setProperties(model.rule.properties);
 				}
+				loaded=true;
 				model.refresh(false);
 			}
 
@@ -68,6 +75,12 @@
 				this.loadModule();
 			}
 			
+
+			protected function moduleloader1_unloadHandler(event:ModuleEvent):void
+			{
+				loaded=false;
+			}
+
 		]]>
 	</fx:Script>
 	

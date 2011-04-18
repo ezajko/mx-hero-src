@@ -143,7 +143,6 @@ package org.mxhero.console.features.presentation.feature
 			ruleModel.feature = this.selectedFeature;
 			ruleModel.category = this.selectedCategory;
 			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
-			ruleModel.refresh();
 		}
 		
 		public function newRule():void{
@@ -154,7 +153,6 @@ package org.mxhero.console.features.presentation.feature
 			ruleModel.feature = this.selectedFeature;
 			ruleModel.category = this.selectedCategory;
 			this.allFeatureView.navigateTo(FeaturesDestinations.RULE);
-			ruleModel.refresh();
 		}
 		
 	}
