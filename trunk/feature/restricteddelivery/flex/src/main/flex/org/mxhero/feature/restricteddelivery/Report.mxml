@@ -268,7 +268,6 @@
 							  showDataEffect="{slideIn}" 
 							  hideDataEffect="{slideOut}"
 							  id="cserie"
-							  buttonMode="true"
 							  >
 					<mx:stroke>
 						<s:SolidColorStroke color="#FFFFFF" caps="round" />
