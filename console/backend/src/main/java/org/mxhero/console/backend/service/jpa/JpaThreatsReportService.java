@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 
+import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.service.ThreatsReportService;
 import org.mxhero.console.backend.statistics.dao.RecordDao;
 import org.mxhero.console.backend.statistics.entity.Record;
@@ -200,7 +201,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 			query.setParameter(7, domain);
 			query.setParameter(8, domain);
 		}
-
+		query.setMaxResults(PluginReportService.MAX_RESULT);
 		return recordTranslator.translate(query.getResultList());
 
 	}
@@ -236,7 +237,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 			query.setParameter(7, domain);
 			query.setParameter(8, domain);
 		}
-		
+		query.setMaxResults(PluginReportService.MAX_RESULT);
 		return recordTranslator.translate(query.getResultList());
 	}
 
