@@ -27,7 +27,7 @@ public class JpaPluginReportService implements PluginReportService{
 				query.setParameter(position+1, params.get(position));
 			}
 		}
-		return query.getResultList();
+		return query.setMaxResults(PluginReportService.MAX_RESULT).getResultList();
 	}
 
 }

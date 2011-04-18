@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.service.TrafficReportService;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;

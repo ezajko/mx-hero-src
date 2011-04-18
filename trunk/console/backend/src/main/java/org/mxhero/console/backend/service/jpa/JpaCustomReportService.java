@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.service.CustomReportService;
+import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.statistics.dao.RecordDao;
 import org.mxhero.console.backend.statistics.entity.Record;
 import org.mxhero.console.backend.statistics.entity.RecordPk_;
@@ -90,7 +91,7 @@ public class JpaCustomReportService implements CustomReportService{
 	public Collection<RecordVO> getEmails(final FeatureRuleDirectionVO from,
 			final FeatureRuleDirectionVO to, final Calendar since, final Calendar until) {
 		
-		//PageRequest pr = new PageRequest(0, 10);
+/*		PageRequest pr = new PageRequest(0, 10);
 		
 		Specification<Record> specification = new Specification<Record>() {
 			
@@ -98,11 +99,17 @@ public class JpaCustomReportService implements CustomReportService{
 			public Predicate toPredicate(Root<Record> root, CriteriaQuery<?> query,
 					CriteriaBuilder builder) {
 				//time interval
+				
 				return getFromToPredicatetoPredicate(from,to,since,until,root,query,builder);
 			}
 		};
+		return recordTranslator.translate(recordDao.readAll(specification ));*/
 		
-		return recordTranslator.translate(recordDao.readAll(specification ));
+		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Record> query = builder.createQuery(Record.class);
+		Root<Record> root = query.from(Record.class);
+		query = query.where(getFromToPredicatetoPredicate(from,to,since,until,root,query,builder));
+		return recordTranslator.translate(entityManager.createQuery(query).setMaxResults(PluginReportService.MAX_RESULT).getResultList());	
 	}
 	
 	private Predicate getFromToPredicatetoPredicate(final FeatureRuleDirectionVO from,

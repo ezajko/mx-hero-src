@@ -52,7 +52,7 @@ public class ApplicationUser {
 	private String locale;
 	
 	@Column(name="sounds_enabled", nullable=false)
-	private boolean soundsEnabled = true;
+	private boolean soundsEnabled = false;
 	
 	@ManyToMany(cascade = {CascadeType.MERGE}, fetch=FetchType.EAGER)
 	@JoinTable(
