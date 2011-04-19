@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.domain.mail.business.Domain;
 import org.mxhero.engine.domain.mail.business.InitialData;
 import org.mxhero.engine.domain.mail.business.User;
 import org.slf4j.Logger;
@@ -24,10 +23,11 @@ public class InitialDataVO extends InitialData{
 	/**
 	 * @param mimemail
 	 */
-	public InitialDataVO(MimeMail mimemail, User sender, User recipient){
+	public InitialDataVO(MimeMail mimemail, User sender, User recipient, User from){
 		this.mimeMail = mimemail;
 		super.setSender(sender);
 		super.setRecipient(recipient);
+		super.setFrom(from);
 	}
 	
 	/**
@@ -50,28 +50,24 @@ public class InitialDataVO extends InitialData{
 	/**
 	 * @param sender
 	 */
+	@Override
 	public void setSender(User sender) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
-
+	
 	/**
-	 * @param senderDomain
+	 * @param from
 	 */
-	public void setSenderDomain(Domain senderDomain) {
+	@Override
+	public void setFrom(User from) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 
 	/**
 	 * @param recipient
 	 */
+	@Override
 	public void setRecipient(User recipient) {
-		log.warn(MailVO.CHANGE_ERROR+this);
-	}
-
-	/**
-	 * @param recipientDomain
-	 */
-	public void setRecipientDomain(Domain recipientDomain) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 	

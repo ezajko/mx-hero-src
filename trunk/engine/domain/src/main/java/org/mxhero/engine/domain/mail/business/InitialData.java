@@ -12,6 +12,8 @@ public class InitialData {
 
 	private User sender;
 	
+	private User from;
+	
 	private User recipient;
 
 	private Date sentDate;
@@ -48,6 +50,13 @@ public class InitialData {
 		this.sender = sender;
 	}
 
+	public User getFrom() {
+		return from;
+	}
+
+	public void setFrom(User from) {
+		this.from = from;
+	}
 
 	/**
 	 * @return
