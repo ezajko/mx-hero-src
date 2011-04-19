@@ -21,6 +21,12 @@
 
 	<osgi:reference id="inputService" interface="org.mxhero.engine.domain.connector.InputService"/>
 
+	<osgi:reference id="domainFinder" interface="org.mxhero.engine.domain.mail.finders.DomainFinder" cardinality="0..1"/>
+	
+	<osgi:reference id="userFinder" interface="org.mxhero.engine.domain.mail.finders.UserFinder" cardinality="0..1"/>
+
+	<osgi:list id="preFilters" interface="org.mxhero.engine.domain.filter.PreFilter" cardinality="0..N"/>
+
 	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="postfixConnectorPropertyService">
 	   <osgi:service-properties>
 	     <entry key="service.pid" value="org.mxhero.engine.plugin.postfixconnector"/>
@@ -58,6 +64,9 @@
 		<property name="logRecordService" ref="logRecordService"/>
 		<property name="logStatService" ref="logStatService"/>
 		<property name="properties" ref="postfixConnectorPropertyService"/>
+		<property name="domainFinderService" ref="domainFinder"/>
+		<property name="userFinderService" ref="userFinder"/>
+		<property name="preFiltersList" ref="preFilters"/>
 	</bean>
 
 	<bean id="snmpListener" class="org.mxhero.engine.plugin.postfixconnector.internal.snmp.SMTPListener"

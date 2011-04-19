@@ -86,6 +86,7 @@ public final class MimeMail {
 			throws MessagingException {
 		this(from, recipient, responseServiceId);
 		int headerSize = 0;
+		@SuppressWarnings("rawtypes")
 		Enumeration e = data.getAllHeaderLines();
 		if (e.hasMoreElements()) {
 			headerSize += 2;
