@@ -15,6 +15,8 @@ public class FeatureRuleVO {
 	
 	private Boolean enabled;
 	
+	private Boolean twoWays;
+	
 	private String adminOrder;
 
 	private FeatureRuleDirectionVO fromDirection;
@@ -61,6 +63,14 @@ public class FeatureRuleVO {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public Boolean getTwoWays() {
+		return twoWays;
+	}
+
+	public void setTwoWays(Boolean twoWays) {
+		this.twoWays = twoWays;
 	}
 
 	public String getAdminOrder() {

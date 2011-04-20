@@ -44,6 +44,9 @@ public class FeatureRule {
 	@Column(name="enabled", nullable=false)
 	private Boolean enabled;
 
+	@Column(name="two_ways", nullable=false)
+	private Boolean twoWays;
+	
 	@Column(name="admin_order",  length=20)
 	private String adminOrder;
 	
@@ -144,6 +147,14 @@ public class FeatureRule {
 
 	public void setAdminOrder(String adminOrder) {
 		this.adminOrder = adminOrder;
+	}
+
+	public Boolean getTwoWays() {
+		return twoWays;
+	}
+
+	public void setTwoWays(Boolean twoWays) {
+		this.twoWays = twoWays;
 	}
 
 	@Override
