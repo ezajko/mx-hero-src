@@ -17,6 +17,7 @@ package org.mxhero.console.frontend.domain
 		public var fromDirection:FeatureRuleDirection;
 		public var toDirection:FeatureRuleDirection;
 		public var properties:ArrayCollection;
+		public var twoWays:Boolean=false;
 		
 		public function clone():FeatureRule{
 			var newRule:FeatureRule = new FeatureRule();
@@ -26,6 +27,7 @@ package org.mxhero.console.frontend.domain
 			newRule.updated = this.updated;
 			newRule.name = this.name;
 			newRule.adminOrder = this.adminOrder;
+			newRule.twoWays = this.twoWays;
 			if(this.fromDirection!=null){
 				newRule.fromDirection = this.fromDirection.clone();
 			} else {

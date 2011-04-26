@@ -14,7 +14,8 @@ package org.mxhero.console.frontend.infrastructure
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		public function processQuery(queryId:String, query:String, params:Array, report:IReport):void{
+		//report param should be IReport, keep it that way until RSL implementation
+		public function processQuery(queryId:String, query:String, params:Array, report:Object):void{
 			dispatcher(new ProcessQueryEvent(queryId,query,params,report));
 		}
 		

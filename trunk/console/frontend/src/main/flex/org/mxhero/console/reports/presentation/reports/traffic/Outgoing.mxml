@@ -177,7 +177,7 @@
 					  paddingRight="5"
 					  paddingBottom="5"
 					  paddingLeft="50">
-				<s:Label text="Outgoing Emails" 
+				<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_TITLE)}" 
 						 fontWeight="bold" fontSize="16"
 						 color="#FFFFFF"
 						 textDecoration="underline"/>
@@ -274,7 +274,7 @@
 									 buttonMode.zoom_out="true"
 									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
 									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
-									 displayName="Outgoing">
+									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
 						</mx:stroke>
@@ -302,7 +302,7 @@
 								 buttonMode.zoom_out="true"
 								 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
 								 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
-								 displayName="Incomming">
+								 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
 					<mx:stroke>
 						<s:SolidColorStroke color="#FFFFFF" caps="round" />
 					</mx:stroke>
@@ -326,7 +326,7 @@
 		</s:VGroup>
 		
 		<s:VGroup width="40%" height="100%" gap="20" enabled="{!model.updatingOutgoingRecipients}">
-			<s:Label text="Top Ten Recipients" 
+			<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_RECIPIENTS_TITLE)}" 
 					 fontWeight="bold" fontSize="16"
 					 color="#FFFFFF"
 					 textDecoration="underline"/>

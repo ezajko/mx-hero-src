@@ -4,7 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 gap="20" 
 		 xmlns:FromTo="org.mxhero.console.commons.FromTo.*"
-		 xmlns:parsley="http://www.spicefactory.org/parsley">
+		 xmlns:parsley="http://www.spicefactory.org/parsley" xmlns:component="org.mxhero.console.commons.feature.component.*">
 	<fx:Declarations>
 		<parsley:Configure/>
 		<s:RadioButtonGroup id="priority"/>
@@ -20,6 +20,7 @@
 			import mx.events.FlexEvent;
 			
 			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
@@ -36,6 +37,9 @@
 			[Bindable]
 			public var isRefreshing:Boolean=false;
 			
+			[Bindable]
+			public var twoWays:Boolean=false;
+			
 			[Inject]
 			[Bindable]
 			public var context:ApplicationContext;
@@ -46,7 +50,7 @@
 			private var lowerSelector:Object;
 			
 			[Bindable]
-			public var feature:IFeature=null;
+			public var feature:Object=null;
 			
 			[Bindable]
 			private var fromHeigth:Number=DEFAULT_MAX_HEIGHT;
@@ -69,7 +73,7 @@
 			}
 			
 			public function set showAdminPriority(value:Boolean):void{
-				if(value){
+				if(value==true){
 					priorityHeigth=DEFAULT_MAX_HEIGHT;
 				}else{
 					priorityHeigth=0;
@@ -203,20 +207,33 @@
 				adminOrder=order;
 			}
 
-			private function hasToShowUp(feature:IFeature,refreshing:Boolean):Boolean{
+			private function hasToShowUp(feature:Object,refreshing:Boolean):Boolean{
 				if(feature==null){
 					return true;
 				}
 				return !feature.fixedFrom() && !refreshing;
 			}
 			
-			private function hasToShowDown(feature:IFeature,refreshing:Boolean):Boolean{
+			private function hasToShowDown(feature:Object,refreshing:Boolean):Boolean{
 				if(feature==null){
 					return true;
 				}
 				return !feature.fixedTo() && !refreshing;
 			}
 			
+			private function hasToShowTwoWays(feature:Object,refreshing:Boolean):Boolean{
+				if(feature==null){
+					return false;
+				}
+				return !feature.fixedTo() && !refreshing && !feature.fixedFrom();
+			}
+			
+			private function maxHeightTwoWays(feature:Object,refreshing:Boolean):Number{
+				if(hasToShowTwoWays(feature,refreshing)){
+					return DEFAULT_MAX_HEIGHT;
+				}
+				return 0;
+			}
 		]]>
 	</fx:Script>
 	
@@ -244,6 +261,24 @@
 		</s:HGroup>
 	</s:VGroup>
 
+	<s:HGroup verticalAlign="top" 
+			  gap="0" 
+			  width="100%" 
+			  paddingLeft="80"
+			  visible="{hasToShowTwoWays(feature,isRefreshing)}"
+			  maxHeight="{maxHeightTwoWays(feature,isRefreshing)}">
+		<s:CheckBox id="twoWaysCbx" 
+					selected="@{this.twoWays}"
+					/>
+		<component:LabelExpanded width="100%"
+								 paddingTop="4"
+								 labelText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.BOTH_WAYS_LABEL)}"
+								 expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.BOTH_WAYS_EXPANDED)}"
+								 explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+								 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"/>
+	</s:HGroup>
+
+	
 	<s:VGroup id="prioritySelection" excludeFrom="domain" maxHeight="{priorityHeigth}" visible="{showAdminPriority}" >
 		<s:RadioButton id="beforeRb"
 					   label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ADMIN_RULE_RUN_BEFORE)}" 

@@ -7,10 +7,10 @@ package org.mxhero.console.frontend.application.event
 		public var queryId:String;
 		public var query:String;
 		public var params:Array;
-		public var report:IReport;
+		public var report:Object;
 		
-		
-		public function ProcessQueryEvent(queryId:String, query:String, params:Array, report:IReport)
+		//report param should be IReport, keep it that way until RSL implementation
+		public function ProcessQueryEvent(queryId:String, query:String, params:Array, report:Object)
 		{
 			this.queryId=queryId;
 			this.query=query;

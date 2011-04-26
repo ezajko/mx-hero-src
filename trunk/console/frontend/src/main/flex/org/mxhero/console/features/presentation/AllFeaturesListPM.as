@@ -68,9 +68,6 @@ package org.mxhero.console.features.presentation
 		
 		[Enter(time="every")]
 		public function every():void{
-			categoriesAux=categories;
-			this.categories=null;
-			this.categories=categoriesAux;
 			if(context.selectedDomain!=null){
 				dispatcher(new GetFeaturesByDomainIdEvent(context.selectedDomain.id));
 			}else {
@@ -83,7 +80,6 @@ package org.mxhero.console.features.presentation
 		public function findFeaturesByDomainIdResult(result:*,event:GetFeaturesByDomainIdEvent):void{
 			categoriesAux=result;
 			isUpdating=false;
-			categories=categoriesAux;
 			preload(categoriesAux);
 		}
 		
@@ -96,7 +92,6 @@ package org.mxhero.console.features.presentation
 		public function findFeaturesResult(result:*,event:GetFeaturesEvent):void{
 			categoriesAux=result;
 			isUpdating=false;
-			categories=categoriesAux;
 			preload(categoriesAux);
 		}
 		

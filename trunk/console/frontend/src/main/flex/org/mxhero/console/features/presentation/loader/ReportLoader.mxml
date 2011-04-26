@@ -32,7 +32,7 @@
 			[Bindable]
 			public var reportService:ReportServiceHandler;
 			
-			private var reportModule:IReport;
+			private var reportModule:Object;
 			
 			[Inject]
 			[Bindable]
@@ -58,7 +58,7 @@
 			
 			protected function readyHandler(event:ModuleEvent):void
 			{
-				this.reportModule= this.child as IReport;
+				this.reportModule= this.child;
 				this.reportModule.setReportService(this.reportService);
 				currentState="loaded";
 				this.reportModule.refresh();
