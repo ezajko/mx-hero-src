@@ -66,5 +66,9 @@ package org.mxhero.console.features.application.resources
 		
 		public static const ERROR_FROM_TO_MANAGED:String="error.from.to.managed";
 		
+		public static const BOTH_WAYS_LABEL:String="both.ways.label";
+		
+		public static const BOTH_WAYS_EXPANDED:String="both.ways.expanded";
+		
 	}
 }

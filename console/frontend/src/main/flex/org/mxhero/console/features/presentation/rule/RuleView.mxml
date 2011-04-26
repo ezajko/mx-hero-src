@@ -81,11 +81,11 @@
 			
 			protected function scroller1_creationCompleteHandler(event:FlexEvent):void
 			{
-				this.addEventListener(MouseEvent.MOUSE_WHEEL,handleWheel,true,100);
+				this.addEventListener(MouseEvent.MOUSE_WHEEL,handleWheel,true,50);
 			}
 			
 			protected function handleWheel(event:MouseEvent):void{
-				event.delta*=4;
+				event.delta = event.delta > 0 ? 1 : -1;
 			}
 
 		]]>
@@ -134,19 +134,23 @@
 						
 					</s:VGroup>
 					
-					<FromTo:FromTo id="fromTo" 
-								   feature="{featureLoader.featureModule}"
-								   fromDirection="{model.rule.fromDirection}"
-								   toDirection="{model.rule.toDirection}"
-								   adminOrder="@{model.rule.adminOrder}"
-								   showAdminPriority="false"
-								   visible="{featureLoader.loaded}"
-								   creationComplete="fromTo_creationCompleteHandler(event)"/>
-					
-					<loader:FeatureLoader id="featureLoader" 
-										  url="{model.feature.moduleUrl}" 
-										  width="100%"
-										  />
+					<s:VGroup width="100%" height="100%" gap="0">
+						<FromTo:FromTo id="fromTo" 
+									   feature="{featureLoader.featureModule}"
+									   fromDirection="{model.rule.fromDirection}"
+									   toDirection="{model.rule.toDirection}"
+									   adminOrder="@{model.rule.adminOrder}"
+									   twoWays="@{model.rule.twoWays}"
+									   showAdminPriority="false"
+									   visible="{featureLoader.loaded}"
+									   creationComplete="fromTo_creationCompleteHandler(event)"/>
+						
+						<loader:FeatureLoader id="featureLoader" 
+											  url="{model.feature.moduleUrl}" 
+											  width="100%"
+											  />
+					</s:VGroup>
+
 					
 					<mx:Spacer height="100%"/>
 					<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="20">

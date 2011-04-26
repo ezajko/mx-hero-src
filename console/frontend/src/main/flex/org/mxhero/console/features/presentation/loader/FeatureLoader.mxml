@@ -23,7 +23,7 @@
 			import org.mxhero.console.features.presentation.rule.RuleViewPM;
 
 			[Bindable]
-			public var featureModule:IFeature;
+			public var featureModule:Object;
 			
 			[Inject]
 			[Bindable]
@@ -51,12 +51,14 @@
 				loaded=false;
 				this.applicationDomain=ApplicationDomain.currentDomain;
 				currentState="loading";
-				this.featureModule=null;
 			}
 
 			protected function readyHandler(event:ModuleEvent):void
 			{
-				this.featureModule= this.child as IFeature;
+				//IFeature until RSL livraries implementation this just gives problems,
+				//main application and modules has the same class but with diferent implementations
+				//lets keep it simple for now.
+				this.featureModule= this.child;
 				currentState="loaded";
 				if(featureModule!=null){
 					this.featureModule.setProperties(model.rule.properties);
@@ -79,6 +81,7 @@
 			protected function moduleloader1_unloadHandler(event:ModuleEvent):void
 			{
 				loaded=false;
+				featureModule=null;
 			}
 
 		]]>
