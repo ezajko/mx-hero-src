@@ -13,7 +13,11 @@ public interface Rule {
 	public String getAdminOrder();
 	
 	public String getDomain();
+	
+	public Boolean getEnabled();
 
+	public Boolean getTwoWays();
+	
 	public Collection<? extends RuleProperty> getProperties();
 
 }

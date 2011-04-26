@@ -45,12 +45,14 @@ public abstract class ResourcesByDomain implements ResourcesProvider{
 		log.debug("feature:"+feature.getComponent()+" version:"+feature.getVersion());
 		log.debug("processing "+feature.getRules().size()+" rules");
 		for (Rule rule : feature.getRules()){
-			if(!domainRules.containsKey(rule.getDomain())){
-				domainRules.put(rule.getDomain(), new ArrayList<Rule>());
-				
-			}	
-			domainRules.get(rule.getDomain()).add(rule);
-			log.debug("added rule for domain "+rule.getDomain());
+			if(rule.getEnabled()==true){
+				if(!domainRules.containsKey(rule.getDomain())){
+					domainRules.put(rule.getDomain(), new ArrayList<Rule>());
+					
+				}	
+				domainRules.get(rule.getDomain()).add(rule);
+				log.debug("added rule for domain "+rule.getDomain());
+			}
 		}
 		
 		for (String domain : domainRules.keySet()){
