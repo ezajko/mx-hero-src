@@ -27,7 +27,7 @@ public class InitialDataVO extends InitialData{
 		this.mimeMail = mimemail;
 		super.setSender(sender);
 		super.setRecipient(recipient);
-		super.setFrom(from);
+		super.setFromSender(from);
 	}
 	
 	/**
@@ -59,7 +59,7 @@ public class InitialDataVO extends InitialData{
 	 * @param from
 	 */
 	@Override
-	public void setFrom(User from) {
+	public void setFromSender(User from) {
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 
