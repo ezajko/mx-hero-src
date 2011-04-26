@@ -72,12 +72,19 @@ public class BLResourcesProvider extends StreamDRLProvider{
 	sb.replace(sb.indexOf(AGENDA_GROUP), sb.indexOf(AGENDA_GROUP)+AGENDA_GROUP.length(), getAgendaGroup(domain, rule));
 	sb.replace(sb.indexOf(AGENDA_GROUP), sb.indexOf(AGENDA_GROUP)+AGENDA_GROUP.length(), getAgendaGroup(domain, rule));
 
-	sb.replace(sb.indexOf(SALIENCE), sb.indexOf(SALIENCE)+SALIENCE.length(), ""+(getFeature().getBasePriority()+ getFromToConditions(rule.getFromDirection(), rule.getToDirection(), sb)));
+	sb.replace(sb.indexOf(SALIENCE), sb.indexOf(SALIENCE)+SALIENCE.length(), ""+(getFeature().getBasePriority()+ getFromToConditions(rule.getFromDirection(), rule.getToDirection(), rule.getTwoWays(), sb)));
 
 	String exceptions = "eval( ";
 	
 	if(domains.size()>0){
 		exceptions = exceptions+" $initialData.getSender().getDomain().hasAlias(new String[]{";
+		for(String domainException : domains){
+			exceptions = exceptions+"\""+domainException+"\",";
+		}
+		exceptions = exceptions.substring(0,exceptions.length()-1);
+		exceptions = exceptions+" } ) == true ";
+		
+		exceptions = exceptions+" || $initialData.getFromSender().getDomain().hasAlias(new String[]{";
 		for(String domainException : domains){
 			exceptions = exceptions+"\""+domainException+"\",";
 		}
@@ -90,6 +97,13 @@ public class BLResourcesProvider extends StreamDRLProvider{
 			exceptions = exceptions + " || ";
 		}
 		exceptions = exceptions+" $initialData.getSender().hasAlias(new String[]{";
+		for(String accountException : accounts){
+			exceptions = exceptions+"\""+accountException+"\",";
+		}
+		exceptions = exceptions.substring(0,exceptions.length()-1);
+		exceptions = exceptions+" } ) == true ";
+		
+		exceptions = exceptions+" || $initialData.getFromSender().hasAlias(new String[]{";
 		for(String accountException : accounts){
 			exceptions = exceptions+"\""+accountException+"\",";
 		}
