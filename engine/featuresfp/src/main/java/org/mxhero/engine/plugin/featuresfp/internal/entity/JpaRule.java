@@ -44,6 +44,13 @@ public class JpaRule implements Rule {
 	@OneToMany(mappedBy="rule", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private Set<JpaRuleProperty> properties;
 
+	@Column(name="enabled", nullable=false)
+	private Boolean enabled;
+
+	@Column(name="two_ways", nullable=false)
+	private Boolean twoWays;
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -106,7 +113,23 @@ public class JpaRule implements Rule {
 	public void setDomainEntity(JpaDomain domainEntity) {
 		this.domainEntity = domainEntity;
 	}
-	
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Boolean getTwoWays() {
+		return twoWays;
+	}
+
+	public void setTwoWays(Boolean twoWays) {
+		this.twoWays = twoWays;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
