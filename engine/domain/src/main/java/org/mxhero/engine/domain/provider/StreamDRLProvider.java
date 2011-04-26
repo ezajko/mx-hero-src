@@ -28,7 +28,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 	public static final String ANYONEELSE = "anyoneelse";
 	public static final String ALLDOMAINS = "alldomains";
 	
-	private static final String FROM_TO = "$#FROM_TO#$";
+	public static final String FROM_TO = "$#FROM_TO#$";
 	
 	@Override
 	protected Resource processByDomain(String domain, Collection<Rule> rules) {
@@ -64,48 +64,82 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 	protected abstract StringBuilder processRule(String domain, Rule rule) throws IOException;
 		
 	
-	public Integer getFromToConditions(RuleDirection from, RuleDirection to, StringBuilder sb){
+	public Integer getFromToConditions(RuleDirection from, RuleDirection to, Boolean twoWays, StringBuilder sb){
 
 		Integer priority = 0;
 		StringBuilder ftsb = new StringBuilder();
 		
 		ftsb.append("$initialData : InitialData( ");
 		
-		log.debug("FROM:"+from.getFreeValue()+", type:"+from.getDirectionType());
-		log.debug("TO:"+to.getFreeValue()+", type:"+to.getDirectionType());
+		//if it has to be two ways and direction are not the same
+		if(twoWays && !(from.getDirectionType().equals(to.getDirectionType()) && from.getId().equals(to.getId()))){
+			ftsb.append("(");
+			priority = priority +getFromCondition(from, ftsb);
+			if(!from.getDirectionType().equals(ANYONE) 
+					&& !to.getDirectionType().equals(ANYONE)){
+				ftsb.append(" && ");
+			}
+			priority = priority + getToCondition(to, ftsb);
+			ftsb.append(") || (");
+			getFromCondition(to, ftsb);
+			if(!from.getDirectionType().equals(ANYONE) 
+					&& !to.getDirectionType().equals(ANYONE)){
+				ftsb.append(" && ");
+			}
+			getToCondition(from, ftsb);
+			ftsb.append(") ");
+		}else{
+			priority = priority + getFromCondition(from, ftsb);
+			if(!from.getDirectionType().equals(ANYONE) 
+					&& !to.getDirectionType().equals(ANYONE)){
+				ftsb.append(" && ");
+			}
+			priority = priority + getToCondition(to, ftsb);
+		}
+
+		ftsb.append(" )");
+		
+		sb.replace(sb.indexOf(FROM_TO), sb.indexOf(FROM_TO)+FROM_TO.length(), ftsb.toString());
+		
+		return priority;
+	}
+	
+	
+	private Integer getFromCondition(RuleDirection from, StringBuilder ftsb){
+		Integer priority = 0;
 		
 		if(from.getDirectionType().equals(ANYONE)){
 			/*doNothing, no restriction here*/
 			priority=priority+1;
 		} else if(from.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			ftsb.append(" sender.domain.id != recipient.domain.id ");
+			ftsb.append(" (fromSender.domain.id != recipient.domain.id && sender.domain.id != recipient.domain.id) ");
 			priority=priority+2;
 		}else if(from.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
-			ftsb.append(" sender.domain.managed == true ");
+			ftsb.append(" (fromSender.domain.managed == true || sender.domain.managed == true) ");
 			priority=priority+4;
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			ftsb.append(" sender.domain.id == \"").append(from.getFreeValue()).append("\" ");
+			ftsb.append(" (fromSender.domain.id == \"").append(from.getFreeValue()).append("\" || ").append(" sender.domain.id == \"").append(from.getFreeValue()).append("\") ");
 			priority=priority+8;
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group id ? What the hell is group id !!!*/
-			ftsb.append(" sender.group!= null && sender.group.name == \"").append(from.getFreeValue()).append("\"");
+			ftsb.append(" (fromSender.group!= null && fromSender.group.name == \"").append(from.getFreeValue()).append("\" || ").append(" sender.group!= null && sender.group.name == \"").append(from.getFreeValue()).append("\") ");
 			priority=priority+16;
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			ftsb.append(" sender.mail == \"").append(from.getFreeValue()).append("\"");
+			ftsb.append(" (fromSender.mail == \"").append(from.getFreeValue()).append("\" || ").append(" sender.mail == \"").append(from.getFreeValue()).append("\") ");
 			priority=priority+32;
 		}else{
 			log.debug("no FROM");
 		}
 		
-		if(!from.getDirectionType().equals(ANYONE) 
-				&& !to.getDirectionType().equals(ANYONE)){
-			ftsb.append(", ");
-		}
-		
+		return priority;
+	}
+	
+	private Integer getToCondition(RuleDirection to, StringBuilder ftsb){
+		Integer priority = 0;
 		
 		if(to.getDirectionType().equals(ANYONE)){
 			/*doNothing, no restriction here*/
@@ -133,10 +167,6 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		}else{
 			log.debug("no TO");
 		}
-		
-		ftsb.append(" )");
-		
-		sb.replace(sb.indexOf(FROM_TO), sb.indexOf(FROM_TO)+FROM_TO.length(), ftsb.toString());
 		
 		return priority;
 	}

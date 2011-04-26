@@ -12,7 +12,7 @@ public class InitialData {
 
 	private User sender;
 	
-	private User from;
+	private User fromSender;
 	
 	private User recipient;
 
@@ -50,12 +50,12 @@ public class InitialData {
 		this.sender = sender;
 	}
 
-	public User getFrom() {
-		return from;
+	public User getFromSender() {
+		return fromSender;
 	}
 
-	public void setFrom(User from) {
-		this.from = from;
+	public void setFromSender(User fromSender) {
+		this.fromSender = fromSender;
 	}
 
 	/**
