@@ -108,11 +108,13 @@
 		
 		<mx:DataGrid width="100%" 
 					 height="100%"
+					 maxHeight="300"
 					 borderStyle="solid"
 					 dropShadowVisible="false"
 					 id="dg"
 					 dataProvider="{uploadedAccounts}"
-					 editable="true">
+					 editable="true"
+					 styleName="editable">
 			<mx:columns>
 				<mx:DataGridColumn 	dataField="account"
 									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
