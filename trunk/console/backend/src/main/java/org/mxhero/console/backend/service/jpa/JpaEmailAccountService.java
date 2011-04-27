@@ -93,9 +93,9 @@ public class JpaEmailAccountService implements EmailAccountService{
 		
 		if(emailAccount!=null){
 			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("individual",emailAccount.getId())){
+				emailAccount.getDomain().getRules().remove(rule);
 				featureService.remove(rule.getId());
 			}
-			
 			emailAccountDao.delete(emailAccount);
 		}
 	}

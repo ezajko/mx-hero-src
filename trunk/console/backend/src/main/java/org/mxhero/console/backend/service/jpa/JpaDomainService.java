@@ -7,7 +7,9 @@ import java.util.HashSet;
 import org.mxhero.console.backend.dao.AuthorityDao;
 import org.mxhero.console.backend.dao.DomainAliasDao;
 import org.mxhero.console.backend.dao.DomainDao;
+import org.mxhero.console.backend.dao.EmailAccountDao;
 import org.mxhero.console.backend.dao.FeatureRuleDao;
+import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.dao.SystemPropertyDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
@@ -57,13 +59,19 @@ public class JpaDomainService implements DomainService {
 	
 	private FeatureRuleDao featureRuleDao;
 	
+	private GroupDao groupDao;
+	
+	private EmailAccountDao emailAccountDao;
+	
 	@Autowired(required=true)
 	public JpaDomainService(DomainDao dao, AuthorityDao authorityDao,
 			DomainAliasDao domainaliasDao, DomainTranslator domainTranslator,
 			PasswordEncoder encoder,
 			SystemPropertyDao systemPropertyDao,
 			FeatureService featureService,
-			FeatureRuleDao featureRuleDao) {
+			FeatureRuleDao featureRuleDao,
+			GroupDao groupDao,
+			EmailAccountDao emailAccountDao) {
 		super();
 		this.dao = dao;
 		this.authorityDao = authorityDao;
@@ -73,6 +81,8 @@ public class JpaDomainService implements DomainService {
 		this.systemPropertyDao = systemPropertyDao;
 		this.featureService = featureService;
 		this.featureRuleDao = featureRuleDao;
+		this.groupDao = groupDao;
+		this.emailAccountDao = emailAccountDao;
 	}
 
 	@Override
@@ -94,13 +104,13 @@ public class JpaDomainService implements DomainService {
 				featureService.remove(rule.getId());
 			}
 			
-			for(Group group : domain.getGroups()){
+			for(Group group : groupDao.findByDomainId(domain.getId())){
 				for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("group",group.getId())){
 					featureService.remove(rule.getId());
 				}
 			}
 			
-			for(EmailAccount account : domain.getEmailAccounts()){
+			for(EmailAccount account : emailAccountDao.finbAllByDomainId(domain.getId())){
 				for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("individual",account.getId())){
 					featureService.remove(rule.getId());
 				}
