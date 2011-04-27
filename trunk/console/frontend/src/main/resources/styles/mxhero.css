@@ -81,6 +81,7 @@ mx|DataGrid{
 	drop-shadow-visible:true;
 	alternating-item-colors:#696969,#7c7b7b;
 	border-visible:true;
+	defaultDataGridItemEditor: ClassReference("mx.controls.MXFTETextInput");
 	defaultDataGridItemRenderer: ClassReference("mx.controls.dataGridClasses.FTEDataGridItemRenderer");
 }
 
