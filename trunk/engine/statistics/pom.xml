@@ -46,7 +46,7 @@
 	<build>
 		<finalName>${bundle.symbolicName}_${pom.version}</finalName>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -226,7 +226,7 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>org.mxhero.javax.mail</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -254,9 +254,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		  <groupId>org.mxhero</groupId>
-		  <artifactId>org.mxhero.org.antlr</artifactId>
-		  <version>2.7.7</version>	
+			<groupId>org.mxhero</groupId>
+			<artifactId>org.mxhero.org.antlr</artifactId>
+			<version>2.7.7</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -289,13 +289,13 @@
 			<scope>compile</scope>
 			<optional>true</optional>
 		</dependency>
-		
-		       <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.8</version>
-             <scope>test</scope>
-        </dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.8</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
