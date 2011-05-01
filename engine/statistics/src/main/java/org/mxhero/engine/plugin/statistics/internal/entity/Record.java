@@ -35,25 +35,25 @@ public class Record implements Serializable{
 	@Column(name = "phase", length = 10, nullable=false)
 	private String phase;
 
-	@Column(name = "sender", length = 50)
+	@Column(name = "sender", length = 255)
 	private String sender;
 
-	@Column(name = "sender_id", length = 50)
+	@Column(name = "sender_id", length = 255)
 	private String senderId;
 	
-	@Column(name = "recipient", length = 50)
+	@Column(name = "recipient", length = 255)
 	private String recipient;
 	
-	@Column(name = "recipient_id", length = 50)
+	@Column(name = "recipient_id", length = 255)
 	private String recipientId;
 
-	@Column(name = "sender_domain_id", length = 50)
+	@Column(name = "sender_domain_id", length = 255)
 	private String senderDomainId;
 	
-	@Column(name = "recipient_domain_id", length = 50)
+	@Column(name = "recipient_domain_id", length = 255)
 	private String recipientDomainId;
 	
-	@Column(name = "subject")
+	@Column(name = "subject", length = 255)
 	private String subject;
 
 	@Column(name = "from_recipeints", length = 1024)
@@ -77,7 +77,7 @@ public class Record implements Serializable{
 	@Column(name = "bytes_size")
 	private Integer bytesSize;
 
-	@Column(name = "state")
+	@Column(name = "state", length = 20)
 	private String state;
 
 	@Column(name = "state_reason")
