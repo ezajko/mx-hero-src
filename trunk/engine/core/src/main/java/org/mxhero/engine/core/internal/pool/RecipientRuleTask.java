@@ -76,6 +76,15 @@ public final class RecipientRuleTask implements Runnable {
 		try {
 			this.processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);
+		} catch (Exception e) {
+			if (getLogStatService() != null) {
+				getLogStatService().log(mail,
+						getProperties().getValue(Core.PROCESS_ERROR_STAT),
+						e.getMessage());
+			}
+			log.error("error while processing rules:",e);
+		}
+		try{
 			if (!mail.getStatus().equals(MailState.DROP)) {
 				OutputQueue.getInstance().add(mail);
 				log.debug("Mail sent to out queue for " + mail);
@@ -91,7 +100,7 @@ public final class RecipientRuleTask implements Runnable {
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),
 						e.getMessage());
 			}
-			log.error("error while processing rules:",e);
+			log.error("error while sending email to next phase:",e);
 		}
 	}
 

@@ -1,7 +1,5 @@
 package org.mxhero.engine.core.internal.service;
 
-import java.util.Arrays;
-
 import javax.mail.MessagingException;
 
 import org.junit.Assert;
@@ -29,7 +27,6 @@ public class CoreInputServiceTest {
 
 		service.addMail(mail);
 		Assert.assertNotNull(InputQueue.getInstance().element());
-		
 	}
 	
 }

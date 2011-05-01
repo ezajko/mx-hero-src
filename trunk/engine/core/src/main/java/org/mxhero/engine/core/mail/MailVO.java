@@ -43,7 +43,7 @@ public final class MailVO extends Mail {
 		try {
 			return this.mimeMail.getMessage().getMessageID();
 		} catch (MessagingException e) {
-			log.error(MIME_ERROR + this, e);
+			log.error(MIME_ERROR, e);
 			return "";
 		}
 	}

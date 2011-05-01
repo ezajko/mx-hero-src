@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>org.mxhero.javax.mail</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
