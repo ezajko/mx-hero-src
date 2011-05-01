@@ -85,8 +85,8 @@
         <configuration>
           <provision>
             <param>--platform=equinox</param>
-            <param>--systemPackages=sun.misc</param>
-             <param>--log=debug</param>
+            <param>--systemPackages=sun.misc,javax.crypto,javax.crypto.spec,javax.security.auth.x500,javax.xml.transform,javax.xml.transform.stream,sun.security.util,jsr166y</param>
+            <param>--log=debug</param>
           </provision>
         </configuration>
         <!--
