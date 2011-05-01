@@ -46,12 +46,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>org.mxhero.javax.mail</artifactId>
-			<version>1.4.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
 			<version>1.5.0</version>
