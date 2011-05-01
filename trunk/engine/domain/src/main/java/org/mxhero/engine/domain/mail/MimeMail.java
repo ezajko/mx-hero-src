@@ -75,6 +75,7 @@ public final class MimeMail {
 	}
 
 	/**
+	 * Clones for default
 	 * @param from
 	 * @param recipients
 	 * @param data
@@ -83,6 +84,20 @@ public final class MimeMail {
 	 */
 	public MimeMail(String from, String recipient,
 			MimeMessage data, String responseServiceId)
+			throws MessagingException {
+		this(from,recipient,data,responseServiceId,true);
+	}
+
+	/**
+	 * @param from
+	 * @param recipients
+	 * @param data
+	 * @param responseServiceId
+	 * @param clone
+	 * @throws MessagingException
+	 */
+	public MimeMail(String from, String recipient,
+			MimeMessage data, String responseServiceId, Boolean clone)
 			throws MessagingException {
 		this(from, recipient, responseServiceId);
 		int headerSize = 0;
@@ -96,10 +111,14 @@ public final class MimeMail {
 			headerSize += ((String) e.nextElement()).length() + 2;
 		}
 		this.initialSize = data.getSize() + headerSize;
-		this.message = new MimeMessage(data);
+		if(clone){
+			this.message = new MimeMessage(data);
+		}else{
+			this.message = data;
+		}
 		this.setParentMessageId(message.getMessageID()+"-"+sequence);
 	}
-
+	
 	/**
 	 * @param from
 	 * @param recipients
