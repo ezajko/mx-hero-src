@@ -1,94 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.mxhero.engine.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.0.0</version>
-  </parent>
+	<parent>
+		<relativePath>../poms/compiled/</relativePath>
+		<groupId>org.mxhero.engine.build</groupId>
+		<artifactId>compiled-bundle-settings</artifactId>
+		<version>1.0.0</version>
+	</parent>
 
-  <properties>
-    <bundle.symbolicName>org.mxhero.engine.plugin.basecommands</bundle.symbolicName>
-    <bundle.namespace>org.mxhero.engine.plugin.basecommands</bundle.namespace>
-  </properties>
+	<properties>
+		<bundle.symbolicName>org.mxhero.engine.plugin.basecommands</bundle.symbolicName>
+		<bundle.namespace>org.mxhero.engine.plugin.basecommands</bundle.namespace>
+	</properties>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.mxhero.engine.plugin</groupId>
-  <artifactId>basecommands</artifactId>
-  <version>1.0.0.M1</version>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.mxhero.engine.plugin</groupId>
+	<artifactId>basecommands</artifactId>
+	<version>1.0.0.M1</version>
 
-  <developers>
-    <developer>
-      <email>mmarmol@mxhero.com</email>
-      <name>Marcelo Angel Marmol</name>
-      <organization>mxHero</organization>
-      <roles>
-        <role>Architect</role>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
+	<developers>
+		<developer>
+			<email>mmarmol@mxhero.com</email>
+			<name>Marcelo Angel Marmol</name>
+			<organization>mxHero</organization>
+			<roles>
+				<role>Architect</role>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
 
-  <description>This bundle implements several useful commands so they can be used inside the business rules.</description>
+	<description>This bundle implements several useful commands so they can be used inside the business rules.</description>
 
-  <name>${bundle.symbolicName}</name>
+	<name>${bundle.symbolicName}</name>
 
-  <packaging>bundle</packaging>
+	<packaging>bundle</packaging>
 
 	<build>
 		<finalName>${bundle.symbolicName}_${pom.version}</finalName>
 	</build>
-	
-  <dependencies>
-    <!--
-			| uncomment to add all imported (non-local) bundles to your
-			compilation classpath <dependency> <type>pom</type>
-			<groupId>${parent.groupId}</groupId>
-			<artifactId>provision</artifactId> <optional>true</optional>
-			</dependency>
-		-->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_compendium</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.mxhero.engine</groupId>
-      <artifactId>domain</artifactId>
-      <version>1.0.0.M1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.ops4j.pax.logging</groupId>
-      <artifactId>pax-logging-api</artifactId>
-      <version>1.5.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.6</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>org.mxhero.javax.mail</artifactId>
-      <version>1.4.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.4.1</version>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
+
+	<dependencies>
+		<!-- | uncomment to add all imported (non-local) bundles to your compilation 
+			classpath <dependency> <type>pom</type> <groupId>${parent.groupId}</groupId> 
+			<artifactId>provision</artifactId> <optional>true</optional> </dependency> -->
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mxhero.engine</groupId>
+			<artifactId>domain</artifactId>
+			<version>1.0.0.M1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>org.mxhero.javax.mail</artifactId>
+			<version>1.4.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.4.1</version>
+			<scope>compile</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
 
 </project>
