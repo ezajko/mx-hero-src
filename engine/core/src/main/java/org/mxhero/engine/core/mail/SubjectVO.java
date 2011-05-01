@@ -34,7 +34,7 @@ public class SubjectVO extends Subject{
 		try {
 			return this.mimeMail.getMessage().getSubject();
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 			return "";
 		}
 	}
@@ -49,7 +49,7 @@ public class SubjectVO extends Subject{
 		try {
 			this.mimeMail.getMessage().setSubject(subject);
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 		}
 	}
 

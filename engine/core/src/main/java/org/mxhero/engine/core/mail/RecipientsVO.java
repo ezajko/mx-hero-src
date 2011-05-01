@@ -36,7 +36,7 @@ public class RecipientsVO extends Recipients{
 		try {
 			return MailUtils.toStringCollection(this.mimeMail.getMessage().getAllRecipients());
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e.getMessage()+"\n"+getFromHeaders());
 			return MailUtils.toStringCollection(null);
 		}
 	}
@@ -126,7 +126,7 @@ public class RecipientsVO extends Recipients{
 		try {
 			return Arrays.toString(this.mimeMail.getMessage().getAllRecipients());
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e.getMessage()+"\n"+getFromHeaders());
 			return "";
 		}
 	}
@@ -216,7 +216,7 @@ public class RecipientsVO extends Recipients{
 		try {
 			return MailUtils.toStringCollection(this.mimeMail.getMessage().getRecipients(type));
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e.getMessage()+"\n"+getFromHeaders());
 			return MailUtils.toStringCollection(null);
 		}	
 	}
@@ -229,7 +229,7 @@ public class RecipientsVO extends Recipients{
 		try {
 			return Arrays.toString(this.mimeMail.getMessage().getRecipients(type));
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e.getMessage()+"\n"+getFromHeaders());
 			return "";
 		}
 	}
@@ -250,4 +250,36 @@ public class RecipientsVO extends Recipients{
 		return builder.toString();
 	}
 
+	private String getFromHeaders(){
+		String address = "";
+		String[] headerValue = null;
+		
+		try {
+			headerValue = mimeMail.getMessage().getHeader("To");
+			if(headerValue!=null){
+				address=address+"To:"+Arrays.toString(headerValue)+"\n";
+			}
+		} catch (MessagingException e) {
+			log.error("To:",e);
+		}
+		try {
+			headerValue = mimeMail.getMessage().getHeader("Cc");
+			if(headerValue!=null){
+				address=address+"Cc:"+Arrays.toString(headerValue)+"\n";
+			}
+		} catch (MessagingException e) {
+			log.error("Cc:",e);
+		}
+		try {
+			headerValue = mimeMail.getMessage().getHeader("Bcc");
+			if(headerValue!=null){
+				address=address+"Bcc:"+Arrays.toString(headerValue)+"\n";
+			}
+		} catch (MessagingException e) {
+			log.error("Bcc:",e);
+		}
+		
+		return address;
+	}
+	
 }

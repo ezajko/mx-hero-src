@@ -76,10 +76,18 @@ public final class SenderRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			
 			processor.process(ksession, filler, userFinderService,
 					domainFinderService, mail);
-
+			}catch (Exception e) {
+				if (getLogStatService() != null) {
+					getLogStatService().log(mail,
+							getProperties().getValue(Core.PROCESS_ERROR_STAT),
+							e.getMessage());
+				}
+				log.error("error while processing rules:",e);
+			}
+			
+		try{
 			/*
 			 * added again into input queue so it gets called for recipient
 			 * processing
@@ -111,7 +119,7 @@ public final class SenderRuleTask implements Runnable {
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),
 						e.getMessage());
 			}
-			log.error("error while processing rules:",e);
+			log.error("error while sending email to next phase:",e);
 		}
 	}
 

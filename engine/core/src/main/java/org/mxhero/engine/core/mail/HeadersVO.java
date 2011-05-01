@@ -39,7 +39,7 @@ public class HeadersVO extends Headers{
 		try {
 			return Collections.list((Enumeration<String>)this.mimeMail.getMessage().getAllHeaderLines());
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 			return new ArrayList<String>();
 		}
 	}
@@ -79,7 +79,7 @@ public class HeadersVO extends Headers{
 			this.mimeMail.getMessage().addHeader(header, value);
 			return true;
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 			return false;
 		}
 	}
@@ -92,7 +92,7 @@ public class HeadersVO extends Headers{
 			this.mimeMail.getMessage().addHeaderLine(header);
 			return true;
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 			return false;
 		}
 	}
@@ -107,7 +107,7 @@ public class HeadersVO extends Headers{
 			this.mimeMail.getMessage().setHeader(header, value);
 			return true;
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 			return false;
 		}
 	}
@@ -122,7 +122,7 @@ public class HeadersVO extends Headers{
 			log.debug("header found:"+internetHeader+" for header:"+header);
 			return internetHeader;
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 		}
 		return null;
 	}
@@ -135,7 +135,7 @@ public class HeadersVO extends Headers{
 			this.mimeMail.getMessage().removeHeader(header);
 			return true;
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 			return false;
 		}
 	}
@@ -149,7 +149,7 @@ public class HeadersVO extends Headers{
 		try {
 			headers = this.mimeMail.getMessage().getHeader(header);
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR+this,e);
+			log.error(MailVO.MIME_ERROR,e);
 		}
 		if(headers!=null && headers.length>0){
 			return true;

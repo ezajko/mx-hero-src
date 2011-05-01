@@ -79,7 +79,7 @@ public class InitialDataVO extends InitialData{
 		try {
 			return this.mimeMail.getMessage().getSentDate();
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR + this, e);
+			log.error(MailVO.MIME_ERROR, e);
 			return null;
 		}
 	}
@@ -93,7 +93,7 @@ public class InitialDataVO extends InitialData{
 		try {
 			this.mimeMail.getMessage().setSentDate(sentDate);
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR + this, e);
+			log.error(MailVO.MIME_ERROR, e);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class InitialDataVO extends InitialData{
 		try {
 			return this.mimeMail.getMessage().getReceivedDate();
 		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR + this, e);
+			log.error(MailVO.MIME_ERROR, e);
 			return null;
 		}
 	}
