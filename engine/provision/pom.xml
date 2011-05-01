@@ -80,7 +80,7 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>org.mxhero.javax.mail</artifactId>
-			<version>1.4.1</version>
+			<version>1.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.felix</groupId>
@@ -203,7 +203,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.jasper.springsource</groupId>
-			<artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource</artifactId>
+			<artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource
+			</artifactId>
 			<version>6.0.20.S2-r5956</version>
 		</dependency>
 		<dependency>
@@ -334,7 +335,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.extensions.annotation</artifactId>
+			<artifactId>org.springframework.osgi.extensions.annotation
+			</artifactId>
 			<version>${org.springframework.osgi.version}</version>
 		</dependency>
 		<dependency>
@@ -444,7 +446,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+			<artifactId>com.springsource.org.apache.commons.collections
+			</artifactId>
 			<version>3.2.1</version>
 		</dependency>
 		<dependency>
