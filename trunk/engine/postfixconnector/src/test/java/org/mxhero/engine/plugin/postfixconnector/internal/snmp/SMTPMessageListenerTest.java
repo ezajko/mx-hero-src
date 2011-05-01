@@ -2,6 +2,8 @@ package org.mxhero.engine.plugin.postfixconnector.internal.snmp;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
@@ -18,6 +20,7 @@ import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
+import org.mxhero.engine.plugin.postfixconnector.internal.util.LogMail;
 
 public class SMTPMessageListenerTest {
 
@@ -82,4 +85,13 @@ public class SMTPMessageListenerTest {
 		
 		listener.deliver(null, "from@mxhero.com", "recipient@mxhero.com", in);
 	}
+	
+	@Test
+	public void testErrorSave() throws FileNotFoundException, MessagingException{
+		FileInputStream is = new FileInputStream(this.getClass().getClassLoader().getResource("subetha7736726399057695056.eml").getFile());
+		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()),is);
+		message.saveChanges();
+		LogMail.saveErrorMail(message,"pfxc","eml");
+	}
+	
 }

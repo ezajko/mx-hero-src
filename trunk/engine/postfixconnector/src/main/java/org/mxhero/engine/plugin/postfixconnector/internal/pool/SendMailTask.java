@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Properties;
 
 import javax.mail.Address;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -16,8 +15,10 @@ import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
+import org.mxhero.engine.plugin.postfixconnector.internal.util.LogMail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Class used to send mail with javamail api outside the engine.
@@ -53,11 +54,10 @@ public final class SendMailTask implements Runnable {
 	@Override
 	public void run() {
 		Session session = Session.getInstance(props);
-	    Message msg = null;
-	    
+	    MimeMessage msg = null;
 		try {
-			mail.getMessage().saveChanges();
-			msg = new MimeMessage(mail.getMessage());
+
+			msg = mail.getMessage();
 			msg.saveChanges();
 			
 		    Transport t = session.getTransport("smtp");
@@ -70,6 +70,9 @@ public final class SendMailTask implements Runnable {
 		} catch (MessagingException e) {
 			getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.DELIVER_ERROR_STAT), e.getMessage());
 			log.error("Couldnt send the mail:"+mail,e);
+			LogMail.saveErrorMail(msg, 
+					getPropertiesService().getValue(PostfixConnector.ERROR_PREFIX),
+					getPropertiesService().getValue(PostfixConnector.ERROR_SUFFIX));
 		}	
 	}
 

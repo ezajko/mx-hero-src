@@ -5,10 +5,12 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 
 import org.mailster.smtp.api.SessionContext;
 import org.mailster.smtp.api.listener.MessageListener;
@@ -22,7 +24,7 @@ import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
-import org.mxhero.engine.plugin.postfixconnector.internal.util.StreamUtils;
+import org.mxhero.engine.plugin.postfixconnector.internal.util.LogMail;
 import org.mxhero.engine.plugin.postfixconnector.queue.InputQueue;
 import org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService;
 import org.slf4j.Logger;
@@ -116,11 +118,29 @@ public final class SMTPMessageListener implements MessageListener{
 			InputStream data) throws IOException {
 		
 		MimeMail mail;
+		MimeMessage message=null;
 		try {
-			mail = new MimeMail(from,recipient,StreamUtils.getBytes(data),PostFixConnectorOutputService.class.getName());
-			mail.getMessage().setSender(new InternetAddress(from));
-			mail.getMessage().saveChanges();
+			message = new MimeMessage(Session.getDefaultInstance(new Properties()), data);
+			
+			/*fix content type*/
+			String contentType = message.getContentType();
+		    if(contentType.contains("reply-type=")){
+			    String replayType = contentType.substring(contentType.lastIndexOf("reply-type="),contentType.length()).trim();
+			    contentType = contentType.substring(0,contentType.lastIndexOf("reply-type=")).trim();
+			    if(!contentType.substring(contentType.length()-1).equals(";")){
+			    	contentType=contentType+";";
+			    }
+			    contentType=contentType+replayType;
+			    message.setHeader("Content-Type", contentType);
+		    }
+			
+			message.saveChanges();
+			mail = new MimeMail(from,recipient,message,PostFixConnectorOutputService.class.getName(),false);
 		} catch (MessagingException e1) {
+			log.error("error while receiving email",e1);
+			LogMail.saveErrorMail(message, 
+					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
+					getProperties().getValue(PostfixConnector.ERROR_SUFFIX));
 			throw new IOException(e1);
 		}
 		log.debug("Mail received:"+mail);
@@ -137,7 +157,9 @@ public final class SMTPMessageListener implements MessageListener{
 			log.debug("Mail interrupted while adding to queue:"+mail,e);
 		}
 	}
+	
 
+	
 	/**
 	 * @return the logRecordService
 	 */

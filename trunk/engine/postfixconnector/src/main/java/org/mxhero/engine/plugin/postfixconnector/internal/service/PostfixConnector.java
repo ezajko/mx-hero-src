@@ -18,6 +18,9 @@ public final class PostfixConnector extends PropertiesService{
 	public static final String SMTP_HOST_PORT = "initial.mail.smtp.port";
 	public static final String SMTP_HOST = "initial.smtp.host";
 	public static final String SMTP_PORT = "initial.smtp.port";
+	public static final String RECEIVE_BUFFER_SIZE = "initial.receive.buffer.size";
+	public static final String ERROR_SUFFIX = "updatable.error.suffix";
+	public static final String ERROR_PREFIX = "updatable.error.prefix";
 	public static final String INPUTPOOL_COREPOOLSIZE = "updatable.inputpool.corepoolsize";
 	public static final String INPUTPOOL_MAXIMUMPOOLSIZE = "updatable.inputpool.maximumpoolsize";
 	public static final String INPUTPOOL_KEEPALIVETIME = "updatable.inputpool.keepalivetime";
