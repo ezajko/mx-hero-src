@@ -89,6 +89,8 @@ public final class SMTPListener implements Runnable {
 					.getValue(PostfixConnector.SMTP_PORT)));
 			server.getConfig().setHostName(
 					properties.getValue(PostfixConnector.SMTP_HOST));
+			server.getConfig().setReceiveBufferSize(Integer.parseInt(properties
+					.getValue(PostfixConnector.RECEIVE_BUFFER_SIZE)));
 			server.start();
 		}
 	}
