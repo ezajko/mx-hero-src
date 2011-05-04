@@ -52,7 +52,7 @@ public final class SendMailTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		props.put("props", mail.getInitialSender());
+		props.put("mail.user", mail.getInitialSender());
 		Session session = Session.getInstance(props);
 	    MimeMessage msg = null;
 		try {
