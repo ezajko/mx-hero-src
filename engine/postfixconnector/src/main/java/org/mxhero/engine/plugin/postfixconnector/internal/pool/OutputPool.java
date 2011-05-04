@@ -59,6 +59,7 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 		props = new Properties();
 	    props.put("mail.smtp.host", properties.getValue(PostfixConnector.SMTP_HOST_NAME, "localhost"));
 	    props.put("mail.smtp.port", properties.getValue(PostfixConnector.SMTP_HOST_PORT, "5556"));
+	    props.put("mail.mime.address.strict","false");
 	}
 	
 	/**
