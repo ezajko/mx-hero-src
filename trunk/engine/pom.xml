@@ -52,6 +52,7 @@
     <module>statistics</module>
     <module>dbfinder</module>
     <module>featuresfp</module>
+    <module>shutdownhook</module>
   </modules>
 
   <build>
