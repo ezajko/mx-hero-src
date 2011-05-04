@@ -47,6 +47,7 @@
 	<bean id="kbbuilder" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseBuilder">
 		<property name="registry" ref="serviceRegistry"/>
 		<property name="resourceProviders" ref="resourceProviders"/>
+		<property name="properties" ref="corePropertyService"/>
 	</bean>
 
 	<bean id="kbloader" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader" init-method="start" destroy-method="stop">
@@ -83,7 +84,6 @@
 		<constructor-arg ref="bundleContext"/>
 		<property name="properties" ref="corePropertyService"/>
 		<property name="logStatService" ref="logStatService"/>
-
 	</bean>
 
 

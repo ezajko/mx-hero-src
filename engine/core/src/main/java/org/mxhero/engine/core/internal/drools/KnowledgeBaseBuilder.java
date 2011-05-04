@@ -16,6 +16,8 @@ import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactoryService;
 import org.drools.util.ServiceRegistry;
+import org.mxhero.engine.core.internal.service.Core;
+import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.provider.Resource;
 import org.mxhero.engine.domain.provider.ResourcesProvider;
 import org.slf4j.Logger;
@@ -42,6 +44,8 @@ public class KnowledgeBaseBuilder {
 
 	private KnowledgeBase knowledgeBase = null;
 
+	private PropertiesService properties;
+	
 	/**
 	 * Actually builds the base calling the ServiceRegistry from drools inside
 	 * the osgi environment. Uses the file path passed to it to locate the chang
@@ -78,28 +82,31 @@ public class KnowledgeBaseBuilder {
 					
 					log.debug("resource:"+resource.getName());
 					if(resource.getResource()!=null){
-						byte[] buffer = new byte[1024];
-						File resourceFile = new File(folder,resource.getName());
-						FileOutputStream fos = new FileOutputStream(resourceFile);
+						InputStream is = null;
+						if(Boolean.parseBoolean(getProperties().getValue(Core.DROOLS_RESOURCES_BACKUP).trim().toLowerCase())){
+							byte[] buffer = new byte[1024];
+							File resourceFile = new File(folder,resource.getName());
+							FileOutputStream fos = new FileOutputStream(resourceFile);
 
-						int len = resource.getResource().read(buffer);
-						while (len != -1) {
-							fos.write(buffer, 0, len);
-						    len = resource.getResource().read(buffer);
+							int len = resource.getResource().read(buffer);
+							while (len != -1) {
+								fos.write(buffer, 0, len);
+							    len = resource.getResource().read(buffer);
+							}
+							
+							fos.close();
+							is = new FileInputStream(resourceFile);
+						}else{
+							is = resource.getResource();
 						}
-						
-						fos.close();
-						InputStream fis = new FileInputStream(resourceFile);
-						
+
 						try{
-						kbuilder.add(resourceFactoryService.newInputStreamResource(fis),
+						kbuilder.add(resourceFactoryService.newInputStreamResource(is),
 								ResourceType.getResourceType(resource.getType()));
 						}catch (Exception e){
 							log.error("error while compiling resource "+resource.getName(),e);
-						}
-						
-					}
-					
+						}	
+					}					
 				}				
 			}catch (Exception e) {
 				log.error("error while trying to load resource from external provider",e);
@@ -193,5 +200,13 @@ public class KnowledgeBaseBuilder {
 	public void setBackupdirbase(String backupdirbase) {
 		this.backupdirbase = backupdirbase;
 	}
-	
+
+	public PropertiesService getProperties() {
+		return properties;
+	}
+
+	public void setProperties(PropertiesService properties) {
+		this.properties = properties;
+	}
+
 }

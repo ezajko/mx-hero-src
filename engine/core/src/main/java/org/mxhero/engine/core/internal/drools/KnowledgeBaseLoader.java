@@ -59,6 +59,14 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 		getProperties().addListener(this);
 		this.updated();
 		log.info("Running");
+		
+		//First time wait a little to give time to resource services to get up
+		try {
+			Thread.sleep(30000);
+		} catch (InterruptedException e1) {
+			log.warn("interrupted while waiting",e1);
+		}
+		
 		while(working){
 			try {
 				if ((System.currentTimeMillis()-lastLoadTime)>=loadtime){
