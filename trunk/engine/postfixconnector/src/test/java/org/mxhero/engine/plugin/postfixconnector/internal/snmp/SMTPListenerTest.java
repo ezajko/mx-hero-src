@@ -1,23 +1,31 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.snmp;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimePart;
+import javax.mail.internet.ParameterList;
+import javax.mail.internet.ParseException;
 
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.mxhero.engine.domain.statistic.LogStat;
+import org.mxhero.engine.plugin.postfixconnector.internal.fixer.FixEmails;
+import org.mxhero.engine.plugin.postfixconnector.internal.fixer.FixReplyType;
 import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
 import org.mxhero.engine.plugin.postfixconnector.internal.snmp.SMTPListener;
 import org.slf4j.Logger;
@@ -60,8 +68,13 @@ public class SMTPListenerTest {
 		smtpListener.stop();
 	}
 	
-	//@Test
-	public void testSendEmail() throws MessagingException{
+	/**
+	 * @throws MessagingException
+	 * @throws IOException 
+	 * @throws ParseException 
+	 */
+	@Test
+	public void testSendWrongEmails() throws MessagingException, IOException{
         SMTPListener smtpListener = null;
         PropertiesService properties = new PostfixConnector();    
         SMTPMessageListener messageListener = new SMTPMessageListener();
@@ -91,25 +104,15 @@ public class SMTPListenerTest {
 			e1.printStackTrace();
 		}
 		
-		Properties props = new Properties();
-	    props.put("mail.smtp.host", properties.getValue(PostfixConnector.SMTP_HOST));
-	    props.put("mail.smtp.port", properties.getValue(PostfixConnector.SMTP_PORT));
-	    Session session = Session.getInstance(props);
-	    Transport t = session.getTransport("smtp");
-	    t.connect();
+		sendEmail("pfxc5300455480221297252.eml");
+		sendEmail("pfxc551554049437178847.eml");
+		sendEmail("pfxc5647026194074193180.eml");
+		sendEmail("pfxc6652043909683704136.eml");
+		sendEmail("pfxc7454143381794071206.eml");
+		sendEmail("pfxc7628358058273183862.eml");
+		sendEmail("email-spam1.rfc");
+		sendEmail("pfxc5410204471045189223.eml");
 		
-	    MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
-		message.setSender(new InternetAddress("xxxx@mxhero.com"));
-		message.setFrom(new InternetAddress("xxxx@mxhero.com"));
-		message.setRecipient(RecipientType.TO, new InternetAddress(
-				"yyyy@mxhero.com"));
-		message.setSubject("subject");
-		message.setText("texto");
-		message.setSentDate(Calendar.getInstance().getTime());
-		message.saveChanges();
-		t.sendMessage(message, new Address[] { new InternetAddress("yyyy@mxhero.com") });
-	    t.close();
-	    
 	    try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -120,50 +123,13 @@ public class SMTPListenerTest {
 		smtpListener.stop();
 	}
 	
-	/**
-	 * @throws MessagingException
-	 * @throws IOException 
-	 */
-	@Test
-	public void testSendSpamEmail() throws MessagingException, IOException{
-        SMTPListener smtpListener = null;
-        PropertiesService properties = new PostfixConnector();    
-        SMTPMessageListener messageListener = new SMTPMessageListener();
-        messageListener.setProperties(properties);
-        messageListener.setLogStatService(new LogStat() {
-			
-			@Override
-			public void log(MimeMail mail, String key, String value) {
-				log.info("logging stat:"+key+" value:"+value);
-				
-			}
-		});
-        messageListener.setLogRecordService(new LogRecord() {
-			
-			@Override
-			public void log(MimeMail mail) {
-				log.info("logging record for mail:"+mail);
-				
-			}
-		});
-        smtpListener = new SMTPListener(messageListener);
-		smtpListener.setProperties(properties);
-        smtpListener.start();
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		
-		System.setProperty("mail.mime.parameters.strict", "false");
-		System.setProperty("mail.mime.decodeparameters.strict", "false");
-		System.setProperty("mail.mime.decodeparameters", "true");
-		System.setProperty("mail.mime.encodeparameters", "true");
-		System.setProperty("mail.mime.windowsfilenames", "true");
-		System.setProperty("mail.mime.applefilenames", "true");
-
-/*		System.setProperty("mail.mime.decodeparameters.strict","false");
- * 		System.setProperty("mail.mime.decodeparameters", "true");
+	
+	private void sendEmail(String file) throws FileNotFoundException, AddressException, MessagingException{
+		System.setProperty("mail.debug","true");
+		System.setProperty("mail.mime.contenttypehandler",
+				SMTPListenerTest.class.getName());
+		System.setProperty("mail.mime.decodeparameters.strict","false");
+  		System.setProperty("mail.mime.decodeparameters", "true");
 		System.setProperty("mail.mime.encodeparameters", "true");
 		System.setProperty("mail.mime.address.strict", "false");
 		System.setProperty("mail.mime.allowencodedmessages", "true");
@@ -176,45 +142,75 @@ public class SMTPListenerTest {
 		System.setProperty("mail.mime.parameters.strict", "false");
 		System.setProperty("mail.mime.uudecode.ignoreerrors", "true");
 		System.setProperty("mail.mime.uudecode.ignoremissingbeginend", "true");
-		System.setProperty("mail.mime.windowsfilenames", "true");*/
-		
+		System.setProperty("mail.mime.windowsfilenames", "true");
+		System.out.println(System.getProperty("mail.mime.contenttypehandler"));
 		Properties props = new Properties();
-	    props.put("mail.smtp.host", "192.168.0.103");
-	    props.put("mail.smtp.port", "5555");
+	    props.put("mail.smtp.host", "localhost");
+	    props.put("mail.smtp.port", "25");
 	    Session session = Session.getInstance(props);
 	    Transport t = session.getTransport("smtp");
 	    t.connect();
 
-		FileInputStream is = new FileInputStream(this.getClass().getClassLoader().getResource("email-spam1.rfc").getFile());
+		FileInputStream is = new FileInputStream(this.getClass().getClassLoader().getResource(file).getFile());
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()),is);
-
-		String contentType = message.getContentType();
-
-	    if(contentType.contains("reply-type=")){
-		    String replayType = contentType.substring(contentType.lastIndexOf("reply-type="),contentType.length()).trim();
-		    contentType = contentType.substring(0,contentType.lastIndexOf("reply-type=")).trim();
-		    if(!contentType.substring(contentType.length()-1).equals(";")){
-		    	contentType=contentType+";";
-		    }
-		    contentType=contentType+replayType;
-	    }
 		
-
-		message.setHeader("Content-Type", contentType);
+		
+		System.out.println("**************************BEFORE*********************");
+		System.out.println("To:"+Arrays.toString(message.getHeader("To")));
+		System.out.println("From"+Arrays.toString(message.getHeader("From")));
+		System.out.println("Cc:"+Arrays.toString(message.getHeader("Cc")));
+		System.out.println("Bcc:"+Arrays.toString(message.getHeader("Bcc")));
+		System.out.println("Reply-To:"+Arrays.toString(message.getHeader("Reply-To")));
+		System.out.println("ContentType"+Arrays.toString(message.getHeader("Content-Type")));
+		
+		
+		new FixEmails().fixit(message);
+		new FixReplyType().fixit(message);
 		message.saveChanges();
+
+		System.out.println("**************************AFTER*********************");
+		System.out.println("To:"+Arrays.toString(message.getHeader("To")));
+		System.out.println("From"+Arrays.toString(message.getHeader("From")));
+		System.out.println("Cc:"+Arrays.toString(message.getHeader("Cc")));
+		System.out.println("Bcc:"+Arrays.toString(message.getHeader("Bcc")));
+		System.out.println("Reply-To:"+Arrays.toString(message.getHeader("Reply-To")));
+		System.out.println("ContentType"+Arrays.toString(message.getHeader("Content-Type")));
+		
+		
+		
 		t.sendMessage(message, new Address[] { new InternetAddress("mmarmol@mxhero.com") });
 	    t.close();
-	    
-	    try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    
-		smtpListener.stop();
 	}
 	
-
-	
+	public static String cleanContentType(MimePart mp, String contentType) {
+		if (contentType == null)
+			return null;
+		try {
+			new ContentType(contentType);
+		} catch (ParseException e) {
+			ParameterList parameters  = new ParameterList();
+			String[] rawParams = contentType.split(";");
+			String type = rawParams[0];
+			for(int i = 1;i<rawParams.length;i++){
+				String[] paramparsed = rawParams[i].split("=",2);
+				String key = paramparsed[0];
+				String value = paramparsed[1];
+				if(value.startsWith("\"") && !value.endsWith("\"")){
+					value=value+"\"";
+				}
+				parameters.set(key,value);
+			}
+			try {
+				contentType = new ContentType(type+parameters.toString()).toString();
+				
+			} catch (ParseException e1) {
+				try {
+					contentType = new ContentType(type).toString();
+				} catch (ParseException e2) {
+					//we can do anything else at this point
+				}
+			}
+		}
+		return contentType;
+	}
 }

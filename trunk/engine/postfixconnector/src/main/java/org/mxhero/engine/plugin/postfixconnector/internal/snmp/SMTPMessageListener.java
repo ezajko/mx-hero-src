@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
@@ -23,6 +24,7 @@ import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.mxhero.engine.domain.statistic.LogStat;
+import org.mxhero.engine.plugin.postfixconnector.internal.fixer.Fixer;
 import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
 import org.mxhero.engine.plugin.postfixconnector.internal.util.LogMail;
 import org.mxhero.engine.plugin.postfixconnector.queue.InputQueue;
@@ -54,6 +56,8 @@ public final class SMTPMessageListener implements MessageListener{
 	
 	private SimpleDateFormat format;
 	
+	private Collection<Fixer> fixers;
+	
 	@SuppressWarnings("rawtypes")
 	private List preFiltersList;
 	
@@ -65,7 +69,7 @@ public final class SMTPMessageListener implements MessageListener{
 		/*if any preFilter returns true, just cancel this*/
 		User fromUser = null;
 		User recipientUser = null;
-		if(preFiltersList!=null){
+		if(preFiltersList!=null && preFiltersList.size()>0){
 			fromUser = getUser(from);
 			recipientUser = getUser(recipient);
 			for (Object preFilter : preFiltersList){
@@ -121,19 +125,20 @@ public final class SMTPMessageListener implements MessageListener{
 		MimeMessage message=null;
 		try {
 			message = new MimeMessage(Session.getDefaultInstance(new Properties()), data);
-			
 			/*fix content type*/
-			String contentType = message.getContentType();
-		    if(contentType.contains("reply-type=")){
-			    String replayType = contentType.substring(contentType.lastIndexOf("reply-type="),contentType.length()).trim();
-			    contentType = contentType.substring(0,contentType.lastIndexOf("reply-type=")).trim();
-			    if(!contentType.substring(contentType.length()-1).equals(";")){
-			    	contentType=contentType+";";
-			    }
-			    contentType=contentType+replayType;
-			    message.setHeader("Content-Type", contentType);
-		    }
-			
+			if(fixers!=null && fixers.size()>0){
+				for(Fixer fixer : fixers){
+					fixer.fixit(message);
+				}
+			}
+			message.removeHeader(getProperties().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER));
+			message.removeHeader(getProperties().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER));
+			if(getProperties()!=null 
+					&& getProperties().getValue(PostfixConnector.ADD_HEADERS)!=null 
+					&& Boolean.parseBoolean(getProperties().getValue(PostfixConnector.ADD_HEADERS))){
+				message.addHeader(getProperties().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER), from);
+				message.addHeader(getProperties().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER), recipient);
+			}
 			message.saveChanges();
 			mail = new MimeMail(from,recipient,message,PostFixConnectorOutputService.class.getName(),false);
 		} catch (MessagingException e1) {
@@ -245,6 +250,15 @@ public final class SMTPMessageListener implements MessageListener{
 	@SuppressWarnings("rawtypes")
 	public void setPreFiltersList(List preFiltersList) {
 		this.preFiltersList = preFiltersList;
+	}
+
+	public Collection<Fixer> getFixers() {
+		return fixers;
+	}
+
+
+	public void setFixers(Collection<Fixer> fixers) {
+		this.fixers = fixers;
 	}
 
 }
