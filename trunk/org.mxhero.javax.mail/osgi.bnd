@@ -1,0 +1,15 @@
+#--------------------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the wrapped library
+#--------------------------------------------------------------------------
+
+#
+# this unpacks the contents of the wrapped jar artifact inside the bundle
+# to also inline dependencies of this artifact add Embed-Transitive: true
+#
+Import-Package: javax.activation;version="[1.1.1, 2.0.0)";resolution:="optional",javax.net;version="0",javax.net.ssl;version="0",javax.security.auth.callback;version="0",javax.security.sasl;version="0",javax.crypto,javax.crypto.spec,javax.security.auth.x500,javax.xml.transform,javax.xml.transform.stream,sun.security.util
+Export-Package: com.sun.mail.handlers;version="1.4.4";uses:="javax.activation",com.sun.mail.iap;version="1.4.4",com.sun.mail.imap;version="1.4.1";uses:="com.sun.mail.iap,com.sun.mail.imap.protocol,javax.activation,javax.mail,javax.mail.internet,javax.mail.search",com.sun.mail.imap.protocol;version="1.4.4";uses:="com.sun.mail.iap,com.sun.mail.imap,javax.mail,javax.mail.internet,javax.mail.search,javax.security.auth.callback",com.sun.mail.mbox;version="1.4.4";uses:="javax.activation,javax.mail,javax.mail.internet",com.sun.mail.pop3;version="1.4.4";uses:="javax.mail,javax.mail.internet",com.sun.mail.smtp;version="1.4.4";uses:="com.sun.mail.util,javax.mail,javax.mail.internet",com.sun.mail.util;version="1.4.4";uses:="javax.mail,javax.net",javax.mail;version="1.4.4";uses:="javax.activation,javax.mail.event,javax.mail.search",javax.mail.event;version="1.4.4";uses:="javax.mail",javax.mail.internet;version="1.4.4";uses:="com.sun.mail.util,javax.activation,javax.mail",javax.mail.search;version="1.4.4";uses:="javax.mail",javax.mail.util;version="1.4.4";uses:="javax.activation,javax.mail.internet",org.mxhero.javax.mail.handler*
+Unversioned-Imports: javax.net.*,javax.security.*
+Fragment-Host:com.springsource.javax.activation
+Embed-Dependency: *;scope=compile|runtime;type=!pom;inline=true
+
+
