@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
@@ -52,8 +51,8 @@ public class CreateImpl implements Create {
 	public Result exec(MimeMail mail, String... args) {
 
 		Result result = new Result();
-		Address sender = null;
-		Collection<Address> recipients = new ArrayList<Address>();
+		InternetAddress sender = null;
+		Collection<InternetAddress> recipients = new ArrayList<InternetAddress>();
 		MimeMessage newMessage = null;
 		MimeMail newMail = null;
 
@@ -78,7 +77,7 @@ public class CreateImpl implements Create {
 			for (String recipient : args[RECIPIENTS_PARAM_NUMBER]
 					.split(DIV_CHARACTER)) {
 				try {
-					Address rcptAddress = new InternetAddress(recipient);
+					InternetAddress rcptAddress = new InternetAddress(recipient);
 					recipients.add(rcptAddress);
 				} catch (AddressException e) {
 					log.warn("recipient is not valid");
@@ -88,19 +87,19 @@ public class CreateImpl implements Create {
 				log.warn("there is no recipients for this mail");
 				return result;
 			}
-			Address[] recipientsArray = new Address[recipients.size()];
+			InternetAddress[] recipientsArray = new InternetAddress[recipients.size()];
 			int i = 0;
-			for (Address address : recipients) {
+			for (InternetAddress address : recipients) {
 				recipientsArray[i] = address;
 				i++;
 			}
 			
-			for (Address recipient : recipientsArray){
+			for (InternetAddress recipient : recipientsArray){
 				try {
 					newMessage = new MimeMessage(Session.getDefaultInstance(null));
 					newMessage.setSender(sender);
 					newMessage.setFrom(sender);
-					newMessage.setReplyTo(new Address[] { sender });
+					newMessage.setReplyTo(new InternetAddress[] { sender });
 					newMessage.addRecipients(RecipientType.TO, recipientsArray);
 					newMessage.setSubject(args[SUBJECT_PARAM_NUMBER]);
 					newMessage.setText(args[TEXT_PARAM_NUMBER]);

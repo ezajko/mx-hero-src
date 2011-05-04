@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -44,8 +43,8 @@ public class CloneImpl implements Clone {
 	@Override
 	public Result exec(MimeMail mail, String... args) {
 		Result result = new Result();
-		Address sender = null;
-		Address recipient = null;
+		InternetAddress sender = null;
+		InternetAddress recipient = null;
 		String outputService = null;
 		MimeMail clonedMail = null;
 		result.setResult(false);
@@ -88,15 +87,15 @@ public class CloneImpl implements Clone {
 
 			if(!mail.getProperties().containsKey(Replay.class.getName())){
 				try {
-					clonedMail = new MimeMail(sender.toString(), recipient.toString(),
+					clonedMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							new MimeMessage(mail.getMessage()), outputService);
 					clonedMail.setParentMessageId(mail.getParentMessageId());
 					clonedMail.setPhase(args[PHASE_PARAM_NUMBER]);
 					if (args[0].equals(RulePhase.RECEIVE)) {
-						clonedMail.setRecipient(recipient.toString());
+						clonedMail.setRecipient(recipient.getAddress());
 					}
 					clonedMail.getProperties().putAll(mail.getProperties());
-					clonedMail.getProperties().put(Replay.class.getName(), recipient.toString());
+					clonedMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
 				} catch (MessagingException e) {
 					log.warn("error while creating cloned message");
 					return result;

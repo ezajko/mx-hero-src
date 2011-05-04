@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -44,8 +43,8 @@ public class ReplayImpl implements Replay {
 	@Override
 	public Result exec(MimeMail mail, String... args) {
 		Result result = new Result();
-		Address sender = null;
-		Address recipient = null;
+		InternetAddress sender = null;
+		InternetAddress recipient = null;
 		String outputService = null;
 		MimeMail replayMail = null;
 		result.setResult(false);
@@ -112,14 +111,14 @@ public class ReplayImpl implements Replay {
 					MimeMessage replayMessage = (MimeMessage)mail.getMessage().reply(false);
 					replayMessage.setSender(sender);
 					replayMessage.setFrom(sender);
-					replayMessage.setReplyTo(new Address[]{sender});
+					replayMessage.setReplyTo(new InternetAddress[]{sender});
 					replayMessage.setText(args[TEXT_PARAM_NUMBER]);
-					replayMail = new MimeMail(sender.toString(), recipient.toString(),
+					replayMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							replayMessage, outputService);
 					replayMail.setPhase(args[PHASE_PARAM_NUMBER]);
-					replayMail.getProperties().put(Replay.class.getName(), recipient.toString());
+					replayMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
 					if (args[0].equals(RulePhase.RECEIVE)) {
-						replayMail.setRecipient(recipient.toString());
+						replayMail.setRecipient(recipient.getAddress());
 					}
 				} catch (MessagingException e) {
 					log.warn("error while creating replay message");
