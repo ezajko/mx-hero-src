@@ -110,7 +110,7 @@ public class SMTPListenerTest {
 		sendEmail("pfxc5410204471045189223.eml");
 		
 	    try {
-			Thread.sleep(200000);
+			Thread.sleep(4000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
