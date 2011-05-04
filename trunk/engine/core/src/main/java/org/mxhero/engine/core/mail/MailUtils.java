@@ -64,7 +64,8 @@ public abstract class MailUtils {
 		Collection<String> addressCollection = new ArrayList<String>();
 		if (address != null) {
 			for (Address a : address) {
-				addressCollection.add(a.toString());
+				if(a instanceof InternetAddress)
+				addressCollection.add(((InternetAddress) a).getAddress());
 			}
 		}
 		return addressCollection;

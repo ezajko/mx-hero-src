@@ -1,5 +1,6 @@
 package org.mxhero.engine.core.internal.pool.filler;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.mail.Address;
@@ -17,7 +18,9 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
+import org.mxhero.engine.domain.mail.business.Group;
 import org.mxhero.engine.domain.mail.business.User;
+import org.mxhero.engine.domain.mail.business.UserList;
 import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 
@@ -28,13 +31,19 @@ public class SessionFillerTest {
 		String userMail = "xxxx@mxhero.com";
 		String domainName = "mxhero.com";
 		
-		final User user = new User();
-		user.setMail(userMail);
-		user.setAliases(Arrays.asList(userMail.split(",")));
-		
 		final Domain domain = new Domain();
 		domain.setAliases(Arrays.asList(domainName.split(",")));
 		domain.setId(domainName);
+		domain.setManaged(false);
+		domain.setAliases(new ArrayList<String>());
+		domain.setGroups(new ArrayList<Group>());
+		
+		final User user = new User();
+		user.setMail(userMail);
+		user.setAliases(Arrays.asList(userMail.split(",")));
+		user.setDomain(domain);
+		user.setLists(new ArrayList<UserList>());
+		user.setManaged(false);
 		
 		PhaseSessionFiller filler = new PhaseSessionFiller();
 		UserFinder userFinder = new UserFinder() {
