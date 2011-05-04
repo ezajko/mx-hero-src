@@ -60,6 +60,9 @@
 		<property name="logStat" ref="logStatService"/>
 	</bean>
 
+	<bean id="fixEmails"  class="org.mxhero.engine.plugin.postfixconnector.internal.fixer.FixEmails" />
+	<bean id="fixReplyType" class="org.mxhero.engine.plugin.postfixconnector.internal.fixer.FixReplyType" />
+
 	<bean id="snmpMessageListener" class="org.mxhero.engine.plugin.postfixconnector.internal.snmp.SMTPMessageListener">
 		<property name="logRecordService" ref="logRecordService"/>
 		<property name="logStatService" ref="logStatService"/>
@@ -67,7 +70,14 @@
 		<property name="domainFinderService" ref="domainFinder"/>
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="preFiltersList" ref="preFilters"/>
+		<property name="fixers">
+			<list value-type="org.mxhero.engine.plugin.postfixconnector.internal.fixer.Fixer" >
+				<ref bean="fixEmails"/>
+				<ref bean="fixReplyType"/>
+			</list>
+		</property>
 	</bean>
+
 
 	<bean id="snmpListener" class="org.mxhero.engine.plugin.postfixconnector.internal.snmp.SMTPListener"
 	init-method="start" destroy-method="stop">

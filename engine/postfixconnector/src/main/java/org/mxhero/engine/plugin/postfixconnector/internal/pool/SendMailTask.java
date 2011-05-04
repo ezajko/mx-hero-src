@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
 
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -44,7 +43,7 @@ public final class SendMailTask implements Runnable {
 	 */
 	public SendMailTask(MimeMail mail, Properties props){
 		this.mail = mail;
-		this.props = props;
+		this.props = new Properties(props);
 	}
 	
 	/**
@@ -53,17 +52,27 @@ public final class SendMailTask implements Runnable {
 	 */
 	@Override
 	public void run() {
+		props.put("props", mail.getInitialSender());
 		Session session = Session.getInstance(props);
 	    MimeMessage msg = null;
 		try {
-
 			msg = mail.getMessage();
+			msg.setSender(new InternetAddress(mail.getInitialSender()));
+			msg.removeHeader(getPropertiesService().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER));
+			msg.removeHeader(getPropertiesService().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER));
+			if(getPropertiesService()!=null 
+					&& getPropertiesService().getValue(PostfixConnector.ADD_HEADERS)!=null 
+					&& Boolean.parseBoolean(getPropertiesService().getValue(PostfixConnector.ADD_HEADERS))){
+				msg.addHeader(getPropertiesService().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER), mail.getInitialSender());
+				msg.addHeader(getPropertiesService().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER), mail.getRecipient());
+			}
+			
 			msg.saveChanges();
 			
 		    Transport t = session.getTransport("smtp");
 		    t.connect();
 		    log.debug(mail.getRecipient());
-			t.sendMessage(msg, new Address[] { new InternetAddress(mail.getRecipient()) });
+		    t.sendMessage(msg, new InternetAddress[] { new InternetAddress(mail.getRecipient()) });
 		    t.close();
 		    log.debug("Message sent:"+mail);
 		    getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
