@@ -11,12 +11,8 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
-import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimePart;
-import javax.mail.internet.ParameterList;
 import javax.mail.internet.ParseException;
 
 import org.junit.Test;
@@ -114,7 +110,7 @@ public class SMTPListenerTest {
 		sendEmail("pfxc5410204471045189223.eml");
 		
 	    try {
-			Thread.sleep(2000);
+			Thread.sleep(200000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,7 +123,7 @@ public class SMTPListenerTest {
 	private void sendEmail(String file) throws FileNotFoundException, AddressException, MessagingException{
 		System.setProperty("mail.debug","true");
 		System.setProperty("mail.mime.contenttypehandler",
-				SMTPListenerTest.class.getName());
+				"org.mxhero.javax.mail.handler.ContentTypeHandler");
 		System.setProperty("mail.mime.decodeparameters.strict","false");
   		System.setProperty("mail.mime.decodeparameters", "true");
 		System.setProperty("mail.mime.encodeparameters", "true");
@@ -147,6 +143,7 @@ public class SMTPListenerTest {
 		Properties props = new Properties();
 	    props.put("mail.smtp.host", "localhost");
 	    props.put("mail.smtp.port", "25");
+	    props.put("mail.user", "mmarmol@mxhero.com");
 	    Session session = Session.getInstance(props);
 	    Transport t = session.getTransport("smtp");
 	    t.connect();
@@ -182,35 +179,4 @@ public class SMTPListenerTest {
 	    t.close();
 	}
 	
-	public static String cleanContentType(MimePart mp, String contentType) {
-		if (contentType == null)
-			return null;
-		try {
-			new ContentType(contentType);
-		} catch (ParseException e) {
-			ParameterList parameters  = new ParameterList();
-			String[] rawParams = contentType.split(";");
-			String type = rawParams[0];
-			for(int i = 1;i<rawParams.length;i++){
-				String[] paramparsed = rawParams[i].split("=",2);
-				String key = paramparsed[0];
-				String value = paramparsed[1];
-				if(value.startsWith("\"") && !value.endsWith("\"")){
-					value=value+"\"";
-				}
-				parameters.set(key,value);
-			}
-			try {
-				contentType = new ContentType(type+parameters.toString()).toString();
-				
-			} catch (ParseException e1) {
-				try {
-					contentType = new ContentType(type).toString();
-				} catch (ParseException e2) {
-					//we can do anything else at this point
-				}
-			}
-		}
-		return contentType;
-	}
 }
