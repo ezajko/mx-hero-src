@@ -2,7 +2,6 @@ package org.mxhero.engine.core.internal.service;
 
 import junit.framework.Assert;
 
-import org.drools.builder.ResourceType;
 import org.junit.Test;
 
 public class CorePropertiesTest {
