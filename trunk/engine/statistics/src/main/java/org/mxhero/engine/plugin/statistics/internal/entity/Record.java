@@ -1,7 +1,6 @@
 package org.mxhero.engine.plugin.statistics.internal.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,7 +28,7 @@ public class Record implements Serializable{
 	@Column(name = "message_id", length = 1024, nullable=false)
 	private String messageId;
 	
-	@Column(name = "parent_message_id", length = 1024, nullable=false)
+	@Column(name = "parent_message_id", length = 255, nullable=false)
 	private String parentMessageId;
 	
 	@Column(name = "phase", length = 10, nullable=false)
