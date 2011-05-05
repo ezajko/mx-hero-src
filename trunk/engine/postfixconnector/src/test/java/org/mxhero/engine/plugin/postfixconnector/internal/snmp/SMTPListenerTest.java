@@ -57,7 +57,7 @@ public class SMTPListenerTest {
 		smtpListener.setProperties(properties);
         smtpListener.start();
         try {
-			Thread.sleep(1000000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
