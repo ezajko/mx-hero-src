@@ -16,7 +16,7 @@ import org.osgi.service.cm.ManagedService;
  */
 public class PropertiesService implements ManagedService {
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private Dictionary properties;
 
 	private Set<PropertiesListener> listeners = new LinkedHashSet<PropertiesListener>();
@@ -24,7 +24,7 @@ public class PropertiesService implements ManagedService {
 	/**
 	 * @param properties
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public PropertiesService(Dictionary properties) {
 		this.properties = properties;
 	}
@@ -76,7 +76,7 @@ public class PropertiesService implements ManagedService {
 	 * 
 	 * @see org.osgi.service.cm.ManagedService#updated(java.util.Dictionary)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public final void updated(Dictionary properties)
 			throws ConfigurationException {
