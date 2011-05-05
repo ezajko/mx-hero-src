@@ -14,6 +14,7 @@ public class PropertiesServiceTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testService() throws ConfigurationException {
+		@SuppressWarnings("rawtypes")
 		Dictionary props = new Hashtable<String, String>();
 
 		PropertiesService serviceNull = new PropertiesService(null);
