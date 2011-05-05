@@ -71,7 +71,6 @@ public final class MimeMail {
 		this.message = new MimeMessage(Session
 				.getDefaultInstance(new Properties()),
 				new ByteArrayInputStream(data));
-		this.setParentMessageId(message.getMessageID()+"-"+sequence);
 	}
 
 	/**
@@ -116,7 +115,6 @@ public final class MimeMail {
 		}else{
 			this.message = data;
 		}
-		this.setParentMessageId(message.getMessageID()+"-"+sequence);
 	}
 	
 	/**
@@ -128,6 +126,7 @@ public final class MimeMail {
 			String responseServiceId) {
 		this.sequence = Sequencer.getInstance().getNextSequence();
 		this.time = new Timestamp(System.currentTimeMillis());
+		this.parentMessageId=time.getTime()+"-"+sequence;
 		this.responseServiceId = responseServiceId;
 		this.recipient = recipient;
 		this.initialSender = from;
