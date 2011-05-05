@@ -87,7 +87,6 @@ public class GetSizeImpl implements GetSize {
 	 *            Mime message that we want to know the size.
 	 * @return the size in bytes
 	 */
-	@SuppressWarnings("unchecked")
 	private long calculateMessageSize(MimeMessage message) {
 		long size;
 
@@ -98,6 +97,7 @@ public class GetSizeImpl implements GetSize {
 			size = WRONG_SIZE;
 		}
 		if (size != WRONG_SIZE) {
+			@SuppressWarnings("rawtypes")
 			Enumeration e;
 			try {
 				e = message.getAllHeaderLines();
