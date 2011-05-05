@@ -8,7 +8,6 @@ import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 /**
@@ -29,30 +28,6 @@ public abstract class MailUtils {
 	 * can not be instantiated
 	 */
 	private MailUtils() {
-	}
-
-	/**
-	 * Receives a collection of string and returns an Array fo Address
-	 * @param address
-	 * @return
-	 */
-	public static Address[] toAdressArray(Collection<String> address) {
-		Address[] addressArray;
-		String[] addressArrayString;
-		if (address != null && address.size() > 0) {
-			addressArray = new Address[address.size()];
-			addressArrayString = (String[]) address.toArray(new String[address
-					.size()]);
-			for (int i = 0; i < address.size(); i++) {
-				try {
-					addressArray[i] = new InternetAddress(addressArrayString[i]);
-				} catch (AddressException e) {
-				}
-			}
-			return addressArray;
-		} else {
-			return new Address[0];
-		}
 	}
 
 	/**

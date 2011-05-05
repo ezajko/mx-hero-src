@@ -138,6 +138,7 @@ public class PhaseSessionFiller implements SessionFiller {
 				} catch (Exception e) {
 					fromId = mail.getSenderId();
 				} 
+				
 				fromDomainId = fromId.substring(fromId.indexOf(DIV_CHAR) + 1).trim();
 				
 				if(!fromId.equals(mail.getSenderId())){
@@ -177,6 +178,7 @@ public class PhaseSessionFiller implements SessionFiller {
 			}
 			
 			if (fromDomain == null){
+
 				fromDomain = new Domain();
 				fromDomain.setId(fromDomainId);
 				fromDomain.setManaged(false);
