@@ -123,12 +123,7 @@ public class RecipientsVO extends Recipients{
 	 */
 	@Override
 	public String getAllRecipientsStr() {
-		try {
-			return Arrays.toString(this.mimeMail.getMessage().getAllRecipients());
-		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR,e.getMessage()+"\n"+getFromHeaders());
-			return "";
-		}
+			return Arrays.toString(this.getAllRecipients().toArray()).replace("[","").replace("]", "");
 	}
 
 	/**
@@ -226,12 +221,7 @@ public class RecipientsVO extends Recipients{
 	 * @return
 	 */
 	private String getRecipientsByTypeString(javax.mail.Message.RecipientType type){
-		try {
-			return Arrays.toString(this.mimeMail.getMessage().getRecipients(type));
-		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR,e.getMessage()+"\n"+getFromHeaders());
-			return "";
-		}
+			return Arrays.toString(getRecipientsByType(type).toArray()).replace("[","").replace("]", "");
 	}
 
 	/* (non-Javadoc)
