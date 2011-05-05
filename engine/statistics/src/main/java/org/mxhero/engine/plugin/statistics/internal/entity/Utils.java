@@ -2,7 +2,9 @@ package org.mxhero.engine.plugin.statistics.internal.entity;
 
 import java.util.Arrays;
 
+import javax.mail.Address;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
@@ -77,7 +79,6 @@ public final class Utils {
 				record.setRecipientDomainId(mail.getRecipient().substring(mail.getRecipient().indexOf(DIV_CHAR) + 1));
 			}
 		}
-		
 		record.setFlow(mail.getFlow());
 		
 		try {
@@ -88,7 +89,10 @@ public final class Utils {
 		}
 		
 		try {
-			record.setFrom(Arrays.toString(mail.getMessage().getFrom()));
+			Address[] froms = mail.getMessage().getFrom();
+			if(froms!=null & froms.length>0){
+				record.setFrom(((InternetAddress)froms[0]).getAddress());
+			}
 		} catch (MessagingException e) {
 			log.error("could not read From from email");
 			record.setFrom("");
@@ -135,7 +139,8 @@ public final class Utils {
 	 */
 	private static String getRecipientsByTypeString(MimeMessage message, javax.mail.Message.RecipientType type){
 		try {
-			return Arrays.toString(message.getRecipients(type));
+			Address[] addresses = message.getRecipients(type);
+			return ((addresses!=null && addresses.length>0)?Arrays.toString(addresses):"").replace("[","").replace("","");
 		} catch (MessagingException e) {
 			return "";
 		}
