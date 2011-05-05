@@ -91,9 +91,6 @@ public class CloneImpl implements Clone {
 							new MimeMessage(mail.getMessage()), outputService);
 					clonedMail.setParentMessageId(mail.getParentMessageId());
 					clonedMail.setPhase(args[PHASE_PARAM_NUMBER]);
-					if (args[0].equals(RulePhase.RECEIVE)) {
-						clonedMail.setRecipient(recipient.getAddress());
-					}
 					clonedMail.getProperties().putAll(mail.getProperties());
 					clonedMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
 				} catch (MessagingException e) {
