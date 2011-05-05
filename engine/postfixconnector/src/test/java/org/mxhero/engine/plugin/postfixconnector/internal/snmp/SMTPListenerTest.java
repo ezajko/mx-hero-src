@@ -57,7 +57,7 @@ public class SMTPListenerTest {
 		smtpListener.setProperties(properties);
         smtpListener.start();
         try {
-			Thread.sleep(1000);
+			Thread.sleep(1000000);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
@@ -143,14 +143,14 @@ public class SMTPListenerTest {
 		Properties props = new Properties();
 	    props.put("mail.smtp.host", "localhost");
 	    props.put("mail.smtp.port", "25");
-	    props.put("mail.user", "mmarmol@mxhero.com");
+	    props.put("mail.smtp.user", "<>");
 	    Session session = Session.getInstance(props);
 	    Transport t = session.getTransport("smtp");
 	    t.connect();
 
 		FileInputStream is = new FileInputStream(this.getClass().getClassLoader().getResource(file).getFile());
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()),is);
-		
+		message.setSender(null);
 		
 		System.out.println("**************************BEFORE*********************");
 		System.out.println("To:"+Arrays.toString(message.getHeader("To")));

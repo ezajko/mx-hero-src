@@ -1,7 +1,5 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.service;
 
-import java.util.Arrays;
-
 import javax.mail.MessagingException;
 
 import junit.framework.Assert;

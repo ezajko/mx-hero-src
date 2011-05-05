@@ -52,18 +52,23 @@ public final class SendMailTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		props.put("mail.user", mail.getInitialSender());
+		String from = (mail.getInitialSender()!=null && mail.getInitialSender().trim().length()>0)?mail.getInitialSender():"<>";
+		props.put("mail.smtp.from", from);
 		Session session = Session.getInstance(props);
 	    MimeMessage msg = null;
 		try {
 			msg = mail.getMessage();
-			msg.setSender(new InternetAddress(mail.getInitialSender()));
+			if(from!="<>"){
+				msg.setSender(new InternetAddress(from));
+			}else{
+				msg.removeHeader("Sender");
+			}
 			msg.removeHeader(getPropertiesService().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER));
 			msg.removeHeader(getPropertiesService().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER));
 			if(getPropertiesService()!=null 
 					&& getPropertiesService().getValue(PostfixConnector.ADD_HEADERS)!=null 
 					&& Boolean.parseBoolean(getPropertiesService().getValue(PostfixConnector.ADD_HEADERS))){
-				msg.addHeader(getPropertiesService().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER), mail.getInitialSender());
+				msg.addHeader(getPropertiesService().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER), from);
 				msg.addHeader(getPropertiesService().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER), mail.getRecipient());
 			}
 			
@@ -71,13 +76,16 @@ public final class SendMailTask implements Runnable {
 			
 		    Transport t = session.getTransport("smtp");
 		    t.connect();
-		    log.debug(mail.getRecipient());
 		    t.sendMessage(msg, new InternetAddress[] { new InternetAddress(mail.getRecipient()) });
 		    t.close();
 		    log.debug("Message sent:"+mail);
-		    getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
+		    if(getLogStat()!=null){
+		    	getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
+		    }
 		} catch (MessagingException e) {
-			getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.DELIVER_ERROR_STAT), e.getMessage());
+			if(getLogStat()!=null){
+				getLogStat().log(mail, getPropertiesService().getValue(PostfixConnector.DELIVER_ERROR_STAT), e.getMessage());
+			}
 			log.error("Couldnt send the mail:"+mail,e);
 			LogMail.saveErrorMail(msg, 
 					getPropertiesService().getValue(PostfixConnector.ERROR_PREFIX),
