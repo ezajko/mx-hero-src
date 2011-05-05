@@ -35,7 +35,7 @@ public class Spamd extends PropertiesService {
 	 * Returns the properties that are loaded from the classpath.
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public static Dictionary getDefaults(){
 		Properties initialProperties = new Properties(); 
 		try {
