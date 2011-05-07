@@ -55,19 +55,19 @@ public class Record implements Serializable{
 	@Column(name = "subject", length = 255)
 	private String subject;
 
-	@Column(name = "from_recipeints", length = 1024)
+	@Column(name = "from_recipeints", length = 255)
 	private String from;
 
-	@Column(name = "to_recipeints", length = 1024)
+	@Column(name = "to_recipeints")
 	private String toRecipients;
 
-	@Column(name = "cc_recipeints", length = 1024)
+	@Column(name = "cc_recipeints")
 	private String ccRecipients;
 
-	@Column(name = "bcc_recipeints", length = 1024)
+	@Column(name = "bcc_recipeints")
 	private String bccRecipients;
 
-	@Column(name = "ng_recipeints", length = 1024)
+	@Column(name = "ng_recipeints")
 	private String ngRecipients;
 
 	@Column(name = "sent_date")
