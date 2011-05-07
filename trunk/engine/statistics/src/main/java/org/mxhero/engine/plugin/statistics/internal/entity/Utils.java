@@ -140,7 +140,7 @@ public final class Utils {
 	private static String getRecipientsByTypeString(MimeMessage message, javax.mail.Message.RecipientType type){
 		try {
 			Address[] addresses = message.getRecipients(type);
-			return ((addresses!=null && addresses.length>0)?Arrays.toString(addresses):"").replace("[","").replace("","");
+			return ((addresses!=null && addresses.length>0)?Arrays.toString(addresses):"").replace("[","").replace("]","");
 		} catch (MessagingException e) {
 			return "";
 		}
