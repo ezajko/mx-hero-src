@@ -118,9 +118,8 @@ public class BLResourcesProvider extends StreamDRLProvider{
 	if(action.equals(ACTION_DISCARD)){
 		sb.replace(sb.indexOf(REPLAY_COMMAND), sb.indexOf(REPLAY_COMMAND)+REPLAY_COMMAND.length(), "");
 	} else if(action.equals(ACTION_RETURN)){
-		String noreplayMail = (rule.getDomain()!=null)?"noreplay@"+rule.getDomain():"noreplay@mxhero.com";
 		sb.replace(sb.indexOf(REPLAY_COMMAND), sb.indexOf(REPLAY_COMMAND)+REPLAY_COMMAND.length(), REPLAY_COMMAND_TEXT);
-		sb.replace(sb.indexOf(NOREPLAY_MAIL), sb.indexOf(NOREPLAY_MAIL)+NOREPLAY_MAIL.length(), noreplayMail);
+		sb.replace(sb.indexOf(NOREPLAY_MAIL), sb.indexOf(NOREPLAY_MAIL)+NOREPLAY_MAIL.length(), this.getNoReplyEmail(rule.getDomain()));
 		sb.replace(sb.indexOf(REPLAY_TEXT), sb.indexOf(REPLAY_TEXT)+REPLAY_TEXT.length(), returnText);
 	}
 
