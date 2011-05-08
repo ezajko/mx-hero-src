@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.mxhero.engine.domain.feature.Rule;
 import org.mxhero.engine.domain.feature.RuleDirection;
 import org.mxhero.engine.domain.provider.FileResource;
@@ -15,6 +18,14 @@ import org.slf4j.LoggerFactory;
 
 public abstract class StreamDRLProvider extends ResourcesByDomain{
 
+	private static final String MXHERO_NOREPLY_NAME="mxhero.noreply.name";
+	private static final String MXHERO_ADMIN_NAME="mxhero.admin.name";
+	private static final String MXHERO_DOMAIN_NAME="mxhero.domain.name";
+	
+	private static final String DEFAULT_MXHERO_NOREPLY_NAME="noreply";
+	private static final String DEFAULT_MXHERO_ADMIN_NAME="admin";
+	private static final String DEFAULT_MXHERO_DOMAIN_NAME="mxhero.com";
+	
 	private static Logger log = LoggerFactory
 	.getLogger(StreamDRLProvider.class);
 	
@@ -199,6 +210,66 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 			startName = "admin";
 		}
 		return startName+"."+getFeature().getComponent()+getFeature().getVersion();
+	}
+	
+	public String getNoReplyEmail(String domain){
+		String name = null;
+		String noreplyDomain = null;
+		String email = null;
+		if(System.getProperty(MXHERO_NOREPLY_NAME)!=null || 
+				System.getProperty(MXHERO_NOREPLY_NAME).trim().length()>0){
+			name=System.getProperty(MXHERO_NOREPLY_NAME);
+		}else{
+			name=DEFAULT_MXHERO_NOREPLY_NAME;
+		}
+		if(domain!=null && domain.trim().length()>0){
+			noreplyDomain=domain;
+		}else{
+			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null || 
+					System.getProperty(MXHERO_DOMAIN_NAME).trim().length()>0){
+				domain=System.getProperty(MXHERO_DOMAIN_NAME);
+			}else{
+				name=DEFAULT_MXHERO_DOMAIN_NAME;
+			}
+		}
+		
+		try {
+			email=new InternetAddress(name+"@"+noreplyDomain).getAddress();
+		} catch (AddressException e) {
+			email=DEFAULT_MXHERO_NOREPLY_NAME+"@"+DEFAULT_MXHERO_DOMAIN_NAME;
+		}
+		
+		return email;
+	}
+	
+	public String getAdminEmail(String domain){
+		String name = null;
+		String adminDomain = null;
+		String email = null;
+		if(System.getProperty(MXHERO_ADMIN_NAME)!=null || 
+				System.getProperty(MXHERO_ADMIN_NAME).trim().length()>0){
+			name=System.getProperty(MXHERO_ADMIN_NAME);
+		}else{
+			name=DEFAULT_MXHERO_ADMIN_NAME;
+		}
+		if(domain!=null && domain.trim().length()>0){
+			adminDomain=domain;
+		}else{
+			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null || 
+					System.getProperty(MXHERO_DOMAIN_NAME).trim().length()>0){
+				domain=System.getProperty(MXHERO_DOMAIN_NAME);
+			}else{
+				name=DEFAULT_MXHERO_DOMAIN_NAME;
+			}
+		}
+		
+		try {
+			email=new InternetAddress(name+"@"+adminDomain).getAddress();
+		} catch (AddressException e) {
+			email=DEFAULT_MXHERO_ADMIN_NAME+"@"+DEFAULT_MXHERO_DOMAIN_NAME;
+		}
+		
+		return email;
 	}
 	
 }

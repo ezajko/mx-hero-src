@@ -41,7 +41,9 @@ public final class MimeMail {
 
 	private String responseServiceId;
 	
-	private String parentMessageId;
+	private Long parentSequence;
+
+	private Timestamp parentTime;
 
 	private int initialSize;
 
@@ -126,7 +128,8 @@ public final class MimeMail {
 			String responseServiceId) {
 		this.sequence = Sequencer.getInstance().getNextSequence();
 		this.time = new Timestamp(System.currentTimeMillis());
-		this.parentMessageId=time.getTime()+"-"+sequence;
+		this.parentSequence = this.sequence;
+		this.parentTime = this.time;
 		this.responseServiceId = responseServiceId;
 		this.recipient = recipient;
 		this.initialSender = from;
@@ -288,12 +291,20 @@ public final class MimeMail {
 		this.recipientDomainId = recipientDomainId;
 	}
 
-	public String getParentMessageId() {
-		return parentMessageId;
+	public Long getParentSequence() {
+		return parentSequence;
 	}
 
-	public void setParentMessageId(String parentMessageId) {
-		this.parentMessageId = parentMessageId;
+	public void setParentSequence(Long parentSequence) {
+		this.parentSequence = parentSequence;
+	}
+
+	public Timestamp getParentTime() {
+		return parentTime;
+	}
+
+	public void setParentTime(Timestamp parentTime) {
+		this.parentTime = parentTime;
 	}
 
 	public Map<String, String> getProperties() {
