@@ -49,7 +49,8 @@ public final class Utils {
 		record.setCcRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.CC));
 		record.setToRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.TO));
 		record.setNgRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.NEWSGROUPS));
-		record.setParentMessageId(mail.getParentMessageId());
+		record.setParentInsertDate(mail.getParentTime());
+		record.setParentSequence(mail.getParentSequence());
 		if (mail.getSenderId()!=null){
 			record.setSenderId(mail.getSenderId());
 		} else {
