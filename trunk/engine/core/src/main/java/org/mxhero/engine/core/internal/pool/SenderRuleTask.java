@@ -103,7 +103,8 @@ public final class SenderRuleTask implements Runnable {
 				splitedMail.setSenderId(mail.getSenderId());
 				splitedMail.setSenderDomainId(mail.getSenderDomainId());
 				splitedMail.getProperties().putAll(mail.getProperties());
-				splitedMail.setParentMessageId(mail.getParentMessageId());
+				splitedMail.setParentSequence(mail.getSequence());
+				splitedMail.setParentTime(mail.getParentTime());
 				InputQueue.getInstance().add(splitedMail);
 				log.debug("Mail sent input queue again for recipeints processing "
 									+ mail);
