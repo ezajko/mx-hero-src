@@ -122,10 +122,11 @@ public class User {
 				}
 			}
 			return false;
-		}
-		for(String email : emails){
-			if(this.getAliases().contains(email)){
-				return true;
+		}else{
+			for(String email : emails){
+				if(this.getAliases().contains(email)){
+					return true;
+				}
 			}
 		}
 		return false;

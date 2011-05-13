@@ -216,7 +216,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		String name = null;
 		String noreplyDomain = null;
 		String email = null;
-		if(System.getProperty(MXHERO_NOREPLY_NAME)!=null || 
+		if(System.getProperty(MXHERO_NOREPLY_NAME)!=null && 
 				System.getProperty(MXHERO_NOREPLY_NAME).trim().length()>0){
 			name=System.getProperty(MXHERO_NOREPLY_NAME);
 		}else{
@@ -225,7 +225,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		if(domain!=null && domain.trim().length()>0){
 			noreplyDomain=domain;
 		}else{
-			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null || 
+			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null && 
 					System.getProperty(MXHERO_DOMAIN_NAME).trim().length()>0){
 				domain=System.getProperty(MXHERO_DOMAIN_NAME);
 			}else{
@@ -246,7 +246,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		String name = null;
 		String adminDomain = null;
 		String email = null;
-		if(System.getProperty(MXHERO_ADMIN_NAME)!=null || 
+		if(System.getProperty(MXHERO_ADMIN_NAME)!=null && 
 				System.getProperty(MXHERO_ADMIN_NAME).trim().length()>0){
 			name=System.getProperty(MXHERO_ADMIN_NAME);
 		}else{
@@ -255,7 +255,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		if(domain!=null && domain.trim().length()>0){
 			adminDomain=domain;
 		}else{
-			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null || 
+			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null && 
 					System.getProperty(MXHERO_DOMAIN_NAME).trim().length()>0){
 				domain=System.getProperty(MXHERO_DOMAIN_NAME);
 			}else{

@@ -104,10 +104,11 @@ public class Domain {
 					return true;
 				}
 			}
-		}
-		for(String alias : aliases){
-			if(this.getAliases().contains(alias)){
-				return true;
+		}else{
+			for(String alias : aliases){
+				if(this.getAliases().contains(alias)){
+					return true;
+				}
 			}
 		}
 		return false;
