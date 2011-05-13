@@ -56,7 +56,7 @@ public class Record implements Serializable{
 	@Column(name = "recipient_domain_id", length = 255)
 	private String recipientDomainId;
 	
-	@Column(name = "subject", length = 255)
+	@Column(name = "subject")
 	private String subject;
 
 	@Column(name = "from_recipeints", length = 255)

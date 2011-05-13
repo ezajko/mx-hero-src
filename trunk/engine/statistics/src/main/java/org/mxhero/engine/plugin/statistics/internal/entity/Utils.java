@@ -91,12 +91,15 @@ public final class Utils {
 		
 		try {
 			Address[] froms = mail.getMessage().getFrom();
-			if(froms!=null & froms.length>0){
+			if(froms!=null && froms.length>0){
 				record.setFrom(((InternetAddress)froms[0]).getAddress());
 			}
 		} catch (MessagingException e) {
 			log.error("could not read From from email");
 			record.setFrom("");
+		}
+		if(record.getFrom()==null || record.getFrom().trim().length()<1){
+			record.setFrom(mail.getInitialSender());
 		}
 		record.setSender(mail.getInitialSender());
 
