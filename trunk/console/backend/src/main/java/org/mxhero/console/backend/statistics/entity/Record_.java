@@ -1,5 +1,6 @@
 package org.mxhero.console.backend.statistics.entity;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 
 import javax.persistence.metamodel.SetAttribute;
@@ -11,7 +12,8 @@ public abstract class Record_ {
 
 	public static volatile SingularAttribute<Record,RecordPk> id;
 	public static volatile SingularAttribute<Record,String> messageId;
-	public static volatile SingularAttribute<Record,String> parentMessageId;
+	public static volatile SingularAttribute<Record,Timestamp> parentInsertDate;
+	public static volatile SingularAttribute<Record,Long> parentSequence;
 	public static volatile SingularAttribute<Record, String> phase;
 	public static volatile SingularAttribute<Record, String> sender;
 	public static volatile SingularAttribute<Record, String> senderId;

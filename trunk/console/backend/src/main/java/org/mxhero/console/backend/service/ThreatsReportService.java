@@ -5,25 +5,32 @@ import java.util.Collection;
 
 import org.mxhero.console.backend.vo.RecordVO;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface ThreatsReportService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getSpamHits(String domain, Calendar since);
+	@Transactional(readOnly=true)
+	Collection getSpamHits(String domain, long since, String offset);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getSpamHitsDay (String domain, Calendar since);
+	@Transactional(readOnly=true)
+	Collection getSpamHitsDay (String domain, long since);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getVirusHits(String domain, Calendar since);
+	@Transactional(readOnly=true)
+	Collection getVirusHits(String domain, long since, String offset);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection getVirusHitsDay(String domain, Calendar since);
+	@Transactional(readOnly=true)
+	Collection getVirusHitsDay(String domain, long since);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<RecordVO> getSpamEmails(String domain, Calendar since, Calendar until);
+	@Transactional(readOnly=true)
+	Collection<RecordVO> getSpamEmails(String domain, long since, long until);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<RecordVO> getVirusEmails(String domain, Calendar since, Calendar until);
+	@Transactional(readOnly=true)
+	Collection<RecordVO> getVirusEmails(String domain, long since, long until);
 	
 }

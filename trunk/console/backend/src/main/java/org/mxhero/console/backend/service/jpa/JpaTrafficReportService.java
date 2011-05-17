@@ -1,5 +1,6 @@
 package org.mxhero.console.backend.service.jpa;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
 
@@ -7,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.service.TrafficReportService;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
@@ -20,33 +20,33 @@ public class JpaTrafficReportService implements TrafficReportService {
 	protected EntityManager entityManager;
 
 	@Override
-	public Collection getIncomming(String domain,Calendar since) {
-		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date) date "
+	public Collection getIncomming(String domain, long since, String offset) {
+		String query = "SELECT count(*) count, sum(bytes_size) bytes, date(CONVERT_TZ(insert_date, '+00:00', ? )) "
 				+ "FROM  mail_records "
-				+ "WHERE insert_date > :date_since "
+				+ "WHERE insert_date > ? "
 				+ "AND (flow = 'both' OR flow = 'in') "
 				+ "AND phase =  'receive' ";
 		
 		if(domain!=null && !domain.isEmpty()){
-			query = query + "AND recipient_domain_id = :domain ";
+			query = query + "AND recipient_domain_id = ? ";
 		}	
-		query = query + "GROUP BY DATE(insert_date) ";
+		query = query + "GROUP BY date(CONVERT_TZ(insert_date, '+00:00', ? )) ";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
 		
-		nativeQuery.setParameter("date_since", since);
+		nativeQuery.setParameter(1, offset);
+		nativeQuery.setParameter(2, new Timestamp(since));
 		if(domain!=null && !domain.isEmpty()){
-			nativeQuery.setParameter("domain", domain);
+			nativeQuery.setParameter(3, domain);
+			nativeQuery.setParameter(4, offset);
+		}else{
+			nativeQuery.setParameter(3, offset);
 		}
 		return nativeQuery.getResultList();
 	}
 
 	@Override
-	public Collection getIncommingByDay(String domain, Calendar day) {
+	public Collection getIncommingByDay(String domain, long day) {
 		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date), HOUR(insert_date) "
 			+ "FROM  mail_records "
 			+ "WHERE insert_date > :date_since "
@@ -60,21 +60,16 @@ public class JpaTrafficReportService implements TrafficReportService {
 		query = query + "GROUP BY DATE(insert_date), HOUR(insert_date) ";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.setTimeInMillis(day.getTimeInMillis());
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		Calendar toDate = Calendar.getInstance();
-		toDate.setTimeInMillis(day.getTimeInMillis());
-		toDate.set(Calendar.HOUR, 0);
-		toDate.set(Calendar.MINUTE, 0);
-		toDate.set(Calendar.SECOND, 0);
-		toDate.set(Calendar.MILLISECOND, 0);	
-		toDate.add(Calendar.DATE, 1);
-		nativeQuery.setParameter("date_since", sinceDate);
-		nativeQuery.setParameter("date_to", toDate);
+
+		Timestamp since = new Timestamp(day);
+		Calendar untilDate = Calendar.getInstance();
+		untilDate.setTimeInMillis(day);
+		untilDate.add(Calendar.DAY_OF_MONTH, 1);
+		Timestamp until = new Timestamp(untilDate.getTimeInMillis());
+		
+		nativeQuery.setParameter("date_since", since);
+		nativeQuery.setParameter("date_to", until);
+		
 		if(domain!=null && !domain.isEmpty()){
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -82,25 +77,22 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getTopTenIncomingSenders(String domain,Calendar since) {
-		String query = "SELECT count(*) count, sender_id "
-			+ "FROM  mail_records " 
+	public Collection getTopTenIncomingSenders(String domain,long since) {
+		String query = "SELECT count(*) count, from_recipeints "
+			+ "FROM  mail_records r " 
 			+ "WHERE insert_date > :date_since "
 			+ "AND (flow = 'both' OR flow = 'in') "
 			+ "AND phase =  'receive' ";
 		if(domain!=null && !domain.isEmpty()){
 			query = query + "AND recipient_domain_id = :domain ";
 		}	
-		query = query + "GROUP BY sender_id "
+		query = query + "GROUP BY from_recipeints "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		nativeQuery.setParameter("date_since", since);
+
+		nativeQuery.setParameter("date_since", new Timestamp(since));
 		if(domain!=null && !domain.isEmpty()){
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -108,8 +100,8 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 
 	@Override
-	public Collection getTopTenIncomingSendersByDay(String domain, Calendar day) {
-		String query = "SELECT count(*) count, sender_id "
+	public Collection getTopTenIncomingSendersByDay(String domain, long day) {
+		String query = "SELECT count(*) count, from_recipeints "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
 			+ "AND insert_date < :date_to "
@@ -118,26 +110,20 @@ public class JpaTrafficReportService implements TrafficReportService {
 		if(domain!=null && !domain.isEmpty()){
 			query = query + "AND recipient_domain_id = :domain ";
 		}	
-		query = query + "GROUP BY sender_id "
+		query = query + "GROUP BY from_recipeints "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.setTimeInMillis(day.getTimeInMillis());
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		Calendar toDate = Calendar.getInstance();
-		toDate.setTimeInMillis(day.getTimeInMillis());
-		toDate.set(Calendar.HOUR, 0);
-		toDate.set(Calendar.MINUTE, 0);
-		toDate.set(Calendar.SECOND, 0);
-		toDate.set(Calendar.MILLISECOND, 0);	
-		toDate.add(Calendar.DATE, 1);
-		nativeQuery.setParameter("date_since", sinceDate);
-		nativeQuery.setParameter("date_to", toDate);
+		Timestamp since = new Timestamp(day);
+		Calendar untilDate = Calendar.getInstance();
+		untilDate.setTimeInMillis(day);
+		untilDate.add(Calendar.DAY_OF_MONTH, 1);
+		Timestamp until = new Timestamp(untilDate.getTimeInMillis());
+		
+		nativeQuery.setParameter("date_since", since);
+		nativeQuery.setParameter("date_to", until);
+		
 		if(domain!=null && !domain.isEmpty()){
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -145,30 +131,31 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getOutgoing(String domain, Calendar since) {
-		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date) date "
+	public Collection getOutgoing(String domain, long since, String offset) {
+		String query = "SELECT count(*) count, sum(bytes_size) bytes, date(CONVERT_TZ(insert_date, '+00:00', ? )) "
 			+ "FROM  mail_records "
-			+ "WHERE insert_date > :date_since "
+			+ "WHERE insert_date > ? "
 			+ "AND (flow = 'both' OR flow = 'out') "
 			+ "AND phase =  'send' ";
 		if(domain!=null && !domain.isEmpty()){	
-			query = query + "AND recipient_domain_id = :domain ";
+			query = query + "AND recipient_domain_id = ? ";
 		}
-		query = query + "GROUP BY DATE(insert_date) ";
+		query = query + "GROUP BY date(CONVERT_TZ(insert_date, '+00:00', ? )) ";
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		nativeQuery.setParameter("date_since", since);
+
+		nativeQuery.setParameter(1, offset);
+		nativeQuery.setParameter(2, new Timestamp(since));
 		if(domain!=null && !domain.isEmpty()){	
-			nativeQuery.setParameter("domain", domain);
+			nativeQuery.setParameter(3, domain);
+			nativeQuery.setParameter(4, offset);
+		}else{
+			nativeQuery.setParameter(3, offset);
 		}
 		return nativeQuery.getResultList();
 	}
 
 	@Override
-	public Collection getOutgoingByDay(String domain, Calendar day) {
+	public Collection getOutgoingByDay(String domain, long day) {
 		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date), HOUR(insert_date) "
 			+ "FROM  mail_records "
 			+ "WHERE insert_date > :date_since "
@@ -180,21 +167,15 @@ public class JpaTrafficReportService implements TrafficReportService {
 		}
 		query = query + "GROUP BY DATE(insert_date), HOUR(insert_date) ";
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.setTimeInMillis(day.getTimeInMillis());
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		Calendar toDate = Calendar.getInstance();
-		toDate.setTimeInMillis(day.getTimeInMillis());
-		toDate.set(Calendar.HOUR, 0);
-		toDate.set(Calendar.MINUTE, 0);
-		toDate.set(Calendar.SECOND, 0);
-		toDate.set(Calendar.MILLISECOND, 0);	
-		toDate.add(Calendar.DATE, 1);
-		nativeQuery.setParameter("date_since", sinceDate);
-		nativeQuery.setParameter("date_to", toDate);
+		
+		Timestamp since = new Timestamp(day);
+		Calendar untilDate = Calendar.getInstance();
+		untilDate.setTimeInMillis(day);
+		untilDate.add(Calendar.DAY_OF_MONTH, 1);
+		Timestamp until = new Timestamp(untilDate.getTimeInMillis());
+		
+		nativeQuery.setParameter("date_since", since);
+		nativeQuery.setParameter("date_to", until);
 		if(domain!=null && !domain.isEmpty()){	
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -202,23 +183,20 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getTopTenOutgoingRecipients(String domain, Calendar since) {
-		String query = "SELECT count(*) count, recipient_id "
+	public Collection getTopTenOutgoingRecipients(String domain, long since) {
+		String query = "SELECT count(*) count, recipient "
 			+ "FROM  mail_records " + "WHERE insert_date > :date_since "
 			+ "AND (flow = 'both' OR flow = 'out') "
 			+ "AND phase =  'send' ";
 		if(domain!=null && !domain.isEmpty()){	
 			query = query + "AND sender_domain_id = :domain ";
 		}
-		query = query + "GROUP BY recipient_id "
+		query = query + "GROUP BY recipient "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		nativeQuery.setParameter("date_since", since);
+
+		nativeQuery.setParameter("date_since", new Timestamp(since));
 		if(domain!=null && !domain.isEmpty()){	
 			nativeQuery.setParameter("domain", domain);
 		}
@@ -229,8 +207,8 @@ public class JpaTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getTopTenOutgoingRecipientsByDay(String domain,
-			Calendar day) {
-		String query = "SELECT count(*) count, recipient_id "
+			long day) {
+		String query = "SELECT count(*) count, recipient "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
 			+ "AND insert_date < :date_to "
@@ -239,25 +217,19 @@ public class JpaTrafficReportService implements TrafficReportService {
 		if(domain!=null && !domain.isEmpty()){	
 			query = query + "AND sender_domain_id = :domain ";
 		}
-		query = query + "GROUP BY recipient_id "
+		query = query + "GROUP BY recipient "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
-		Calendar sinceDate = Calendar.getInstance();
-		sinceDate.setTimeInMillis(day.getTimeInMillis());
-		sinceDate.set(Calendar.HOUR, 0);
-		sinceDate.set(Calendar.MINUTE, 0);
-		sinceDate.set(Calendar.SECOND, 0);
-		sinceDate.set(Calendar.MILLISECOND, 0);
-		Calendar toDate = Calendar.getInstance();
-		toDate.setTimeInMillis(day.getTimeInMillis());
-		toDate.set(Calendar.HOUR, 0);
-		toDate.set(Calendar.MINUTE, 0);
-		toDate.set(Calendar.SECOND, 0);
-		toDate.set(Calendar.MILLISECOND, 0);	
-		toDate.add(Calendar.DATE, 1);
-		nativeQuery.setParameter("date_since", sinceDate);
-		nativeQuery.setParameter("date_to", toDate);
+		
+		Timestamp since = new Timestamp(day);
+		Calendar untilDate = Calendar.getInstance();
+		untilDate.setTimeInMillis(day);
+		untilDate.add(Calendar.DAY_OF_MONTH, 1);
+		Timestamp until = new Timestamp(untilDate.getTimeInMillis());
+		
+		nativeQuery.setParameter("date_since", since);
+		nativeQuery.setParameter("date_to", until);
 		if(domain!=null && !domain.isEmpty()){	
 			nativeQuery.setParameter("domain", domain);
 		}

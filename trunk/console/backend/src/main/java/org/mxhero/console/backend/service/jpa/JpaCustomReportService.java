@@ -2,7 +2,6 @@ package org.mxhero.console.backend.service.jpa;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
@@ -16,7 +15,6 @@ import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.service.CustomReportService;
 import org.mxhero.console.backend.service.PluginReportService;
-import org.mxhero.console.backend.statistics.dao.RecordDao;
 import org.mxhero.console.backend.statistics.entity.Record;
 import org.mxhero.console.backend.statistics.entity.RecordPk_;
 import org.mxhero.console.backend.statistics.entity.Record_;
@@ -27,7 +25,6 @@ import org.mxhero.console.backend.vo.RecordVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.stereotype.Service;
-import org.synyx.hades.domain.Specification;
 
 @Service("customReportService")
 @RemotingDestination(channels = { "flex-amf" })
@@ -42,30 +39,27 @@ public class JpaCustomReportService implements CustomReportService{
 	@PersistenceContext(unitName = "statisticsPer")
 	private EntityManager entityManager;
 	
-	private RecordDao recordDao;
-	
 	private GroupDao groupDao;
 	
 	private RecordTranslator recordTranslator;
 	
 	@Autowired
-	public JpaCustomReportService(RecordDao recordDao, GroupDao groupDao, RecordTranslator recordTranslator) {
+	public JpaCustomReportService(GroupDao groupDao, RecordTranslator recordTranslator) {
 		super();
-		this.recordDao = recordDao;
 		this.groupDao = groupDao;
 		this.recordTranslator = recordTranslator;
 	}
 
 	@Override
 	public Collection getTopTenSenders(FeatureRuleDirectionVO from,
-			FeatureRuleDirectionVO to, Calendar since, Calendar until) {
+			FeatureRuleDirectionVO to, long since, long until) {
 		
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery query = builder.createQuery();
 		Root<Record> root = query.from(Record.class);
-		query = query.multiselect((builder.count(root.get(Record_.id).get(RecordPk_.sequence))),root.get(Record_.senderId));
+		query = query.multiselect((builder.count(root.get(Record_.id).get(RecordPk_.sequence))),root.get(Record_.from));
 		query = query.where(getFromToPredicatetoPredicate(from,to,since,until,root,query,builder));
-		query = query.groupBy(root.get(Record_.senderId));
+		query = query.groupBy(root.get(Record_.from));
 		query = query.orderBy(builder.desc((builder.count(root.get(Record_.id).get(RecordPk_.sequence)))));
 
 		return entityManager.createQuery(query).setMaxResults(10).getResultList();
@@ -73,14 +67,14 @@ public class JpaCustomReportService implements CustomReportService{
 
 	@Override
 	public Collection getTopTenRecipients(FeatureRuleDirectionVO from,
-			FeatureRuleDirectionVO to, Calendar since, Calendar until) {
+			FeatureRuleDirectionVO to, long since, long until) {
 		
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery query = builder.createQuery();
 		Root<Record> root = query.from(Record.class);
-		query = query.multiselect((builder.count(root.get(Record_.id).get(RecordPk_.sequence))),root.get(Record_.recipientId));
+		query = query.multiselect((builder.count(root.get(Record_.id).get(RecordPk_.sequence))),root.get(Record_.recipient));
 		query = query.where(getFromToPredicatetoPredicate(from,to,since,until,root,query,builder));
-		query = query.groupBy(root.get(Record_.recipientId));
+		query = query.groupBy(root.get(Record_.recipient));
 		query = query.orderBy(builder.desc((builder.count(root.get(Record_.id).get(RecordPk_.sequence)))));
 
 		return entityManager.createQuery(query).setMaxResults(10).getResultList();
@@ -89,7 +83,7 @@ public class JpaCustomReportService implements CustomReportService{
 
 	@Override
 	public Collection<RecordVO> getEmails(final FeatureRuleDirectionVO from,
-			final FeatureRuleDirectionVO to, final Calendar since, final Calendar until) {
+			final FeatureRuleDirectionVO to, final long since, final long until) {
 		
 /*		PageRequest pr = new PageRequest(0, 10);
 		
@@ -109,13 +103,14 @@ public class JpaCustomReportService implements CustomReportService{
 		CriteriaQuery<Record> query = builder.createQuery(Record.class);
 		Root<Record> root = query.from(Record.class);
 		query = query.where(getFromToPredicatetoPredicate(from,to,since,until,root,query,builder));
+		query = query.orderBy(builder.desc(root.get(Record_.id).get(RecordPk_.insertDate)));
 		return recordTranslator.translate(entityManager.createQuery(query).setMaxResults(PluginReportService.MAX_RESULT).getResultList());	
 	}
 	
 	private Predicate getFromToPredicatetoPredicate(final FeatureRuleDirectionVO from,
 			final FeatureRuleDirectionVO to, 
-			final Calendar since, 
-			final Calendar until,
+			final long since, 
+			final long until,
 			Root<Record> root, 
 			CriteriaQuery<?> query,
 			CriteriaBuilder builder) {
@@ -133,19 +128,10 @@ public class JpaCustomReportService implements CustomReportService{
 			groupToEmails.add(email.getAccount()+"@"+email.getDomain());
 		}
 		
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		
-		until.set(Calendar.HOUR, 0);
-		until.set(Calendar.MINUTE, 0);
-		until.set(Calendar.SECOND, 0);
-		until.set(Calendar.MILLISECOND, 0);
-		until.add(Calendar.DATE, 1);
+
 		
 		//time interval
-		Predicate predicate = builder.between(root.get(Record_.id).get(RecordPk_.insertDate), new Timestamp(since.getTimeInMillis()), new Timestamp(until.getTimeInMillis()));
+		Predicate predicate = builder.between(root.get(Record_.id).get(RecordPk_.insertDate), new Timestamp(since), new Timestamp(until));
 		
 		//from condition
 		if(from.getDirectionType().equals(ANYONEELSE)){
@@ -156,8 +142,8 @@ public class JpaCustomReportService implements CustomReportService{
 			predicate = builder.and(predicate,builder.equal(root.get(Record_.senderDomainId), from.getFreeValue()));
 		}else if(from.getDirectionType().equals(GROUP)){
 			predicate = builder.and(predicate,root.get(Record_.senderId).in(groupFromEmails));
-		}else if(from.getDirectionType().equals(INDIVIDUAL)){
-			predicate = builder.and(predicate,root.get(Record_.senderId).in(from.getFreeValue()));
+		}else if(from.getDirectionType().equals(INDIVIDUAL)){	
+			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderId),from.getFreeValue()),builder.equal(root.get(Record_.from),from.getFreeValue())));
 		}
 		
 		//to condition
@@ -170,7 +156,7 @@ public class JpaCustomReportService implements CustomReportService{
 		}else if(to.getDirectionType().equals(GROUP)){
 			predicate = builder.and(predicate,root.get(Record_.recipientId).in(groupToEmails));
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
-			predicate = builder.and(predicate,root.get(Record_.recipientId).in(to.getFreeValue()));
+			predicate = builder.and(predicate,builder.equal(root.get(Record_.recipientId),to.getFreeValue()));
 		}
 		
 		//phase and state

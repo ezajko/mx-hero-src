@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.statistics.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Set;
 
@@ -29,8 +30,11 @@ public class Record implements Serializable{
 	@Column(name = "message_id", length = 1024, nullable=false)
 	private String messageId;
 	
-	@Column(name = "parent_message_id", length = 1024, nullable=false)
-	private String parentMessageId;
+	@Column(name="parent_insert_date")
+	private Timestamp parentInsertDate;
+	
+	@Column(name="parent_sequence")
+	private Long parentSequence;
 
 	@Column(name = "phase", length = 10, nullable=false)
 	private String phase;
@@ -381,12 +385,20 @@ public class Record implements Serializable{
 		this.stats = stats;
 	}
 
-	public String getParentMessageId() {
-		return parentMessageId;
+	public Timestamp getParentInsertDate() {
+		return parentInsertDate;
 	}
 
-	public void setParentMessageId(String parentMessageId) {
-		this.parentMessageId = parentMessageId;
+	public void setParentInsertDate(Timestamp parentInsertDate) {
+		this.parentInsertDate = parentInsertDate;
+	}
+
+	public Long getParentSequence() {
+		return parentSequence;
+	}
+
+	public void setParentSequence(Long parentSequence) {
+		this.parentSequence = parentSequence;
 	}
 
 	/**
