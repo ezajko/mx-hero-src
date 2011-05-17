@@ -6,14 +6,21 @@
 		   verticalGap="20"
 		   paddingTop="30"
 		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.utils.Regex;
+		]]>
+	</fx:Script>
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
-
+		<mx:EmailValidator id="emailV" required="true"/>
+		<mx:RegExpValidator id="domainV" required="true" expression="{Regex.domainRegex}"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.validators.ValidationResult;
 			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
@@ -43,12 +50,52 @@
 
 			protected function addEmailBtt_clickHandler(event:MouseEvent):void
 			{
+				var textToValidate:String = StringUtil.trim(emailTi.text).replace(/^[@]+/,"");
+				var isEmail:Boolean = true;		
+				var isDomain:Boolean = true;
+				var results:Array=null;
+
+				results=emailV.validate(textToValidate).results;
+				if(results!=null){
+					if(results.length>0){
+						for each(var result:ValidationResult in results){
+							if(result.isError){
+								emailTi.errorString= result.errorMessage;
+								isEmail=false;
+							}
+						}
+					}
+				}
+				
+				if(!isEmail){
+					results=domainV.validate(textToValidate).results;
+					if(results!=null){
+						if(results.length>0){
+							for each(var domainResult:ValidationResult in results){
+								if(domainResult.isError){
+									emailTi.errorString= domainResult.errorMessage;
+									isDomain=false;
+								}
+							}
+						}
+					}
+					if(isDomain){
+						textToValidate="@"+textToValidate;
+					}
+				}
+				if(!isDomain && !isEmail){
+					return;
+				}
+				
+				emailTi.errorString= "";
+				
 				for each(var object:Object in emails){
-					if(object.toString()==emailTi.text){
+					if(object.toString()==textToValidate){
+						emailTi.errorString=resourceManager.getString(MODULE_NAME,'duplicate.email.domain');
 						return;
 					}
 				}
-				emails.addItem(emailTi.text);
+				emails.addItem(textToValidate);
 				emailTi.text="";
 			}
 			
