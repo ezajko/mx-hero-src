@@ -18,6 +18,10 @@ package org.mxhero.console.reports.application.resources
 		
 		public static const SEARCH_LABEL:String="search.label";
 		
+		public static const REPORTS_TITLE:String="reports.title";
+		
+		public static const EMAILS_TITLE:String="emails.title";
+		
 		public static const TOP_TEN_RECIPIENTS_LABEL:String="top.ten.recipients.label";
 		
 		public static const TOP_TEN_SENDERS_LABEL:String="top.ten.senders.label";

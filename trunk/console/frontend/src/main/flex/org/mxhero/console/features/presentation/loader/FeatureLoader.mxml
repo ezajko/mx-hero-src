@@ -73,6 +73,7 @@
 			}
 
 			public function reload():void{
+				loaded=false;
 				this.unloadModule();
 				this.loadModule();
 			}

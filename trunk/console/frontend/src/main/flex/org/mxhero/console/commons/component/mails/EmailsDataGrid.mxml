@@ -11,7 +11,7 @@
 		<mx:DateFormatter id="creationDateFormatter"/>
 		
 		<mx:DateFormatter id="creationHourFormatter"
-						  formatString="HH:NN:SS"
+						  formatString="JJ:NN:SS"
 						  />
 	</fx:Declarations>
 	
@@ -27,7 +27,7 @@
 	</fx:Script>
 	
 	<mx:columns>						
-		<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
+		<mx:DataGridColumn  draggable="false" width="36" sortable="false" resizable="false" >
 			<mx:itemRenderer>
 				<fx:Component>
 					<s:MXDataGridItemRenderer width="100%">
@@ -63,12 +63,12 @@
 				</fx:Component>
 			</mx:itemRenderer>
 		</mx:DataGridColumn>							
-		<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
+		<mx:DataGridColumn dataField="insertDate" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
 						   labelFunction="dateLabelFunction"/>
-		<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
-		<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
-		<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
-		<mx:DataGridColumn width="70" sortable="false" resizable="false">
+		<mx:DataGridColumn dataField="from" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
+		<mx:DataGridColumn dataField="recipient" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
+		<mx:DataGridColumn dataField="subject" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
+		<mx:DataGridColumn width="70" sortable="false" resizable="false" draggable="false">
 			<mx:itemRenderer>
 				<fx:Component>
 					<mx:HBox minHeight="0" minWidth="0">

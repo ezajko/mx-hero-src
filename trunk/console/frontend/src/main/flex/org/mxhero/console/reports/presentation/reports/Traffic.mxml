@@ -12,6 +12,8 @@
 	
 	<fx:Declarations>
 		<parsley:Configure/>
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="100"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -63,16 +65,27 @@
 			<mx:Spacer height="0"/>
 			
 			
-			<s:VGroup width="100%" height="100%" gap="20">
-				
-				<traffic:Incomming width="100%" height="50%"/>
-				<s:Line width="100%" >
-					<s:stroke>
-						<s:SolidColorStroke color="gray" alpha="1" weight="2"/>
-					</s:stroke>
-				</s:Line>
-				<traffic:Outgoing width="100%" height="50%"/>
-	
+			<s:VGroup width="100%" height="100%" gap="20" >
+				<component:NoDisabledLinkBar dataProvider="{trafficVs}" styleName="Reports"/>
+				<mx:ViewStack  
+					id="trafficVs"
+					paddingLeft="5" paddingRight="10" paddingBottom="5" paddingTop="5"
+					width="100%" maxWidth="800" minHeight="800" height="100%" 
+					creationPolicy="all">
+					<s:NavigatorContent width="100%" height="100%" 
+										label="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.INCOMMING_TITLE)}"
+										showEffect="{fadein}" 
+										hideEffect="{fadeout}">
+						<traffic:Incomming width="100%" height="100%"/>
+					</s:NavigatorContent>
+					<s:NavigatorContent width="100%" height="100%" 
+										label="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_TITLE)}"
+										showEffect="{fadein}" 
+										hideEffect="{fadeout}">
+						<traffic:Outgoing width="100%" height="100%"/>
+					</s:NavigatorContent>
+				</mx:ViewStack>
+
 			</s:VGroup>
 		</s:VGroup>
 	</s:Group>

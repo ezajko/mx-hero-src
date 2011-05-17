@@ -8,7 +8,7 @@
 		<![CDATA[
 			import mx.managers.PopUpManager;
 			
-			import org.mxhero.console.commons.component.mails.ShowEmailProperties
+			import org.mxhero.console.commons.component.mails.ShowEmailProperties;
 
 			[Bindable]
 			public var email:Object;
@@ -18,6 +18,15 @@
 				PopUpManager.removePopUp(this);
 			}
 
+			private function converNulls(data:String):String{
+				if(data=='null'){
+					return "";
+				}else if (data == null){
+					return "";
+				}else{
+					return data;
+				}
+			}
 
 		]]>
 	</fx:Script>
@@ -31,32 +40,32 @@
 	</s:layout>
 	<mx:Form width="100%" defaultButton="{closeBtt}">
 		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.MESSAGE_ID_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{email.messageId}" width="100%"/>
+			<s:TextInput editable="false" text="{converNulls(email.messageId)}" width="100%" />
 		</mx:FormItem>		
 		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.FROM_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{email.from}" width="100%"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SENDER_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{email.sender}" width="100%"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.RECIPIENT_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{email.recipient}" width="100%"/>
+			<s:TextInput editable="false" text="{converNulls(email.from)}" width="100%"/>
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.TO_LABEL)}" width="100%" labelWidth="110">
-			<s:TextArea editable="false" text="{email.toRecipients}" width="100%" heightInLines="2"/>
+			<s:TextArea editable="false" text="{converNulls(email.toRecipients)}" width="100%" heightInLines="2"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SENDER_LABEL)}" width="100%" labelWidth="110">
+			<s:TextInput editable="false" text="{converNulls(email.sender)}" width="100%"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.RECIPIENT_LABEL)}" width="100%" labelWidth="110">
+			<s:TextInput editable="false" text="{converNulls(email.recipient)}" width="100%"/>
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.CC_LABEL)}" width="100%" labelWidth="110">
-			<s:TextArea editable="false" text="{email.ccRecipients}" width="100%" heightInLines="2"/>
+			<s:TextArea editable="false" text="{converNulls(email.ccRecipients)}" width="100%" heightInLines="2"/>
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.BCC_LABEL)}" width="100%" labelWidth="110">
-			<s:TextArea editable="false" text="{email.bccRecipients}" width="100%" heightInLines="2"/>
+			<s:TextArea editable="false" text="{converNulls(email.bccRecipients)}" width="100%" heightInLines="2"/>
 		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SUBJECT_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{email.subject}" width="100%"/>
+			<s:TextInput editable="false" text="{converNulls(email.subject)}" width="100%"/>
 		</mx:FormItem>
 		<s:HGroup width="100%">
 			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.PHASE_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{email.phase}"/>
+				<s:TextInput editable="false" text="{converNulls(email.phase)}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SIZE_LABEL)}" width="100%" labelWidth="110">
 				<s:TextInput editable="false" text="{int((((email.bytesSize)/1024)/1024)*1000)/1000}"/>
@@ -64,10 +73,10 @@
 		</s:HGroup>
 		<s:HGroup width="100%">
 			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{email.state}"/>
+				<s:TextInput editable="false" text="{converNulls(email.state)}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_REASON_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{email.stateReason}" width="100%"/>
+				<s:TextInput editable="false" text="{converNulls(email.stateReason)}" width="100%"/>
 			</mx:FormItem>
 		</s:HGroup>
 	</mx:Form>

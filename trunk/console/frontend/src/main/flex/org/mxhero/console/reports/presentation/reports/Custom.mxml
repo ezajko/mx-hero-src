@@ -13,14 +13,17 @@
 	<fx:Declarations>
 		<parsley:Configure/>
 		
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="100"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
+		
 		<s:RadioButtonGroup id="time" />
 		
 		<mx:SeriesSlide id="slideIn" 
-						duration="800" 
+						duration="600" 
 						direction="right"/>
 		
 		<mx:SeriesSlide id="slideOut" 
-						duration="800" 
+						duration="600" 
 						direction="left"/>
 		
 		<fx:Array id="bge1">
@@ -69,11 +72,12 @@
 	
 	<fx:Script>
 		<![CDATA[
-			
 			import mx.collections.ArrayCollection;
+			import mx.core.Application;
 			import mx.events.FlexEvent;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 			import org.mxhero.console.reports.application.resources.CustomProperties;
 			import org.mxhero.console.reports.application.resources.ReportCommonProperties;
@@ -116,15 +120,12 @@
 			protected function item1_clickHandler(event:MouseEvent):void
 			{
 				if(!fromTo.isValid()){
+					model.dispatcher(new ApplicationErrorMessage(fromTo.errorMessage,true));
 					searchBtt.errorString=fromTo.errorMessage;
 					return;
 				}
 				searchBtt.errorString="";
-				if(today.selected){
-					model.filter(new Date(),new Date());
-				}else{
-					model.filter(fromDate.selectedDate,toDate.selectedDate);
-				}
+				model.filter(fromDate.selectedDate,toDate.selectedDate);
 			}
 
 		]]>
@@ -148,7 +149,7 @@
 			<mx:Spacer height="0"/>
 			
 			
-			<s:HGroup width="100%" height="100%" gap="20">
+			<s:VGroup width="100%" height="100%" gap="20">
 				<s:VGroup height="100%" width="750" enabled="{!model.updatingEmails}">
 					<FromTo:FromTo fromDirection="{model.fromDirection}"
 								   toDirection="{model.toDirection}"
@@ -157,9 +158,7 @@
 								   showAdminPriority="false"
 								   creationComplete="fromTo_creationCompleteHandler(event)"/>
 					<s:HGroup paddingLeft="80" gap="20">
-						<s:RadioButton group="{time}" id="today" label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TODAY_LABEL)}" selected="true"/>
-						<s:RadioButton group="{time}" id="range" label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.RANGE_LABEL)}"/>
-						<s:HGroup enabled="{range.selected}" verticalAlign="middle">
+						<s:HGroup verticalAlign="middle">
 							<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.RANGE_FROM_LABEL)}"/>
 							<mx:DateField id="fromDate" 
 										  selectedDate="{new Date()}"/>
@@ -175,204 +174,220 @@
 								  />
 					</s:HGroup>
 					
-					<mails:EmailsDataGrid dataProvider="{model.emails}"/>
-				</s:VGroup>
-				<s:VGroup height="100%" width="40%" >
-					<s:VGroup width="100%" height="50%" gap="20">
-						<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TOP_TEN_SENDERS_LABEL)}" 
-								 fontWeight="bold" fontSize="16"
-								 color="#FFFFFF"
-								 textDecoration="underline"/>
-						<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
-							<mx:BarChart id="linechartFrom" color="0x323232" 
-										 height="100%" 
-										 width="100%"
-										 minHeight="240"
-										 showDataTips="true" 
-										 styleName="myChart"
-										 dataProvider="{model.topTenSenders}"
-										 axisTitleStyleName="axisTitles"
-										 backgroundElements="{bge1}">
-								
-								<mx:filters>
-									<s:DropShadowFilter
-										distance="4"
-										color="0x666666"
-										alpha=".9"/>
-								</mx:filters>
-								
-								<mx:horizontalAxis>
-									
-									<mx:LinearAxis id="qtyAxisFrom" 
-												   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
-												   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" 
-												   />
-								</mx:horizontalAxis>
-								
-								<mx:verticalAxis>
-									
-									<mx:CategoryAxis
-										id="emailAxisFrom"
-										categoryField="Email"
-										displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
-										title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
-										/>
-								</mx:verticalAxis>
-								
-								<mx:verticalAxisRenderers>
-									<mx:AxisRenderer 
-										axis="{emailAxisFrom}" 
-										color="#FFFFFF" 
-										fontSize="14"
-										/>
-								</mx:verticalAxisRenderers>
-								
-								<mx:horizontalAxisRenderers>
-									<mx:AxisRenderer 
-										axis="{qtyAxisFrom}" 
-										color="#FFFFFF" 
-										fontSize="14"
-										/>	  
-									
-									
-								</mx:horizontalAxisRenderers>
-								
-								<mx:fill>
-									<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
-								</mx:fill>
-								
-								<mx:series>
-									<mx:BarSeries xField="Qty" 
-												  yField="Email" 
-												  showDataEffect="{slideIn}" 
-												  hideDataEffect="{slideOut}"
-												  id="cserieFrom">
-										<mx:stroke>
-											<s:SolidColorStroke color="#FFFFFF" caps="round" />
-										</mx:stroke>
-										<mx:fills>
-											<mx:SolidColor color="0xFF99DD" alpha=".6"/>
-											<mx:SolidColor color="0xFF80D4" alpha=".6"/>
-											<mx:SolidColor color="0xFF66CC" alpha=".6"/>
-											<mx:SolidColor color="0xFF4DC3" alpha=".6"/>
-											<mx:SolidColor color="0xFF33BB" alpha=".6"/>
-											<mx:SolidColor color="0xFF1AB3" alpha=".6"/>
-											<mx:SolidColor color="0xFF00AA" alpha=".6"/>
-											<mx:SolidColor color="0xE60099" alpha=".6"/>
-											<mx:SolidColor color="0xCC0088" alpha=".6"/>
-											<mx:SolidColor color="0xB30077" alpha=".6"/>
-										</mx:fills>
-										<mx:filters>
-											<s:DropShadowFilter
-												distance="8"
-												color="0x666666"
-												alpha=".8"/>
-										</mx:filters>
-									</mx:BarSeries>
-								</mx:series>
-								
-							</mx:BarChart>			
-						</s:HGroup>
-					</s:VGroup>
-					<s:VGroup width="100%" height="50%" gap="20">
-						<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TOP_TEN_RECIPIENTS_LABEL)}" 
-								 fontWeight="bold" fontSize="16"
-								 color="#FFFFFF"
-								 textDecoration="underline"/>
-						<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
-							<mx:BarChart id="linechartTo" color="0x323232" 
-										 height="100%" 
-										 width="100%"
-										 minHeight="240"
-										 showDataTips="true" 
-										 styleName="myChart"
-										 dataProvider="{model.topTenRecipients}"
-										 axisTitleStyleName="axisTitles"
-										 backgroundElements="{bge2}">
-								
-								<mx:filters>
-									<s:DropShadowFilter
-										distance="4"
-										color="0x666666"
-										alpha=".9"/>
-								</mx:filters>
-								
-								<mx:horizontalAxis>
-									
-									<mx:LinearAxis id="qtyAxisTo" 
-												   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
-												   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" 
-												   />
-								</mx:horizontalAxis>
-								
-								<mx:verticalAxis>
-									
-									<mx:CategoryAxis
-										id="emailAxisTo"
-										categoryField="Email"
-										displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
-										title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
-										/>
-								</mx:verticalAxis>
-								
-								<mx:verticalAxisRenderers>
-									<mx:AxisRenderer 
-										axis="{emailAxisTo}" 
-										color="#FFFFFF" 
-										fontSize="14"
-										/>
-								</mx:verticalAxisRenderers>
-								
-								<mx:horizontalAxisRenderers>
-									<mx:AxisRenderer 
-										axis="{qtyAxisTo}" 
-										color="#FFFFFF" 
-										fontSize="14"
-										/>	  
-									
-									
-								</mx:horizontalAxisRenderers>
-								
-								<mx:fill>
-									<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
-								</mx:fill>
-								
-								<mx:series>
-									<mx:BarSeries xField="Qty" 
-												  yField="Email" 
-												  showDataEffect="{slideIn}" 
-												  hideDataEffect="{slideOut}"
-												  id="cserieTo">
-										<mx:stroke>
-											<s:SolidColorStroke color="#FFFFFF" caps="round" />
-										</mx:stroke>
-										<mx:fills>
-											<mx:SolidColor color="0xCCD9FF" alpha=".6"/>
-											<mx:SolidColor color="0xB3C6FF" alpha=".6"/>
-											<mx:SolidColor color="0x99B3FF" alpha=".6"/>
-											<mx:SolidColor color="0x809FFF" alpha=".6"/>
-											<mx:SolidColor color="0x668CFF" alpha=".6"/>
-											<mx:SolidColor color="0x4D79FF" alpha=".6"/>
-											<mx:SolidColor color="0x3366FF" alpha=".6"/>
-											<mx:SolidColor color="0x1A53FF" alpha=".6"/>
-											<mx:SolidColor color="0x0040FF" alpha=".6"/>
-											<mx:SolidColor color="0x0039E6" alpha=".6"/>
-										</mx:fills>
-										<mx:filters>
-											<s:DropShadowFilter
-												distance="8"
-												color="0x666666"
-												alpha=".8"/>
-										</mx:filters>
-									</mx:BarSeries>
-								</mx:series>
-								
-							</mx:BarChart>			
-						</s:HGroup>
-					</s:VGroup>
+					
 				</s:VGroup>
 				
-			</s:HGroup>
+			</s:VGroup>
+			
+			<mx:TabNavigator width="100%" height="600" maxWidth="800" 
+							 paddingLeft="5" paddingRight="5" paddingBottom="5"
+							 creationPolicy="all">
+				<s:NavigatorContent width="100%" height="100%" 
+									showEffect="{fadein}" hideEffect="{fadeout}"
+									label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.EMAILS_TITLE)}">
+					<mails:EmailsDataGrid dataProvider="{model.emails}" height="100%" width="100%" />
+				</s:NavigatorContent>
+				<s:NavigatorContent width="100%" height="100%" 
+									showEffect="{fadein}" hideEffect="{fadeout}"
+									label="{resourceManager.getString(CustomProperties.NAME,CustomProperties.REPORTS_TITLE)}">
+					<s:VGroup width="100%" height="100%" >
+						<s:VGroup width="100%" height="50%" gap="20">
+							<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TOP_TEN_SENDERS_LABEL)}" 
+									 fontWeight="bold" fontSize="16"
+									 color="#FFFFFF"
+									 textDecoration="underline"/>
+							<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
+								<mx:BarChart id="linechartFrom" color="0x323232" 
+											 height="100%" 
+											 width="100%"
+											 minHeight="240"
+											 showDataTips="true" 
+											 styleName="myChart"
+											 dataProvider="{model.topTenSenders}"
+											 axisTitleStyleName="axisTitles"
+											 backgroundElements="{bge1}">
+									
+									<mx:filters>
+										<s:DropShadowFilter
+											distance="4"
+											color="0x666666"
+											alpha=".9"/>
+									</mx:filters>
+									
+									<mx:horizontalAxis>
+										
+										<mx:LinearAxis id="qtyAxisFrom" 
+													   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
+													   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" 
+													   />
+									</mx:horizontalAxis>
+									
+									<mx:verticalAxis>
+										
+										<mx:CategoryAxis
+											id="emailAxisFrom"
+											categoryField="Email"
+											displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+											title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+											/>
+									</mx:verticalAxis>
+									
+									<mx:verticalAxisRenderers>
+										<mx:AxisRenderer 
+											axis="{emailAxisFrom}" 
+											color="#FFFFFF" 
+											fontSize="14"
+											/>
+									</mx:verticalAxisRenderers>
+									
+									<mx:horizontalAxisRenderers>
+										<mx:AxisRenderer 
+											axis="{qtyAxisFrom}" 
+											color="#FFFFFF" 
+											fontSize="14"
+											/>	  
+										
+										
+									</mx:horizontalAxisRenderers>
+									
+									<mx:fill>
+										<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+									</mx:fill>
+									
+									<mx:series>
+										<mx:BarSeries xField="Qty" 
+													  yField="Email" 
+													  showDataEffect="{slideIn}" 
+													  hideDataEffect="{slideOut}"
+													  id="cserieFrom">
+											<mx:stroke>
+												<s:SolidColorStroke color="#FFFFFF" caps="round" />
+											</mx:stroke>
+											<mx:fills>
+												<mx:SolidColor color="0xFF99DD" alpha=".6"/>
+												<mx:SolidColor color="0xFF80D4" alpha=".6"/>
+												<mx:SolidColor color="0xFF66CC" alpha=".6"/>
+												<mx:SolidColor color="0xFF4DC3" alpha=".6"/>
+												<mx:SolidColor color="0xFF33BB" alpha=".6"/>
+												<mx:SolidColor color="0xFF1AB3" alpha=".6"/>
+												<mx:SolidColor color="0xFF00AA" alpha=".6"/>
+												<mx:SolidColor color="0xE60099" alpha=".6"/>
+												<mx:SolidColor color="0xCC0088" alpha=".6"/>
+												<mx:SolidColor color="0xB30077" alpha=".6"/>
+											</mx:fills>
+											<mx:filters>
+												<s:DropShadowFilter
+													distance="8"
+													color="0x666666"
+													alpha=".8"/>
+											</mx:filters>
+										</mx:BarSeries>
+									</mx:series>
+									
+								</mx:BarChart>			
+							</s:HGroup>
+						</s:VGroup>
+						<s:VGroup width="100%" height="50%" gap="20">
+							<s:Label text="{resourceManager.getString(CustomProperties.NAME,CustomProperties.TOP_TEN_RECIPIENTS_LABEL)}" 
+									 fontWeight="bold" fontSize="16"
+									 color="#FFFFFF"
+									 textDecoration="underline"/>
+							<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
+								<mx:BarChart id="linechartTo" color="0x323232" 
+											 height="100%" 
+											 width="100%"
+											 minHeight="240"
+											 showDataTips="true" 
+											 styleName="myChart"
+											 dataProvider="{model.topTenRecipients}"
+											 axisTitleStyleName="axisTitles"
+											 backgroundElements="{bge2}">
+									
+									<mx:filters>
+										<s:DropShadowFilter
+											distance="4"
+											color="0x666666"
+											alpha=".9"/>
+									</mx:filters>
+									
+									<mx:horizontalAxis>
+										
+										<mx:LinearAxis id="qtyAxisTo" 
+													   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
+													   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" 
+													   />
+									</mx:horizontalAxis>
+									
+									<mx:verticalAxis>
+										
+										<mx:CategoryAxis
+											id="emailAxisTo"
+											categoryField="Email"
+											displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+											title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+											
+											/>
+									</mx:verticalAxis>
+									
+									<mx:verticalAxisRenderers>
+										<mx:AxisRenderer 
+											axis="{emailAxisTo}" 
+											color="#FFFFFF" 
+											fontSize="14"
+											/>
+									</mx:verticalAxisRenderers>
+									
+									<mx:horizontalAxisRenderers>
+										<mx:AxisRenderer 
+											axis="{qtyAxisTo}" 
+											color="#FFFFFF" 
+											fontSize="14"
+											/>	  
+										
+										
+									</mx:horizontalAxisRenderers>
+									
+									<mx:fill>
+										<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+									</mx:fill>
+									
+									<mx:series>
+										<mx:BarSeries xField="Qty" 
+													  yField="Email" 
+													  showDataEffect="{slideIn}" 
+													  hideDataEffect="{slideOut}"
+													  id="cserieTo">
+											<mx:stroke>
+												<s:SolidColorStroke color="#FFFFFF" caps="round" />
+											</mx:stroke>
+											<mx:fills>
+												<mx:SolidColor color="0xCCD9FF" alpha=".6"/>
+												<mx:SolidColor color="0xB3C6FF" alpha=".6"/>
+												<mx:SolidColor color="0x99B3FF" alpha=".6"/>
+												<mx:SolidColor color="0x809FFF" alpha=".6"/>
+												<mx:SolidColor color="0x668CFF" alpha=".6"/>
+												<mx:SolidColor color="0x4D79FF" alpha=".6"/>
+												<mx:SolidColor color="0x3366FF" alpha=".6"/>
+												<mx:SolidColor color="0x1A53FF" alpha=".6"/>
+												<mx:SolidColor color="0x0040FF" alpha=".6"/>
+												<mx:SolidColor color="0x0039E6" alpha=".6"/>
+											</mx:fills>
+											<mx:filters>
+												<s:DropShadowFilter
+													distance="8"
+													color="0x666666"
+													alpha=".8"/>
+											</mx:filters>
+										</mx:BarSeries>
+									</mx:series>
+									
+								</mx:BarChart>			
+							</s:HGroup>
+						</s:VGroup>
+					</s:VGroup>
+				</s:NavigatorContent>
+			</mx:TabNavigator>
+			
 		</s:VGroup>
 	</s:Group>
 

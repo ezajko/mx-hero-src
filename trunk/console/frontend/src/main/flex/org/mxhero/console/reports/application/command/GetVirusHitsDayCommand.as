@@ -17,7 +17,7 @@ package org.mxhero.console.reports.application.command
 		
 		public function execute(event:GetVirusHitsDayEvent):AsyncToken
 		{
-			return service.getVirusHitsDay(event.domain,event.since);
+			return service.getVirusHitsDay(event.domain,event.since.getTime());
 		}
 		
 		public function error (fault:Fault) : void {

@@ -5,13 +5,14 @@
 		 width="100%" height="100%" 
 		 xmlns:component="org.mxhero.console.commons.feature.component.*" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
-		 currentState="{model.stateOutgoing}">
+		 currentState="{model.stateOutgoing}"
+		 >
 	
 	<fx:Declarations>
 		<parsley:Configure/>
 		
 		<mx:SeriesZoom id="zoomOut" 
-					   duration="600"
+					   duration="800"
 					   verticalFocus="top" 
 					   horizontalFocus="center"
 					   relativeTo="chart"/>
@@ -140,206 +141,69 @@
 			
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
 			{
-				dayFrom= new Date();
-				dayFrom.setTime(event.hitData.item.Date.getTime());
-				dayFrom.setTime(dayFrom.setUTCHours(0,0,0,0));
-				dayTo= new Date();
-				dayTo.setTime(event.hitData.item.Date.getTime());
-				dayTo.setTime(dayTo.setUTCHours(0,0,0,0));
-				dayTo.setTime(dayTo.getTime()+24*60*60*1000);
-				
+				if(currentState=="zoom_out"){
+					dayFrom= new Date();
+					dayFrom.setTime(event.hitData.item.Date.getTime());
+					dayFrom.setTime(dayFrom.setUTCHours(0,0,0,0));
+					dayTo= new Date();
+					dayTo.setTime(event.hitData.item.Date.getTime());
+					dayTo.setTime(dayTo.setUTCHours(0,0,0,0));
+					dayTo.setTime(dayTo.getTime()+24*60*60*1000);
+					model.getOutgoingByDay(event.hitData.item.Date);
+				}else if(currentState=="zoom_in"){
+					model.getOutgoing();
+				}
 				cursorManager.removeCursor(cursorId);
-				
-				model.getOutgoingByDay(event.hitData.item.Date);
-				linechart.doubleClickEnabled=false;
-				cserie.buttonMode=false;
-				cserie.toolTip="";
-				model.stateOutgoing="zoom_in";
 			}
 			
-			protected function button1_clickHandler(event:MouseEvent):void
+			protected function refresh_clickHandler(event:MouseEvent):void
 			{
-				linechart.dataProvider=model.outgoingData;
-				linechart.doubleClickEnabled=true;
-				cserie.buttonMode=true;
-				cserie.toolTip="Zoom In";
-				model.stateOutgoing="zoom_out";
-				model.getOutgoing();
+				if(currentState=="zoom_out"){
+					model.getOutgoing();
+				}else if(currentState=="zoom_in"){
+					model.getOutgoingByDay(dayFrom);
+				}
+				
 			}
 		]]>
 	</fx:Script>
 			
 	
-	<s:HGroup width="100%" height="50%" gap="30">
-		<s:VGroup width="60%" height="100%" enabled="{!model.updatingOutgoing}">
-			<s:HGroup horizontalAlign="right" 
-					  width="100%"
-					  paddingRight="5"
-					  paddingBottom="5"
-					  paddingLeft="50">
+	<s:Group width="100%" height="100%">
+		<s:VGroup width="100%" 
+						height="100%"
+						paddingLeft="0" 
+						paddingRight="0" 
+						paddingBottom="0" 
+						paddingTop="0"
+						>
+			<s:VGroup width="100%" minWidth="200" height="100%" enabled="{!model.updatingOutgoing}">
+				<s:HGroup horizontalAlign="left" 
+						  width="100%"
+						  paddingRight="5"
+						  paddingBottom="5">
 				<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_TITLE)}" 
-						 fontWeight="bold" fontSize="16"
-						 color="#FFFFFF"
-						 textDecoration="underline"/>
-				<mx:Spacer width="100%"/>
-				<component:GlowButton
-					id="zoom_in_btt"
-					includeIn="zoom_in"
-					source="{ReportsImages.ZOOM_OUT}" 
-					click="button1_clickHandler(event)"
-					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_OUT)}"
-					addedEffect="{zoom_in_btt.glowOn}"/>	
-<!--				<component:GlowButton
-					source="{ReportsImages.EXPORT}" 
-					toolTip="Export"/>	-->
-				<component:GlowButton
-					source="{ReportsImages.REFRESH}" 
-					click="button1_clickHandler(event)"
-					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.REFRESH)}"/>	
-			</s:HGroup>
-			
-			<mx:ColumnChart id="linechart" color="0x323232" 
-							height="300" width="100%"
-							showDataTips="true" 
-							styleName="myChart"
-							dataProvider="{model.outgoingData}"
-							axisTitleStyleName="axisTitles"
-							doubleClickEnabled.zoom_out="true"
-							doubleClickEnabled.zoom_in="false"
-							itemDoubleClick="linechart_itemDoubleClickHandler(event)"
-							backgroundElements="{bge}">
+							 fontWeight="bold" fontSize="16"
+							 color="#FFFFFF"
+							 textDecoration="underline"/>
+<!--					<component:GlowButton
+						source="{ReportsImages.EXPORT}" 
+						toolTip="Export"/>	-->
+					<component:GlowButton
+						source="{ReportsImages.REFRESH}" 
+						click="refresh_clickHandler(event)"
+						toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.REFRESH)}"/>	
+				</s:HGroup>
 				
-				<mx:filters>
-					<s:DropShadowFilter
-						distance="4"
-						color="0x666666"
-						alpha=".9"/>
-				</mx:filters>
-				
-				<mx:horizontalAxis>
-					<mx:DateTimeAxis id="dateAxis2" 
-									 dataUnits.zoom_out="days"
-									 labelUnits.zoom_out="days"
-									 dataUnits.zoom_in="hours"
-									 labelUnits.zoom_in="hours"
-									 disabledDays="{[]}"
-									 autoAdjust="true"
-									 dataInterval="1"
-									 maximum.zoom_out="{model.untilDate}"
-									 minimum.zoom_out="{model.sinceDate}"
-									 maximum.zoom_in="{dayTo}"
-									 minimum.zoom_in="{dayFrom}"
-									 title.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
-									 title.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
-									 displayName.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
-									 displayName.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
-									 />
-				</mx:horizontalAxis>
-				
-				
-				<mx:verticalAxisRenderers>
-					<mx:AxisRenderer labelRotation="45" 
-									 axis="{qtyAxis2}" 
-									 color="#FFFFFF" 
-									 fontSize="14"
-									 />	   
-					<mx:AxisRenderer labelRotation="45" 
-									 axis="{mbAxis2}" 
-									 color="#FFFFFF" 
-									 fontSize="14"
-									 />	   
-				</mx:verticalAxisRenderers>
-				
-				<mx:horizontalAxisRenderers>
-					<mx:AxisRenderer labelRotation="45" 
-									 axis="{dateAxis2}" 
-									 color="#FFFFFF" 
-									 fontSize="12"
-									 />
-				</mx:horizontalAxisRenderers>
-				
-				
-				
-				<mx:fill>
-					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
-				</mx:fill>
-				
-				<mx:series>
-					<mx:ColumnSeries xField="Date" yField="Qty" 
-									 showDataEffect.zoom_out="{slideIn}" 
-									 hideDataEffect.zoom_out="{slideOut}"
-									 showDataEffect.zoom_in="{zoomIn}" 
-									 hideDataEffect.zoom_in="{zoomOut}"
-									 id="cserie"
-									 buttonMode.zoom_out="true"
-									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
-									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
-									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
-						<mx:stroke>
-							<s:SolidColorStroke color="#FFFFFF" caps="round" />
-						</mx:stroke>
-						<mx:fill>
-							<mx:SolidColor color="0x336699" alpha="0.6"/>
-						</mx:fill>
-						<mx:filters>
-							<s:DropShadowFilter
-								distance="8"
-								color="0x666666"
-								alpha=".8"/>
-						</mx:filters>
-						<mx:verticalAxis>
-							<mx:LinearAxis id="qtyAxis2" 
-										   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}" 
-										   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
-						</mx:verticalAxis>
-					</mx:ColumnSeries>
-				<mx:ColumnSeries xField="Date" yField="MB" 
-								 showDataEffect.zoom_out="{slideIn}" 
-								 hideDataEffect.zoom_out="{slideOut}"
-								 showDataEffect.zoom_in="{zoomIn}" 
-								 hideDataEffect.zoom_in="{zoomOut}"
-								 id="cserie2"
-								 buttonMode.zoom_out="true"
-								 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
-								 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
-								 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
-					<mx:stroke>
-						<s:SolidColorStroke color="#FFFFFF" caps="round" />
-					</mx:stroke>
-					<mx:fill>
-						<mx:SolidColor color="yellow" alpha="0.6"/>
-					</mx:fill>
-					<mx:filters>
-						<s:DropShadowFilter
-							distance="8"
-							color="0x666666"
-							alpha=".8"/>
-					</mx:filters>
-					<mx:verticalAxis>
-						<mx:LinearAxis id="mbAxis2" 
-									   title="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.SIZE_MB_LABEL)}"  
-									   displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.SIZE_MB_LABEL)}"/>
-					</mx:verticalAxis>
-				</mx:ColumnSeries>
-				</mx:series>
-			</mx:ColumnChart>
-		</s:VGroup>
-		
-		<s:VGroup width="40%" height="100%" gap="20" enabled="{!model.updatingOutgoingRecipients}">
-			<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_RECIPIENTS_TITLE)}" 
-					 fontWeight="bold" fontSize="16"
-					 color="#FFFFFF"
-					 textDecoration="underline"/>
-			<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
-				<mx:BarChart id="linechartTo" color="0x323232" 
-							 height="100%" 
-							 width="100%"
-							 minHeight="200"
-							 showDataTips="true" 
-							 styleName="myChart"
-							 dataProvider="{model.outgoingRecipientsData}"
-							 axisTitleStyleName="axisTitles"
-							 backgroundElements="{bge2}">
+				<mx:ColumnChart id="linechart" color="0x323232" 
+								height="100%" minHeight="300" width="100%"
+								showDataTips="true" 
+								styleName="myChart"
+								dataProvider="{model.outgoingData}"
+								axisTitleStyleName="axisTitles"
+								doubleClickEnabled="true"
+								itemDoubleClick="linechart_itemDoubleClickHandler(event)"
+								backgroundElements="{bge}">
 					
 					<mx:filters>
 						<s:DropShadowFilter
@@ -349,77 +213,212 @@
 					</mx:filters>
 					
 					<mx:horizontalAxis>
-						
-						<mx:LinearAxis id="qtyAxisTo" 
-									   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
-									   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" />
+						<mx:DateTimeAxis id="dateAxis2" 
+										 dataUnits.zoom_out="days"
+										 labelUnits.zoom_out="days"
+										 dataUnits.zoom_in="hours"
+										 labelUnits.zoom_in="hours"
+										 disabledDays="{[]}"
+										 autoAdjust="true"
+										 dataInterval="1"
+										 padding="1"
+										 maximum.zoom_out="{model.untilDate}"
+										 minimum.zoom_out="{model.sinceDate}"
+										 maximum.zoom_in="{dayTo}"
+										 minimum.zoom_in="{dayFrom}"
+										 title.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
+										 title.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
+										 displayName.zoom_out="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.DATE_TITLE)}"
+										 displayName.zoom_in="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.TIME_TITLE)}"
+										 />
 					</mx:horizontalAxis>
 					
-					<mx:verticalAxis>
-						
-						<mx:CategoryAxis
-							id="emailAxisTo"
-							categoryField="Email"
-							displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
-							title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
-					</mx:verticalAxis>
 					
 					<mx:verticalAxisRenderers>
-						<mx:AxisRenderer 
-							axis="{emailAxisTo}" 
-							color="#FFFFFF" 
-							fontSize="14"
-							/>
+						<mx:AxisRenderer axis="{qtyAxis2}" 
+										 color="#FFFFFF" 
+										 fontSize="14"
+										 />	   
+						<mx:AxisRenderer axis="{mbAxis2}" 
+										 color="#FFFFFF" 
+										 fontSize="14"
+										 />	   
 					</mx:verticalAxisRenderers>
 					
 					<mx:horizontalAxisRenderers>
-						<mx:AxisRenderer 
-							axis="{qtyAxisTo}" 
-							color="#FFFFFF" 
-							fontSize="14"
-							/>	  
-						
-						
+						<mx:AxisRenderer labelRotation="45" 
+										 axis="{dateAxis2}" 
+										 color="#FFFFFF" 
+										 fontSize="12"
+										 />
 					</mx:horizontalAxisRenderers>
+					
+					
 					
 					<mx:fill>
 						<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
 					</mx:fill>
 					
 					<mx:series>
-						<mx:BarSeries xField="Qty" 
-									  yField="Email" 
-									  showDataEffect="{slideInTop}" 
-									  hideDataEffect="{slideOutTop}"
-									  id="cserieTo"
-									  >
+						<mx:ColumnSeries xField="Date" yField="Qty" 
+										 showDataEffect.zoom_out="{slideIn}" 
+										 hideDataEffect.zoom_out="{slideOut}"
+										 showDataEffect.zoom_in="{zoomIn}" 
+										 hideDataEffect.zoom_in="{zoomOut}"
+										 id="cserie"
+										 buttonMode="true"
+										 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
+										 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
+										 rollOver.zoom_in="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_OUT);}"
+										 rollOut.zoom_in="{cursorManager.removeCursor(cursorId)}"
+									 	 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
 							<mx:stroke>
 								<s:SolidColorStroke color="#FFFFFF" caps="round" />
 							</mx:stroke>
-							<mx:fills>
-								<mx:SolidColor color="0xCCD9FF" alpha=".6"/>
-								<mx:SolidColor color="0xB3C6FF" alpha=".6"/>
-								<mx:SolidColor color="0x99B3FF" alpha=".6"/>
-								<mx:SolidColor color="0x809FFF" alpha=".6"/>
-								<mx:SolidColor color="0x668CFF" alpha=".6"/>
-								<mx:SolidColor color="0x4D79FF" alpha=".6"/>
-								<mx:SolidColor color="0x3366FF" alpha=".6"/>
-								<mx:SolidColor color="0x1A53FF" alpha=".6"/>
-								<mx:SolidColor color="0x0040FF" alpha=".6"/>
-								<mx:SolidColor color="0x0039E6" alpha=".6"/>
-							</mx:fills>
+							<mx:fill>
+								<mx:SolidColor color="0x336699" alpha="0.6"/>
+							</mx:fill>
 							<mx:filters>
 								<s:DropShadowFilter
 									distance="8"
 									color="0x666666"
 									alpha=".8"/>
 							</mx:filters>
-						</mx:BarSeries>
+							<mx:verticalAxis>
+								<mx:LinearAxis id="qtyAxis2" 
+											   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}" 
+											   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
+							</mx:verticalAxis>
+						</mx:ColumnSeries>
+					<mx:ColumnSeries xField="Date" yField="MB" 
+									 showDataEffect.zoom_out="{slideIn}" 
+									 hideDataEffect.zoom_out="{slideOut}"
+									 showDataEffect.zoom_in="{zoomIn}" 
+									 hideDataEffect.zoom_in="{zoomOut}"
+									 id="cserie2"
+									 buttonMode="true"
+									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
+									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
+									 rollOver.zoom_in="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_OUT);}"
+									 rollOut.zoom_in="{cursorManager.removeCursor(cursorId)}"
+									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
+						<mx:stroke>
+							<s:SolidColorStroke color="#FFFFFF" caps="round" />
+						</mx:stroke>
+						<mx:fill>
+							<mx:SolidColor color="yellow" alpha="0.6"/>
+						</mx:fill>
+						<mx:filters>
+							<s:DropShadowFilter
+								distance="8"
+								color="0x666666"
+								alpha=".8"/>
+						</mx:filters>
+						<mx:verticalAxis>
+							<mx:LinearAxis id="mbAxis2" 
+										   title="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.SIZE_MB_LABEL)}"  
+										   displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.SIZE_MB_LABEL)}"/>
+						</mx:verticalAxis>
+					</mx:ColumnSeries>
 					</mx:series>
-					
-				</mx:BarChart>			
-			</s:HGroup>
+				</mx:ColumnChart>
+			</s:VGroup>
+			
+			<s:VGroup width="100%" minWidth="200" height="100%" gap="20" enabled="{!model.updatingOutgoingRecipients}">
+				<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_RECIPIENTS_TITLE)}" 
+						 fontWeight="bold" fontSize="16"
+						 color="#FFFFFF"
+						 textDecoration="underline"/>
+				<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
+					<mx:BarChart id="linechartTo" color="0x323232" 
+								 height="100%" 
+								 width="100%"
+								 minHeight="200"
+								 showDataTips="true" 
+								 styleName="myChart"
+								 dataProvider="{model.outgoingRecipientsData}"
+								 axisTitleStyleName="axisTitles"
+								 backgroundElements="{bge2}">
+						
+						<mx:filters>
+							<s:DropShadowFilter
+								distance="4"
+								color="0x666666"
+								alpha=".9"/>
+						</mx:filters>
+						
+						<mx:horizontalAxis>
+							
+							<mx:LinearAxis id="qtyAxisTo" 
+										   displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}"  
+										   title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.AMOUNT_AXIS)}" />
+						</mx:horizontalAxis>
+						
+						<mx:verticalAxis>
+							
+							<mx:CategoryAxis
+								id="emailAxisTo"
+								categoryField="Email"
+								displayName="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"
+								title="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.EMAILS_AXIS)}"/>
+						</mx:verticalAxis>
+						
+						<mx:verticalAxisRenderers>
+							<mx:AxisRenderer 
+								axis="{emailAxisTo}" 
+								color="#FFFFFF" 
+								fontSize="14"
+								/>
+						</mx:verticalAxisRenderers>
+						
+						<mx:horizontalAxisRenderers>
+							<mx:AxisRenderer 
+								axis="{qtyAxisTo}" 
+								color="#FFFFFF" 
+								fontSize="14"
+								/>	  
+							
+							
+						</mx:horizontalAxisRenderers>
+						
+						<mx:fill>
+							<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+						</mx:fill>
+						
+						<mx:series>
+							<mx:BarSeries xField="Qty" 
+										  yField="Email" 
+										  showDataEffect="{slideInTop}" 
+										  hideDataEffect="{slideOutTop}"
+										  id="cserieTo"
+										  >
+								<mx:stroke>
+									<s:SolidColorStroke color="#FFFFFF" caps="round" />
+								</mx:stroke>
+								<mx:fills>
+									<mx:SolidColor color="0xCCD9FF" alpha=".6"/>
+									<mx:SolidColor color="0xB3C6FF" alpha=".6"/>
+									<mx:SolidColor color="0x99B3FF" alpha=".6"/>
+									<mx:SolidColor color="0x809FFF" alpha=".6"/>
+									<mx:SolidColor color="0x668CFF" alpha=".6"/>
+									<mx:SolidColor color="0x4D79FF" alpha=".6"/>
+									<mx:SolidColor color="0x3366FF" alpha=".6"/>
+									<mx:SolidColor color="0x1A53FF" alpha=".6"/>
+									<mx:SolidColor color="0x0040FF" alpha=".6"/>
+									<mx:SolidColor color="0x0039E6" alpha=".6"/>
+								</mx:fills>
+								<mx:filters>
+									<s:DropShadowFilter
+										distance="8"
+										color="0x666666"
+										alpha=".8"/>
+								</mx:filters>
+							</mx:BarSeries>
+						</mx:series>
+						
+					</mx:BarChart>			
+				</s:HGroup>
+			</s:VGroup>
 		</s:VGroup>
-
-	</s:HGroup>
+	</s:Group>
 </s:Group>
