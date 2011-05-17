@@ -91,7 +91,7 @@
 					
 					var actionSelected:String = PropertyHelper.getProperty(initialProperties,"action.selection").propertyValue;
 					if(actionSelected=='discard'){
-						discardRb.selected;
+						discardRb.selected=true;
 					} else if(actionSelected=='return'){
 						returnRb.selected=true;
 						returnTa.text=PropertyHelper.getProperty(initialProperties,"return.text").propertyValue;

@@ -7,10 +7,11 @@
 		   width="100%"
 		   height="100%" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*" 
-		   xmlns:mails="org.mxhero.console.components.mails.*"
-		   implements="org.mxhero.console.commons.feature.IReport">
+		   implements="org.mxhero.console.commons.feature.IReport" xmlns:mails="org.mxhero.console.mails.*">
 	
 	<fx:Declarations>
+		
+		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
 		
 		<mx:SeriesSlide id="slideIn" 
 						duration="800" 
@@ -79,6 +80,7 @@
 			
 			import org.mxhero.console.commons.feature.IReport;
 			import org.mxhero.console.commons.feature.IReportService;
+			import org.mxhero.console.commons.feature.TimeUtils;
 			
 			
 			private static const DATA_QUERY:String = "data.query";
@@ -97,11 +99,11 @@
 			[Bindable]
 			private var _emails:ArrayCollection;
 			
-			private var _dataQuery:String = " select count(record0_.insert_date) ,record0_.recipient_id " 
+			private var _dataQuery:String = " select count(record0_.insert_date) ,record0_.from_recipeints " 
 				+" from statistics.mail_records record0_ "
 				+" inner join statistics.mail_stats stats1_ on record0_.insert_date=stats1_.insert_date "
 				+" and record0_.record_sequence=stats1_.record_sequence "
-				+" where record0_.insert_date > DATE(?) "
+				+" where record0_.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" and stats1_.stat_key = 'org.mxhero.feature.restricteddelivery.sender' ";
 			
 			private var _emailsQuery:String = 
@@ -110,11 +112,13 @@
 				" record0_.subject, record0_.phase, record0_.bytes_size, record0_.state, " +
 				" record0_.state_reason, record0_.insert_date " 
 				+" from statistics.mail_records record0_ "
-				+" inner join statistics.mail_records record2_ on record2_.parent_message_id=record0_.parent_message_id "
+				+" inner join statistics.mail_records record2_ " 
+				+" on record2_.parent_insert_date=record0_.parent_insert_date "
+				+" and record2_.parent_sequence=record0_.parent_sequence "
 				+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
 				+" and record2_.record_sequence=stats1_.record_sequence "
-				+" where record0_.insert_date > DATE(?) "
-				+" and record2_.insert_date > DATE(?) "
+				+" where record0_.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
+				+" and record2_.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" and stats1_.stat_key = 'org.mxhero.feature.restricteddelivery.sender' "
 				+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' )";
 			
@@ -162,11 +166,15 @@
 				var params:Array = new Array();
 				var emailsQuery:String = _emailsQuery;
 				
-				params.push(sinceDate,sinceDate);
+				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+
 				if(domain!=null){
 					params.push(domain,domain);
 					emailsQuery = emailsQuery + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
 				}
+				emailsQuery = emailsQuery + " order by record0_.insert_date desc ";
+				
 				_reportService.processQuery(EMAIL_QUERY,emailsQuery,params,this);
 				
 			}
@@ -175,13 +183,13 @@
 				var domain:String = _reportService.getDomain();
 				var params:Array = new Array();
 				var dataQuery:String = _dataQuery;
-				
-				params.push(sinceDate);
+
+				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
 				if(domain!=null){
 					params.push(domain,domain);
 					dataQuery = dataQuery + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
 				}
-				dataQuery = dataQuery + " group by record0_.recipient_id ORDER BY 1 DESC ";
+				dataQuery = dataQuery + " group by record0_.from_recipeints ORDER BY 1 DESC ";
 				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
 				
 			}
