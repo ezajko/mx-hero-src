@@ -42,16 +42,28 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	
 	private RecordDao recordDao;
 	
+	private String hitsSqlQuery = 	
+		" select count(generatedAlias0.record_sequence), " +
+		" date(CONVERT_TZ(generatedAlias0.insert_date, '+00:00', ? )) " +
+		" from mail_records as generatedAlias0 inner join mail_stats as generatedAlias1 " +
+		" on generatedAlias1.insert_date = generatedAlias0.insert_date " +
+		" and generatedAlias1.record_sequence = generatedAlias0.record_sequence  " +
+		" where ( ( generatedAlias0.insert_date>= ? ) " +
+		" and ( generatedAlias1.stat_key= ? ) ) " +
+		" and ( generatedAlias1.stat_value= ? ) " ;
+	
 	private String mailQuerySql = " select record0_.* " 
 		+" from statistics.mail_records record0_ "
-		+" inner join statistics.mail_records record2_ on record2_.parent_message_id=record0_.parent_message_id "
+		+" inner join statistics.mail_records record2_ " 
+		+" on record2_.parent_insert_date=record0_.parent_insert_date "
+		+" and record2_.parent_sequence=record0_.parent_sequence "
 		+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
 		+" and record2_.record_sequence=stats1_.record_sequence "
 		+" where record0_.insert_date between ? and ? "
 		+" and record2_.insert_date between ? and ? "
 		+" and stats1_.stat_key = ? "
 		+" and stats1_.stat_value = ? " 
-		+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' )";
+		+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' ) ";
 	
 	private RecordTranslator recordTranslator;
 	
@@ -63,37 +75,39 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	}
 
 	@Override
-	public Collection getSpamHits(String domain, Calendar since) {
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		Timestamp sinceTime = new Timestamp(since.getTimeInMillis());
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery query = builder.createQuery();
-		Root<Record> root = query.from(Record.class);
-		query = query.multiselect((builder.count(root.get(Record_.id).get(RecordPk_.sequence))),builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		SetJoin<Record, Stat> statjoin= root.join(Record_.stats);
-		Predicate predicate = builder.greaterThanOrEqualTo(root.get(Record_.id).get(RecordPk_.insertDate),sinceTime);
-		if(domain!=null && !domain.trim().isEmpty()){
-			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderDomainId), domain), builder.or(builder.equal(root.get(Record_.recipientDomainId), domain))));
+	public Collection getSpamHits(String domain, long since, String offset) {
+		Timestamp sinceTime = new Timestamp(since);
+
+		String queryString = hitsSqlQuery;
+		if(domain!=null && domain.trim().length()>0){
+			queryString = queryString + " and (generatedAlias0.recipient_domain_id = ? or generatedAlias0.sender_domain_id = ?) ";
 		}
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.id).get(StatPk_.key), SPAM_DETECTED));
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.value), SPAM_DETECTED_VALUE));
-		query = query.where(predicate);
-		query = query.groupBy(builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		return entityManager.createQuery(query).getResultList();
+		
+		queryString = queryString + " group by date(CONVERT_TZ(generatedAlias0.insert_date, '+00:00', ? )) ";
+		
+		Query query = entityManager.createNativeQuery(queryString);
+		query.setParameter(1, offset);
+		query.setParameter(2, sinceTime);
+		query.setParameter(3, SPAM_DETECTED);
+		query.setParameter(4, SPAM_DETECTED_VALUE);
+
+		if(domain!=null && domain.trim().length()>0){
+			query.setParameter(5, domain);
+			query.setParameter(6, domain);
+			query.setParameter(7, offset);
+		}else{
+			query.setParameter(5, offset);
+		}
+		
+		return query.getResultList();
 	}
 
 	@Override
-	public Collection getSpamHitsDay(String domain, Calendar since) {
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		Timestamp sinceTime = new Timestamp(since.getTimeInMillis());
+	public Collection getSpamHitsDay(String domain, long since) {
+
+		Timestamp sinceTime = new Timestamp(since);
 		Calendar until = Calendar.getInstance();
-		until.setTimeInMillis(since.getTimeInMillis());
+		until.setTimeInMillis(since);
 		until.add(Calendar.DAY_OF_MONTH, 1);
 		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
 
@@ -117,37 +131,38 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	}
 	
 	@Override
-	public Collection getVirusHits(String domain, Calendar since) {
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		Timestamp sinceTime = new Timestamp(since.getTimeInMillis());
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery query = builder.createQuery();
-		Root<Record> root = query.from(Record.class);
-		query = query.multiselect((builder.count(root.get(Record_.id).get(RecordPk_.sequence))),builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		SetJoin<Record, Stat> statjoin= root.join(Record_.stats);
-		Predicate predicate = builder.greaterThanOrEqualTo(root.get(Record_.id).get(RecordPk_.insertDate),sinceTime);
-		if(domain!=null && !domain.trim().isEmpty()){
-			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderDomainId), domain), builder.or(builder.equal(root.get(Record_.recipientDomainId), domain))));
+	public Collection getVirusHits(String domain, long since, String offset) {
+		Timestamp sinceTime = new Timestamp(since);
+
+		String queryString = hitsSqlQuery;
+		if(domain!=null && domain.trim().length()>0){
+			queryString = queryString + " and (generatedAlias0.recipient_domain_id = ? or generatedAlias0.sender_domain_id = ?) ";
 		}
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.id).get(StatPk_.key), VIRUS_DETECTED));
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.value), VIRUS_DETECTED_VALUE));
-		query = query.where(predicate);
-		query = query.groupBy(builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		return entityManager.createQuery(query).getResultList();
+		
+		queryString = queryString + " group by date(CONVERT_TZ(generatedAlias0.insert_date, '+00:00', ? )) ";
+		
+		Query query = entityManager.createNativeQuery(queryString);
+		query.setParameter(1, offset);
+		query.setParameter(2, sinceTime);
+		query.setParameter(3, VIRUS_DETECTED);
+		query.setParameter(4, VIRUS_DETECTED_VALUE);
+
+		if(domain!=null && domain.trim().length()>0){
+			query.setParameter(5, domain);
+			query.setParameter(6, domain);
+			query.setParameter(7, offset);
+		}else{
+			query.setParameter(5, offset);
+		}
+
+		return query.getResultList();
 	}
 
 	@Override
-	public Collection getVirusHitsDay(String domain, Calendar since) {
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		Timestamp sinceTime = new Timestamp(since.getTimeInMillis());
+	public Collection getVirusHitsDay(String domain, long since) {
+		Timestamp sinceTime = new Timestamp(since);
 		Calendar until = Calendar.getInstance();
-		until.setTimeInMillis(since.getTimeInMillis());
+		until.setTimeInMillis(since);
 		until.add(Calendar.DAY_OF_MONTH, 1);
 		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
 		
@@ -158,7 +173,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 				,builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate))
 				,builder.function("hour", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
 		SetJoin<Record, Stat> statjoin= root.join(Record_.stats);
-		Predicate predicate = builder.greaterThanOrEqualTo(root.get(Record_.id).get(RecordPk_.insertDate),sinceTime);
+		Predicate predicate = builder.between(root.get(Record_.id).get(RecordPk_.insertDate),sinceTime,untilTime);
 		if(domain!=null && !domain.trim().isEmpty()){
 			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderDomainId), domain), builder.or(builder.equal(root.get(Record_.recipientDomainId), domain))));
 		}
@@ -172,23 +187,17 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 	
 	@Override
-	public Collection<RecordVO> getSpamEmails(String domain, Calendar since, Calendar until) {
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		Timestamp sinceTime = new Timestamp(since.getTimeInMillis());
-		until.set(Calendar.HOUR, 0);
-		until.set(Calendar.MINUTE, 0);
-		until.set(Calendar.SECOND, 0);
-		until.set(Calendar.MILLISECOND, 0);
-		until.add(Calendar.DAY_OF_MONTH, 1);
-		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
+	public Collection<RecordVO> getSpamEmails(String domain, long since, long until) {
+
+		Timestamp sinceTime = new Timestamp(since);
+		Timestamp untilTime = new Timestamp(until);
 
 		String queryString = mailQuerySql;
 		if(domain!=null && domain.trim().length()>0){
 			queryString = queryString + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
 		}
+		
+		queryString = queryString + " order by record0_.insert_date desc ";
 		
 		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
@@ -207,23 +216,16 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	}
 
 	@Override
-	public Collection<RecordVO> getVirusEmails(String domain, Calendar since, Calendar until) {
-		since.set(Calendar.HOUR, 0);
-		since.set(Calendar.MINUTE, 0);
-		since.set(Calendar.SECOND, 0);
-		since.set(Calendar.MILLISECOND, 0);
-		Timestamp sinceTime = new Timestamp(since.getTimeInMillis());
-		until.set(Calendar.HOUR, 0);
-		until.set(Calendar.MINUTE, 0);
-		until.set(Calendar.SECOND, 0);
-		until.set(Calendar.MILLISECOND, 0);
-		until.add(Calendar.DAY_OF_MONTH, 1);
-		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
+	public Collection<RecordVO> getVirusEmails(String domain, long since, long until) {
+		Timestamp sinceTime = new Timestamp(since);
+		Timestamp untilTime = new Timestamp(until);
 
 		String queryString = mailQuerySql;
 		if(domain!=null && domain.trim().length()>0){
 			queryString = queryString + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
 		}
+		
+		queryString = queryString + " order by record0_.insert_date desc ";
 		
 		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);

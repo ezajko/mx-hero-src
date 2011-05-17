@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface PluginReportService {
 
-	Integer MAX_RESULT = 500;
+	Integer MAX_RESULT = 1000;
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	@Transactional(readOnly=true)
