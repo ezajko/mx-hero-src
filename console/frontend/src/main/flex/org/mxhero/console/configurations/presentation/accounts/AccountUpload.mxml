@@ -151,11 +151,11 @@
 		<s:HGroup  width="100%">
 			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_TOTAL_ACCOUNTS)+uploadedAccounts.length}"/>
 			<mx:Spacer width="100%"/>
-			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
-					  click="cancelBtt_clickHandler(event)"
-					  enabled="{!(model.isLoading || fileLoading)}"/>
 			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
 					  click="saveBtt_clickHandler(event)"
+					  enabled="{!(model.isLoading || fileLoading)}"/>
+			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
+					  click="cancelBtt_clickHandler(event)"
 					  enabled="{!(model.isLoading || fileLoading)}"/>
 		</s:HGroup>		
 	</s:VGroup>

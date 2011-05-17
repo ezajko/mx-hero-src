@@ -52,6 +52,7 @@ package org.mxhero.console.reports.presentation.reports
 		public var untilDate:Date=new Date();;
 		
 		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
+		private static const PLUSDAY:Number = 24*60*60*1000; 
 		
 		[Inject]
 		[Bindable]
@@ -71,10 +72,10 @@ package org.mxhero.console.reports.presentation.reports
 		[Enter(time="every")]
 		public function every():void{
 			untilDate.setTime(new Date());
-			untilDate.setTime(untilDate.setUTCHours(0,0,0,0));
-			untilDate.setTime(untilDate.getTime()+24*60*60*1000);
+			untilDate.setHours(0,0,0,0);
+			untilDate.setTime(untilDate.getTime()+PLUSDAY);
 			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
-			sinceDate.setTime(sinceDate.setUTCHours(0,0,0,0));
+			sinceDate.setHours(0,0,0,0);
 			getIncomming();
 			getOutgoing();
 		}
@@ -89,21 +90,22 @@ package org.mxhero.console.reports.presentation.reports
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
-			stateIncomming = IN_DEFAULT;
-			
 		}
 		
 		public function getIncommingByDay(day:Date):void{
+			var sinceDay:Date = new Date();
+			sinceDay.setTime(day.getTime());
+			sinceDay.setHours(0,0,0,0);
+			
 			if(context.selectedDomain!=null){
-				dispatcher(new GetIncommingByDayEvent(context.selectedDomain.domain,day));
-				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,day));
+				dispatcher(new GetIncommingByDayEvent(context.selectedDomain.domain,sinceDay));
+				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,sinceDay));
 			}else{
-				dispatcher(new GetIncommingByDayEvent(null,day));
-				dispatcher(new GetTopTenIncommingSendersByDayEvent(null,day));
+				dispatcher(new GetIncommingByDayEvent(null,sinceDay));
+				dispatcher(new GetTopTenIncommingSendersByDayEvent(null,sinceDay));
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
-			stateIncomming = IN_DAY;
 		}
 		
 		public function getOutgoing():void{
@@ -116,25 +118,28 @@ package org.mxhero.console.reports.presentation.reports
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
-			stateOutgoing = OUT_DEFAULT;
 		}
 		
 		public function getOutgoingByDay(day:Date):void{
+			var sinceDay:Date = new Date();
+			sinceDay.setTime(day.getTime());
+			sinceDay.setHours(0,0,0,0);
+			
 			if(context.selectedDomain!=null){
-				dispatcher(new GetOutgoingByDayEvent(context.selectedDomain.domain,day));
-				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,day));
+				dispatcher(new GetOutgoingByDayEvent(context.selectedDomain.domain,sinceDay));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,sinceDay));
 			}else{
-				dispatcher(new GetOutgoingByDayEvent(null,day));
-				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(null,day));
+				dispatcher(new GetOutgoingByDayEvent(null,sinceDay));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(null,sinceDay));
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
-			stateOutgoing = OUT_DAY;
 		}
 		
 		[CommandResult]
 		public function getIncommingResult(result:*,event:GetIncommingEvent):void{
 			this.incommingData.removeAll();
+			stateIncomming = IN_DEFAULT;
 			this.incommingData.addAll(translateData(result));
 			updatingIncoming=false;
 		}
@@ -142,18 +147,22 @@ package org.mxhero.console.reports.presentation.reports
 		[CommandError]
 		public function getIncommingError(fault:*,event:GetIncommingEvent):void{
 			this.incommingData=new ArrayCollection();
+			stateIncomming = IN_DEFAULT;
 			updatingIncoming=false;
 		}
 		
 		[CommandResult]
 		public function getIncommingByDayResult(result:*,event:GetIncommingByDayEvent):void{
-			this.incommingData=translateDataByDay(result);
+			this.incommingData.removeAll();
+			stateIncomming = IN_DAY;
+			this.incommingData.addAll(translateDataByDay(result));
 			updatingIncoming=false;
 		}
 		
 		[CommandError]
 		public function getIncommingByDayError(fault:*,event:GetIncommingByDayEvent):void{
 			this.incommingData.removeAll();
+			stateIncomming = IN_DAY;
 			updatingIncoming=false;
 		}
 		
@@ -185,6 +194,7 @@ package org.mxhero.console.reports.presentation.reports
 		[CommandResult]
 		public function getOutgoingResult(result:*,event:GetOutgoingEvent):void{
 			this.outgoingData.removeAll();
+			stateOutgoing = OUT_DEFAULT;
 			this.outgoingData.addAll(translateData(result));
 			updatingOutgoing=false;
 		}
@@ -192,6 +202,7 @@ package org.mxhero.console.reports.presentation.reports
 		[CommandError]
 		public function getOutgoingError(fault:*,event:GetOutgoingEvent):void{
 			this.outgoingData=new ArrayCollection();
+			stateOutgoing = OUT_DEFAULT;
 			updatingOutgoing=false;
 		}
 		
@@ -209,13 +220,16 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[CommandResult]
 		public function getOutgoingByDayResult(result:*,event:GetOutgoingByDayEvent):void{
-			this.outgoingData=translateDataByDay(result);
+			this.outgoingData.removeAll();
+			stateOutgoing = OUT_DAY;
+			this.outgoingData.addAll(translateDataByDay(result));
 			updatingOutgoing=false;
 		}
 		
 		[CommandError]
 		public function getOutgoingByDayError(fault:*,event:GetOutgoingByDayEvent):void{
 			this.outgoingData.removeAll();
+			stateOutgoing = OUT_DAY;
 			updatingOutgoing=false;
 		}
 		
@@ -236,7 +250,9 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						newData.addItem({Qty: object[0], MB:int((((object[1])/1024)/1024)*1000)/1000, Date:object[2]});
+						var day:Date = object[2];
+						day.setTime(day.getTime()+day.getTimezoneOffset()*60*1000);
+						newData.addItem({Qty: object[0], MB:int((((object[1])/1024)/1024)*1000)/1000, Date:day});
 					}
 				}
 			}
@@ -248,11 +264,9 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						var day:Date = object[2];
-						day.hoursUTC=object[3];
-						day.minutes=0;
-						day.seconds=0;
-						day.milliseconds=0;
+						var day:Date = new Date((object[2]as Date).getTime());
+						day.setUTCHours(object[3]);
+						day.setTime(day.getTime()-day.getTimezoneOffset()*60*1000);
 						newData.addItem({Qty: object[0], MB:int((((object[1])/1024)/1024)*1000)/1000, Date:day});
 					}
 				}

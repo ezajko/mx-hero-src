@@ -51,13 +51,15 @@ package org.mxhero.console.reports.presentation.reports
 		
 		[Enter(time="every")]
 		public function every():void{
+			fromDirection=new FeatureRuleDirection();
+			toDirection=new FeatureRuleDirection();
 			if(refresh!=null){
 				refresh();
 			}
 			emails=null;
 			topTenSenders=null;
 			topTenRecipients=null;
-			
+
 			if(context.selectedDomain==null){
 				dispatcher(new GetDomainsEvent());
 				dispatcher(new GetAccountsEvent());
@@ -65,7 +67,6 @@ package org.mxhero.console.reports.presentation.reports
 				var newDomains:ArrayCollection = new ArrayCollection();
 				newDomains.addItem(context.selectedDomain);
 				context.domains=newDomains;
-				dispatcher(new GetDomainsEvent());
 				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.id));
 				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.id));
 			}
@@ -78,9 +79,17 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function filter(since:Date, until:Date):void{
-			dispatcher(new GetEmailsEvent(this.fromDirection,this.toDirection,since,until));
-			dispatcher(new GetTopTenSendersEvent(this.fromDirection,this.toDirection,since,until));
-			dispatcher(new GetTopTenRecipientsEvent(this.fromDirection,this.toDirection,since,until));
+			var sinceDate:Date = new Date();
+			var untilDate:Date = new Date();
+
+			sinceDate.setTime(since.getTime());
+			sinceDate.setHours(0,0,0,0);
+			untilDate.setTime(until.getTime()+24*60*60*1000);
+			untilDate.setHours(0,0,0,0);
+			
+			dispatcher(new GetEmailsEvent(this.fromDirection,this.toDirection,sinceDate.getTime(),untilDate.getTime()));
+			dispatcher(new GetTopTenSendersEvent(this.fromDirection,this.toDirection,sinceDate.getTime(),untilDate.getTime()));
+			dispatcher(new GetTopTenRecipientsEvent(this.fromDirection,this.toDirection,sinceDate.getTime(),untilDate.getTime()));
 			updatingEmails=true;
 		}
 		

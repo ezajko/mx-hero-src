@@ -17,7 +17,7 @@ package org.mxhero.console.reports.application.command
 		
 		public function execute(event:GetSpamEmailsEvent):AsyncToken
 		{
-			return service.getSpamEmails(event.domain,event.since,event.until);
+			return service.getSpamEmails(event.domain,event.since.getTime(),event.until.getTime());
 		}
 		
 		public function error (fault:Fault) : void {

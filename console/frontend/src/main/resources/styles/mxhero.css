@@ -252,6 +252,20 @@ mx|LinkBar.Dashboard
 	horizontalGap: 24;
 	separator-width:2;
 }
+
+
+mx|LinkBar.Reports
+{
+	borderVisible: false;
+	contentBackgroundAlpha: 0.0;
+	disabled-color:#FFFFFF;
+	text-roll-over-color:#FFFFFF;
+	text-selected-color:#FFFFFF;
+	fontSize: 16;
+	horizontalGap: 24;
+	separator-width:2;
+}
+
 mx|ProgressBar.loading
 {
 	color: #FFFFFF;
@@ -298,4 +312,16 @@ mx|Text.errorText{
 
 mx|ToolTip{
 	font-size:12;
+}
+
+mx|TabNavigator{
+	border-color:#CCCCCC; 
+	corner-radius:6;
+	tab-offset:8;
+	tab-style-name:"reportsTab";
+}
+
+.reportsTab{
+	border-color:#CCCCCC;
+	cornerRadius: 8;
 }

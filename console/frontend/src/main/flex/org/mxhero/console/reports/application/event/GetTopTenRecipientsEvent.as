@@ -6,13 +6,13 @@ package org.mxhero.console.reports.application.event
 	{
 		public var from:FeatureRuleDirection;
 		public var to:FeatureRuleDirection;
-		public var since:Date;
-		public var until:Date;
+		public var since:Number;
+		public var until:Number;
 		
 		public function GetTopTenRecipientsEvent(from:FeatureRuleDirection
 											  ,to:FeatureRuleDirection
-											   ,since:Date
-												,until:Date)
+											   ,since:Number
+												,until:Number)
 		{
 			this.from=from;
 			this.to=to;

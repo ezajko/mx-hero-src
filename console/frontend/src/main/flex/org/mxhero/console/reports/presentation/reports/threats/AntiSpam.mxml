@@ -13,7 +13,7 @@
 		<parsley:Configure/>
 		
 		<mx:SeriesZoom id="zoomOut" 
-					   duration="600"
+					   duration="800"
 					   verticalFocus="top" 
 					   horizontalFocus="center"
 					   relativeTo="chart"/>
@@ -95,9 +95,9 @@
 			import mx.events.FlexEvent;
 			
 			import org.mxhero.console.reports.application.resources.ReportCommonProperties;
+			import org.mxhero.console.reports.application.resources.ReportsImages;
 			import org.mxhero.console.reports.application.resources.ThreatsProperties;
 			import org.mxhero.console.reports.presentation.reports.ThreatsPM;
-			import org.mxhero.console.reports.application.resources.ReportsImages;
 			
 			[Inject]
 			[Bindable]
@@ -106,34 +106,36 @@
 			public var dayFrom:Date;
 			[Bindable]
 			public var dayTo:Date;
+			private var selectedDate:Date;
 			
 			private var cursorId:int;
 
 			protected function linechart_itemDoubleClickHandler(event:ChartItemEvent):void
-			{
-				dayFrom= new Date();
-				dayFrom.setTime(event.hitData.item.Date.getTime());
-				dayFrom.setTime(dayFrom.setUTCHours(0,0,0,0));
-				dayTo= new Date();
-				dayTo.setTime(event.hitData.item.Date.getTime());
-				dayTo.setTime(dayTo.setUTCHours(0,0,0,0));
-				dayTo.setTime(dayTo.getTime()+24*60*60*1000);
-				
+			{		
+				if(currentState=="zoom_out"){
+					selectedDate=new Date();
+					selectedDate.setTime(event.hitData.item.Date.getTime());
+					dayFrom= new Date();
+					dayFrom.setTime(selectedDate.getTime());
+					dayFrom.setUTCHours(0,0,0,0);
+					dayTo= new Date();
+					dayTo.setTime(selectedDate.getTime());
+					dayTo.setUTCHours(0,0,0,0);
+					dayTo.setTime(dayTo.getTime()+24*60*60*1000);	
+					this.callLater(model.getSpamByDay,[selectedDate]);
+				}else if(currentState=="zoom_in"){
+					this.callLater(model.getSpam);
+				}
 				cursorManager.removeCursor(cursorId);
-				
-				model.getSpamByDay(event.hitData.item.Date);
-				linechart.doubleClickEnabled=false;
-				cserie.buttonMode=false;
-				model.stateSpam="zoom_in";
 			}
 			
-			
-			protected function button1_clickHandler(event:MouseEvent):void
+			protected function refresh_clickHandler(event:MouseEvent):void
 			{
-				linechart.doubleClickEnabled=true;
-				cserie.buttonMode=true;
-				model.stateSpam="zoom_out";
-				model.getSpam();
+				if(currentState=="zoom_out"){
+					model.getSpam();
+				}else if(currentState=="zoom_in"){
+					model.getSpamByDay(selectedDate);
+				}
 			}
 			
 		]]>
@@ -141,10 +143,10 @@
 	
 	
 	
-	<s:VGroup width="100%">
+	<s:VGroup width="100%" height="100%">
 		
 		<s:VGroup width="100%" enabled="{!model.spamUpdating}">
-			<s:HGroup horizontalAlign="right" 
+			<s:HGroup horizontalAlign="left" 
 					  width="100%"
 					  paddingRight="5"
 					  paddingBottom="5">
@@ -152,20 +154,12 @@
 						 fontWeight="bold" fontSize="16"
 						 color="#FFFFFF"
 						 textDecoration="underline"/>
-				<mx:Spacer width="100%"/>
-				<component:GlowButton
-					id="zoom_in_btt"
-					includeIn="zoom_in"
-					source="{ReportsImages.ZOOM_OUT}" 
-					click="button1_clickHandler(event)"
-					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.ZOOM_OUT)}"
-					addedEffect="{zoom_in_btt.glowOn}"/>	
 <!--				<component:GlowButton
 					source="{ReportsImages.EXPORT}" 
 					toolTip="Export"/>	-->
 				<component:GlowButton
 					source="{ReportsImages.REFRESH}" 
-					click="button1_clickHandler(event)"
+					click="refresh_clickHandler(event)"
 					toolTip="{resourceManager.getString(ReportCommonProperties.NAME,ReportCommonProperties.REFRESH)}"/>	
 			</s:HGroup>
 			<mx:ColumnChart id="linechart" color="0x323232" 
@@ -174,8 +168,7 @@
 							styleName="myChart"
 							dataProvider="{model.spamHists}"
 							axisTitleStyleName="axisTitles"
-							doubleClickEnabled.zoom_out="true"
-							doubleClickEnabled.zoom_in="false"
+							doubleClickEnabled="true"
 							itemDoubleClick="linechart_itemDoubleClickHandler(event)"
 							backgroundElements="{bge}">
 				
@@ -195,6 +188,7 @@
 									 disabledDays="{[]}"
 									 autoAdjust="true"
 									 dataInterval="1"
+									 padding="1"
 									 maximum.zoom_out="{model.untilDate}"
 									 minimum.zoom_out="{model.sinceDate}"
 									 maximum.zoom_in="{dayTo}"
@@ -213,8 +207,7 @@
 				</mx:verticalAxis>
 				
 				<mx:verticalAxisRenderers>
-					<mx:AxisRenderer labelRotation="45" 
-									 axis="{qtyAxis}" 
+					<mx:AxisRenderer axis="{qtyAxis}" 
 									 color="#FFFFFF" 
 									 fontSize="14"
 									 />	   
@@ -241,9 +234,11 @@
 									 showDataEffect.zoom_in="{zoomIn}" 
 									 hideDataEffect.zoom_in="{zoomOut}"
 									 id="cserie"
-									 buttonMode.zoom_out="true"
+									 buttonMode="true"
 									 rollOver.zoom_out="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_IN);}"
 									 rollOut.zoom_out="{cursorManager.removeCursor(cursorId)}"
+									 rollOver.zoom_in="{this.cursorId = cursorManager.setCursor(ReportsImages.ZOOM_OUT);}"
+									 rollOut.zoom_in="{cursorManager.removeCursor(cursorId)}"
 									 displayName="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.HITS_TITLE)}">
 						<mx:stroke>
 							<s:SolidColorStroke color="#FFFFFF" caps="round" />
@@ -265,11 +260,12 @@
 
 		<s:Label text="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.SPAM_EMAIL_TITLE)}" 
 				 fontWeight="bold" fontSize="16"
-				 paddingLeft="50"/>
-		<s:HGroup width="100%" height="100%" verticalAlign="bottom"  paddingLeft="50">
-			<mails:EmailsDataGrid dataProvider="{model.spamMails}"/>
-		</s:HGroup>
-		
+				 color="#FFFFFF"
+				 textDecoration="underline"
+				 paddingBottom="10"/>
+		<mails:EmailsDataGrid dataProvider="{model.spamMails}" 
+							  minHeight="400" height="100%" 
+							  width="800"/>
 	</s:VGroup>
 </s:Group>
 

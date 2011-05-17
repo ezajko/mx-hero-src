@@ -2,6 +2,7 @@ package org.mxhero.console.reports.presentation.reports
 {
 	import mx.collections.ArrayCollection;
 	
+	import org.mxhero.console.commons.infrastructure.TimeUtils;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.reports.application.ReportsDestinations;
 	import org.mxhero.console.reports.application.event.GetSpamEmailsEvent;
@@ -41,6 +42,7 @@ package org.mxhero.console.reports.presentation.reports
 		public var virusMails:ArrayCollection;
 		
 		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
+		private static const PLUSDAY:Number = 24*60*60*1000; 
 		
 		[Bindable]
 		public var virusUpdating:Boolean=false;
@@ -62,58 +64,83 @@ package org.mxhero.console.reports.presentation.reports
 			virusHists=null;
 			virusMails=null;
 			untilDate.setTime(new Date());
-			untilDate.setTime(untilDate.setUTCHours(0,0,0,0));
-			untilDate.setTime(untilDate.getTime()+24*60*60*1000);
+			untilDate.setHours(0,0,0,0);
+			untilDate.setTime(untilDate.getTime()+PLUSDAY);
 			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
-			sinceDate.setTime(sinceDate.setUTCHours(0,0,0,0));
+			sinceDate.setHours(0,0,0,0);
 			getVirus();
 			getSpam();
 		}
 		
 		public function getVirus():void{
+			this.virusHists=null;
+			this.virusMails=null;
 			var domain:String = null;
 			
 			if(context.selectedDomain!=null){
 				domain = context.selectedDomain.domain;
 			}
 			dispatcher( new GetVirusHitsEvent(domain,sinceDate) );
-			dispatcher( new GetVirusEmailsEvent(domain,sinceDate,new Date()));
+			dispatcher( new GetVirusEmailsEvent(domain,sinceDate,untilDate));
 			stateVirus = "zoom_out";
 			this.virusUpdating=true;
 		}
 		
 		public function getSpam():void{
+			spamHists=null;
+			spamMails=null;
 			var domain:String = null;
 			
 			if(context.selectedDomain!=null){
 				domain = context.selectedDomain.domain;
 			}
 			dispatcher( new GetSpamHitsEvent(domain,sinceDate) );
-			dispatcher( new GetSpamEmailsEvent(domain,sinceDate,new Date()));
+			dispatcher( new GetSpamEmailsEvent(domain,sinceDate,untilDate));
 			stateSpam = "zoom_out";
 			this.spamUpdating=true;
 		}
 		
 		public function getVirusByDay(day:Date):void{
+			var sinceDay:Date = new Date();
+			var untilDay:Date = new Date();
 			var domain:String = null;
 			
+			sinceDay.setTime(day.getTime());
+			sinceDay.setHours(0,0,0,0);
+			untilDay.setTime(day.getTime()+PLUSDAY);
+			untilDay.setHours(0,0,0,0);
+			
+			this.virusHists=null;
+			this.virusMails=null;
 			if(context.selectedDomain!=null){
 				domain = context.selectedDomain.domain;
 			}
-			dispatcher( new GetVirusHitsDayEvent(domain,day) );
-			dispatcher( new GetVirusEmailsEvent(domain,day,day));
+			dispatcher( new GetVirusHitsDayEvent(domain,sinceDay) );
+			dispatcher( new GetVirusEmailsEvent(domain,sinceDay,untilDay));
 			this.virusUpdating=true;
+			stateVirus="zoom_in"
 		}
 		
 		public function getSpamByDay(day:Date):void{
+			var sinceDay:Date = new Date();
+			var untilDay:Date = new Date();
 			var domain:String = null;
+			
+			sinceDay.setTime(day.getTime());
+			sinceDay.setHours(0,0,0,0);
+			untilDay.setTime(day.getTime()+PLUSDAY);
+			untilDay.setHours(0,0,0,0);
+			
+			spamHists=null;
+			spamMails=null;
 			
 			if(context.selectedDomain!=null){
 				domain = context.selectedDomain.domain;
 			}
-			dispatcher( new GetSpamHitsDayEvent(domain,day) );
-			dispatcher( new GetSpamEmailsEvent(domain,day,day));
+			dispatcher( new GetSpamHitsDayEvent(domain,sinceDay) );
+			dispatcher( new GetSpamEmailsEvent(domain,sinceDay,untilDay));
 			this.spamUpdating=true;
+			stateSpam="zoom_in"
 		}
 		
 		[CommandResult]
@@ -195,11 +222,9 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						var day:Date = object[1];
-						day.hoursUTC=object[2];
-						day.minutes=0;
-						day.seconds=0;
-						day.milliseconds=0;
+						var day:Date = new Date((object[1]as Date).getTime());
+						day.setUTCHours(object[2]);
+						day.setTime(day.getTime()-day.getTimezoneOffset()*60*1000);
 						newData.addItem({Qty: object[0], Date:day});
 					}
 				}
@@ -212,7 +237,9 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						newData.addItem({Qty: object[0], Date:object[1]});
+						var day:Date = object[1];
+						day.setTime(day.getTime()+day.getTimezoneOffset()*60*1000);
+						newData.addItem({Qty: object[0], Date:day});
 					}
 				}
 			}

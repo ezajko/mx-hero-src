@@ -11,7 +11,7 @@
 	<fx:Declarations>
 		<parsley:Configure/>
 		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY HH:NN"/>
+						  formatString="DD-MM-YYYY JJ:NN"/>
 	</fx:Declarations>
 	
 	<fx:Script>

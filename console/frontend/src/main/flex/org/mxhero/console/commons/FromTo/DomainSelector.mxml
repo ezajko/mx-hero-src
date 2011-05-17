@@ -292,75 +292,91 @@
 	
 	<s:transitions>
 		<s:Transition fromState="all" toState="anyone"> 
-			<s:Sequence effectStart="{anyoneFT.currentState='active'}" suspendBackgroundProcessing="true">
-				<s:Parallel suspendBackgroundProcessing="true">
+			<s:Sequence effectStart="{anyoneFT.currentState='active'}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel suspendBackgroundProcessing="true">
 					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="anyone" toState="all"> 
-			<s:Sequence effectStart="{anyoneFT.currentState='inactive'}" suspendBackgroundProcessing="true">
-				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
+			<s:Sequence effectStart="{anyoneFT.currentState='inactive'}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="all" toState="domain"> 
-			<s:Sequence effectEnd="{domainFT.currentState=elementNextState(isRestricted)}" suspendBackgroundProcessing="true">
-				<s:Parallel suspendBackgroundProcessing="true">
+			<s:Sequence effectEnd="{domainFT.currentState=elementNextState(isRestricted)}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel suspendBackgroundProcessing="true">
 					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="domain" toState="all"> 
-			<s:Sequence effectStart="{domainFT.currentState='inactive'}" suspendBackgroundProcessing="true">
-				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
+			<s:Sequence effectStart="{domainFT.currentState='inactive'}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
 					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="all" toState="group"> 
-			<s:Sequence effectEnd="{groupFT.currentState='active'}" suspendBackgroundProcessing="true">
-				<s:Parallel suspendBackgroundProcessing="true">
+			<s:Sequence effectEnd="{groupFT.currentState='active'}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel suspendBackgroundProcessing="true">
 					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{individualFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="group" toState="all"> 
-			<s:Sequence effectStart="{groupFT.currentState='inactive'}" suspendBackgroundProcessing="true">
-				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
+			<s:Sequence effectStart="{groupFT.currentState='inactive'}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
 					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{individualFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="all" toState="individual"> 
-			<s:Sequence effectEnd="{individualFT.currentState=elementNextState(isRestricted)}" suspendBackgroundProcessing="true">
-				<s:Parallel suspendBackgroundProcessing="true">
+			<s:Sequence effectEnd="{individualFT.currentState=elementNextState(isRestricted)}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel suspendBackgroundProcessing="true">
 					<s:Fade target="{anyoneFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{domainFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{groupFT}" alphaFrom="1" alphaTo="0" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 		<s:Transition fromState="individual" toState="all"> 
-			<s:Sequence effectStart="{individualFT.currentState='inactive'}" suspendBackgroundProcessing="true">
-				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
+			<s:Sequence effectStart="{individualFT.currentState='inactive'}" 
+						suspendBackgroundProcessing="true"
+						duration="0">
+<!--				<s:Parallel startDelay="100" suspendBackgroundProcessing="true">
 					<s:Fade target="{anyoneFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{domainFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
 					<s:Fade target="{groupFT}" alphaFrom="0" alphaTo="1" suspendBackgroundProcessing="true"/>
-				</s:Parallel>
+				</s:Parallel>-->
 			</s:Sequence>
 		</s:Transition>
 	</s:transitions>

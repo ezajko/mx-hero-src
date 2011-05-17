@@ -60,11 +60,19 @@
 				if(currentState=="show"){
 					currentState="edit";
 				} else {
+					var isOk:Boolean = false;
 					if(enableItemSelectionCheck){
 						try{
 							if(_dataProvider.getItemIndex(comboBox.selectedItem)<0){
-								comboBox.errorString=itemNotSelectedError;
-								return;
+								for each(var data:Object in _dataProvider){
+									if(comboBox.textInput.text == privateLabelFunction(data)){
+										this.comboBox.selectedItem=data;
+									}
+								}
+								if(!isOk){
+									comboBox.errorString=itemNotSelectedError;
+									return;
+								}
 							}
 						}catch (error:SortError){
 							comboBox.errorString=itemNotSelectedError;
@@ -220,7 +228,7 @@
 			protected function currentStateChangeHandler(event:StateChangeEvent):void
 			{
 				if(event.newState=='edit'){
-					comboBox.textInput.setFocus();
+					callLater(comboBox.setFocus);
 				}
 			}
 
