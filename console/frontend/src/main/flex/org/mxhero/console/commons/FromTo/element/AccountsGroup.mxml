@@ -88,7 +88,7 @@
 					   buttonMode="true"
 					   borderColor="#cccccc" 
 					   cornerRadius="4"
-					   minWidth="260"
+					   minWidth="340"
 					   height="100%">
 		<s:VGroup height="100%" width="100%" 
 				  horizontalAlign="center" 

@@ -54,6 +54,10 @@ package org.mxhero.console.features.application.resources
 		
 		public static const ANYONE_CHECKBOX_LABEL:String="anyone.checkbox.label";
 		
+		public static const ANYONE_CHECKBOX_DOMAIN_START_LABEL:String="anyone.checkbox.domain.start.label";
+		
+		public static const ANYONE_CHECKBOX_DOMAIN_END_LABEL:String="anyone.checkbox.domain.end.label";
+
 		public static const ANYONE_CHECKBOX_TOOLTIP:String="anyone.checkbox.tooltip";
 		
 		public static const CANCEL_CHANGES_TEXT:String="cancel.changes.text";

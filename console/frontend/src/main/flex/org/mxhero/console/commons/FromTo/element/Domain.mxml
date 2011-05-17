@@ -12,7 +12,11 @@
 
 	<fx:Declarations>
 		<parsley:Configure/>
-		<mx:StringValidator id="requiredValidator" required="true"/>
+
+		<mx:RegExpValidator id="requiredValidator"  
+							required="true" 
+							expression="{Regex.domainRegex}"
+							noMatchError="{resourceManager.getString(ErrorsProperties.NAME,ErrorsProperties.INVALID_DOMAIN)}"/>
 	</fx:Declarations>
 	<s:states>
 		<s:State name="active"/>
@@ -38,6 +42,8 @@
 			import mx.events.FlexEvent;
 			import mx.events.StateChangeEvent;
 			
+			import org.mxhero.console.commons.resources.ErrorsProperties;
+			import org.mxhero.console.commons.utils.Regex;
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.features.presentation.rule.RuleViewPM;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
@@ -97,7 +103,7 @@
 						buttonMode="true"
 						borderColor="#cccccc" 
 						cornerRadius="4"
-						minWidth="260"
+						minWidth="340"
 						height="100%">
 		<s:VGroup height="100%" width="100%" 
 				  horizontalAlign="center" 
