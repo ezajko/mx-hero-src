@@ -9,7 +9,8 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
-		
+		<mx:EmailValidator id="emailV" required="true"/>
+		<mx:RegExpValidator id="domainV" required="true" expression="{Regex.domainRegex}"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -20,10 +21,12 @@
 			import mx.managers.DragManager;
 			import mx.messaging.messages.ErrorMessage;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.Regex;
 			
 			public var validationError:String;
 			
@@ -43,12 +46,52 @@
 			
 			protected function addEmailBtt_clickHandler(event:MouseEvent):void
 			{
+				var textToValidate:String = StringUtil.trim(emailTi.text).replace(/^[@]+/,"");
+				var isEmail:Boolean = true;		
+				var isDomain:Boolean = true;
+				var results:Array=null;
+				
+				results=emailV.validate(textToValidate).results;
+				if(results!=null){
+					if(results.length>0){
+						for each(var result:ValidationResult in results){
+							if(result.isError){
+								emailTi.errorString= result.errorMessage;
+								isEmail=false;
+							}
+						}
+					}
+				}
+				
+				if(!isEmail){
+					results=domainV.validate(textToValidate).results;
+					if(results!=null){
+						if(results.length>0){
+							for each(var domainResult:ValidationResult in results){
+								if(domainResult.isError){
+									emailTi.errorString= domainResult.errorMessage;
+									isDomain=false;
+								}
+							}
+						}
+					}
+					if(isDomain){
+						textToValidate="@"+textToValidate;
+					}
+				}
+				if(!isDomain && !isEmail){
+					return;
+				}
+				
+				emailTi.errorString= "";
+				
 				for each(var object:Object in emails){
-					if(object.toString()==emailTi.text){
+					if(object.toString()==textToValidate){
+						emailTi.errorString=resourceManager.getString(MODULE_NAME,'duplicate.email.domain');
 						return;
 					}
 				}
-				emails.addItem(emailTi.text);
+				emails.addItem(textToValidate);
 				emailTi.text="";
 			}
 			
