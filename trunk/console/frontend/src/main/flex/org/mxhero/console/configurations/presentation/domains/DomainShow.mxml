@@ -19,10 +19,12 @@
 			import mx.managers.DragManager;
 			import mx.managers.PopUpManager;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.commons.resources.ErrorsProperties;
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.commons.utils.Regex;
 			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 			import org.mxhero.console.frontend.domain.Domain;
 			
@@ -74,6 +76,19 @@
 			{
 				
 				if(aliasTi.text!=null && StringUtil.trim(aliasTi.text).length>0){
+					var textToValidate:String = StringUtil.trim(aliasTi.text);
+					var results:Array=aliasV.validate(textToValidate).results;
+					if(results!=null){
+						if(results.length>0){
+							for each(var result:ValidationResult in results){
+								if(result.isError){
+									aliasTi.errorString= result.errorMessage;
+									return;
+								}
+							}
+						}
+					}
+					aliasTi.errorString="";
 					if(domain.aliases==null){
 						domain.aliases=new ArrayCollection();
 					}
@@ -112,10 +127,19 @@
 					 blurYFrom="10.0" blurYTo="0.0"/>			
 		</s:Sequence>
 
+		<mx:RegExpValidator id="aliasV"  
+							required="true" 
+							expression="{Regex.domainRegex}"
+							noMatchError="{resourceManager.getString(ErrorsProperties.NAME,ErrorsProperties.INVALID_DOMAIN)}"/>
+
 		
 		<cairngorm:ValidatorGroup id="validateAll">
 			<cairngorm:validators>
-				<mx:StringValidator id="domainV" required="true" property="text" source="{domainTi}" trigger="{saveBtt}" triggerEvent="click"/>
+				<mx:RegExpValidator id="domainV"  
+									required="true" 
+									expression="{Regex.domainRegex}"
+									noMatchError="{resourceManager.getString(ErrorsProperties.NAME,ErrorsProperties.INVALID_DOMAIN)}"
+									property="text" source="{domainTi}" trigger="{saveBtt}" triggerEvent="click"/>
 				<mx:StringValidator id="serverV" required="true" property="text" source="{serverTi}" trigger="{saveBtt}" triggerEvent="click"/>
 			</cairngorm:validators>
 			<cairngorm:groups>

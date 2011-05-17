@@ -3,14 +3,16 @@
 				   xmlns:s="library://ns.adobe.com/flex/spark" 
 				   xmlns:mx="library://ns.adobe.com/flex/mx" 
 				   xmlns:FromTo="org.mxhero.console.commons.FromTo.*" 
-				   xmlns:element="org.mxhero.console.commons.FromTo.element.*"
 				   gap="20"
-				   verticalAlign="middle">
+				   verticalAlign="middle" 
+				   xmlns:parsley="http://www.spicefactory.org/parsley" 
+				   xmlns:element="org.mxhero.console.commons.FromTo.element.*">
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			import org.mxhero.console.frontend.domain.ApplicationContext;
 			
 			public var parentStateFunction:Function;
 			
@@ -20,6 +22,10 @@
 			
 			[Bindable]
 			public var isSelected:Boolean;
+			
+			[Inject]
+			[Bindable]
+			public var model:ApplicationContext;
 			
 			protected function item_clickHandler(event:MouseEvent):void
 			{
@@ -33,11 +39,25 @@
 				this.isSelected=anyoneelse.selected;
 				notifyChange();
 			}
+			
+			[Bindalbe]
+			public function checkboxLabel(selectedDomain:Object):String{
+				var label:String=null;
+				if(selectedDomain==null){
+					label = resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_LABEL);
+				}else{
+					label = resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_DOMAIN_START_LABEL) 
+						+" "+selectedDomain.domain+" "
+						+resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_DOMAIN_END_LABEL);
+				}
+				return label;
+			}
 
 		]]>
 	</fx:Script>
 
 	<fx:Declarations>
+		<parsley:Configure/>
 	</fx:Declarations>
 
 	<s:states>
@@ -72,7 +92,7 @@
 					   buttonMode="true"
 					   borderColor="#cccccc" 
 					   cornerRadius="4"
-					   minWidth="260"
+					   minWidth="340"
 					   height="100%">
 		<s:VGroup height="100%" width="100%" 
 				  horizontalAlign="center" 
@@ -82,7 +102,7 @@
 			<s:CheckBox 
 						id="anyoneelse"
 						selected="@{isSelected}"
-						label="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_LABEL)}"
+						label="{checkboxLabel(model.selectedDomain)}"
 						valueCommit="anyoneelse_valueCommitHandler(event)"
 						toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_TOOLTIP)}"/>
 		</s:VGroup>
