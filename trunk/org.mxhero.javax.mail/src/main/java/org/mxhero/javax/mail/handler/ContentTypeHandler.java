@@ -32,7 +32,8 @@ abstract public class ContentTypeHandler {
 				try {
 					contentType = new ContentType(type).toString();
 				} catch (ParseException e2) {
-					//we can do anything else at this point
+					//only thing to do for is, create a dummy one
+					contentType = "text/plain; charset=\"utf-8\"";
 				}
 			}
 		}
