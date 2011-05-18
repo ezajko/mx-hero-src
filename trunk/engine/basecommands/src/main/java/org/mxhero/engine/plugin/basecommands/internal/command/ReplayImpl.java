@@ -1,5 +1,8 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -33,6 +36,9 @@ public class ReplayImpl implements Replay {
 	private static final int PHASE_PARAM_NUMBER = 2;
 	private static final int RECIPIENT_PARAM_NUMBER = 3;
 	private static final int OUTPUTSERVICE_PARAM_NUMBER = 4;
+	
+	private static final String SENDER_KEY = "mxsender";
+	private static final String RECIPIENT_KEY = "mxrecipient";
 
 	private InputService service;
 
@@ -108,11 +114,40 @@ public class ReplayImpl implements Replay {
 
 			if(!mail.getProperties().containsKey(Replay.class.getName())){
 				try {
+					
+					String content = args[TEXT_PARAM_NUMBER];
+					String tagregex = "\\$\\{[^\\{]*\\}";
+					Pattern p2 = Pattern.compile(tagregex);
+					StringBuffer sb = new StringBuffer();
+					Matcher m2 = p2.matcher(content);
+
+					while (m2.find()) {
+
+					  String key =content.substring(m2.start()+2,m2.end()-1);
+					  
+					  if(key.equalsIgnoreCase(SENDER_KEY)){
+						  m2.appendReplacement(sb, mail.getInitialSender());
+					  }else if(key.equalsIgnoreCase(RECIPIENT_KEY)){
+						  m2.appendReplacement(sb, mail.getRecipient());
+					  }else{
+						  //this should be a header
+						  try{
+							  String[] headers = mail.getMessage().getHeader(key);
+							  if(headers!=null){
+								  m2.appendReplacement(sb, headers[0]); 
+							  }
+						  }catch (MessagingException e){
+							  //do nothing, just ignore this header
+						  }
+					  }
+
+					}
+					
 					MimeMessage replayMessage = (MimeMessage)mail.getMessage().reply(false);
 					replayMessage.setSender(sender);
 					replayMessage.setFrom(sender);
 					replayMessage.setReplyTo(new InternetAddress[]{sender});
-					replayMessage.setText(args[TEXT_PARAM_NUMBER]);
+					replayMessage.setText(sb.toString());
 					replayMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							replayMessage, outputService);
 					replayMail.setPhase(args[PHASE_PARAM_NUMBER]);
@@ -121,6 +156,9 @@ public class ReplayImpl implements Replay {
 						replayMail.setRecipient(recipient.getAddress());
 					}
 				} catch (MessagingException e) {
+					log.warn("error while creating replay message");
+					return result;
+				} catch (Exception e) {
 					log.warn("error while creating replay message");
 					return result;
 				}
