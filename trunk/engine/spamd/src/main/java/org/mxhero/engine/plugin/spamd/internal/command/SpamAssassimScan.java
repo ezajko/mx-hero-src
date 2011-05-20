@@ -38,7 +38,7 @@ public class SpamAssassimScan implements SpamScan {
 	public Result exec(MimeMail mail, String... args) {
 		Result result = new Result();
 		result.setResult(false);
-		String prefix = null;
+		String prefix = "";
 		boolean addHeaders = true;
 		String statusHeaderName = SpamdScanner.STATUS_MAIL_ATTRIBUTE_NAME;
 		String flagHeaderName = SpamdScanner.FLAG_MAIL_ATTRIBUTE_NAME;
