@@ -119,7 +119,6 @@ public class HeadersVO extends Headers{
 	public String getHeaderValue(String header){
 		try {
 			String internetHeader = this.mimeMail.getMessage().getHeader(header,null);
-			log.debug("header found:"+internetHeader+" for header:"+header);
 			return internetHeader;
 		} catch (MessagingException e) {
 			log.error(MailVO.MIME_ERROR,e);
