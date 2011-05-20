@@ -227,9 +227,9 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		}else{
 			if(System.getProperty(MXHERO_DOMAIN_NAME)!=null && 
 					System.getProperty(MXHERO_DOMAIN_NAME).trim().length()>0){
-				domain=System.getProperty(MXHERO_DOMAIN_NAME);
+				noreplyDomain=System.getProperty(MXHERO_DOMAIN_NAME);
 			}else{
-				name=DEFAULT_MXHERO_DOMAIN_NAME;
+				noreplyDomain=DEFAULT_MXHERO_DOMAIN_NAME;
 			}
 		}
 		
