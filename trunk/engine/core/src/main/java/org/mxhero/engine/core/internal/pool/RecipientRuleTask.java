@@ -1,6 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
@@ -57,10 +56,10 @@ public final class RecipientRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public RecipientRuleTask(KnowledgeBase base, MimeMail mail,
+	public RecipientRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail,
 			DomainFinder domainFinderService, UserFinder userFinderService) {
 		this.mail = mail;
-		this.ksession = base.newStatefulKnowledgeSession();
+		this.ksession = sKSession;
 		this.domainFinderService = domainFinderService;
 		this.userFinderService = userFinderService;
 	}

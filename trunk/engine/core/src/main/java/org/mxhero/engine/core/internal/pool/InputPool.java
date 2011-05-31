@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.concurrent.TimeUnit;
+
 import org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
@@ -76,32 +78,51 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	 */
 	@Override
 	protected Runnable createTask(MimeMail object) {
-		if (object.getPhase().equals(RulePhase.SEND)) {
-			SenderRuleTask task = new SenderRuleTask(loader.getBuilder()
-					.getKnowledgeBase(), object, domainFinderService,
-					userFinderService);
-			task.setFiller(this.getFiller());
-			task.setProcessor(this.getProcessor());
-			task.setLogRecordService(getLogRecordService());
-			task.setLogStatService(getLogStatService());
-			task.setProperties(properties);
-			return task;
-		} else if (object.getPhase().equals(RulePhase.RECEIVE)) {
-			RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder()
-					.getKnowledgeBase(), object, domainFinderService,
-					userFinderService);
-			task.setFiller(this.getFiller());
-			task.setProcessor(this.getProcessor());
-			task.setLogRecordService(getLogRecordService());
-			task.setLogStatService(getLogStatService());
-			task.setProperties(properties);
-			return task;
-		} else {
+		try{
+			if (object.getPhase().equals(RulePhase.SEND)) {
+				SenderRuleTask task = new SenderRuleTask(loader.getBuilder()
+						.getKnowledgeBase().newStatefulKnowledgeSession(), object, domainFinderService,
+						userFinderService);
+				task.setFiller(this.getFiller());
+				task.setProcessor(this.getProcessor());
+				task.setLogRecordService(getLogRecordService());
+				task.setLogStatService(getLogStatService());
+				task.setProperties(properties);
+				return task;
+			} else if (object.getPhase().equals(RulePhase.RECEIVE)) {
+				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder()
+						.getKnowledgeBase().newStatefulKnowledgeSession(), object, domainFinderService,
+						userFinderService);
+				task.setFiller(this.getFiller());
+				task.setProcessor(this.getProcessor());
+				task.setLogRecordService(getLogRecordService());
+				task.setLogStatService(getLogStatService());
+				task.setProperties(properties);
+				return task;
+			} else {
+				final MimeMail mail = object;
+				return new Runnable() {
+					@Override
+					public void run() {
+						log.error("Phase does not exists for " + mail);
+					}
+				};
+			}
+		}catch(Exception e){
 			final MimeMail mail = object;
 			return new Runnable() {
 				@Override
 				public void run() {
-					log.error("Phase does not exists for " + mail);
+					log.error("Error while trying to do task fro " + mail);
+					
+					try {
+						InputQueue.getInstance().offer(mail,1000, TimeUnit.MILLISECONDS);
+						log.info("Added agian to queue " + mail);
+						Thread.sleep(200);
+						log.info("Waiting for new cicle" + mail);
+					} catch (InterruptedException e1) {
+						log.error("Interrumped whi waitingz " + mail);
+					}
 				}
 			};
 		}
