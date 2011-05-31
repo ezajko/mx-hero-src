@@ -76,7 +76,9 @@ public class KnowledgeBaseBuilder {
 
 		log.debug("total resourceProviders:"+resourceProviders.size());
 		for(Object provider : resourceProviders){
-			new File(folder).mkdir();
+			if(Boolean.parseBoolean(getProperties().getValue(Core.DROOLS_RESOURCES_BACKUP).trim().toLowerCase())){
+				new File(folder).mkdir();
+			}
 			try{
 				for (Resource resource : ((ResourcesProvider)provider).getResources()){
 					

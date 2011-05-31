@@ -85,7 +85,7 @@ public class SenderRuleTaskTest {
 		DefaultRulesProcessor processor = new DefaultRulesProcessor();
 		processor.setProperties(core);
 		
-		SenderRuleTask task = new SenderRuleTask(kbase, mail, domainFinder, userFinder);
+		SenderRuleTask task = new SenderRuleTask(kbase.newStatefulKnowledgeSession(), mail, domainFinder, userFinder);
 		task.setFiller(filler);
 		task.setProcessor(processor);
 		task.setProperties(core);
