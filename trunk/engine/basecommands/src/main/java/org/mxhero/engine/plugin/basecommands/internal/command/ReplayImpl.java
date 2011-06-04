@@ -120,9 +120,10 @@ public class ReplayImpl implements Replay {
 					Pattern p2 = Pattern.compile(tagregex);
 					StringBuffer sb = new StringBuffer();
 					Matcher m2 = p2.matcher(content);
-
+					int lastIndex = 0;
+					
 					while (m2.find()) {
-
+					lastIndex=m2.end();
 					  String key =content.substring(m2.start()+2,m2.end()-1);
 					  
 					  if(key.equalsIgnoreCase(SENDER_KEY)){
@@ -142,7 +143,7 @@ public class ReplayImpl implements Replay {
 					  }
 
 					}
-					
+					sb.append(content.substring(lastIndex));
 					MimeMessage replayMessage = (MimeMessage)mail.getMessage().reply(false);
 					replayMessage.setSender(sender);
 					replayMessage.setFrom(sender);
