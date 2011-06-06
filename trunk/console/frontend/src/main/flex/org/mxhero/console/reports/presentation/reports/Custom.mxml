@@ -264,16 +264,16 @@
 												<s:SolidColorStroke color="#FFFFFF" caps="round" />
 											</mx:stroke>
 											<mx:fills>
-												<mx:SolidColor color="0xFF99DD" alpha=".6"/>
-												<mx:SolidColor color="0xFF80D4" alpha=".6"/>
-												<mx:SolidColor color="0xFF66CC" alpha=".6"/>
-												<mx:SolidColor color="0xFF4DC3" alpha=".6"/>
-												<mx:SolidColor color="0xFF33BB" alpha=".6"/>
-												<mx:SolidColor color="0xFF1AB3" alpha=".6"/>
-												<mx:SolidColor color="0xFF00AA" alpha=".6"/>
-												<mx:SolidColor color="0xE60099" alpha=".6"/>
-												<mx:SolidColor color="0xCC0088" alpha=".6"/>
-												<mx:SolidColor color="0xB30077" alpha=".6"/>
+												<mx:SolidColor color="0xC6FFB3" alpha=".6"/>
+												<mx:SolidColor color="0xB3FF99" alpha=".6"/>
+												<mx:SolidColor color="0x9FFF80" alpha=".6"/>
+												<mx:SolidColor color="0x8CFF66" alpha=".6"/>
+												<mx:SolidColor color="0x79FF4D" alpha=".6"/>
+												<mx:SolidColor color="0x66FF33" alpha=".6"/>
+												<mx:SolidColor color="0x53FF1A" alpha=".6"/>
+												<mx:SolidColor color="0x40FF00" alpha=".6"/>
+												<mx:SolidColor color="0x39E600" alpha=".6"/>
+												<mx:SolidColor color="0x33CC00" alpha=".6"/>
 											</mx:fills>
 											<mx:filters>
 												<s:DropShadowFilter

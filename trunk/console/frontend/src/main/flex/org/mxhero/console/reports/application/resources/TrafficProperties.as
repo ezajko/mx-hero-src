@@ -24,5 +24,7 @@ package org.mxhero.console.reports.application.resources
 		
 		public static const TOP_TEN_RECIPIENTS_TITLE:String="top.ten.recipients.title";
 		
+		public static const TOP_TEN_ONLY_DOMAIN:String="top.ten.only.domain";
+		
 	}
 }

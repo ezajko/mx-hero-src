@@ -92,13 +92,12 @@
 						model.categoriesUI.addItem(newCategoryRow.categoryContainer);
 						hrule = new HRule();
 						hrule.percentWidth=100;
-						hrule.height=1;
+						hrule.height=3;
+						hrule.setStyle("strokeColor",0x70B2EE);
 						innerGroup.addElement(hrule);
 					}
 				}
 				innerGroup.removeElementAt(innerGroup.numElements-1);
-				
-				invalidateDisplayList();
 			}
 			
 			
@@ -107,11 +106,10 @@
 					if(category.iconsrc is String){
 						var loader:SWFLoader = new SWFLoader();
 						loader.load(category.iconsrc);
-						loader.addEventListener(Event.COMPLETE,initCategories);
 					}
 				}
-				initCategories();
-				this.validateSize(true);
+				this.callLater(initCategories);
+				this.callLater(validateSize,[true]);
 			}
 			
 			

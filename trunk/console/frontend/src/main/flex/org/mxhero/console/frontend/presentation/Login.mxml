@@ -92,7 +92,8 @@
 		<s:Panel id="loginPanel"
 				 title.default="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_TITLE)}" 
 				 title.forgot="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_TITLE)}"
-				 enabled="{!(model.isLoging||model.isRecovering)}"> 
+				 enabled="{!(model.isLoging||model.isRecovering)}"
+				 skinClass="org.mxhero.console.commons.skin.BlueLinePanel"> 
 			<s:layout> 
 				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 			</s:layout>

@@ -55,12 +55,19 @@
 		
 		<fx:Array id="initialTasks">
 			<task1:LoadUserDataTask id="loadUserDataTask"/>
+			<task1:LoadModuleTask moduleData="{home}"/>
 			<task1:LoadModuleTask moduleData="{features}"/>
 			<task1:LoadModuleTask moduleData="{reports}"/>
 			<task1:LoadModuleTask moduleData="{configurations}"/>			
 		</fx:Array>
 
 		<task1:LoadUserDataTask id="initialCheckTask"/>
+		
+		<modules:ModuleData 
+			id="home" 
+			name="home" 
+			path="org/mxhero/console/home/Home.swf"
+			ico="{ImageResources.HOME_ICO}"/>
 		
 		<modules:ModuleData 
 			id="configurations" 
@@ -117,7 +124,7 @@
 		<s:ChannelSet id="channelSet">
 			<s:channels>
 				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
-				<!--<s:AMFChannel uri="{'http://192.168.3.41:8080/mxhero/messagebroker/flex-amf'}"/>-->
+				<!--<s:AMFChannel uri="{'http://inova.mxhero.com:8080/mxhero/messagebroker/flex-amf'}"/>-->
 			</s:channels>
 		</s:ChannelSet>
 

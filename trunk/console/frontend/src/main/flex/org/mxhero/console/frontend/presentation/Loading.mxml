@@ -5,6 +5,7 @@
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
 		 width="300"
 		 height="70"
+		 skinClass="org.mxhero.console.commons.skin.BlueLinePanel"
 		 title="{resourceManager.getString(LoadingProperties.NAME,LoadingProperties.TITLE_LABEL)}">
 	
 	<s:layout>
@@ -17,6 +18,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.commons.skin.BlueLinePanel;
 			import org.mxhero.console.frontend.application.resources.LoadingProperties;
 			
 			[Inject]

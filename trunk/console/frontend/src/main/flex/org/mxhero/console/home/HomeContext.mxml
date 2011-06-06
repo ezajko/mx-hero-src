@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fx:Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
+		xmlns:parsley="http://www.spicefactory.org/parsley" 
+		xmlns:domain="org.mxhero.console.commons.domain.*" 
+		xmlns:presentation="org.mxhero.console.home.presentation.*" >
+
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.remoting.RemoteObject;
+			
+			import org.mxhero.console.home.application.command.GetActivityCommand;
+			import org.mxhero.console.home.application.command.GetMessagesCompositionCommand;
+			import org.mxhero.console.home.application.command.GetMxHeroDataCommand;
+			import org.mxhero.console.home.application.command.GetTopTenRecipientsTodayCommand;
+			import org.mxhero.console.home.application.command.GetTopTenSendersTodayCommand;
+			
+		]]>
+	</fx:Script>
+
+	<fx:Declarations>
+
+		<parsley:DynamicCommand type="{GetTopTenRecipientsTodayCommand}"/>
+		<parsley:DynamicCommand type="{GetTopTenSendersTodayCommand}"/>
+		<parsley:DynamicCommand type="{GetMxHeroDataCommand}"/>
+		<parsley:DynamicCommand type="{GetMessagesCompositionCommand}"/>
+		<parsley:DynamicCommand type="{GetActivityCommand}"/>
+		
+		<presentation:HomeViewPM/>
+		
+		<parsley:Object type="{RemoteObject}" id="toptenReportService">
+			<parsley:Property name="destination" value="trafficReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="homeReportService">
+			<parsley:Property name="destination" value="homeReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+	</fx:Declarations>
+
+</fx:Object>

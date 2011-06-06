@@ -29,6 +29,10 @@ package org.mxhero.console.commons.resources
 		[Embed(source="/images/reports_ico.png")] 
 		[Bindable]
 		public static var REPORTS_ICO:Class; 
+		
+		[Embed(source="/images/home_ico.png")] 
+		[Bindable]
+		public static var HOME_ICO:Class; 
 
 		[Embed(source="/images/delete.png")] 
 		[Bindable]

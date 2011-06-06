@@ -40,6 +40,9 @@ package org.mxhero.console.reports.presentation.reports
 		private static const OUT_DAY:String = "zoom_in";
 		
 		[Bindable]
+		public var onlyDomain:Boolean=false;
+		
+		[Bindable]
 		public var stateIncomming:String = IN_DEFAULT;
 		
 		[Bindable]
@@ -83,10 +86,10 @@ package org.mxhero.console.reports.presentation.reports
 		public function getIncomming():void{
 			if(context.selectedDomain!=null){
 				dispatcher(new GetIncommingEvent(context.selectedDomain.domain,sinceDate));
-				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain,sinceDate));
+				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain,sinceDate,this.onlyDomain));
 			}else{
 				dispatcher(new GetIncommingEvent(null,sinceDate));
-				dispatcher(new GetTopTenIncommingSendersEvent(null,sinceDate));
+				dispatcher(new GetTopTenIncommingSendersEvent(null,sinceDate,this.onlyDomain));
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
@@ -99,10 +102,10 @@ package org.mxhero.console.reports.presentation.reports
 			
 			if(context.selectedDomain!=null){
 				dispatcher(new GetIncommingByDayEvent(context.selectedDomain.domain,sinceDay));
-				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,sinceDay));
+				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,sinceDay,this.onlyDomain));
 			}else{
 				dispatcher(new GetIncommingByDayEvent(null,sinceDay));
-				dispatcher(new GetTopTenIncommingSendersByDayEvent(null,sinceDay));
+				dispatcher(new GetTopTenIncommingSendersByDayEvent(null,sinceDay,this.onlyDomain));
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
@@ -111,10 +114,10 @@ package org.mxhero.console.reports.presentation.reports
 		public function getOutgoing():void{
 			if(context.selectedDomain!=null){
 				dispatcher(new GetOutgoingEvent(context.selectedDomain.domain,sinceDate));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain,sinceDate));
+				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain,sinceDate,this.onlyDomain));
 			}else{
 				dispatcher(new GetOutgoingEvent(null,sinceDate));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(null,sinceDate));
+				dispatcher(new GetTopTenOutgoingRecipientsEvent(null,sinceDate,this.onlyDomain));
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
@@ -127,10 +130,10 @@ package org.mxhero.console.reports.presentation.reports
 			
 			if(context.selectedDomain!=null){
 				dispatcher(new GetOutgoingByDayEvent(context.selectedDomain.domain,sinceDay));
-				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,sinceDay));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,sinceDay,this.onlyDomain));
 			}else{
 				dispatcher(new GetOutgoingByDayEvent(null,sinceDay));
-				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(null,sinceDay));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(null,sinceDay,this.onlyDomain));
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
