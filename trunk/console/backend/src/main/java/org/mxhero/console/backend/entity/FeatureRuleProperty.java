@@ -25,7 +25,7 @@ public class FeatureRuleProperty {
 	@Column(name="property_key", nullable=false, length=50)
 	private String propertyKey;
 	
-	@Column(name="property_value", nullable=false, length=200)
+	@Column(name="property_value", nullable=false)
 	private String propertyValue;
 
 	public Integer getId() {

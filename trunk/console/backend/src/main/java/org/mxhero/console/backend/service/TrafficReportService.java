@@ -19,11 +19,11 @@ public interface TrafficReportService {
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	@Transactional(readOnly=true)
-	Collection getTopTenIncomingSenders(String domain, long since);
+	Collection getTopTenIncomingSenders(String domain, long since, boolean domainOnly);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	@Transactional(readOnly=true)
-	Collection getTopTenIncomingSendersByDay(String domain, long day);
+	Collection getTopTenIncomingSendersByDay(String domain, long day, boolean domainOnly);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
 	@Transactional(readOnly=true)
@@ -35,9 +35,9 @@ public interface TrafficReportService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
 	@Transactional(readOnly=true)
-	Collection getTopTenOutgoingRecipients(String domain,long since);
+	Collection getTopTenOutgoingRecipients(String domain,long since, boolean domainOnly);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	@Transactional(readOnly=true)
-	Collection getTopTenOutgoingRecipientsByDay(String domain, long day);
+	Collection getTopTenOutgoingRecipientsByDay(String domain, long day, boolean domainOnly);
 }

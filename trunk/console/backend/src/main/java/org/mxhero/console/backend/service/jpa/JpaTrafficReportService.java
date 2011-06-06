@@ -77,15 +77,25 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getTopTenIncomingSenders(String domain,long since) {
+	public Collection getTopTenIncomingSenders(String domain, long since, boolean domainOnly) {
 		String query = "SELECT count(*) count, from_recipeints "
 			+ "FROM  mail_records r " 
 			+ "WHERE insert_date > :date_since "
-			+ "AND (flow = 'both' OR flow = 'in') "
 			+ "AND phase =  'receive' ";
 		if(domain!=null && !domain.isEmpty()){
-			query = query + "AND recipient_domain_id = :domain ";
-		}	
+			query = query + " AND recipient_domain_id = :domain ";
+			if(domainOnly){
+				query = query + " AND sender_domain_id = :domain ";
+			}	
+			query = query + " AND (flow = 'both' OR flow = 'in') ";
+		}else{
+			if(domainOnly){
+				query = query + " AND flow = 'both' ";
+			}else{
+				query = query + " AND (flow = 'both' OR flow = 'in') ";
+			}
+		}
+
 		query = query + "GROUP BY from_recipeints "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
@@ -100,16 +110,27 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 
 	@Override
-	public Collection getTopTenIncomingSendersByDay(String domain, long day) {
+	public Collection getTopTenIncomingSendersByDay(String domain, long day, boolean domainOnly) {
 		String query = "SELECT count(*) count, from_recipeints "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
 			+ "AND insert_date < :date_to "
-			+ "AND (flow = 'both' OR flow = 'in') "
 			+ "AND phase =  'receive' ";
+		
 		if(domain!=null && !domain.isEmpty()){
-			query = query + "AND recipient_domain_id = :domain ";
-		}	
+			query = query + " AND recipient_domain_id = :domain ";
+			if(domainOnly){
+				query = query + " AND sender_domain_id = :domain ";
+			}	
+			query = query + " AND (flow = 'both' OR flow = 'in') ";
+		}else{
+			if(domainOnly){
+				query = query + " AND flow = 'both' ";
+			}else{
+				query = query + " AND (flow = 'both' OR flow = 'in') ";
+			}
+		}
+		
 		query = query + "GROUP BY from_recipeints "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
@@ -183,14 +204,25 @@ public class JpaTrafficReportService implements TrafficReportService {
 	}
 	
 	@Override
-	public Collection getTopTenOutgoingRecipients(String domain, long since) {
+	public Collection getTopTenOutgoingRecipients(String domain, long since, boolean domainOnly) {
 		String query = "SELECT count(*) count, recipient "
-			+ "FROM  mail_records " + "WHERE insert_date > :date_since "
-			+ "AND (flow = 'both' OR flow = 'out') "
+			+ "FROM  mail_records " 
+			+ "WHERE insert_date > :date_since "
 			+ "AND phase =  'send' ";
-		if(domain!=null && !domain.isEmpty()){	
-			query = query + "AND sender_domain_id = :domain ";
+		if(domain!=null && !domain.isEmpty()){
+			query = query + " AND sender_domain_id = :domain ";
+			if(domainOnly){
+				query = query + " AND recipient_domain_id = :domain ";
+			}	
+			query = query + " AND (flow = 'both' OR flow = 'out') ";
+		}else{
+			if(domainOnly){
+				query = query + " AND flow = 'both' ";
+			}else{
+				query = query + " AND (flow = 'both' OR flow = 'out') ";
+			}
 		}
+
 		query = query + "GROUP BY recipient "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
@@ -207,16 +239,26 @@ public class JpaTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getTopTenOutgoingRecipientsByDay(String domain,
-			long day) {
+			long day, boolean domainOnly) {
 		String query = "SELECT count(*) count, recipient "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
 			+ "AND insert_date < :date_to "
-			+ "AND (flow = 'both' OR flow = 'out') "
 			+ "AND phase =  'send' ";
-		if(domain!=null && !domain.isEmpty()){	
-			query = query + "AND sender_domain_id = :domain ";
+		if(domain!=null && !domain.isEmpty()){
+			query = query + " AND sender_domain_id = :domain ";
+			if(domainOnly){
+				query = query + " AND recipient_domain_id = :domain ";
+			}	
+			query = query + " AND (flow = 'both' OR flow = 'out') ";
+		}else{
+			if(domainOnly){
+				query = query + " AND flow = 'both' ";
+			}else{
+				query = query + " AND (flow = 'both' OR flow = 'out') ";
+			}
 		}
+
 		query = query + "GROUP BY recipient "
 			+ "ORDER BY 1 DESC " 
 			+ "LIMIT 10";
