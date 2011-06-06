@@ -60,7 +60,6 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
 		+" and record2_.record_sequence=stats1_.record_sequence "
 		+" where record0_.insert_date between ? and ? "
-		+" and record2_.insert_date between ? and ? "
 		+" and stats1_.stat_key = ? "
 		+" and stats1_.stat_value = ? " 
 		+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' ) ";
@@ -202,13 +201,11 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
 		query.setParameter(2, untilTime);
-		query.setParameter(3, sinceTime);
-		query.setParameter(4, untilTime);
-		query.setParameter(5, "spam.detected");
-		query.setParameter(6, "true");
+		query.setParameter(3, "spam.detected");
+		query.setParameter(4, "true");
 		if(domain!=null && domain.trim().length()>0){
-			query.setParameter(7, domain);
-			query.setParameter(8, domain);
+			query.setParameter(5, domain);
+			query.setParameter(6, domain);
 		}
 		query.setMaxResults(PluginReportService.MAX_RESULT);
 		return recordTranslator.translate(query.getResultList());
@@ -230,14 +227,12 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
 		query.setParameter(2, untilTime);
-		query.setParameter(3, sinceTime);
-		query.setParameter(4, untilTime);
-		query.setParameter(5, "virus.detected");
-		query.setParameter(6, "true");
+		query.setParameter(3, "virus.detected");
+		query.setParameter(4, "true");
 
 		if(domain!=null && domain.trim().length()>0){
-			query.setParameter(7, domain);
-			query.setParameter(8, domain);
+			query.setParameter(5, domain);
+			query.setParameter(6, domain);
 		}
 		query.setMaxResults(PluginReportService.MAX_RESULT);
 		return recordTranslator.translate(query.getResultList());

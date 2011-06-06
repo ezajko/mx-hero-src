@@ -127,9 +127,7 @@ public class JpaCustomReportService implements CustomReportService{
 		for(EmailAccount email : groupTo){
 			groupToEmails.add(email.getAccount()+"@"+email.getDomain());
 		}
-		
 
-		
 		//time interval
 		Predicate predicate = builder.between(root.get(Record_.id).get(RecordPk_.insertDate), new Timestamp(since), new Timestamp(until));
 		
