@@ -18,6 +18,7 @@ rule "$#RULE_NAME#$"
 		 $mail.drop("org.mxhero.feature.restricteddelivery");
 		 $#REPLAY_COMMAND#$
 		 $mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat",new String[]{"org.mxhero.feature.restricteddelivery.sender",$initialData.getSender().getMail()} );
+		 Result blockedStat = ($mail.getState().equals(MailState.DROP))?$mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat",new String[]{"email.blocked","org.mxhero.feature.restricteddelivery"}):null;
 		 update( $mail );
 		 update( $headers );
 end
