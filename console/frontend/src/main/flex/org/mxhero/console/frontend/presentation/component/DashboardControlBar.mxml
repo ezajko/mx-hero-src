@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="40" borderWeight="2" 
-		 dropShadowVisible="true" backgroundColor="#696969" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="100%" height="42" 
+		 dropShadowVisible="true"
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
 		 xmlns:component1="org.mxhero.console.commons.component.*" 
-		 xmlns:component2="org.mxhero.console.commons.feature.component.*">
+		 xmlns:component2="org.mxhero.console.commons.feature.component.*"
+		 >
 	<s:layout>
-		<s:HorizontalLayout verticalAlign="middle"/>
+		<s:VerticalLayout paddingLeft="0" paddingRight="0" paddingBottom="0" paddingTop="0"/>
 	</s:layout>
 
 	<fx:Declarations>
@@ -85,10 +87,12 @@
 			{
 				if(prevIndex==event.index){
 					if(event.index==0){
-						model.dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
+						model.dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.HOME));
 					} else if (event.index==1){
-						model.dispatcher(NavigationEvent.createNavigateToEvent(ReportsDestinations.LIST));
+						model.dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
 					} else if(event.index==2){
+						model.dispatcher(NavigationEvent.createNavigateToEvent(ReportsDestinations.LIST));
+					} else if(event.index==3){
 						model.dispatcher(NavigationEvent.createNavigateToEvent(ConfigurationsDestinations.LIST));
 					}
 				}
@@ -97,38 +101,44 @@
 			
 		]]>
 	</fx:Script>
-	
-	<mx:Image source="{ImageResources.LOGO_IMG}"/>
-	<mx:Spacer width="20"/>
-	<component1:NoDisabledLinkBar id="linkBar" 
-				dataProvider="{dataProvider}" 
-				styleName="Dashboard" 
-				itemClick="linkBar_itemClickHandler(event)"/>
-	<mx:Spacer width="100%"/>
-	
-	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" 
-			 visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" 
-			 fontWeight="bold"
-			 showEffect="{showEffect}"/>
-	<s:Label text="{applicationContext.selectedDomain.domain}" 
-			 visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"
-			 showEffect="{showEffect}"/>
-	
-	<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.USER_LABEL)}" 
-			 fontWeight="bold"/>
-	<s:Label text="{applicationContext.applicationUser.userName}"/>
-	<mx:Spacer width="5"/>
-	<s:Group>
-		<component2:GlowButton source="{ImageResources.LOGOUT_ICON}" 
-							   glowColor="#ff0000" 
-							   maxGlow="15.0" 
-							   click="{model.logout()}" 
-							   visible="{!model.hasToShowDomain(applicationContext.selectedDomain)}"
-							   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_TOOLTIP)}"/>
-		<component2:GlowButton source="{ImageResources.BACK_TO_ADMIN}" 
-							   maxGlow="15.0" 
-							   click="{model.logout()}" 
-							   visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"
-							   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_DOMAIN_TOOLTIP)}"/>
-	</s:Group>
+	<s:backgroundFill>
+		<s:SolidColor color="#70B2EE" alpha="0.6"/>
+	</s:backgroundFill>
+	<s:HGroup width="100%" height="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5">
+		<mx:Image source="{ImageResources.LOGO_IMG}"/>
+		<mx:Spacer width="20"/>
+		<component1:NoDisabledLinkBar id="linkBar" 
+									  dataProvider="{dataProvider}" 
+									  styleName="Dashboard" 
+									  itemClick="linkBar_itemClickHandler(event)"/>
+		<mx:Spacer width="100%"/>
+		
+		<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" 
+				 visible="{model.hasToShowDomain(applicationContext.selectedDomain)}" 
+				 fontWeight="bold"
+				 showEffect="{showEffect}"
+				 color="#FFFFFF"/>
+		<s:Label text="{applicationContext.selectedDomain.domain}" 
+				 visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"
+				 showEffect="{showEffect}"
+				 color="#FFFFFF"/>
+		
+		<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.USER_LABEL)}" 
+				 fontWeight="bold" color="#FFFFFF"/>
+		<s:Label text="{applicationContext.applicationUser.userName}" color="#FFFFFF"/>
+		<mx:Spacer width="5"/>
+		<s:Group>
+			<component2:GlowButton source="{ImageResources.LOGOUT_ICON}" 
+								   glowColor="#ff0000" 
+								   maxGlow="15.0" 
+								   click="{model.logout()}" 
+								   visible="{!model.hasToShowDomain(applicationContext.selectedDomain)}"
+								   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_TOOLTIP)}"/>
+			<component2:GlowButton source="{ImageResources.BACK_TO_ADMIN}" 
+								   maxGlow="15.0" 
+								   click="{model.logout()}" 
+								   visible="{model.hasToShowDomain(applicationContext.selectedDomain)}"
+								   toolTip="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.LOGOUT_DOMAIN_TOOLTIP)}"/>
+		</s:Group>
+	</s:HGroup>
 </s:BorderContainer>

@@ -156,14 +156,16 @@ package org.mxhero.console.commons.component.categorylist
 		
 		
 		[Bindable("change")]
-		public function resizeCategories():void
+		public function resizeCategories(event:*=null):void
 		{
 			this.categoryWidth = searchMax();
 			for each(var category:Object in categoriesUI){
-				category.width=this.categoryWidth;
-				category.invalidateDisplayList();
-				category.invalidateSize();
-				category.validateSize(true);
+				if(this.categoryWidth>0 && this.categoryWidth!=category.width){
+					category.width=this.categoryWidth;
+					category.invalidateDisplayList();
+					category.invalidateSize();
+					category.validateSize(true);
+				}
 			}
 		}
 	}

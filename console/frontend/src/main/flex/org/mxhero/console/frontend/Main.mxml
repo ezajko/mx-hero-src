@@ -35,6 +35,7 @@
 		[ResourceBundle("categories")]
 		[ResourceBundle("report_common")]
 		[ResourceBundle("report_email_commons")]
+		[ResourceBundle("homepanel")]
 
 	</fx:Metadata>
 	
@@ -64,6 +65,7 @@
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.frontend.domain.ActivityData;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.domain.ApplicationUser;
 			import org.mxhero.console.frontend.domain.Authority;
@@ -75,6 +77,8 @@
 			import org.mxhero.console.frontend.domain.FeatureRule;
 			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 			import org.mxhero.console.frontend.domain.Group;
+			import org.mxhero.console.frontend.domain.MessagesComposition;
+			import org.mxhero.console.frontend.domain.MxHeroData;
 			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.domain.Page;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
@@ -106,6 +110,10 @@
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleVO",FeatureRule);
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureRuleDirectionVO",FeatureRuleDirection);
 				registerClassAlias("org.mxhero.console.backend.vo.FeatureRulePropertyVO",FeatureRuleProperty);
+				registerClassAlias("org.mxhero.console.backend.vo.MxHeroDataVO",MxHeroData);
+				registerClassAlias("org.mxhero.console.backend.vo.MessagesCompositionVO",MessagesComposition);
+				registerClassAlias("org.mxhero.console.backend.vo.ActivityDataVO",ActivityData);
+				
 			}
 			
 			[Inject]
@@ -119,7 +127,8 @@
 	</fx:Script>
 	
 	<s:layout>
-		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" gap="0" paddingTop="0"/>
+		<s:VerticalLayout verticalAlign="middle" horizontalAlign="center" gap="0" 
+						  paddingTop="0" paddingLeft="0" paddingRight="0"/>
 	</s:layout>
 	
 	<s:Group width="100%">
@@ -130,10 +139,12 @@
 		<presentation:MessagePanel width="100%" soundEnabled="{context.applicationUser.soundsEnabled}"/>
 	</s:Group>
 	
-	<presentation:MainView width="100%" height="100%" styleName="mxhero"/>
+	<presentation:MainView width="100%" height="100%" styleName="mxhero" paddingLeft="0" paddingRight="0"/>
 	
 	<s:HGroup width="100%" horizontalAlign="left" paddingLeft="5">
-		<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COPYRIGHT)}" fontSize="10" fontStyle="italic"/>
+		<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COPYRIGHT)}" 
+				 fontSize="10" fontStyle="italic"
+				 color="#BDDDF3"/>
 	</s:HGroup>
 
 </s:Application>

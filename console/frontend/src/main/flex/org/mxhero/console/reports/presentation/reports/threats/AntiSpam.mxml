@@ -224,7 +224,7 @@
 				
 				
 				<mx:fill>
-					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+					<mx:SolidColor color="0xffd512" alpha="0.0"/>
 				</mx:fill>
 				
 				<mx:series>
@@ -241,10 +241,10 @@
 									 rollOut.zoom_in="{cursorManager.removeCursor(cursorId)}"
 									 displayName="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.HITS_TITLE)}">
 						<mx:stroke>
-							<s:SolidColorStroke color="#FFFFFF" caps="round" />
+							<s:SolidColorStroke color="0xffd512" caps="round" />
 						</mx:stroke>
 						<mx:fill>
-							<mx:SolidColor color="0x336699" alpha="0.6"/>
+							<mx:SolidColor color="0xffd512" alpha="0.6"/>
 						</mx:fill>
 						<mx:filters>
 							<s:DropShadowFilter

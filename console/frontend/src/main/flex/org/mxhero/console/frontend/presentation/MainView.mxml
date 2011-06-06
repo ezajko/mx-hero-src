@@ -6,6 +6,8 @@
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
 			  width="100%"
 			  height="100%"
+			  paddingLeft="0"
+			  paddingRight="0"
 			  creationPolicy="all" xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	
 	<fx:Declarations>

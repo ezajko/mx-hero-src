@@ -17,7 +17,7 @@ package org.mxhero.console.reports.application.command
 		
 		public function execute(event:GetTopTenOutgoingRecipientsByDayEvent):AsyncToken
 		{
-			return service.getTopTenOutgoingRecipientsByDay(event.domainId,event.day.getTime());
+			return service.getTopTenOutgoingRecipientsByDay(event.domainId,event.day.getTime(),event.onlyDomain);
 		}
 		
 		public function error (fault:Fault) : void {

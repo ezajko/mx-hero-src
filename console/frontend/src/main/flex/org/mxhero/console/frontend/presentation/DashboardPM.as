@@ -49,7 +49,7 @@ package org.mxhero.console.frontend.presentation
 		public function enter():void
 		{
 			container.createComponentsFromDescriptors();
-			dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
+			dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.HOME));
 		}
 		
 		public function logout():void{
@@ -75,7 +75,7 @@ package org.mxhero.console.frontend.presentation
 				dispatcher(NavigationEvent.createNavigateToEvent(ConfigurationsDestinations.LIST));
 				dispatcher(NavigationEvent.createNavigateToEvent(ReportsDestinations.LIST));
 				dispatcher(NavigationEvent.createNavigateToEvent(FeaturesDestinations.LIST));
-				
+				dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.HOME));
 			}
 		}
 		

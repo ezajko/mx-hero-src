@@ -10,7 +10,7 @@
 		 xmlns:loader="org.mxhero.console.features.presentation.loader.*" 
 		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
 		 creationComplete="scroller1_creationCompleteHandler(event)"
-		 >
+		 visible="{featureLoader.loaded}">
 
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -90,16 +90,18 @@
 
 		]]>
 	</fx:Script>
-	
-	<s:Group width="100%">
+
+	<s:Group width="100%" visible="{featureLoader.loaded}">
 		<s:layout>
 			<s:VerticalLayout horizontalAlign="center"/>
 		</s:layout>
 		
-		<s:VGroup width="800" horizontalAlign="center">
-			<s:VGroup gap="20"  
-					  paddingLeft="10" paddingRight="10" 
-					  paddingBottom="20" paddingTop="20">
+		<s:VGroup width="800" 
+				  horizontalAlign="center"
+				  gap="20"  
+				  paddingLeft="10" paddingRight="10" 
+				  paddingBottom="20" paddingTop="20">
+
 				<s:HGroup verticalAlign="top" width="100%">
 					<component:TitleExpanded width="100%"
 											 title="{model.feature.simpleLabel}"
@@ -165,7 +167,7 @@
 								  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}"/>
 					</s:HGroup>		
 				</s:VGroup>	
-			</s:VGroup>
+
 		</s:VGroup>
 	</s:Group>
 </s:Scroller>

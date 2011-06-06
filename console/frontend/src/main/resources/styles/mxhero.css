@@ -179,6 +179,13 @@ s|Panel
 	background-alpha:0.6;
 }
 
+s|Panel.Home
+{
+	corner-radius:0;
+	background-alpha:0.6;
+	drop-shadow-visible:false;
+}
+
 s|Label.Alert
 {
 	font-weight:"bold";
@@ -244,6 +251,7 @@ mx|LinkBar.Dashboard
 {
 	borderVisible: false;
 	contentBackgroundAlpha: 0.0;
+	color:#FFFFFF;
 	disabled-color:#FFFFFF;
 	text-roll-over-color:#FFFFFF;
 	text-selected-color:#FFFFFF;
@@ -324,4 +332,10 @@ mx|TabNavigator{
 .reportsTab{
 	border-color:#CCCCCC;
 	cornerRadius: 8;
+}
+
+mx|LegendItem{
+	font-weight:bold;
+	font-size:12;
+	color:#FFFFFF;
 }

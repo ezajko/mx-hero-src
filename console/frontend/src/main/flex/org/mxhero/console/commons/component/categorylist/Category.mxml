@@ -2,6 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 minWidth="100"
 		 updateComplete="{model.resizeCategories()}">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -25,9 +26,8 @@
 		<s:HorizontalLayout horizontalAlign="left" verticalAlign="middle"/>
 	</s:layout>
 	<mx:Image id="categoryImg" source="{category.iconsrc}" 
-			  minWidth="48" />
+			  minWidth="48" minHeight="48" />
 	<mx:Label styleName="categorylist_category" 
 			  text="{category.label}" 
-			  textFieldClass="mx.core.UIFTETextField"
-			  updateComplete="{model.resizeCategories()}"/>
+			  textFieldClass="mx.core.UIFTETextField"/>
 </s:Group>

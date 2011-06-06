@@ -156,7 +156,7 @@
 				cursorManager.removeCursor(cursorId);
 			}
 			
-			protected function refresh_clickHandler(event:MouseEvent):void
+			protected function refresh_clickHandler(event:MouseEvent=null):void
 			{
 				if(currentState=="zoom_out"){
 					model.getOutgoing();
@@ -165,6 +165,12 @@
 				}
 				
 			}
+
+			protected function onlyDomainCb_changeHandler(event:Event):void
+			{
+				refresh_clickHandler();
+			}
+
 		]]>
 	</fx:Script>
 			
@@ -273,10 +279,10 @@
 										 rollOut.zoom_in="{cursorManager.removeCursor(cursorId)}"
 									 	 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
 							<mx:stroke>
-								<s:SolidColorStroke color="#FFFFFF" caps="round" />
+								<s:SolidColorStroke color="0x1b95d9" caps="round" />
 							</mx:stroke>
 							<mx:fill>
-								<mx:SolidColor color="0x336699" alpha="0.6"/>
+								<mx:SolidColor color="0x1b95d9" alpha="0.6"/>
 							</mx:fill>
 							<mx:filters>
 								<s:DropShadowFilter
@@ -303,10 +309,10 @@
 									 rollOut.zoom_in="{cursorManager.removeCursor(cursorId)}"
 									 displayName="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.OUTGOING_LABEL)}">
 						<mx:stroke>
-							<s:SolidColorStroke color="#FFFFFF" caps="round" />
+							<s:SolidColorStroke color="#fff797" caps="round" />
 						</mx:stroke>
 						<mx:fill>
-							<mx:SolidColor color="yellow" alpha="0.6"/>
+							<mx:SolidColor color="#fff797" alpha="0.8"/>
 						</mx:fill>
 						<mx:filters>
 							<s:DropShadowFilter
@@ -325,10 +331,16 @@
 			</s:VGroup>
 			
 			<s:VGroup width="100%" minWidth="200" height="100%" gap="20" enabled="{!model.updatingOutgoingRecipients}">
-				<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_RECIPIENTS_TITLE)}" 
-						 fontWeight="bold" fontSize="16"
-						 color="#FFFFFF"
-						 textDecoration="underline"/>
+				<s:HGroup>
+					<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_RECIPIENTS_TITLE)}" 
+							 fontWeight="bold" fontSize="16"
+							 color="#FFFFFF"
+							 textDecoration="underline"/>
+					<s:CheckBox id="onlyDomainCb" 
+								label="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_ONLY_DOMAIN)}" 
+								selected="@{model.onlyDomain}" 
+								change="onlyDomainCb_changeHandler(event)"/>
+				</s:HGroup>	
 				<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="top">
 					<mx:BarChart id="linechartTo" color="0x323232" 
 								 height="100%" 

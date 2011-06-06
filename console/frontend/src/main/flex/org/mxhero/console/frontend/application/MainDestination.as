@@ -13,6 +13,8 @@ package org.mxhero.console.frontend.application
 		public static const REPORTS:String="main.dashboard.reports";
 		
 		public static const FEATURES:String="main.dashboard.features";
+		
+		public static const HOME:String="main.dashboard.home";
 
 	}
 }

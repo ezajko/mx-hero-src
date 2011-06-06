@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:element="org.mxhero.console.commons.FromTo.element.*" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*"
+		 gap="0" 
+		 xmlns:toptenlist="org.mxhero.console.home.presentation.toptenlist.*"
+		 currentState="{model.currentState}">
+	
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.resources.ErrorsProperties;
+			import org.mxhero.console.commons.skin.BlueLinePanel;
+			import org.mxhero.console.commons.utils.Regex;
+			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			import org.mxhero.console.frontend.domain.ApplicationContext;
+			import org.mxhero.console.home.application.resources.HomeProperties;
+			
+			[Inject]
+			[Bindable]
+			public var context:ApplicationContext;
+			
+			[Inject]
+			[Bindable]
+			public var model:HomeViewPM;
+			
+
+			protected function clearBtt_clickHandler(event:MouseEvent):void
+			{
+				if(currentState!="domain"){
+					if(ipeComboBox.currentState=="show"){
+						ipeComboBox.switchState();
+					}
+					ipeComboBox.selectedItem=null;
+					ipeComboBox.selectedLabel=null;
+					ipeComboBox.comboBox.selectedIndex=-1;
+					ipeComboBox.comboBox.errorString="";
+				}
+				
+				if(model.domainFilter!=null){
+					model.domainFilter=null;
+					model.getCompleteData();
+				}
+			}
+
+			protected function filterBtt_clickHandler(event:MouseEvent):void
+			{
+				if(currentState!="domain" 
+					&& ipeComboBox.currentState=="show" 
+					&& model.domainFilter!=ipeComboBox.selectedLabel){
+					model.domainFilter=ipeComboBox.selectedLabel;
+					model.getCompleteData();
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<parsley:Configure/>
+		
+		<mx:RegExpValidator id="requiredValidator"  
+							required="true" 
+							expression="{Regex.domainRegex}"
+							noMatchError="{resourceManager.getString(ErrorsProperties.NAME,ErrorsProperties.INVALID_DOMAIN)}"/>
+
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="admin"/>
+		<s:State name="filter"/>
+		<s:State name="domain"/>
+	</s:states>
+	
+	<s:Panel title="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_FILTER_LABEL)}" 
+			 title.domain="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_DOMAIN_TITLE)}" 
+			 width="100%"
+			 styleName="Home"
+			 skinClass="org.mxhero.console.commons.skin.BlueLinePanel">
+		<s:VGroup width="100%" gap="0">
+			<mx:Form width="100%" includeIn="admin,filter">
+				<mx:FormItem  
+					width="100%" paddingBottom="0">
+					<s:HGroup width="100%" height="100%" verticalAlign="middle">
+						<mx:FormItemLabel text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.DOMAIN_LABEL)+':'}"/>
+						<element:Item width="100%">
+							<IPE:IPEComboBox id="ipeComboBox"
+											 subStyles="item"
+											 currentState="edit"
+											 dataProvider="{context.domains}"
+											 enableItemSelectionCheck="true" 
+											 enableLabelClickChangeStatus="true"
+											 enableEnterKeyChangeStatus="true"
+											 validator="{requiredValidator}"
+											 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
+											 width="100%"
+											 labelField="domain"
+											 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_DOMAIN_NOT_VALID)}"/>				
+
+						</element:Item>
+					</s:HGroup>
+				</mx:FormItem>
+				<s:HGroup width="100%" horizontalAlign="right" paddingBottom="10" paddingTop="10">
+					<s:Button id="clearBtt" label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_FILTER_CLEAR_LABEL)}" click="clearBtt_clickHandler(event)" enabled="{model.domainFilter!=null}"/>
+					<s:Button id="filterBtt" label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_FILTER_FILTER_LABEL)}" click="filterBtt_clickHandler(event)" enabled="{ipeComboBox.currentState=='show'}"/>
+				</s:HGroup>
+			</mx:Form>
+			<mx:Form width="100%" paddingTop.admin="0" verticalGap="2" paddingBottom="0">
+				<mx:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_REGISTERED_DOMAINS_LABEL)}" includeIn="admin" width="100%" >
+					<s:Label paddingLeft="10" text="{model.mxHeroData.domains}" color="#FFFFFF" fontWeight="bold"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_REGISTERED_GROUPS_LABEL)}" includeIn="domain,filter" width="100%" >
+					<s:Label paddingLeft="10" text="{model.mxHeroData.groups}" color="#FFFFFF" fontWeight="bold"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_REGISTERED_ACCOUNTS_LABEL)}" width="100%" >
+					<s:Label paddingLeft="10" text="{model.mxHeroData.accounts}" color="#FFFFFF" fontWeight="bold"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_ENABLED_RULES_LABEL)}" width="100%" >
+					<s:Label paddingLeft="10" text="{model.mxHeroData.enabledRules}" color="#FFFFFF" fontWeight="bold"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_DISABLED_RULES_LABEL)}" width="100%" >
+					<s:Label paddingLeft="10" text="{model.mxHeroData.disableRules}" color="#FFFFFF" fontWeight="bold"/>
+				</mx:FormItem>
+			</mx:Form>
+		</s:VGroup>
+	</s:Panel >
+	<s:Panel title="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_TOPTEN_RECIPIENTS_LABEL)}" 
+			 width="100%"
+			 styleName="Home"
+			 height="100%"
+			 skinClass="org.mxhero.console.commons.skin.BlueLinePanel">	
+		<s:Scroller height="100%" width="100%" 
+					horizontalScrollPolicy="off" 
+					verticalScrollPolicy="auto">
+			<toptenlist:TopTenList 
+				height="100%" width="100%"
+				elements="{model.recipientsData}"
+				colorArray="{[0xC6FFB3,0xB3FF99,0x9FFF80,0x8CFF66,0x79FF4D,0x66FF33,0x53FF1A,0x40FF00,0x39E600,0x33CC00,0x2DB300].reverse()}"/>
+		</s:Scroller>
+	</s:Panel>
+	<s:Panel title="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_TOPTEN_SENDERS_LABEL)}" 
+			 width="100%"
+			 styleName="Home"
+			 height="100%"
+			 skinClass="org.mxhero.console.commons.skin.BlueLinePanel">
+		<s:Scroller height="100%" 
+					width="100%" 
+					horizontalScrollPolicy="off" 
+					verticalScrollPolicy="auto">
+			<toptenlist:TopTenList 
+				height="100%" width="100%"
+				elements="{model.sendersData}"
+				colorArray="{[0x0039E6,0x0040FF,0x1A53FF,0x3366FF,0x4D79FF,0x668CFF,0x809FFF,0x99B3FF,0xB3C6FF,0xCCD9FF]}"/>
+		</s:Scroller>
+	</s:Panel>
+</s:VGroup>

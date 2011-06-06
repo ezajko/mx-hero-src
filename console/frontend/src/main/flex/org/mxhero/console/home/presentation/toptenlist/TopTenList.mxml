@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx" 
+		  gap="2" 
+		  paddingBottom="4" paddingLeft="4" 
+		  paddingRight="4" paddingTop="4">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Label;
+			import mx.controls.Spacer;
+			import mx.graphics.SolidColor;
+			
+			import spark.components.BorderContainer;
+			import spark.components.HGroup;
+			
+			public var defaultColor:Number=0x70B2EE;
+			
+			private var _elements:ArrayCollection=null;
+			
+			public var colorArray:Array=null;
+			
+			public function get elements():ArrayCollection{
+				return _elements;
+			} 
+			
+			public function set elements(newElements:ArrayCollection):void{
+				_elements = newElements;
+				removeAllElements();
+				if(_elements!=null){
+					for(var i:int=0;i<_elements.length;i++){
+						var borderContainer:BorderContainer = new BorderContainer();
+						borderContainer.percentWidth=100;
+						borderContainer.height=24;
+						borderContainer.setStyle("borderStyle","solid");
+						borderContainer.setStyle("borderWeight",0);
+						borderContainer.setStyle("cornerRadius",4);
+						var hGroup:HGroup = new HGroup();
+						hGroup.percentHeight=100;
+						hGroup.percentWidth=100;
+						hGroup.verticalAlign="middle";
+						hGroup.paddingLeft=4;
+						hGroup.paddingRight=4;
+						var email:Label = new Label();
+						email.text=elements.getItemAt(i).Label;
+						email.width=220;
+						email.truncateToFit=true;
+						email.setStyle("color",0xFFFFFF);
+						email.setStyle("fontSize",14);
+						email.setStyle("fontWeight","bold");
+						hGroup.addElement(email);
+						var spacer:Spacer = new Spacer();
+						spacer.percentWidth=100;
+						hGroup.addElement(spacer);
+						var qty:Label = new Label();
+						qty.text=elements.getItemAt(i).Qty;
+						qty.setStyle("color",0xFFFFFF);
+						qty.setStyle("fontSize",14);
+						qty.setStyle("fontWeight","bold");	
+						hGroup.addElement(qty);
+						borderContainer.addElement(hGroup);
+						if(colorArray!=null && colorArray.length>i){
+							borderContainer.backgroundFill=new SolidColor(colorArray[i],0.6);
+						}else{
+							borderContainer.backgroundFill=new SolidColor(defaultColor,0.6);
+						}
+						this.addElement(borderContainer);
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+</s:VGroup>
