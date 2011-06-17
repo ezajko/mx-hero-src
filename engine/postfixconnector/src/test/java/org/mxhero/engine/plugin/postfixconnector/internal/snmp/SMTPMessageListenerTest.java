@@ -17,10 +17,10 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
-import org.mxhero.engine.plugin.postfixconnector.internal.util.LogMail;
 
 public class SMTPMessageListenerTest {
 
@@ -91,7 +91,7 @@ public class SMTPMessageListenerTest {
 		FileInputStream is = new FileInputStream(this.getClass().getClassLoader().getResource("subetha7736726399057695056.eml").getFile());
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()),is);
 		message.saveChanges();
-		LogMail.saveErrorMail(message,"pfxc","eml");
+		LogMail.saveErrorMail(message,"pfxc","eml",null);
 	}
 	
 }
