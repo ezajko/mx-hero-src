@@ -11,7 +11,7 @@ public class PostfixConnectorPropertiesTest {
 	@Test
 	public void testService(){
 		PropertiesService service = new PostfixConnector();
-		Assert.assertNotNull(service.getValue(PostfixConnector.INPUTPOOL_COREPOOLSIZE));	
+		Assert.assertNotNull(service.getValue(PostfixConnector.SMTP_HOST));	
 	}
 	
 }
