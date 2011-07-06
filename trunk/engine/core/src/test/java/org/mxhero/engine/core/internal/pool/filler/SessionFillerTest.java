@@ -18,10 +18,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
-import org.mxhero.engine.domain.mail.business.Group;
 import org.mxhero.engine.domain.mail.business.User;
 import org.mxhero.engine.domain.mail.business.UserList;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 
 public class SessionFillerTest {
@@ -36,7 +34,6 @@ public class SessionFillerTest {
 		domain.setId(domainName);
 		domain.setManaged(false);
 		domain.setAliases(new ArrayList<String>());
-		domain.setGroups(new ArrayList<Group>());
 		
 		final User user = new User();
 		user.setMail(userMail);
@@ -49,16 +46,8 @@ public class SessionFillerTest {
 		UserFinder userFinder = new UserFinder() {
 			
 			@Override
-			public User getUser(String mailAdress, String domainId) {
+			public User getUser(String mailAdress) {
 				return user;
-			}
-		};
-		
-		DomainFinder domainFinder = new DomainFinder() {
-			
-			@Override
-			public Domain getDomain(String mailAdress) {
-				return domain;
 			}
 		};
 		
@@ -74,7 +63,7 @@ public class SessionFillerTest {
 
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		Assert.assertTrue(filler.fill(ksession, userFinder, domainFinder, mail).equalsIgnoreCase("mxhero.com"));
+		Assert.assertTrue(filler.fill(ksession, userFinder, mail).equalsIgnoreCase("mxhero.com"));
 		
 		Assert.assertTrue(ksession.getObjects().size()>1);
 
@@ -96,7 +85,7 @@ public class SessionFillerTest {
 
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		Assert.assertTrue(filler.fill(ksession, null, null, mail).equalsIgnoreCase("mxhero.com"));
+		Assert.assertTrue(filler.fill(ksession, null, mail).equalsIgnoreCase("mxhero.com"));
 		
 		Assert.assertTrue(ksession.getObjects().size()>1);
 

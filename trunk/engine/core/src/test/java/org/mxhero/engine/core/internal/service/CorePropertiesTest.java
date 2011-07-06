@@ -9,7 +9,7 @@ public class CorePropertiesTest {
 	@Test
 	public void testService(){
 		Core properties= new Core();
-		Assert.assertNotNull(properties.getValue(Core.INPUTPOOL_COREPOOLSIZE));
+		Assert.assertNotNull(properties.getValue(Core.SENDPOOL_COREPOOLSIZE));
 	}
 	
 }

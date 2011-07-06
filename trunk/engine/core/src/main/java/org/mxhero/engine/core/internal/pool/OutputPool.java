@@ -3,14 +3,15 @@ package org.mxhero.engine.core.internal.pool;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 
-import org.mxhero.engine.core.internal.queue.OutputQueue;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.core.mail.filter.MailFilter;
-import org.mxhero.engine.domain.pool.QueueTaskPool;
 import org.mxhero.engine.domain.properties.PropertiesListener;
 import org.mxhero.engine.domain.properties.PropertiesService;
+import org.mxhero.engine.domain.queue.MimeMailQueueService;
+import org.mxhero.engine.domain.queue.QueueTaskPool;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,11 @@ import org.slf4j.LoggerFactory;
  * Creates a DeliverTask for each mail that enter in the outputQueue.
  * @author mmarmol
  */
-public final class OutputPool extends QueueTaskPool<MimeMail> implements PropertiesListener{
+public final class OutputPool extends QueueTaskPool implements PropertiesListener{
 
+	public static final String MODULE="core";
+	public static final String PHASE=RulePhase.OUT;
+	
 	private static Logger log = LoggerFactory.getLogger(OutputPool.class);
 		
 	private BundleContext bc;
@@ -33,15 +37,18 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 	
 	private SimpleDateFormat format;
 	
+	private MimeMailQueueService queueService;
+	
 	/**
 	 * @param bc
 	 */
-	public OutputPool(BundleContext bc){
-		super(OutputQueue.getInstance());
+	public OutputPool(BundleContext bc, MimeMailQueueService queueService){
+		super(MODULE,PHASE,queueService);
 		if (bc==null){
         	throw new IllegalArgumentException();
         }
-		this.bc = bc;		
+		this.bc = bc;	
+		this.queueService=queueService;
 	}
 	
 	/**
@@ -69,7 +76,8 @@ public final class OutputPool extends QueueTaskPool<MimeMail> implements Propert
 	 */
 	@Override
 	protected Runnable createTask(MimeMail mail) {
-		DeliverTask task = new DeliverTask(mail,bc);
+		log.debug("creating task for mail "+mail);
+		DeliverTask task = new DeliverTask(mail,bc,queueService);
 		task.setProperties(getProperties());
 		task.setLogStatService(getLogStatService());
 		task.setOutFilters(getOutFilters());

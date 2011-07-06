@@ -20,10 +20,8 @@ import org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
-import org.mxhero.engine.domain.mail.business.Group;
 import org.mxhero.engine.domain.mail.business.User;
 import org.mxhero.engine.domain.mail.business.UserList;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 
 public class DefaultRulesProcessorTest {
@@ -48,7 +46,7 @@ public class DefaultRulesProcessorTest {
 		DefaultRulesProcessor processor = new DefaultRulesProcessor();
 		processor.setProperties(new Core());
 		try{
-			processor.process(ksession, filler, null, null, mail);
+			processor.process(ksession, filler, null, mail);
 		} catch (Exception e){
 			Assert.fail(e.getMessage());
 		}
@@ -64,7 +62,6 @@ public class DefaultRulesProcessorTest {
 		domain.setId(domainName);
 		domain.setManaged(false);
 		domain.setAliases(new ArrayList<String>());
-		domain.setGroups(new ArrayList<Group>());
 		
 		final User user = new User();
 		user.setMail(userMail);
@@ -77,16 +74,8 @@ public class DefaultRulesProcessorTest {
 		UserFinder userFinder = new UserFinder() {
 			
 			@Override
-			public User getUser(String mailAdress, String domainId) {
+			public User getUser(String mailAdress) {
 				return user;
-			}
-		};
-		
-		DomainFinder domainFinder = new DomainFinder() {
-			
-			@Override
-			public Domain getDomain(String mailAdress) {
-				return domain;
 			}
 		};
 		
@@ -106,7 +95,7 @@ public class DefaultRulesProcessorTest {
 		DefaultRulesProcessor processor = new DefaultRulesProcessor();
 		processor.setProperties(new Core());
 		try{
-			processor.process(ksession, filler, userFinder, domainFinder, mail);
+			processor.process(ksession, filler, userFinder, mail);
 		} catch (Exception e){
 			Assert.fail(e.getMessage());
 		}

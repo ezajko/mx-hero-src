@@ -4,7 +4,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ public class DefaultRulesProcessor implements RulesProcessor{
 	 */
 	@Override
 	public void process(StatefulKnowledgeSession ksession, SessionFiller filler,
-			UserFinder userfinder, DomainFinder domainFinder, MimeMail mail) {
+			UserFinder userfinder, MimeMail mail) {
 		
 		log.debug("Executing rules for "+mail);
 		
@@ -34,7 +33,7 @@ public class DefaultRulesProcessor implements RulesProcessor{
 		ksession.getAgenda().clear();
 
 		//Getting domin group and adding objects
-		String domainAgendaGroup = filler.fill(ksession, userfinder, domainFinder, mail);
+		String domainAgendaGroup = filler.fill(ksession, userfinder, mail);
 		
 		//Adding default rules to start first
 		String bottomAgendaGroup = getProperties().getValue(Core.GROUP_ID_BOTTOM);

@@ -1,13 +1,16 @@
 package org.mxhero.engine.core.internal.service;
 
 import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.mxhero.engine.core.internal.queue.InputQueue;
+import org.mxhero.engine.core.internal.pool.SendPool;
 import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.InputService;
+import org.mxhero.engine.domain.connector.QueueFullException;
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.log.LogMail;
+import org.mxhero.engine.domain.properties.PropertiesService;
+import org.mxhero.engine.domain.queue.MimeMailQueueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +26,17 @@ public final class CoreInputService implements InputService {
 	
 	private static final long WAIT_TIME = 5000;
 	
-	private BlockingQueue<MimeMail> queue = InputQueue.getInstance();
+	private MimeMailQueueService queueService;
 	
 	private Collection<MailFilter> inFilters;
+
+	private PropertiesService properties;
 	
 	/**
 	 * @see org.mxhero.engine.domain.connector.InputService#addMail(byte[], java.lang.String)
 	 */
-	public void addMail(MimeMail mail) {
-		boolean keepTrying = true;
+	public void addMail(MimeMail mail) throws QueueFullException{
+		boolean added = false;
 		if (mail==null || mail.getResponseServiceId()==null){
 			throw new IllegalArgumentException("mail:"+mail);
 		}
@@ -41,16 +46,25 @@ public final class CoreInputService implements InputService {
 			}
 		}
 		
-		log.debug("Adding email:[rawEmail:"+mail+"],[reponseServiceId:"+mail.getResponseServiceId()+"]");
-		while(keepTrying){
-			try {
-				/*if offer returns queue we need to stop*/
-				keepTrying=!queue.offer(mail, WAIT_TIME, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				log.warn(InputQueue.class.getName()+" is full, waiting for space to become available.");
-			}
+		try {
+			added = queueService.offer(SendPool.MODULE, mail.getPhase(), mail,WAIT_TIME, TimeUnit.MILLISECONDS );
+		} catch (InterruptedException e) {
+			log.error("interrupted while waiting:"+mail,e);
+		}
+		if(!added){
+			throw new QueueFullException();
 		}
 		log.debug("Mail added to queue:"+mail);
+		log.debug(queueService.getQueuesCount().toString());
+		if(log.isTraceEnabled()){
+			LogMail.saveErrorMail(mail.getMessage(),
+					getProperties().getValue(Core.ERROR_PREFIX)+"input",
+					getProperties().getValue(Core.ERROR_SUFFIX),
+					getProperties().getValue(Core.ERROR_DIRECTORY));
+		}
+		if(log.isDebugEnabled()){
+			queueService.logState();
+		}
 	}
 
 	public Collection<MailFilter> getInFilters() {
@@ -59,6 +73,22 @@ public final class CoreInputService implements InputService {
 
 	public void setInFilters(Collection<MailFilter> inFilters) {
 		this.inFilters = inFilters;
+	}
+
+	public MimeMailQueueService getQueueService() {
+		return queueService;
+	}
+
+	public void setQueueService(MimeMailQueueService queueService) {
+		this.queueService = queueService;
+	}
+
+	public PropertiesService getProperties() {
+		return properties;
+	}
+
+	public void setProperties(PropertiesService properties) {
+		this.properties = properties;
 	}
 
 }

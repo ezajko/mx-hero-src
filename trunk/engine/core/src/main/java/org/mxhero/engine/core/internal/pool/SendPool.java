@@ -1,19 +1,17 @@
 package org.mxhero.engine.core.internal.pool;
 
-import java.util.concurrent.TimeUnit;
-
 import org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
-import org.mxhero.engine.core.internal.queue.InputQueue;
 import org.mxhero.engine.core.internal.service.Core;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
+import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
-import org.mxhero.engine.domain.pool.QueueTaskPool;
 import org.mxhero.engine.domain.properties.PropertiesListener;
 import org.mxhero.engine.domain.properties.PropertiesService;
+import org.mxhero.engine.domain.queue.MimeMailQueueService;
+import org.mxhero.engine.domain.queue.QueueTaskPool;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.slf4j.Logger;
@@ -25,12 +23,13 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public final class InputPool extends QueueTaskPool<MimeMail> implements
+public final class SendPool extends QueueTaskPool implements
 		PropertiesListener {
 
-	private static Logger log = LoggerFactory.getLogger(InputPool.class);
-
-	private DomainFinder domainFinderService;
+	public static final String MODULE="core";
+	public static final String PHASE=RulePhase.SEND;
+	
+	private static Logger log = LoggerFactory.getLogger(SendPool.class);
 
 	private UserFinder userFinderService;
 
@@ -45,12 +44,15 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	private LogRecord logRecordService;
 
 	private LogStat logStatService;
+	
+	private MimeMailQueueService queueService;
 
 	/**
 	 * Creates the object and pass to super the queue.
 	 */
-	public InputPool() {
-		super(InputQueue.getInstance());
+	public SendPool(MimeMailQueueService queueService) {
+		super(MODULE,PHASE,queueService);
+		this.queueService=queueService;
 	}
 
 	/**
@@ -78,33 +80,62 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	 */
 	@Override
 	protected Runnable createTask(MimeMail object) {
+		log.debug("creating task for mail "+object);
 		try{
-			if (object.getPhase().equals(RulePhase.SEND)) {
+			if(loader.getBuilder().getKnowledgeBase()==null){
+				final MimeMail mail = object;
+				return new Runnable() {
+					@Override
+					public void run() {
+						log.error("Rule database is not ready " + mail);
+						try {
+							queueService.reEnqueue(MODULE, PHASE, mail);
+						} catch (InterruptedException e1) {
+							log.error("error while reEnqueue email:",e1);
+							LogMail.saveErrorMail(mail.getMessage(), 
+									getProperties().getValue(Core.ERROR_PREFIX),
+									getProperties().getValue(Core.ERROR_SUFFIX),
+									getProperties().getValue(Core.ERROR_DIRECTORY));
+							boolean removed = false;
+							while(!removed){
+								try {
+									removed = queueService.remove(MODULE, PHASE, mail);
+								} catch (InterruptedException e2) {
+									log.error("error while removing email:",e2);
+								}
+							}
+						}
+					}
+				};
+			}
+			else if (object.getPhase().equals(RulePhase.SEND)) {
 				SenderRuleTask task = new SenderRuleTask(loader.getBuilder()
-						.getKnowledgeBase().newStatefulKnowledgeSession(), object, domainFinderService,
-						userFinderService);
+						.getKnowledgeBase().newStatefulKnowledgeSession(), object,
+						userFinderService,queueService);
 				task.setFiller(this.getFiller());
 				task.setProcessor(this.getProcessor());
 				task.setLogRecordService(getLogRecordService());
 				task.setLogStatService(getLogStatService());
 				task.setProperties(properties);
 				return task;
-			} else if (object.getPhase().equals(RulePhase.RECEIVE)) {
-				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder()
-						.getKnowledgeBase().newStatefulKnowledgeSession(), object, domainFinderService,
-						userFinderService);
-				task.setFiller(this.getFiller());
-				task.setProcessor(this.getProcessor());
-				task.setLogRecordService(getLogRecordService());
-				task.setLogStatService(getLogStatService());
-				task.setProperties(properties);
-				return task;
-			} else {
+			}  else {
 				final MimeMail mail = object;
 				return new Runnable() {
 					@Override
 					public void run() {
 						log.error("Phase does not exists for " + mail);
+						LogMail.saveErrorMail(mail.getMessage(), 
+								getProperties().getValue(Core.ERROR_PREFIX),
+								getProperties().getValue(Core.ERROR_SUFFIX),
+								getProperties().getValue(Core.ERROR_DIRECTORY));
+						boolean removed = false;
+						while(!removed){
+							try {
+								removed = queueService.remove(MODULE, PHASE, mail);
+							} catch (InterruptedException e1) {
+								log.error("error while removing email:",e1);
+							}
+						}
 					}
 				};
 			}
@@ -113,15 +144,18 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 			return new Runnable() {
 				@Override
 				public void run() {
-					log.error("Error while trying to do task fro " + mail);
-					
-					try {
-						InputQueue.getInstance().offer(mail,1000, TimeUnit.MILLISECONDS);
-						log.info("Added agian to queue " + mail);
-						Thread.sleep(200);
-						log.info("Waiting for new cicle" + mail);
-					} catch (InterruptedException e1) {
-						log.error("Interrumped whi waitingz " + mail);
+					log.error("Error while trying to do task for " + mail);
+					LogMail.saveErrorMail(mail.getMessage(), 
+							getProperties().getValue(Core.ERROR_PREFIX),
+							getProperties().getValue(Core.ERROR_SUFFIX),
+							getProperties().getValue(Core.ERROR_DIRECTORY));
+					boolean removed = false;
+					while(!removed){
+						try {
+							removed = queueService.remove(MODULE, PHASE, mail);
+						} catch (InterruptedException e1) {
+							log.error("error while removing email:",e1);
+						}
 					}
 				}
 			};
@@ -134,11 +168,11 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	@Override
 	public void updated() {
 		log.debug("Updating.");
-		setCorePoolsize(getProperties().getValue(Core.INPUTPOOL_COREPOOLSIZE));
+		setCorePoolsize(getProperties().getValue(Core.SENDPOOL_COREPOOLSIZE));
 		setMaximumPoolSize(getProperties().getValue(
-				Core.INPUTPOOL_MAXIMUMPOOLSIZE));
-		setKeepAliveTime(getProperties().getValue(Core.INPUTPOOL_KEEPALIVETIME));
-		setWaitTime(getProperties().getValue(Core.INPUTPOOL_QUEUE_WAIT_TIME));
+				Core.SENDPOOL_MAXIMUMPOOLSIZE));
+		setKeepAliveTime(getProperties().getValue(Core.SENDPOOL_KEEPALIVETIME));
+		setWaitTime(getProperties().getValue(Core.SENDPOOL_QUEUE_WAIT_TIME));
 	}
 
 	/**
@@ -169,21 +203,6 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	 */
 	public void setFiller(SessionFiller filler) {
 		this.filler = filler;
-	}
-
-	/**
-	 * @return the domainFinderService
-	 */
-	public DomainFinder getDomainFinderService() {
-		return domainFinderService;
-	}
-
-	/**
-	 * @param domainFinderService
-	 *            the domainFinderService to set
-	 */
-	public void setDomainFinderService(DomainFinder domainFinderService) {
-		this.domainFinderService = domainFinderService;
 	}
 
 	/**
@@ -259,6 +278,14 @@ public final class InputPool extends QueueTaskPool<MimeMail> implements
 	 */
 	public void setLogStatService(LogStat logStatService) {
 		this.logStatService = logStatService;
+	}
+
+	public MimeMailQueueService getQueueService() {
+		return queueService;
+	}
+
+	public void setQueueService(MimeMailQueueService queueService) {
+		this.queueService = queueService;
 	}
 
 }

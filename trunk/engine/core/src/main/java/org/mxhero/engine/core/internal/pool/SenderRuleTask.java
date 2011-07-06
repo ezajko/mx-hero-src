@@ -5,14 +5,14 @@ import javax.mail.internet.MimeMessage;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
-import org.mxhero.engine.core.internal.queue.InputQueue;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.MailState;
 import org.mxhero.engine.domain.mail.business.RulePhase;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
+import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
+import org.mxhero.engine.domain.queue.MimeMailQueueService;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.slf4j.Logger;
@@ -32,8 +32,6 @@ public final class SenderRuleTask implements Runnable {
 
 	private MimeMail mail;
 
-	private DomainFinder domainFinderService;
-
 	private UserFinder userFinderService;
 
 	private RulesProcessor processor;
@@ -45,6 +43,8 @@ public final class SenderRuleTask implements Runnable {
 	private LogStat logStatService;
 
 	private PropertiesService properties;
+	
+	private MimeMailQueueService queueService;
 
 	/**
 	 * Creates the object.
@@ -58,12 +58,11 @@ public final class SenderRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public SenderRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail,
-			DomainFinder domainFinderService, UserFinder userFinderService) {
+	public SenderRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail, UserFinder userFinderService,MimeMailQueueService queueService) {
 		this.mail = mail;
 		this.ksession = sKSession;
-		this.domainFinderService = domainFinderService;
 		this.userFinderService = userFinderService;
+		this.queueService = queueService;
 	}
 
 	/**
@@ -75,8 +74,7 @@ public final class SenderRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			processor.process(ksession, filler, userFinderService,
-					domainFinderService, mail);
+			processor.process(ksession, filler, userFinderService, mail);
 			}catch (Exception e) {
 				if (getLogStatService() != null) {
 					getLogStatService().log(mail,
@@ -92,32 +90,53 @@ public final class SenderRuleTask implements Runnable {
 			 * processing
 			 */
 			if (!mail.getStatus().equals(MailState.DROP)) {
-				MimeMail splitedMail;
-				MimeMessage newMessage = new MimeMessage(mail.getMessage());
-				splitedMail = new MimeMail(mail.getInitialSender(),
-						mail.getRecipient(),
-						newMessage, 
-						mail.getResponseServiceId());
-				splitedMail.setPhase(RulePhase.RECEIVE);
-				splitedMail.setSenderId(mail.getSenderId());
-				splitedMail.setSenderDomainId(mail.getSenderDomainId());
-				splitedMail.getProperties().putAll(mail.getProperties());
-				splitedMail.setParentSequence(mail.getSequence());
-				splitedMail.setParentTime(mail.getParentTime());
-				InputQueue.getInstance().add(splitedMail);
+
+				mail.getMessage().saveChanges();
+				mail.setPhase(RulePhase.RECEIVE);
+				boolean removedAdded = false;
+				while(!removedAdded){
+					try{
+						log.debug("adding email to RECEIVE queue "+mail);
+						this.queueService.removeAddTo(SendPool.MODULE, SendPool.PHASE, mail, mail, ReceivePool.MODULE, ReceivePool.PHASE);
+						removedAdded=true;
+					}catch(InterruptedException e){
+						log.error("interrupted while removingAdding mail");
+					}
+				}
 				log.debug("Mail sent input queue again for recipeints processing "
 									+ mail);
+				if(log.isTraceEnabled()){
+					LogMail.saveErrorMail(mail.getMessage(),
+							getProperties().getValue(Core.ERROR_PREFIX)+"send",
+							getProperties().getValue(Core.ERROR_SUFFIX),
+							getProperties().getValue(Core.ERROR_DIRECTORY));
+				}
 			} else {
 				if(getLogRecordService()!=null){
 					getLogRecordService().log(mail);
 				}
 				log.debug("mail droped " + mail);
+				queueService.remove(SendPool.MODULE, SendPool.PHASE, mail);
 			}
 		} catch (Exception e) {
+			log.error("error, saving mail to disk:",e);
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),
 						e.getMessage());
+			}
+			LogMail.saveErrorMail(mail.getMessage(), 
+					getProperties().getValue(Core.ERROR_PREFIX),
+					getProperties().getValue(Core.ERROR_SUFFIX),
+					getProperties().getValue(Core.ERROR_DIRECTORY));
+			
+			boolean removed = false;
+			while(!removed){
+				try {
+					removed = queueService.remove(SendPool.MODULE, SendPool.PHASE, mail);
+				} catch (InterruptedException e1) {
+					log.error("error while removing email:",e);
+				}
 			}
 			log.error("error while sending email to next phase:",e);
 		}
