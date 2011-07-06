@@ -17,7 +17,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:RemoveDomainEvent):AsyncToken
 		{
-			return service.remove(event.id);
+			return service.remove(event.domainId);
 		}
 		
 		public function error (fault:Fault) : void {

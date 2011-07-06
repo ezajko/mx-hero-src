@@ -99,7 +99,7 @@ package org.mxhero.console.features.presentation.feature
 		
 		private function loadFeatures():void{
 			if(context.selectedDomain!=null){
-				dispatcher(new GetRulesByDomainIdEvent(selectedFeature.id, context.selectedDomain.id));
+				dispatcher(new GetRulesByDomainIdEvent(selectedFeature.id, context.selectedDomain.domain));
 			}else {
 				dispatcher(new GetRulesEvent(selectedFeature.id));
 			}

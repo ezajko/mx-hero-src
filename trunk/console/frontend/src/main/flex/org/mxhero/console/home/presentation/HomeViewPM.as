@@ -30,7 +30,7 @@ package org.mxhero.console.home.presentation
 	{
 		[MessageDispatcher]
 		public var dispatcher:Function;
-
+		public static var refreshFeed:Function;
 		private static const DOMAIN_STATE:String = "domain";
 		private static const ADMIN_STATE:String = "admin";
 		private static const FILTER_STATE:String = "filter";
@@ -87,10 +87,18 @@ package org.mxhero.console.home.presentation
 				domainFilter=context.selectedDomain.domain;
 			}else{
 				currentState=ADMIN_STATE;
+				if(context.selectedDomain!=null){
+					domainFilter=context.selectedDomain.domain;
+				}else{
+					domainFilter=null;
+				}
 				dispatcher(new GetDomainsEvent());
 			}
 			getCompleteData();
 			refreshActivity();
+			if(refreshFeed!=null){
+				refreshFeed();
+			}
 		}
 		
 		[Exit]
@@ -173,8 +181,8 @@ package org.mxhero.console.home.presentation
 			var composition:MessagesComposition = result as MessagesComposition;
 			this.messageComposition=new ArrayCollection([{Stat:(rs.getString(HomeProperties.NAME,HomeProperties.RIGTH_MESSAGES_SPAM)),Qty:composition.spam}
 			,{Stat:(rs.getString(HomeProperties.NAME,HomeProperties.RIGTH_MESSAGES_VIRUS)),Qty:composition.virus}
-			,{Stat:(rs.getString(HomeProperties.NAME,HomeProperties.RIGTH_MESSAGES_BLOCKED)),Qty:composition.blocked}
-			,{Stat:(rs.getString(HomeProperties.NAME,HomeProperties.RIGTH_MESSAGES_CLEAN)),Qty:composition.clean}]);
+			,{Stat:(rs.getString(HomeProperties.NAME,HomeProperties.RIGTH_MESSAGES_CLEAN)),Qty:composition.clean}
+			,{Stat:(rs.getString(HomeProperties.NAME,HomeProperties.RIGTH_MESSAGES_BLOCKED)),Qty:composition.blocked}]);
 			startCompleteTimer();
 		}
 		

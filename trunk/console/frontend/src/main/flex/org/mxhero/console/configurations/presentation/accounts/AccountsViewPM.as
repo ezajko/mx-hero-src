@@ -13,6 +13,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.commons.infrastructure.ErrorTranslator;
+	import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 	import org.mxhero.console.commons.resources.ErrorsProperties;
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 	import org.mxhero.console.configurations.application.event.EditEmailAccountEvent;
@@ -25,7 +26,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.EmailAccount;
-	import org.mxhero.console.frontend.domain.Page;
+	import org.mxhero.console.frontend.domain.EmailAccountAlias;
 
 	[Landmark(name="main.dashboard.configurations.accounts")]
 	public class AccountsViewPM
@@ -39,15 +40,11 @@ package org.mxhero.console.configurations.presentation.accounts
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
 		
-		[Bindable]
-		public var pageSize:Number=100;
-		
-		[Bindable]
-		public var actualPage:Page;
-		
 		[Inject]
 		[Bindable]
 		public var context:ApplicationContext;
+		[Bindable]
+		public var accounts:ArrayCollection;
 		
 		[Inject]
 		[Bindable]
@@ -63,9 +60,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		public var selectedEmailAccount:Object;
 		
 		private var _accountFilter:String=null;
-		private var _nameFilter:String=null;
-		private var _lastNameFilter:String=null;
-		private var _groupIdFilter:Number=-1;
+		private var _groupIdFilter:String=null;
 		
 		public function goBack():void{
 			parentModel.navigateTo(ConfigurationsDestinations.LIST);
@@ -74,36 +69,24 @@ package org.mxhero.console.configurations.presentation.accounts
 		[Enter(time="every")]
 		public function every():void{
 			loadEmailAccounts();
-			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.id));
+			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain));
 		}
 		
 		public function loadEmailAccounts():void{
 			_accountFilter=null;
-			_nameFilter=null;
-			_lastNameFilter=null;
-			_groupIdFilter=-1;
-			findAccounts(0);
+			_groupIdFilter=null;
+			findAccounts();
 		}
 		
-		public function nextPage():void{
-			findAccounts(actualPage.number+1);
-		}
-		
-		public function prevPage():void{
-			findAccounts(actualPage.number-1);
-		}
-		
-		public function filterEmailAccounts(account:String,name:String,lastName:String,groupId:Number):void{
+		public function filterEmailAccounts(account:String,groupName:String):void{
 			_accountFilter=account;
-			_nameFilter=name;
-			_lastNameFilter=lastName;
-			_groupIdFilter=groupId;
-			findAccounts(0);
+			_groupIdFilter=groupName;
+			findAccounts();
 		}
 		
 		[CommandResult]
 		public function loadingResult (result:*, event:LoadAllEmailAccountsEvent) : void {
-			actualPage=result;
+			accounts=result;
 			isLoading=false;
 		}
 		
@@ -115,6 +98,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		public function newEmailAccount(parent:DisplayObject):void{
 			accountShow=new AccountShow();
 			accountShow.account=new EmailAccount();
+			accountShow.account.domain=context.selectedDomain.domain;
 			accountShow.model=this;
 			accountShow.currentState="new";
 			PopUpManager.addPopUp(accountShow,parent,true);
@@ -123,7 +107,8 @@ package org.mxhero.console.configurations.presentation.accounts
 		}
 
 		public function insertAccount(account:EmailAccount):void{
-			dispatcher(new InsertEmailAccountEvent(context.selectedDomain.id,account));
+			account.account=StringUtils.trim(account.account).toLowerCase();
+			dispatcher(new InsertEmailAccountEvent(context.selectedDomain.domain,account));
 			isLoading=true;
 		}
 		
@@ -146,16 +131,16 @@ package org.mxhero.console.configurations.presentation.accounts
 		
 		[CommandResult]
 		public function removeResult (result:*, event:RemoveEmailAccountEvent) : void {
-			var itemPosition:Number= actualPage.elements.getItemIndex(selectedEmailAccount);
+			var itemPosition:Number= accounts.getItemIndex(selectedEmailAccount);
 			if(itemPosition>-1){
-				actualPage.elements.removeItemAt(itemPosition);
+				accounts.removeItemAt(itemPosition);
 			}
 			isLoading=false;
 		}
 		
 		public function removeHandler(event:CloseEvent):void{
 			if(event.detail==Alert.YES){
-				dispatcher(new RemoveEmailAccountEvent(selectedEmailAccount.id));
+				dispatcher(new RemoveEmailAccountEvent(selectedEmailAccount.account,selectedEmailAccount.domain));
 			}
 		}
 		
@@ -164,6 +149,10 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountShow.account=(selectedEmailAccount as EmailAccount).clone();
 			accountShow.model=this;
 			accountShow.currentState="edit";
+			accountShow.domains=new ArrayCollection();
+			if(context.selectedDomain.aliases!=null){
+				accountShow.domains.addAll(context.selectedDomain.aliases);
+			}
 			PopUpManager.addPopUp(accountShow,parent,true);
 			PopUpManager.centerPopUp(accountShow);
 		}	
@@ -173,6 +162,8 @@ package org.mxhero.console.configurations.presentation.accounts
 			isLoading=true;
 		}
 		
+
+		
 		[CommandResult]
 		public function updateResult (result:*, event:EditEmailAccountEvent) : void {
 			isLoading=false;
@@ -181,8 +172,8 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountShow.cancelBtt_clickHandler(null);
 		}
 
-		private function findAccounts(page:Number):void{
-			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.id,_accountFilter,_nameFilter,_lastNameFilter,_groupIdFilter,page,pageSize));
+		private function findAccounts():void{
+			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.domain,_accountFilter,_groupIdFilter));
 			isLoading=true;
 		}
 		
@@ -195,7 +186,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		}
 		
 		public function uploadAllAccounts(uploadAccounts:ArrayCollection,failOnError:Boolean):void{
-			dispatcher(new UploadAccountsEvent(uploadAccounts,context.selectedDomain.id,failOnError));
+			dispatcher(new UploadAccountsEvent(uploadAccounts,context.selectedDomain.domain,failOnError));
 			isLoading=true;
 		}
 		

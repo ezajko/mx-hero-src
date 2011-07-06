@@ -91,25 +91,35 @@
 					if(anyoneFT.isSelected){
 						direction.directionType=FeatureRuleDirection.ANYONEELSE;
 						direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					} else {
 						direction.directionType=FeatureRuleDirection.ANYONE;
 						direction.freeValue=FeatureRuleDirection.ANYONE;
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				} else if (currentState=="alldomains"){
 					direction.directionType=FeatureRuleDirection.ALLDOMAINS;
 					direction.freeValue=FeatureRuleDirection.ALLDOMAINS;
-					direction.valueId=-1;
+					direction.account=null;
+					direction.group=null;
+					direction.domain=null;
 				} else if (currentState=="domain" &&
 					domainFT.ipeComboBox != null &&
 					domainFT.ipeComboBox.currentState=="show"){
 					direction.directionType=FeatureRuleDirection.DOMAIN;
 					direction.freeValue=domainFT.ipeComboBox.selectedLabel;
 					if(domainFT.ipeComboBox.selectedItem!=null){
-						direction.valueId=domainFT.ipeComboBox.selectedItem.id;
+						direction.domain=domainFT.ipeComboBox.selectedItem.domain.domain;
+						direction.account=null;
+						direction.group=null;
 					}else {
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				} else if (currentState=="individual" && 
 					individualFT.ipeComboBox!=null &&
@@ -117,9 +127,13 @@
 					direction.directionType=FeatureRuleDirection.INDIVIDUAL;
 					direction.freeValue=individualFT.ipeComboBox.selectedLabel;
 					if(individualFT.ipeComboBox.selectedItem!=null){
-						direction.valueId=individualFT.ipeComboBox.selectedItem.id;
+						direction.account=individualFT.ipeComboBox.selectedItem.account.account;
+						direction.domain=individualFT.ipeComboBox.selectedItem.account.domain;
+						direction.group=null;
 					}else {
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				}
 			}
@@ -152,9 +166,9 @@
 					anyoneFT.isSelected=true;
 				}else if(direction.directionType==FeatureRuleDirection.DOMAIN && 
 					domainFT !=null && domainFT.ipeComboBox!=null){
-					if(!isNaN(direction.valueId) && direction.valueId>-1){
+					if(direction.domain!=null){
 						for each(var domain:Object in domainFT.ipeComboBox.comboBox.dataProvider){
-							if(domain.id==direction.valueId){
+							if(domain.alias==direction.domain){
 								domainFT.ipeComboBox.comboBox.selectedItem=domain;
 								domainFT.ipeComboBox.selectedItem=domain;
 								break;
@@ -166,9 +180,9 @@
 					currentState="domain";
 				} else if(direction.directionType==FeatureRuleDirection.INDIVIDUAL && 
 					individualFT !=null && individualFT.ipeComboBox!=null){
-					if(!isNaN(direction.valueId) && direction.valueId>-1){
+					if(direction.account!=null && direction.domain!=null){
 						for each(var account:Object in individualFT.ipeComboBox.comboBox.dataProvider){
-							if(account.id==direction.valueId){
+							if(account.name==direction.account && account.domain==direction.domain){
 								individualFT.ipeComboBox.comboBox.selectedItem=account;
 								individualFT.ipeComboBox.selectedItem=account;
 								break;

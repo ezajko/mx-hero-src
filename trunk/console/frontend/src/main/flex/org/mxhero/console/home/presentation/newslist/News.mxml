@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%">
+
+	<s:layout>
+		<s:VerticalLayout gap="10" paddingLeft="5" paddingRight="5"/>
+	</s:layout>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import flash.net.navigateToURL;
+			
+			import org.mxhero.console.home.application.resources.HomeProperties;
+			
+			[Bindable]
+			public var title:String;
+			[Bindable]
+			public var description:String;
+			[Bindable]
+			public var url:String;
+			
+			private function newWin():void {
+				var urlRequest:URLRequest = new URLRequest(url);
+				navigateToURL(urlRequest, "mxheroNews");
+			}
+		]]>
+	</fx:Script>
+
+		<s:Label text="{title}" width="100%" fontWeight="bold" 
+				 color="#FFFFFF" 
+				 textDecoration="underline"/>
+		<mx:Text width="100%" htmlText="{description}"/>
+		<mx:LinkButton label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_NEWS_CONTINUE_READING)}" click="{newWin();}" 
+					   selectionColor="#70B2EE" rollOverColor="#70B2EE"
+					   color="#FFFFFF"
+					   textRollOverColor="#FFFFFF"
+					   textSelectedColor="#FFFFFF"
+					   fontStyle="italic"
+					   textDecoration="underline"
+					   fontSize="12"/>
+
+</s:Group>

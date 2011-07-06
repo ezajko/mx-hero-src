@@ -17,7 +17,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:RemoveGroupEvent):AsyncToken
 		{
-			return service.remove(event.groupId);
+			return service.remove(event.groupName,event.domainId);
 		}
 		
 		public function error (fault:Fault) : void {

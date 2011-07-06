@@ -7,7 +7,7 @@
 		 creationComplete="{init()}"
 		 xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:EmailValidator id="emailV" required="true"/>
 	</fx:Declarations>
 	
 	
@@ -17,13 +17,17 @@
 			import mx.events.CloseEvent;
 			import mx.events.DataGridEvent;
 			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
 			import mx.managers.PopUpManager;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.infrastructure.parser.CSV;
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			import org.mxhero.console.frontend.domain.EmailAccount;
+			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			
 			[Bindable]
 			public var model:AccountsViewPM;
@@ -59,12 +63,33 @@
 				for each(var row:Array in csv.data){
 					if(StringUtil.trim(row[0].toString()).length>0){
 						var account:EmailAccount = new EmailAccount();
-						account.account=row[0].toString().split("@")[0];
-						if(row.length>1){
-							account.name=row[1];
-						}
-						if(row.length>2){
-							account.lastName=row[2];
+						account.account=StringUtils.trim(row[0].toString().toLowerCase()).split("@")[0];
+						account.dataSource=EmailAccount.MANUAL;
+						account.domain=model.context.selectedDomain.domain;
+ 						if(row.length>1){
+							var emails:Array = StringUtils.trim(row[1].toString().toLowerCase()).split(",");
+							for each(var email:String in emails){
+								email=StringUtils.trim(email);
+								var result:ValidationResultEvent = emailV.validate(email);
+								var isValid:Boolean=true;
+								if(result!=null && result.results!=null && result.results.length>0){
+									for each(var resultValue:ValidationResult in result.results){
+										if(resultValue.isError){
+											isValid=false;
+										}
+									}
+								}
+								if(isValid){
+									var alias:EmailAccountAlias = new EmailAccountAlias();
+									alias.dataSource=EmailAccount.MANUAL;
+									alias.name=email.split("@")[0];
+									alias.domain=email.split("@")[1];
+									if(account.aliases==null){
+										account.aliases=new ArrayCollection();
+									}
+									account.aliases.addItem(alias);
+								}
+							}
 						}
 						uploadedAccounts.addItem(account);
 					}
@@ -81,6 +106,18 @@
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
 				model.uploadAllAccounts(uploadedAccounts,failOnError.selected);
+			}
+			
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
+				var label:String="";
+				if(item.aliases!=null){
+					for each (var alias:Object in item.aliases){
+						var accountAlias:EmailAccountAlias = alias as EmailAccountAlias;
+						label=label+accountAlias.name+"@"+accountAlias.domain+'\n';
+					}
+					label=StringUtils.trimRight(label);
+				}
+				return label;
 			}
 			
 		]]>
@@ -120,14 +157,11 @@
 									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
 									minWidth="100"
 									editable="true"/>
-				<mx:DataGridColumn 	dataField="name"
-									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
-									minWidth="100"
-									editable="true"/>
-				<mx:DataGridColumn 	dataField="lastName"
-									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-									minWidth="100"
-									editable="true"/>
+				<mx:DataGridColumn dataField="aliases"
+								   labelFunction="{aliaseslabelFunction}"
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+								   minWidth="100"
+								   sortable="false"/>
 				<mx:DataGridColumn  width="42" sortable="false" resizable="false" editable="false">
 					<mx:itemRenderer>
 						<fx:Component>

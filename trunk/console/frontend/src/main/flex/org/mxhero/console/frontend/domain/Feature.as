@@ -17,6 +17,7 @@ package org.mxhero.console.frontend.domain
 		public var rules:ArrayCollection;
 		public var moduleUrl:String;
 		public var moduleReportUrl:String;
+		public var defaultAdminOrder:String;
 		private var _component:String;
 
 		public function Feature(){

@@ -28,6 +28,8 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const COLUMN_SERVER_LABEL:String="list.column.server.label";
 		
+		public static const COLUMN_ALIASES_LABEL:String="list.column.aliases.label";
+		
 		public static const COLUMN_UPDATED_LABEL:String="list.column.updated.label";
 		
 		public static const COLUMN_CREATED_LABEL:String="list.column.created.label";

@@ -8,7 +8,7 @@
 		<parsley:Configure/>
 		
 		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY"/>
+						  formatString="DD-MM-YYYY JJ:NN"/>
 
 	</fx:Declarations>
 	
@@ -18,6 +18,7 @@
 			import mx.events.ListEvent;
 			import mx.utils.ObjectUtil;
 			
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
 
@@ -69,6 +70,18 @@
 			public function datagrid1_itemDoubleClickHandler(event:ListEvent=null):void
 			{
 				model.editDomain(this);
+			}
+			
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
+				var label:String="";
+				if(item.aliases!=null){
+					for each (var alias:Object in item.aliases){
+						var domainAlias:String = alias as String;
+						label=label+domainAlias+'\n';
+					}
+					label=StringUtils.trimRight(label);
+				}
+				return label;
 			}
 
 		]]>
@@ -133,6 +146,7 @@
 				 height="100%"
 				 minWidth="600"
 				 selectedItem="@{model.selectDomain}"
+				 variableRowHeight="true"
 				 mouseChildren="true">
 		<mx:columns>
 			<mx:DataGridColumn headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_DOMAIN_LABEL)}" 
@@ -220,14 +234,18 @@
 			<mx:DataGridColumn dataField="server" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_SERVER_LABEL)}" 
 							   minWidth="100"/>
+			<mx:DataGridColumn dataField="aliases" 
+							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_ALIASES_LABEL)}" 
+							   labelFunction="{aliaseslabelFunction}"
+							   minWidth="100"/>
 			<mx:DataGridColumn dataField="updatedDate" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_UPDATED_LABEL)}" 
 							   labelFunction="updatedDateLabelFunction"
-							   width="110" resizable="false"/>
+							   width="130" resizable="false"/>
 			<mx:DataGridColumn dataField="creationDate" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_LABEL)}"
 							   labelFunction="dateLabelFunction"
-							   width="110" resizable="false"/>
+							   width="130" resizable="false"/>
 			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
 				<mx:itemRenderer>
 					<fx:Component>

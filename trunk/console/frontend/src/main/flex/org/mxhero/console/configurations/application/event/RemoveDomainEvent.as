@@ -2,11 +2,11 @@ package org.mxhero.console.configurations.application.event
 {
 	public class RemoveDomainEvent
 	{
-		public var id:Number;
+		public var domainId:String;
 		
-		public function RemoveDomainEvent(id:Number)
+		public function RemoveDomainEvent(domainId:String)
 		{
-			this.id=id;
+			this.domainId=domainId;
 		}
 	}
 }

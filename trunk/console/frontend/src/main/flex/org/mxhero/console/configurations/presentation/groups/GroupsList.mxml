@@ -9,7 +9,7 @@
 		<parsley:Configure/>
 		
 		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY"/>
+						  formatString="DD-MM-YYYY JJ:NN"/>
 		
 	</fx:Declarations>
 	
@@ -129,11 +129,11 @@
 			<mx:DataGridColumn dataField="updatedDate" 
 							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_UPDATED_LABEL)}" 
 							   labelFunction="updatedDateLabelFunction"
-							   width="110" resizable="false"/>
+							   width="130" resizable="false"/>
 			<mx:DataGridColumn dataField="createdDate" 
 							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_LABEL)}"
 							   labelFunction="dateLabelFunction"
-							   width="110" resizable="false"/>
+							   width="130" resizable="false"/>
 			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
 				<mx:itemRenderer>
 					<fx:Component>

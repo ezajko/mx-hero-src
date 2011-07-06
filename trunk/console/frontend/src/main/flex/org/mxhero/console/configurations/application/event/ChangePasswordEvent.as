@@ -6,10 +6,13 @@ package org.mxhero.console.configurations.application.event
 		
 		public var newPassword:String;
 		
-		public function ChangePasswordEvent(oldPassword:String,newPassword:String)
+		public var domainOwner:Number;
+		
+		public function ChangePasswordEvent(oldPassword:String,newPassword:String,domainOwner:Number=-1)
 		{
 			this.oldPassword=oldPassword;
 			this.newPassword=newPassword;
+			this.domainOwner=domainOwner;
 		}
 	}
 }

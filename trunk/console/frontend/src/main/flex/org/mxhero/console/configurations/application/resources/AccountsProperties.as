@@ -12,21 +12,17 @@ package org.mxhero.console.configurations.application.resources
 
 		public static const FILTER_TITLE:String="search.filter.title";
 		
-		public static const FILTER_NAME_LABEL:String="search.filter.name.label";
-		
-		public static const FILTER_LAST_NAME_LABEL:String="search.filter.last.name.label";
-		
 		public static const FILTER_ACCOUNT_LABEL:String="search.filter.account.label";
 		
 		public static const FILTER_BUTTON_LABEL:String="search.filter.button.label";
 		
 		public static const FILTER_BUTTON_CLEAR_LABEL:String="search.filter.button.clear.label";
 		
-		public static const COLUMN_NAME_LABEL:String="list.column.name.label";
-		
-		public static const COLUMN_LAST_NAME_LABEL:String="list.column.last.name.label";
-		
 		public static const COLUMN_ACCOUNT_LABEL:String="list.column.account.label";
+		
+		public static const COLUMN_ALIASES_LABEL:String="list.column.aliases.label";
+		
+		public static const COLUMN_DATASOURCE_LABEL:String="list.column.datasource.label";
 				
 		public static const COLUMN_UPDATED_LABEL:String="list.column.updated.label";
 		
@@ -44,10 +40,6 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const FORM_ACCOUNT_LABEL:String="form.account.label";
 		
-		public static const FORM_NAME_LABEL:String="form.name.label";
-		
-		public static const FORM_LAST_NAME_LABEL:String="form.last.name.label";
-		
 		public static const UPLOAD_SELECT_FILE_LABEL:String="upload.select.file.label";
 		
 		public static const UPLOAD_TOTAL_ACCOUNTS:String="upload.total.accounts";
@@ -61,6 +53,10 @@ package org.mxhero.console.configurations.application.resources
 		public static const FORM_GROUP_LABEL:String="form.group.label";
 		
 		public static const FORM_GROUP_SELECT_LABEL:String="form.group.select.label";
+		
+		public static const FORM_ALIASES_LABEL:String="form.aliases.label";
+		
+		public static const FORM_ALIASES_EXPLAIN:String="form.aliases.explain";
 		
 		public static const COLUMN_GROUP_LABEL:String="column.group.label";
 

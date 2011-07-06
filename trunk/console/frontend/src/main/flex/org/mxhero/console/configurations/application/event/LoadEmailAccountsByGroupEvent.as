@@ -2,11 +2,13 @@ package org.mxhero.console.configurations.application.event
 {
 	public class LoadEmailAccountsByGroupEvent
 	{
-		public var groupId:Number;
+		public var groupName:String;
+		public var domainId:String;
 		
-		public function LoadEmailAccountsByGroupEvent(groupId:Number)
+		public function LoadEmailAccountsByGroupEvent(groupName:String,domainId:String)
 		{
-			this.groupId=groupId;
+			this.groupName=groupName;
+			this.domainId=domainId;
 		}
 	}
 }

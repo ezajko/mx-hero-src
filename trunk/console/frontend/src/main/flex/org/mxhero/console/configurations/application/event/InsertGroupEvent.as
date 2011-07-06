@@ -8,14 +8,11 @@ package org.mxhero.console.configurations.application.event
 	{
 		public var group:Group;
 		
-		public var domainId:Number;
-		
 		public var members:ArrayCollection;
 		
-		public function InsertGroupEvent(group:Group, domainId:Number, members:ArrayCollection)
+		public function InsertGroupEvent(group:Group, members:ArrayCollection)
 		{
 			this.group=group;
-			this.domainId=domainId;
 			this.members=members;
 		}
 	}
