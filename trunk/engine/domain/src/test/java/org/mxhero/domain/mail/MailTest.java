@@ -23,7 +23,8 @@ public class MailTest {
 	
 	@Test
 	public void testMail() throws MessagingException, IOException{
-		MimeMail mail = new MimeMail("from","recipient;rec","content".getBytes(),"service");
+		MimeMessage messageone = new MimeMessage(Session.getDefaultInstance(new Properties()));
+		MimeMail mail = new MimeMail("from","recipient;rec",messageone,"service");
 		Assert.assertNotNull(mail.getInitialSender());
 		Assert.assertNotNull(mail.getResponseServiceId());
 		Assert.assertNotNull(mail.getMessage());

@@ -11,10 +11,10 @@ import org.mxhero.engine.domain.mail.business.User;
 public interface UserFinder {
 
 	/**
-	 * Takes the user mail, the domain and returns the user.
+	 * Takes the user mail and returns the mxhero user.
 	 * @param mailAdress
 	 * @param domainId
 	 * @return
 	 */
-	User getUser(String mailAdress, String domainId);
+	User getUser(String mailAdress);
 }

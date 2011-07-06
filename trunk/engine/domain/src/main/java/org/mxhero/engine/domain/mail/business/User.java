@@ -17,7 +17,7 @@ public class User {
 	
 	private Domain domain;
 	
-	private Group group;
+	private String group;
 	
 	private Boolean managed;
 
@@ -85,16 +85,14 @@ public class User {
 		this.domain = domain;
 	}
 
-	public Group getGroup() {
+	public String getGroup() {
 		return group;
 	}
 
-	public void setGroup(Group group) {
+	public void setGroup(String group) {
 		this.group = group;
 	}
 
-	
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

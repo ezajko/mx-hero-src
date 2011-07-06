@@ -40,10 +40,6 @@ public final class MimeMail {
 	private String recipientDomainId;
 
 	private String responseServiceId;
-	
-	private Long parentSequence;
-
-	private Timestamp parentTime;
 
 	private int initialSize;
 
@@ -59,35 +55,28 @@ public final class MimeMail {
 
 	private String statusReason;
 
-	/**
-	 * @param from
-	 * @param recipient
-	 * @param data
-	 * @param responseServiceId
-	 * @throws MessagingException
-	 */
-	public MimeMail(String from, String recipient, byte[] data,
-			String responseServiceId) throws MessagingException {
-		this(from, recipient, responseServiceId);
+	public static MimeMail createCustom(String from, String recipient, byte[] data,
+			String responseServiceId,Long sequence, Timestamp time) throws MessagingException{
+		return new MimeMail(from, recipient, data, responseServiceId, sequence, time);
+	}
+	
+	private MimeMail(String from, String recipient, byte[] data,
+			String responseServiceId, Long sequence, Timestamp time) throws MessagingException{
 		this.initialSize = data.length;
+		this.sequence = sequence;
+		this.time = time;
+		this.responseServiceId = responseServiceId;
+		this.recipient = recipient;
+		this.recipientId = recipient;
+		this.recipientDomainId = getDomain(recipient);
+		this.initialSender = from;
+		this.senderId = from;
+		this.senderDomainId = getDomain(from);
 		this.message = new MimeMessage(Session
 				.getDefaultInstance(new Properties()),
 				new ByteArrayInputStream(data));
 	}
-
-	/**
-	 * Clones for default
-	 * @param from
-	 * @param recipients
-	 * @param data
-	 * @param responseServiceId
-	 * @throws MessagingException
-	 */
-	public MimeMail(String from, String recipient,
-			MimeMessage data, String responseServiceId)
-			throws MessagingException {
-		this(from,recipient,data,responseServiceId,true);
-	}
+	
 
 	/**
 	 * @param from
@@ -98,7 +87,7 @@ public final class MimeMail {
 	 * @throws MessagingException
 	 */
 	public MimeMail(String from, String recipient,
-			MimeMessage data, String responseServiceId, Boolean clone)
+			MimeMessage data, String responseServiceId)
 			throws MessagingException {
 		this(from, recipient, responseServiceId);
 		int headerSize = 0;
@@ -112,11 +101,9 @@ public final class MimeMail {
 			headerSize += ((String) e.nextElement()).length() + 2;
 		}
 		this.initialSize = data.getSize() + headerSize;
-		if(clone){
-			this.message = new MimeMessage(data);
-		}else{
-			this.message = data;
-		}
+
+		this.message = data;
+
 	}
 	
 	/**
@@ -128,11 +115,13 @@ public final class MimeMail {
 			String responseServiceId) {
 		this.sequence = Sequencer.getInstance().getNextSequence();
 		this.time = new Timestamp(System.currentTimeMillis());
-		this.parentSequence = this.sequence;
-		this.parentTime = this.time;
 		this.responseServiceId = responseServiceId;
 		this.recipient = recipient;
+		this.recipientId = recipient;
+		this.recipientDomainId = getDomain(recipient);
 		this.initialSender = from;
+		this.senderId = from;
+		this.senderDomainId = getDomain(from);
 	}
 
 	/**
@@ -291,22 +280,6 @@ public final class MimeMail {
 		this.recipientDomainId = recipientDomainId;
 	}
 
-	public Long getParentSequence() {
-		return parentSequence;
-	}
-
-	public void setParentSequence(Long parentSequence) {
-		this.parentSequence = parentSequence;
-	}
-
-	public Timestamp getParentTime() {
-		return parentTime;
-	}
-
-	public void setParentTime(Timestamp parentTime) {
-		this.parentTime = parentTime;
-	}
-
 	public Map<String, String> getProperties() {
 		return properties;
 	}
@@ -323,6 +296,14 @@ public final class MimeMail {
 		this.flow = flow;
 	}
 
+	private static String getDomain(String email){
+		if(email!=null && email.contains("@")){
+			return email.split("@")[1];
+		}else{
+			return "";
+		}
+	}
+	
 	/**
 	 * @see java.lang.Object#toString()
 	 */

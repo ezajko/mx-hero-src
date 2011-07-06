@@ -10,6 +10,8 @@ public final class RulePhase {
 
 	public static final String RECEIVE = "receive";
 	
+	public static final String OUT = "out";
+	
 	/**
 	 * Must not instantiate.
 	 */

@@ -17,8 +17,7 @@ public class Domain {
 	private Collection<String> aliases;
 	
 	private Collection<DomainList> lists;
-	
-	private Collection<Group> groups;
+
 
 	/**
 	 * @return
@@ -60,20 +59,6 @@ public class Domain {
 	 */
 	public void setLists(Collection<DomainList> lists) {
 		this.lists = lists;
-	}
-
-	/**
-	 * @return
-	 */
-	public Collection<Group> getGroups() {
-		return groups;
-	}
-
-	/**
-	 * @param groups
-	 */
-	public void setGroups(Collection<Group> groups) {
-		this.groups = groups;
 	}
 
 	/**
@@ -156,8 +141,7 @@ public class Domain {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Domain [id=").append(id).append(", managed=")
 				.append(managed).append(", aliases=").append(aliases)
-				.append(", lists=").append(lists).append(", groups=")
-				.append(groups).append("]");
+				.append(", lists=").append(lists).append("]");
 		return builder.toString();
 	}	
 
