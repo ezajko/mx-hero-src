@@ -1,83 +1,70 @@
 package org.mxhero.console.backend.entity;
 
 import java.util.Calendar;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="email_accounts",schema="mxhero",
-		uniqueConstraints={@UniqueConstraint(columnNames={"account","domain_id"})})
+@Table(name="email_accounts",schema="mxhero")
 public class EmailAccount {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	public static final String MANUAL="manual";
 	
-	@Column(name="name",length=100)
-	private String name;
-	
-	@Column(name="last_name",length=100)
-	private String lastName;
-	
-	@Column(name="account", length=100, nullable=false)
-	@Size(min=1)
-	private String account;
+	@EmbeddedId
+	private EmailAccountPk id;
 	
 	@Column(name="created", nullable=false)
 	private Calendar createdDate;
 	
+	@Column(name="data_source", nullable=false)
+	private String dataSource;
+	
 	@Column(name="updated", nullable=false)
 	private Calendar updatedDate;
 	
-	@ManyToOne(cascade = {CascadeType.MERGE})
-	@JoinColumn(name="domain_id",nullable=false)
+	@MapsId("domainId")
+	@ManyToOne(fetch=FetchType.EAGER,optional=false,cascade= {CascadeType.MERGE})
+	@JoinColumns({
+		@JoinColumn(name="domain_id", referencedColumnName="domain")
+	})
 	private Domain domain;
 
-	@ManyToOne(cascade = {CascadeType.MERGE})
-	@JoinColumn(name="group_id")
+
+	@ManyToOne(fetch=FetchType.EAGER,cascade= {CascadeType.MERGE})
+	@JoinColumns({
+		@JoinColumn(name="group_domain_id", referencedColumnName="domain_id"),
+		@JoinColumn(name="group_name", referencedColumnName="name")
+	})
 	private Group group;
 	
+	@OneToMany(mappedBy="account", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+	private Set<AliasAccount> aliases;
 	
-	public Integer getId() {
+	public EmailAccountPk getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(EmailAccountPk id) {
 		this.id = id;
 	}
-
-	public String getName() {
-		return name;
+	
+	public Set<AliasAccount> getAliases() {
+		return aliases;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getAccount() {
-		return account;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
+	public void setAliases(Set<AliasAccount> aliases) {
+		this.aliases = aliases;
 	}
 
 	public Calendar getCreatedDate() {
@@ -112,13 +99,20 @@ public class EmailAccount {
 		this.group = group;
 	}
 
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		result = prime * result + ((group == null) ? 0 : group.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 

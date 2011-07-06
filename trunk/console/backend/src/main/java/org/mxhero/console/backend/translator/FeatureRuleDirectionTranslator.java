@@ -14,7 +14,9 @@ public class FeatureRuleDirectionTranslator extends AbstractTranslator<FeatureRu
 		directionVO.setDirectionType(entity.getDirectionType());
 		directionVO.setFreeValue(entity.getFreeValue());
 		directionVO.setId(entity.getId());
-		directionVO.setValueId(entity.getValueId());
+		directionVO.setDomain(entity.getDomain());
+		directionVO.setAccount(entity.getAccount());
+		directionVO.setGroup(entity.getGroup());
 		
 		return directionVO;
 	}

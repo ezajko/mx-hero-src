@@ -18,7 +18,6 @@ public class DomainTranslator extends AbstractTranslator<DomainVO, Domain>{
 		
 		domainVO.setCreationDate(entity.getCreationDate());
 		domainVO.setDomain(entity.getDomain());
-		domainVO.setId(entity.getId());
 		domainVO.setOwner(ownerTranslator.translate(entity.getOwner()));
 		domainVO.setServer(entity.getServer());
 		domainVO.setUpdatedDate(entity.getUpdatesDate());

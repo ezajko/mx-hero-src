@@ -32,6 +32,5 @@ public abstract class Record_ {
 	public static volatile SingularAttribute<Record, String> state;
 	public static volatile SingularAttribute<Record, String> stateReason;
 	public static volatile SingularAttribute<Record, String> flow;
-	public static volatile SetAttribute<Record, Stat> stats;
 
 }

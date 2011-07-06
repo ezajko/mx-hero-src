@@ -11,7 +11,6 @@ public interface PluginReportService {
 	Integer MAX_RESULT = 1000;
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	@Transactional(readOnly=true)
 	Collection getResult (String queryString, List params);
 	
 	

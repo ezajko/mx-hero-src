@@ -12,7 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.mxhero.console.backend.dao.GroupDao;
+import org.mxhero.console.backend.entity.AliasAccount;
 import org.mxhero.console.backend.entity.EmailAccount;
+import org.mxhero.console.backend.entity.GroupPk;
 import org.mxhero.console.backend.service.CustomReportService;
 import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.statistics.entity.Record;
@@ -53,7 +55,7 @@ public class JpaCustomReportService implements CustomReportService{
 	@Override
 	public Collection getTopTenSenders(FeatureRuleDirectionVO from,
 			FeatureRuleDirectionVO to, long since, long until) {
-		
+
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery query = builder.createQuery();
 		Root<Record> root = query.from(Record.class);
@@ -85,20 +87,6 @@ public class JpaCustomReportService implements CustomReportService{
 	public Collection<RecordVO> getEmails(final FeatureRuleDirectionVO from,
 			final FeatureRuleDirectionVO to, final long since, final long until) {
 		
-/*		PageRequest pr = new PageRequest(0, 10);
-		
-		Specification<Record> specification = new Specification<Record>() {
-			
-			@Override
-			public Predicate toPredicate(Root<Record> root, CriteriaQuery<?> query,
-					CriteriaBuilder builder) {
-				//time interval
-				
-				return getFromToPredicatetoPredicate(from,to,since,until,root,query,builder);
-			}
-		};
-		return recordTranslator.translate(recordDao.readAll(specification ));*/
-		
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Record> query = builder.createQuery(Record.class);
 		Root<Record> root = query.from(Record.class);
@@ -115,17 +103,21 @@ public class JpaCustomReportService implements CustomReportService{
 			CriteriaQuery<?> query,
 			CriteriaBuilder builder) {
 		
-		Collection<EmailAccount> groupFrom = (from.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(from.getValueId()).getMembers():new ArrayList<EmailAccount>();
-		Collection<EmailAccount> groupTo = (from.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(from.getValueId()).getMembers():new ArrayList<EmailAccount>();
+		Collection<EmailAccount> groupFrom = (from.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(new GroupPk(from.getGroup(),from.getDomain())).getMembers():new ArrayList<EmailAccount>();
+		Collection<EmailAccount> groupTo = (from.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(new GroupPk(to.getGroup(),to.getDomain())).getMembers():new ArrayList<EmailAccount>();
 		
 		final Collection<String> groupFromEmails = new ArrayList<String>();
 		final Collection<String> groupToEmails = new ArrayList<String>();
 		
 		for(EmailAccount email : groupFrom){
-			groupFromEmails.add(email.getAccount()+"@"+email.getDomain());
+			for(AliasAccount aliasAccount : email.getAliases()){
+				groupFromEmails.add(aliasAccount.getId().getAccountAlias()+"@"+aliasAccount.getId().getDomainAlias());
+			}
 		}
 		for(EmailAccount email : groupTo){
-			groupToEmails.add(email.getAccount()+"@"+email.getDomain());
+			for(AliasAccount aliasAccount : email.getAliases()){
+				groupFromEmails.add(aliasAccount.getId().getAccountAlias()+"@"+aliasAccount.getId().getDomainAlias());
+			}
 		}
 
 		//time interval
@@ -156,13 +148,7 @@ public class JpaCustomReportService implements CustomReportService{
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			predicate = builder.and(predicate,builder.equal(root.get(Record_.recipientId),to.getFreeValue()));
 		}
-		
-		//phase and state
-		predicate = builder.and(predicate,
-				builder.or(
-							builder.and(builder.equal(root.get(Record_.phase),"send"),builder.equal(root.get(Record_.state),"drop"))
-							,builder.equal(root.get(Record_.phase),"receive")));
-		
+				
 		return predicate;
 	}
 

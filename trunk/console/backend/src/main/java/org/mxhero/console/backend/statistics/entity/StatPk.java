@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.statistics.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,20 +17,37 @@ public class StatPk implements Serializable{
 	@Column(name="stat_key", length=80, nullable=false)
 	private String key;
 	
-	private RecordPk recordId;
-
-	/**
-	 * @return the recordId
-	 */
-	public RecordPk getRecordId() {
-		return recordId;
+	@Column(name="insert_date")
+	private Timestamp insertDate;
+	
+	@Column(name="record_sequence")
+	private Long sequence;
+	
+	@Column(name = "phase", length = 10, nullable=false)
+	private String phase;
+	
+	public String getPhase() {
+		return phase;
 	}
 
-	/**
-	 * @param recordId the recordId to set
-	 */
-	public void setRecordId(RecordPk recordId) {
-		this.recordId = recordId;
+	public void setPhase(String phase) {
+		this.phase = phase;
+	}
+
+	public Timestamp getInsertDate() {
+		return insertDate;
+	}
+
+	public void setInsertDate(Timestamp insertDate) {
+		this.insertDate = insertDate;
+	}
+
+	public Long getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(Long sequence) {
+		this.sequence = sequence;
 	}
 
 	/**
@@ -46,59 +64,48 @@ public class StatPk implements Serializable{
 		this.key = key;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((recordId == null) ? 0 : recordId.hashCode());
+				+ ((insertDate == null) ? 0 : insertDate.hashCode());
+		result = prime * result
+				+ ((sequence == null) ? 0 : sequence.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (!(obj instanceof StatPk)) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		StatPk other = (StatPk) obj;
+		if (insertDate == null) {
+			if (other.insertDate != null)
+				return false;
+		} else if (!insertDate.equals(other.insertDate))
+			return false;
 		if (key == null) {
-			if (other.key != null) {
+			if (other.key != null)
 				return false;
-			}
-		} else if (!key.equals(other.key)) {
+		} else if (!key.equals(other.key))
 			return false;
-		}
-		if (recordId == null) {
-			if (other.recordId != null) {
+		if (phase == null) {
+			if (other.phase != null)
 				return false;
-			}
-		} else if (!recordId.equals(other.recordId)) {
+		} else if (!phase.equals(other.phase))
 			return false;
-		}
+		if (sequence == null) {
+			if (other.sequence != null)
+				return false;
+		} else if (!sequence.equals(other.sequence))
+			return false;
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("StatPk [key=").append(key).append(", recordId=")
-				.append(recordId).append("]");
-		return builder.toString();
-	}
 	
 }

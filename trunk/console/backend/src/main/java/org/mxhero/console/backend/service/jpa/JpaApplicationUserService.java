@@ -72,6 +72,18 @@ public class JpaApplicationUserService implements ApplicationUserService {
 	}
 	
 	@Override
+	public void changePassword(String oldPassword, String newPassword, Integer id) {
+		ApplicationUser user = userDao.readByPrimaryKey(id);
+		if(user.getPassword().equals(encoder.encodePassword(oldPassword,null))){
+			user.setPassword(encoder.encodePassword(newPassword,null));
+			userDao.save(user);
+		} else {
+			throw new BusinessException(PASSWORD_NOT_MATCH);
+		}
+		
+	}
+	
+	@Override
 	public Collection<ApplicationUserVO> findAll() {
 		return applicationUserTranslator.translate(this.userDao.readAll());
 	}

@@ -42,27 +42,32 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	
 	private RecordDao recordDao;
 	
-	private String hitsSqlQuery = 	
-		" select count(generatedAlias0.record_sequence), " +
-		" date(CONVERT_TZ(generatedAlias0.insert_date, '+00:00', ? )) " +
-		" from mail_records as generatedAlias0 inner join mail_stats as generatedAlias1 " +
-		" on generatedAlias1.insert_date = generatedAlias0.insert_date " +
-		" and generatedAlias1.record_sequence = generatedAlias0.record_sequence  " +
-		" where ( ( generatedAlias0.insert_date>= ? ) " +
-		" and ( generatedAlias1.stat_key= ? ) ) " +
-		" and ( generatedAlias1.stat_value= ? ) " ;
+	String hitsSqlQuery = "SELECT COUNT(*),date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
+		+" FROM mail_records r0 " 
+		+" WHERE r0.insert_date > ? "
+		+" AND EXISTS( SELECT 1 FROM mail_stats s "
+								+" WHERE s.insert_date = r0.insert_date " 
+								+" AND s.record_sequence = r0.record_sequence " 
+								+" AND s.stat_key = ? " 
+								+" AND s.stat_value = ?) ";
 	
-	private String mailQuerySql = " select record0_.* " 
-		+" from statistics.mail_records record0_ "
-		+" inner join statistics.mail_records record2_ " 
-		+" on record2_.parent_insert_date=record0_.parent_insert_date "
-		+" and record2_.parent_sequence=record0_.parent_sequence "
-		+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
-		+" and record2_.record_sequence=stats1_.record_sequence "
-		+" where record0_.insert_date between ? and ? "
-		+" and stats1_.stat_key = ? "
-		+" and stats1_.stat_value = ? " 
-		+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' ) ";
+	String dayHitsSqlQuery = "SELECT COUNT(*),date(r0.insert_date),hour(r0.insert_date)" 
+		+" FROM mail_records r0 " 
+		+" WHERE r0.insert_date > ? "
+		+" AND EXISTS( SELECT 1 FROM mail_stats s "
+								+" WHERE s.insert_date = r0.insert_date " 
+								+" AND s.record_sequence = r0.record_sequence " 
+								+" AND s.stat_key = ? " 
+								+" AND s.stat_value = ?) ";
+	
+	String mailQuerySql = "SELECT r0.*" 
+		+" FROM mail_records r0 " 
+		+" WHERE r0.insert_date between ? AND ? "
+		+" AND EXISTS( SELECT 1 FROM mail_stats s "
+								+" WHERE s.insert_date = r0.insert_date " 
+								+" AND s.record_sequence = r0.record_sequence " 
+								+" AND s.stat_key = ? " 
+								+" AND s.stat_value = ?) ";
 	
 	private RecordTranslator recordTranslator;
 	
@@ -79,10 +84,10 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = hitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " and (generatedAlias0.recipient_domain_id = ? or generatedAlias0.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
 		}
 		
-		queryString = queryString + " group by date(CONVERT_TZ(generatedAlias0.insert_date, '+00:00', ? )) ";
+		queryString = queryString + " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ";
 		
 		Query query = entityManager.createNativeQuery(queryString);
 		query.setParameter(1, offset);
@@ -103,30 +108,26 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 	@Override
 	public Collection getSpamHitsDay(String domain, long since) {
-
 		Timestamp sinceTime = new Timestamp(since);
-		Calendar until = Calendar.getInstance();
-		until.setTimeInMillis(since);
-		until.add(Calendar.DAY_OF_MONTH, 1);
-		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
 
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery query = builder.createQuery();
-		Root<Record> root = query.from(Record.class);
-		query = query.multiselect(builder.count(root.get(Record_.id).get(RecordPk_.sequence))
-				,builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate))
-				,builder.function("hour", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		SetJoin<Record, Stat> statjoin= root.join(Record_.stats);
-		Predicate predicate = builder.between(root.get(Record_.id).get(RecordPk_.insertDate),sinceTime,untilTime);
-		if(domain!=null && !domain.trim().isEmpty()){
-			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderDomainId), domain), builder.or(builder.equal(root.get(Record_.recipientDomainId), domain))));
+		String queryString = dayHitsSqlQuery;
+		if(domain!=null && domain.trim().length()>0){
+			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
 		}
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.id).get(StatPk_.key), SPAM_DETECTED));
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.value), SPAM_DETECTED_VALUE));
-		query = query.where(predicate);
-		query = query.groupBy(builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate))
-				,builder.function("hour", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		return entityManager.createQuery(query).getResultList();
+		
+		queryString = queryString + " group by date(r0.insert_date),hour(r0.insert_date) ";
+		
+		Query query = entityManager.createNativeQuery(queryString);
+		query.setParameter(1, sinceTime);
+		query.setParameter(2, SPAM_DETECTED);
+		query.setParameter(3, SPAM_DETECTED_VALUE);
+
+		if(domain!=null && domain.trim().length()>0){
+			query.setParameter(4, domain);
+			query.setParameter(5, domain);
+		}
+		
+		return query.getResultList();
 	}
 	
 	@Override
@@ -135,10 +136,10 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = hitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " and (generatedAlias0.recipient_domain_id = ? or generatedAlias0.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
 		}
 		
-		queryString = queryString + " group by date(CONVERT_TZ(generatedAlias0.insert_date, '+00:00', ? )) ";
+		queryString = queryString + " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ";
 		
 		Query query = entityManager.createNativeQuery(queryString);
 		query.setParameter(1, offset);
@@ -153,35 +154,32 @@ public class JpaThreatsReportService implements ThreatsReportService {
 		}else{
 			query.setParameter(5, offset);
 		}
-
+		
 		return query.getResultList();
 	}
 
 	@Override
 	public Collection getVirusHitsDay(String domain, long since) {
 		Timestamp sinceTime = new Timestamp(since);
-		Calendar until = Calendar.getInstance();
-		until.setTimeInMillis(since);
-		until.add(Calendar.DAY_OF_MONTH, 1);
-		Timestamp untilTime = new Timestamp(until.getTimeInMillis());
-		
-		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-		CriteriaQuery query = builder.createQuery();
-		Root<Record> root = query.from(Record.class);
-		query = query.multiselect(builder.count(root.get(Record_.id).get(RecordPk_.sequence))
-				,builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate))
-				,builder.function("hour", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		SetJoin<Record, Stat> statjoin= root.join(Record_.stats);
-		Predicate predicate = builder.between(root.get(Record_.id).get(RecordPk_.insertDate),sinceTime,untilTime);
-		if(domain!=null && !domain.trim().isEmpty()){
-			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderDomainId), domain), builder.or(builder.equal(root.get(Record_.recipientDomainId), domain))));
+
+		String queryString = dayHitsSqlQuery;
+		if(domain!=null && domain.trim().length()>0){
+			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
 		}
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.id).get(StatPk_.key), VIRUS_DETECTED));
-		predicate = builder.and(predicate, builder.equal(statjoin.get(Stat_.value), VIRUS_DETECTED_VALUE));
-		query = query.where(predicate);
-		query = query.groupBy(builder.function("date", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate))
-				,builder.function("hour", Calendar.class, root.get(Record_.id).get(RecordPk_.insertDate)));
-		return entityManager.createQuery(query).getResultList();
+		
+		queryString = queryString + " group by date(r0.insert_date),hour(r0.insert_date) ";
+		
+		Query query = entityManager.createNativeQuery(queryString);
+		query.setParameter(1, sinceTime);
+		query.setParameter(2, VIRUS_DETECTED);
+		query.setParameter(3, VIRUS_DETECTED_VALUE);
+
+		if(domain!=null && domain.trim().length()>0){
+			query.setParameter(4, domain);
+			query.setParameter(5, domain);
+		}
+		
+		return query.getResultList();
 	}
 
 	
@@ -193,16 +191,16 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = mailQuerySql;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		}
 		
-		queryString = queryString + " order by record0_.insert_date desc ";
+		queryString = queryString + " ORDER BY r0.insert_date DESC ";
 		
 		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
 		query.setParameter(2, untilTime);
-		query.setParameter(3, "spam.detected");
-		query.setParameter(4, "true");
+		query.setParameter(3, SPAM_DETECTED);
+		query.setParameter(4, SPAM_DETECTED_VALUE);
 		if(domain!=null && domain.trim().length()>0){
 			query.setParameter(5, domain);
 			query.setParameter(6, domain);
@@ -219,16 +217,16 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = mailQuerySql;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		}
 		
-		queryString = queryString + " order by record0_.insert_date desc ";
+		queryString = queryString + " ORDER BY r0.insert_date DESC ";
 		
 		Query query = entityManager.createNativeQuery(queryString, Record.class);
 		query.setParameter(1, sinceTime);
 		query.setParameter(2, untilTime);
-		query.setParameter(3, "virus.detected");
-		query.setParameter(4, "true");
+		query.setParameter(3, VIRUS_DETECTED);
+		query.setParameter(4, VIRUS_DETECTED_VALUE);
 
 		if(domain!=null && domain.trim().length()>0){
 			query.setParameter(5, domain);

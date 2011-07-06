@@ -4,9 +4,9 @@ import java.util.Calendar;
 
 public class GroupVO {
 
-	private Integer id;
-	
 	private String name;
+	
+	private String domain;
 	
 	private String description;
 	
@@ -14,12 +14,12 @@ public class GroupVO {
 	
 	private Calendar updatedDate;
 
-	public Integer getId() {
-		return id;
+	public String getDomain() {
+		return domain;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 
 	public String getName() {

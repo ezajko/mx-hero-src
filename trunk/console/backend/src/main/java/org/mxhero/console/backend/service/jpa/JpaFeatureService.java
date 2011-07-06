@@ -80,7 +80,7 @@ public class JpaFeatureService implements FeatureService {
 	}
 
 	@Override
-	public Collection<CategoryVO> findFeaturesByDomainId(Integer domainId) {
+	public Collection<CategoryVO> findFeaturesByDomainId(String domainId) {
 		SystemProperty property = systemPropertyDao.findByKey(UNCLASSIFIED_ID);
 		Integer unclassifiedCategoryId = null;
 		
@@ -154,7 +154,7 @@ public class JpaFeatureService implements FeatureService {
 	}
 
 	@Override
-	public Collection<FeatureRuleVO> getRulesByDomainId(Integer domainId,
+	public Collection<FeatureRuleVO> getRulesByDomainId(String domainId,
 			Integer featureId) {
 		return ruleTranslator.translate(this.featureRuleDao.findByFeatureIdAndDomainId(featureId, domainId));
 	}

@@ -7,8 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -19,10 +17,7 @@ import javax.persistence.Table;
 public class Domain {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
-	
-	@Column(name="domain",length=100, unique=true, nullable=false)
+	@Column(name="domain",length=100, nullable=false)
 	private String domain;
 	
 	@Column(name="server",length=100, nullable=false)
@@ -48,14 +43,6 @@ public class Domain {
 	
 	@OneToMany(mappedBy="domain", cascade={CascadeType.REFRESH}, fetch=FetchType.EAGER)
 	private Set<FeatureRule> rules;
-	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
 
 	public String getDomain() {
 		return domain;
@@ -133,7 +120,7 @@ public class Domain {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		return result;
 	}
 
@@ -146,10 +133,10 @@ public class Domain {
 		if (getClass() != obj.getClass())
 			return false;
 		Domain other = (Domain) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (domain == null) {
+			if (other.domain != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!domain.equals(other.domain))
 			return false;
 		return true;
 	}

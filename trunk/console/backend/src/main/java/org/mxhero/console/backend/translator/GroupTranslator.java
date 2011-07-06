@@ -12,10 +12,10 @@ public class GroupTranslator extends AbstractTranslator<GroupVO, Group>{
 		GroupVO groupVO = new GroupVO();
 
 		groupVO.setDescription(entity.getDescription());
-		groupVO.setId(entity.getId());
-		groupVO.setName(entity.getName());
+		groupVO.setName(entity.getId().getName());
 		groupVO.setCreatedDate(entity.getCreatedDate());
 		groupVO.setUpdatedDate(entity.getUpdatedDate());
+		groupVO.setDomain(entity.getId().getDomainId());
 		
 		return groupVO;
 	}

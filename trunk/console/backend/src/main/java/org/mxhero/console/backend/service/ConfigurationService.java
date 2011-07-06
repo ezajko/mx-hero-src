@@ -4,7 +4,6 @@ import org.mxhero.console.backend.vo.ConfigurationVO;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public interface ConfigurationService {
 
 	ConfigurationVO find();
