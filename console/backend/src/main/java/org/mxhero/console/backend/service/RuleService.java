@@ -9,7 +9,7 @@ public interface RuleService {
 	void createRule(FeatureRuleVO ruleVO, Integer featureId);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void createRule(FeatureRuleVO ruleVO, Integer featureId, Integer domainId);
+	void createRule(FeatureRuleVO ruleVO, Integer featureId, String domainId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	void editRule(FeatureRuleVO ruleVO);

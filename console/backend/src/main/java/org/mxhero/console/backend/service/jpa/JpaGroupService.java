@@ -8,8 +8,10 @@ import org.mxhero.console.backend.dao.EmailAccountDao;
 import org.mxhero.console.backend.dao.FeatureRuleDao;
 import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.entity.EmailAccount;
+import org.mxhero.console.backend.entity.EmailAccountPk;
 import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.entity.Group;
+import org.mxhero.console.backend.entity.GroupPk;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.FeatureService;
 import org.mxhero.console.backend.service.GroupService;
@@ -60,48 +62,51 @@ public class JpaGroupService implements GroupService{
 	}
 
 	@Override
-	public Collection<EmailAccountVO> findMembersByGroupId(Integer groupId) {
-		return emailAccountTranslator.translate(emailAccountDao.findAllByGroupId(groupId));
+	public Collection<EmailAccountVO> findMembersByGroupId(String groupId, String domainId) {
+		return emailAccountTranslator.translate(emailAccountDao.findAllByGroupId(groupId,domainId));
 	}
 
 	@Override
 	public Collection<EmailAccountVO> findMembersByDomainIdWithoutGroup(
-			Integer domainId) {
+			String domainId) {
 		return emailAccountTranslator.translate(emailAccountDao.findAllByDomainIdWithoutGroup(domainId));
 	}
 
 	@Override
-	public Collection<GroupVO> findAll(Integer domainId) {
+	public Collection<GroupVO> findAll(String domainId) {
 		return groupTranslator.translate(groupDao.findByDomainId(domainId));
 	}
 
 	@Override
-	public void remove(Integer groupId) {
-		Group group = groupDao.readByPrimaryKey(groupId);
+	public void remove(String groupName, String domainId) {
+		Group group = groupDao.readByPrimaryKey(new GroupPk(groupName,domainId));
 		if(group!=null){
 			for(EmailAccount emailAccount : group.getMembers()){
 				emailAccount.setGroup(null);
 				emailAccountDao.save(emailAccount);
 			}
 			
-			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("group",group.getId())){
+			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndDomainIdAndGroupId("group",group.getId().getDomainId(),group.getId().getName())){
 				featureService.remove(rule.getId());
 			}
 			
-			group = groupDao.readByPrimaryKey(groupId);
+			group = groupDao.readByPrimaryKey(new GroupPk(groupName,domainId));
 			groupDao.delete(group);
 		}
 		
 	}
 
 	@Override
-	public void insert(GroupVO groupVO, Integer domainId,Collection<EmailAccountVO> members) {
+	public void insert(GroupVO groupVO, Collection<EmailAccountVO> members) {
+		GroupPk pk = new GroupPk();
+		pk.setDomainId(groupVO.getDomain());
+		pk.setName(groupVO.getName());
 		Group newGroup = new Group();
-		newGroup.setName(groupVO.getName());
+		newGroup.setId(pk);
 		newGroup.setDescription(groupVO.getDescription());
 		newGroup.setUpdatedDate(Calendar.getInstance());
 		newGroup.setCreatedDate(Calendar.getInstance());
-		newGroup.setDomain(domainDao.readByPrimaryKey(domainId));	
+		newGroup.setDomain(domainDao.readByPrimaryKey(groupVO.getDomain()));	
 		try{
 			groupDao.save(newGroup);
 		} catch (DataIntegrityViolationException e){
@@ -110,7 +115,10 @@ public class JpaGroupService implements GroupService{
 		if(members!=null && members.size()>0){
 			for(EmailAccountVO emailAccountVO : members){
 				try{
-					EmailAccount emailAccount =emailAccountDao.readByPrimaryKey(emailAccountVO.getId());
+					EmailAccountPk emailPk = new EmailAccountPk();
+					emailPk.setAccount(emailAccountVO.getAccount());
+					emailPk.setDomainId(groupVO.getDomain());
+					EmailAccount emailAccount =emailAccountDao.readByPrimaryKey(emailPk);
 					if(emailAccount!=null){
 						emailAccount.setGroup(newGroup);
 					}
@@ -124,7 +132,7 @@ public class JpaGroupService implements GroupService{
 
 	@Override
 	public void edit(GroupVO groupVO, Collection<EmailAccountVO> members) {
-		Group group = groupDao.readByPrimaryKey(groupVO.getId());
+		Group group = groupDao.readByPrimaryKey(new GroupPk(groupVO.getName(),groupVO.getDomain()));
 		Collection<EmailAccount> previousMembers= group.getMembers();
 		group.setDescription(groupVO.getDescription());
 		group.setUpdatedDate(Calendar.getInstance());
@@ -144,7 +152,10 @@ public class JpaGroupService implements GroupService{
 		if(members!=null && members.size()>0){
 			for(EmailAccountVO emailAccountVO : members){
 				try{
-					EmailAccount emailAccount =emailAccountDao.readByPrimaryKey(emailAccountVO.getId());
+					EmailAccountPk emailPk = new EmailAccountPk();
+					emailPk.setAccount(emailAccountVO.getAccount());
+					emailPk.setDomainId(group.getId().getDomainId());
+					EmailAccount emailAccount =emailAccountDao.readByPrimaryKey(emailPk);
 					if(emailAccount!=null){
 						emailAccount.setGroup(group);
 						emailAccountDao.save(emailAccount);

@@ -66,19 +66,17 @@ public class JpaRuleService implements RuleService{
 		FeatureRuleDirection fromDirection = new FeatureRuleDirection();
 		fromDirection.setDirectionType(ruleVO.getFromDirection().getDirectionType());
 		fromDirection.setFreeValue(ruleVO.getFromDirection().getFreeValue());
-		if(ruleVO.getFromDirection().getValueId()!=null &&
-				ruleVO.getFromDirection().getValueId()>-1){
-			fromDirection.setValueId(ruleVO.getFromDirection().getValueId());
-		}
+		fromDirection.setDomain(ruleVO.getFromDirection().getDomain());
+		fromDirection.setGroup(ruleVO.getFromDirection().getGroup());
+		fromDirection.setAccount(ruleVO.getFromDirection().getAccount());
 		fromDirection.setRule(rule);
 	
 		FeatureRuleDirection toDirection = new FeatureRuleDirection();
 		toDirection.setDirectionType(ruleVO.getToDirection().getDirectionType());
 		toDirection.setFreeValue(ruleVO.getToDirection().getFreeValue());
-		if(ruleVO.getToDirection().getValueId()!=null &&
-				ruleVO.getToDirection().getValueId()>-1){
-			toDirection.setValueId(ruleVO.getToDirection().getValueId());
-		}
+		toDirection.setDomain(ruleVO.getToDirection().getDomain());
+		toDirection.setGroup(ruleVO.getToDirection().getGroup());
+		toDirection.setAccount(ruleVO.getToDirection().getAccount());
 		toDirection.setRule(rule);
 		
 		rule.setFromDirection(fromDirection);
@@ -108,7 +106,7 @@ public class JpaRuleService implements RuleService{
 
 	@Override
 	public void createRule(FeatureRuleVO ruleVO, Integer featureId,
-			Integer domainId) {
+			String domainId) {
 		FeatureRule rule = new FeatureRule();
 		
 		Domain domain = domainDao.readByPrimaryKey(domainId);
@@ -132,19 +130,17 @@ public class JpaRuleService implements RuleService{
 		FeatureRuleDirection fromDirection = new FeatureRuleDirection();
 		fromDirection.setDirectionType(ruleVO.getFromDirection().getDirectionType());
 		fromDirection.setFreeValue(ruleVO.getFromDirection().getFreeValue());
-		if(ruleVO.getFromDirection().getValueId()!=null &&
-				ruleVO.getFromDirection().getValueId()>-1){
-			fromDirection.setValueId(ruleVO.getFromDirection().getValueId());
-		}
+		fromDirection.setDomain(ruleVO.getFromDirection().getDomain());
+		fromDirection.setGroup(ruleVO.getFromDirection().getGroup());
+		fromDirection.setAccount(ruleVO.getFromDirection().getAccount());
 		fromDirection.setRule(rule);
 	
 		FeatureRuleDirection toDirection = new FeatureRuleDirection();
 		toDirection.setDirectionType(ruleVO.getToDirection().getDirectionType());
 		toDirection.setFreeValue(ruleVO.getToDirection().getFreeValue());
-		if(ruleVO.getToDirection().getValueId()!=null &&
-				ruleVO.getToDirection().getValueId()>-1){
-			toDirection.setValueId(ruleVO.getToDirection().getValueId());
-		}
+		toDirection.setDomain(ruleVO.getToDirection().getDomain());
+		toDirection.setGroup(ruleVO.getToDirection().getGroup());
+		toDirection.setAccount(ruleVO.getToDirection().getAccount());
 		toDirection.setRule(rule);
 		
 		rule.setFromDirection(fromDirection);
@@ -184,21 +180,15 @@ public class JpaRuleService implements RuleService{
 		
 		rule.getFromDirection().setFreeValue(ruleVO.getFromDirection().getFreeValue());
 		rule.getFromDirection().setDirectionType(ruleVO.getFromDirection().getDirectionType());
-		if(ruleVO.getFromDirection().getValueId()!=null &&
-				ruleVO.getFromDirection().getValueId()>-1){
-			rule.getFromDirection().setValueId(ruleVO.getFromDirection().getValueId());
-		}else {
-			rule.getFromDirection().setValueId(null);
-		}
+		rule.getFromDirection().setDomain(ruleVO.getFromDirection().getDomain());
+		rule.getFromDirection().setGroup(ruleVO.getFromDirection().getGroup());
+		rule.getFromDirection().setAccount(ruleVO.getFromDirection().getAccount());
 
 		rule.getToDirection().setFreeValue(ruleVO.getToDirection().getFreeValue());
 		rule.getToDirection().setDirectionType(ruleVO.getToDirection().getDirectionType());
-		if(ruleVO.getToDirection().getValueId()!=null &&
-				ruleVO.getToDirection().getValueId()>-1){
-			rule.getToDirection().setValueId(ruleVO.getToDirection().getValueId());
-		}else {
-			rule.getToDirection().setValueId(null);
-		}
+		rule.getToDirection().setDomain(ruleVO.getToDirection().getDomain());
+		rule.getToDirection().setGroup(ruleVO.getToDirection().getGroup());
+		rule.getToDirection().setAccount(ruleVO.getToDirection().getAccount());
 		
 		rule.setProperties(new HashSet<FeatureRuleProperty>());
 		
@@ -216,7 +206,7 @@ public class JpaRuleService implements RuleService{
 			rulesFound =dao.findCheckCreation(ruleVO.getFromDirection().getFreeValue(), 
 					ruleVO.getToDirection().getFreeValue(), 
 					rule.getFeature().getId(), 
-					rule.getDomain().getId());
+					rule.getDomain().getDomain());
 		}else{
 			rulesFound =dao.findCheckCreationAdmin(ruleVO.getFromDirection().getFreeValue(), 
 					ruleVO.getToDirection().getFreeValue(), 

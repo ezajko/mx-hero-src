@@ -24,8 +24,14 @@ public class FeatureRuleDirection {
 	@Column(name="free_value",length=100, nullable=false)
 	private String freeValue;
 	
-	@Column(name="value_id")
-	private Integer valueId;
+	@Column(name="domain",length=100)
+	private String domain;
+	
+	@Column(name="group_name", length=100)
+	private String group;
+	
+	@Column(name="account", length=100)
+	private String account;
 	
 	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE})
 	private FeatureRule rule;
@@ -54,12 +60,28 @@ public class FeatureRuleDirection {
 		this.freeValue = freeValue;
 	}
 
-	public Integer getValueId() {
-		return valueId;
+	public String getDomain() {
+		return domain;
 	}
 
-	public void setValueId(Integer valueId) {
-		this.valueId = valueId;
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	public FeatureRule getRule() {

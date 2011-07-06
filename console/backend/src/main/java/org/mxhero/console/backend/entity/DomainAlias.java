@@ -1,7 +1,6 @@
 package org.mxhero.console.backend.entity;
 
 import java.util.Calendar;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,11 +14,11 @@ import javax.persistence.Table;
 public class DomainAlias {
 	
 	@Id
-	@Column(name="alias", unique=true, nullable=false, length=100)
+	@Column(name="alias", nullable=false, length=100)
 	private String alias;
 	
 	@ManyToOne(cascade = {CascadeType.MERGE})
-	@JoinColumn(name="domain_id")
+	@JoinColumn(name="domain")
 	private Domain domain;
 	
 	@Column(name="created", nullable=false)

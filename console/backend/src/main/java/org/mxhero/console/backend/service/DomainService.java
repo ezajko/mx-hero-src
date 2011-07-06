@@ -6,14 +6,13 @@ import org.mxhero.console.backend.vo.DomainVO;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public interface DomainService {
 
 	@Secured("ROLE_ADMIN")
 	Collection<DomainVO> findAll();
 	
 	@Secured("ROLE_ADMIN")
-	void remove(Integer id);
+	void remove(String domain);
 	
 	@Secured("ROLE_ADMIN")
 	void insert(DomainVO domainVO,Boolean hasAdmin, String password, String email);

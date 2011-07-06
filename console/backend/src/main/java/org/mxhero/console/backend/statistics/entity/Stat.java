@@ -24,14 +24,6 @@ public class Stat implements Serializable{
 
 	@EmbeddedId
 	private StatPk id;
-	
-	@MapsId("recordId")
-	@ManyToOne(fetch=FetchType.EAGER,optional=false)
-	@JoinColumns({
-		@JoinColumn(name="insert_date", referencedColumnName="insert_date"),
-		@JoinColumn(name="record_sequence", referencedColumnName="record_sequence")
-	})
-	private Record record;
 
 	@Column(name="stat_value", length=1024)
 	private String value;
@@ -51,20 +43,6 @@ public class Stat implements Serializable{
 	 */
 	public void setId(StatPk id) {
 		this.id = id;
-	}
-	
-	/**
-	 * @return the record
-	 */
-	public Record getRecord() {
-		return record;
-	}
-
-	/**
-	 * @param record the record to set
-	 */
-	public void setRecord(Record record) {
-		this.record = record;
 	}
 
 	/**

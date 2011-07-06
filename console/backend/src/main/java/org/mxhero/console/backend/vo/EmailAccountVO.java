@@ -1,15 +1,10 @@
 package org.mxhero.console.backend.vo;
 
 import java.util.Calendar;
+import java.util.Collection;
 
 public class EmailAccountVO {
 
-	private Integer id;
-	
-	private String name;
-
-	private String lastName;
-	
 	private String account;
 	
 	private String domain;
@@ -18,31 +13,11 @@ public class EmailAccountVO {
 	
 	private Calendar updatedDate;
 	
-	private Integer groupId;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+	private String group;
+	
+	private Collection<EmailAccountAliasVO> aliases;
+	
+	private String dataSource;
 	
 	public String getDomain() {
 		return domain;
@@ -76,12 +51,28 @@ public class EmailAccountVO {
 		this.updatedDate = updatedDate;
 	}
 
-	public Integer getGroupId() {
-		return groupId;
+	public String getGroup() {
+		return group;
 	}
 
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public Collection<EmailAccountAliasVO> getAliases() {
+		return aliases;
+	}
+
+	public void setAliases(Collection<EmailAccountAliasVO> aliases) {
+		this.aliases = aliases;
+	}
+
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 	}
 
 }

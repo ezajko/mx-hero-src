@@ -10,14 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface HomeReportService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	@Transactional(readOnly=true)
 	MxHeroDataVO getMxHeroData(String domainId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	@Transactional(readOnly=true)
 	MessagesCompositionVO getMessagesCompositionData(long since, String domainId);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	@Transactional(readOnly=true)
 	ActivityDataVO getActivity(long since, String domainId);
 }

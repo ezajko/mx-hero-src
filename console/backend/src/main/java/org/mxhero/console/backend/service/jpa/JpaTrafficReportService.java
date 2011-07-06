@@ -24,8 +24,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 		String query = "SELECT count(*) count, sum(bytes_size) bytes, date(CONVERT_TZ(insert_date, '+00:00', ? )) "
 				+ "FROM  mail_records "
 				+ "WHERE insert_date > ? "
-				+ "AND (flow = 'both' OR flow = 'in') "
-				+ "AND phase =  'receive' ";
+				+ "AND (flow = 'both' OR flow = 'in') ";
 		
 		if(domain!=null && !domain.isEmpty()){
 			query = query + "AND recipient_domain_id = ? ";
@@ -51,8 +50,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 			+ "FROM  mail_records "
 			+ "WHERE insert_date > :date_since "
 			+ "AND insert_date < :date_to "
-			+ "AND (flow = 'both' OR flow = 'in') "
-			+ "AND phase =  'receive' ";
+			+ "AND (flow = 'both' OR flow = 'in') ";
 	
 		if(domain!=null && !domain.isEmpty()){
 			query = query + "AND recipient_domain_id = :domain ";
@@ -80,12 +78,11 @@ public class JpaTrafficReportService implements TrafficReportService {
 	public Collection getTopTenIncomingSenders(String domain, long since, boolean domainOnly) {
 		String query = "SELECT count(*) count, from_recipeints "
 			+ "FROM  mail_records r " 
-			+ "WHERE insert_date > :date_since "
-			+ "AND phase =  'receive' ";
+			+ "WHERE insert_date > :date_since ";
 		if(domain!=null && !domain.isEmpty()){
-			query = query + " AND recipient_domain_id = :domain ";
+			query = query + " AND sender_domain_id = :domain ";
 			if(domainOnly){
-				query = query + " AND sender_domain_id = :domain ";
+				query = query + " AND recipient_domain_id = :domain ";
 			}	
 			query = query + " AND (flow = 'both' OR flow = 'in') ";
 		}else{
@@ -96,9 +93,9 @@ public class JpaTrafficReportService implements TrafficReportService {
 			}
 		}
 
-		query = query + "GROUP BY from_recipeints "
-			+ "ORDER BY 1 DESC " 
-			+ "LIMIT 10";
+		query = query + " GROUP BY from_recipeints "
+			+ " ORDER BY 1 DESC " 
+			+ " LIMIT 10 ";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
 
@@ -114,13 +111,12 @@ public class JpaTrafficReportService implements TrafficReportService {
 		String query = "SELECT count(*) count, from_recipeints "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
-			+ "AND insert_date < :date_to "
-			+ "AND phase =  'receive' ";
+			+ "AND insert_date < :date_to ";
 		
 		if(domain!=null && !domain.isEmpty()){
-			query = query + " AND recipient_domain_id = :domain ";
+			query = query + " AND sender_domain_id = :domain ";
 			if(domainOnly){
-				query = query + " AND sender_domain_id = :domain ";
+				query = query + " AND recipient_domain_id = :domain ";
 			}	
 			query = query + " AND (flow = 'both' OR flow = 'in') ";
 		}else{
@@ -131,9 +127,9 @@ public class JpaTrafficReportService implements TrafficReportService {
 			}
 		}
 		
-		query = query + "GROUP BY from_recipeints "
-			+ "ORDER BY 1 DESC " 
-			+ "LIMIT 10";
+		query = query + " GROUP BY from_recipeints "
+			+ " ORDER BY 1 DESC " 
+			+ " LIMIT 10";
 		
 		Query nativeQuery = this.entityManager.createNativeQuery(query);
 		Timestamp since = new Timestamp(day);
@@ -156,8 +152,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 		String query = "SELECT count(*) count, sum(bytes_size) bytes, date(CONVERT_TZ(insert_date, '+00:00', ? )) "
 			+ "FROM  mail_records "
 			+ "WHERE insert_date > ? "
-			+ "AND (flow = 'both' OR flow = 'out') "
-			+ "AND phase =  'send' ";
+			+ "AND (flow = 'both' OR flow = 'out') ";
 		if(domain!=null && !domain.isEmpty()){	
 			query = query + "AND recipient_domain_id = ? ";
 		}
@@ -181,8 +176,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 			+ "FROM  mail_records "
 			+ "WHERE insert_date > :date_since "
 			+ "AND insert_date < :date_to "
-			+ "AND (flow = 'both' OR flow = 'out') "
-			+ "AND phase =  'send' ";
+			+ "AND (flow = 'both' OR flow = 'out') ";
 		if(domain!=null && !domain.isEmpty()){	
 			query = query + "AND recipient_domain_id = :domain ";
 		}
@@ -207,12 +201,11 @@ public class JpaTrafficReportService implements TrafficReportService {
 	public Collection getTopTenOutgoingRecipients(String domain, long since, boolean domainOnly) {
 		String query = "SELECT count(*) count, recipient "
 			+ "FROM  mail_records " 
-			+ "WHERE insert_date > :date_since "
-			+ "AND phase =  'send' ";
+			+ "WHERE insert_date > :date_since ";
 		if(domain!=null && !domain.isEmpty()){
-			query = query + " AND sender_domain_id = :domain ";
+			query = query + " AND recipient_domain_id = :domain ";
 			if(domainOnly){
-				query = query + " AND recipient_domain_id = :domain ";
+				query = query + " AND sender_domain_id = :domain ";
 			}	
 			query = query + " AND (flow = 'both' OR flow = 'out') ";
 		}else{
@@ -243,12 +236,11 @@ public class JpaTrafficReportService implements TrafficReportService {
 		String query = "SELECT count(*) count, recipient "
 			+ "FROM  mail_records " 
 			+ "WHERE insert_date > :date_since "
-			+ "AND insert_date < :date_to "
-			+ "AND phase =  'send' ";
+			+ "AND insert_date < :date_to ";
 		if(domain!=null && !domain.isEmpty()){
-			query = query + " AND sender_domain_id = :domain ";
+			query = query + " AND recipient_domain_id = :domain ";
 			if(domainOnly){
-				query = query + " AND recipient_domain_id = :domain ";
+				query = query + " AND sender_domain_id = :domain ";
 			}	
 			query = query + " AND (flow = 'both' OR flow = 'out') ";
 		}else{

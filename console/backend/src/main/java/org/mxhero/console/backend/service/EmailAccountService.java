@@ -3,31 +3,35 @@ package org.mxhero.console.backend.service;
 import java.util.Collection;
 
 import org.mxhero.console.backend.vo.EmailAccountVO;
-import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 public interface EmailAccountService {
 
 	@Secured("ROLE_ADMIN")
 	Collection<EmailAccountVO> findAll();
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	PageVO<EmailAccountVO> findPageBySpecs(Integer domainId, String email, String name, String lastName, Integer groupId, Integer page, Integer pageSize);
+	Collection<EmailAccountVO> findPageBySpecs(String domainId, String email,  String group);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findByDomain(Integer domaindId);
+	Collection<EmailAccountVO> findByDomain(String domaindId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void remove(Integer emailId);
+	void remove(String account, String domain);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void insert(EmailAccountVO emailAccountVO,Integer domainId);
+	void insert(EmailAccountVO emailAccountVO,String domainId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	void edit(EmailAccountVO emailAccountVO);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> upload(Collection<EmailAccountVO> emailAccountVOs, Integer domainId, Boolean failOnError);
+	void insertAccountAlias(String accountAlias, String domainAlias, String account, String domain);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void removeAccountAlias(String accountAlias, String domainAlias);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	Collection<EmailAccountVO> upload(Collection<EmailAccountVO> emailAccountVOs, String domainId, Boolean failOnError);
 }

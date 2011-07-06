@@ -5,8 +5,6 @@ import java.util.Collection;
 
 public class DomainVO {
 
-	private Integer id;
-
 	private String domain;
 
 	private String server;
@@ -18,15 +16,8 @@ public class DomainVO {
 	private OwnerVO owner;
 	
 	private Collection<String> aliases;
-
 	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	private String userName;
 
 	public String getDomain() {
 		return domain;
@@ -74,6 +65,14 @@ public class DomainVO {
 
 	public void setAliases(Collection<String> aliases) {
 		this.aliases = aliases;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 }

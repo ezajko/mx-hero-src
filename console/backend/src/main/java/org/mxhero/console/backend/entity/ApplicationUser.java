@@ -63,7 +63,7 @@ public class ApplicationUser {
 	private Set<Authority> authorities;
 	
 	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE,CascadeType.PERSIST})
-	@JoinColumn(name="domain_id")
+	@JoinColumn(name="domain")
 	private Domain domain;
 	
 

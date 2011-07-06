@@ -3,14 +3,10 @@ package org.mxhero.console.backend.statistics.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -90,8 +86,6 @@ public class Record implements Serializable{
 	@Column(name = "flow", length = 10)
 	private String flow;
 
-	@OneToMany(mappedBy="record", cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
-	private Set<Stat> stats;
 	/**
 	 * @return
 	 */
@@ -375,14 +369,6 @@ public class Record implements Serializable{
 
 	public void setFlow(String flow) {
 		this.flow = flow;
-	}
-
-	public Set<Stat> getStats() {
-		return stats;
-	}
-
-	public void setStats(Set<Stat> stats) {
-		this.stats = stats;
 	}
 
 	public Timestamp getParentInsertDate() {

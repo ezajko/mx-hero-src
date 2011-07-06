@@ -4,20 +4,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.mxhero.console.backend.dao.AliasAccountDao;
 import org.mxhero.console.backend.dao.AuthorityDao;
 import org.mxhero.console.backend.dao.DomainAliasDao;
 import org.mxhero.console.backend.dao.DomainDao;
-import org.mxhero.console.backend.dao.EmailAccountDao;
 import org.mxhero.console.backend.dao.FeatureRuleDao;
-import org.mxhero.console.backend.dao.GroupDao;
 import org.mxhero.console.backend.dao.SystemPropertyDao;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
 import org.mxhero.console.backend.entity.Domain;
 import org.mxhero.console.backend.entity.DomainAlias;
-import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.entity.FeatureRule;
-import org.mxhero.console.backend.entity.Group;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.DomainService;
 import org.mxhero.console.backend.service.FeatureService;
@@ -41,6 +38,8 @@ public class JpaDomainService implements DomainService {
 	
 	public static final String ALIAS_OTHER_DOMAIN="alias.other.domain";
 	
+	public static final String ALIAS_ALREADY_EXISTS="alias.already.exists";
+	
 	private static final String DEFAULT_LANGUAGE="default.user.language";
 	
 	private DomainDao dao;
@@ -59,9 +58,7 @@ public class JpaDomainService implements DomainService {
 	
 	private FeatureRuleDao featureRuleDao;
 	
-	private GroupDao groupDao;
-	
-	private EmailAccountDao emailAccountDao;
+	private AliasAccountDao aliasAccountDao;
 	
 	@Autowired(required=true)
 	public JpaDomainService(DomainDao dao, AuthorityDao authorityDao,
@@ -70,8 +67,7 @@ public class JpaDomainService implements DomainService {
 			SystemPropertyDao systemPropertyDao,
 			FeatureService featureService,
 			FeatureRuleDao featureRuleDao,
-			GroupDao groupDao,
-			EmailAccountDao emailAccountDao) {
+			AliasAccountDao aliasAccountDao) {
 		super();
 		this.dao = dao;
 		this.authorityDao = authorityDao;
@@ -81,8 +77,7 @@ public class JpaDomainService implements DomainService {
 		this.systemPropertyDao = systemPropertyDao;
 		this.featureService = featureService;
 		this.featureRuleDao = featureRuleDao;
-		this.groupDao = groupDao;
-		this.emailAccountDao = emailAccountDao;
+		this.aliasAccountDao = aliasAccountDao;
 	}
 
 	@Override
@@ -93,30 +88,20 @@ public class JpaDomainService implements DomainService {
 	}
 
 	@Override
-	public void remove(Integer id) {
+	public void remove(String id) {
 		Domain domain = dao.readByPrimaryKey(id);
 		
 		if(domain!=null){
 			for(FeatureRule rule : domain.getRules()){
 				featureService.remove(rule.getId());
 			}
-			for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("domain",domain.getId())){
+			for(FeatureRule rule : featureRuleDao.findByDirectionTypeDomainId("domain",domain.getDomain())){
 				featureService.remove(rule.getId());
 			}
 			
-			for(Group group : groupDao.findByDomainId(domain.getId())){
-				for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("group",group.getId())){
-					featureService.remove(rule.getId());
-				}
-			}
-			
-			for(EmailAccount account : emailAccountDao.finbAllByDomainId(domain.getId())){
-				for(FeatureRule rule : featureRuleDao.findByDirectionTypeAndValueId("individual",account.getId())){
-					featureService.remove(rule.getId());
-				}
-			}
-			
 			domain = dao.readByPrimaryKey(id);
+			
+			aliasAccountDao.deleteAliasAccountByDomain(domain.getDomain());
 			dao.delete(domain);
 		}
 		
@@ -127,7 +112,7 @@ public class JpaDomainService implements DomainService {
 			String email) {
 		Domain domain = null;
 		
-		if(dao.finbByDomain(domainVO.getDomain()) != null){
+		if(dao.readByPrimaryKey(domainVO.getDomain()) != null){
 			throw new BusinessException(DOMAIN_ALREADY_EXISTS);
 		}
 		
@@ -153,13 +138,22 @@ public class JpaDomainService implements DomainService {
 			domain.setOwner(user);
 			user.setDomain(domain);
 		}
+
+		domain.setAliases(new HashSet<DomainAlias>());
+		
+		DomainAlias domainAlias = new DomainAlias();
+		domainAlias.setAlias(domain.getDomain());
+		domainAlias.setCreatedDate(Calendar.getInstance());
+		domainAlias.setDomain(domain);
+		domain.getAliases().add(domainAlias);
+		
 		dao.save(domain);		
 	}
 
 	@Override
 	public void edit(DomainVO domainVO, Boolean hasAdmin, String password,
 			String email) {
-		Domain domain = dao.finbByDomain(domainVO.getDomain());
+		Domain domain = dao.readByPrimaryKey(domainVO.getDomain());
 		
 		if( domain == null){
 			throw new BusinessException(DOMAIN_NOT_EXISTS);
@@ -193,33 +187,47 @@ public class JpaDomainService implements DomainService {
 		} else {
 			domain.setOwner(null);
 		}
-
-		if(domainVO.getAliases()!=null && domainVO.getAliases().size()>0){
-			domain.setAliases(new HashSet<DomainAlias>());
-			for(String alias : domainVO.getAliases()){
-				if(dao.finbByDomain(alias)!=null){
-					throw new BusinessException(ALIAS_WITH_DOMAIN_NAME);
-				}
-				DomainAlias domainAlias = domainaliasDao.readByPrimaryKey(alias);
-				
-				if(domainAlias!=null){
-					if(!domainAlias.getDomain().getId().equals(domainVO.getId())){
-						throw new BusinessException(ALIAS_OTHER_DOMAIN);
+		
+		//check domainAlias for remove
+		if(domain.getAliases()!=null){
+			Collection<DomainAlias> domainAliases = new HashSet<DomainAlias>();
+			domainAliases.addAll(domain.getAliases());
+			for(DomainAlias alias : domainAliases){
+				boolean remove = true;
+				for(String aliasVO : domainVO.getAliases()){
+					if(aliasVO.trim().toLowerCase().equalsIgnoreCase(alias.getAlias())){
+						remove=false;
+						domainVO.getAliases().remove(aliasVO);
+						break;
 					}
-				} else {
-					domainAlias = new DomainAlias();
-					domainAlias.setAlias(alias.toLowerCase());
-					domainAlias.setCreatedDate(Calendar.getInstance());
-					domainAlias.setDomain(domain);
 				}
-				domain.getAliases().add(domainAlias);
-			}
-
-		}else{
-			if(domain.getAliases()!=null){
-				domain.getAliases().clear();
+				if(remove){
+					domain.getAliases().remove(alias);
+					aliasAccountDao.deleteAliasAccountByDomainAlias(alias.getAlias());
+					domainaliasDao.deleteDomainAlias(alias.getAlias(), alias.getDomain().getDomain());
+				}
 			}
 		}
+		
+		//at this point only new aliases are located on the VO
+		for(String aliasVO : domainVO.getAliases()){
+			DomainAlias newAlias = null;
+			newAlias = domainaliasDao.readByPrimaryKey(aliasVO);
+			Domain domainCheck = dao.readByPrimaryKey(aliasVO);
+			if(domainCheck!=null && !domainCheck.getDomain().equalsIgnoreCase(domain.getDomain())){
+				throw new BusinessException(ALIAS_WITH_DOMAIN_NAME);
+			}
+			if(newAlias!=null){
+				throw new BusinessException(ALIAS_ALREADY_EXISTS);
+			}
+			newAlias = new DomainAlias();
+			newAlias.setDomain(domain);
+			newAlias.setAlias(aliasVO);
+			newAlias.setCreatedDate(Calendar.getInstance());
+			domain.getAliases().add(newAlias);
+		}
+		
 		dao.save(domain);
 	}
+
 }

@@ -8,7 +8,11 @@ public class FeatureRuleDirectionVO {
 	
 	private String freeValue;
 	
-	private Integer valueId;
+	private String domain;
+	
+	private String account;
+	
+	private String group;
 
 	
 	public Integer getId() {
@@ -35,12 +39,28 @@ public class FeatureRuleDirectionVO {
 		this.freeValue = freeValue;
 	}
 
-	public Integer getValueId() {
-		return valueId;
+	public String getDomain() {
+		return domain;
 	}
 
-	public void setValueId(Integer valueId) {
-		this.valueId = valueId;
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
 }
