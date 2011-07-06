@@ -129,11 +129,15 @@
 					</s:VGroup>
 					
 					<s:VGroup gap="0" width="100%">
-						<s:Label id="fromToTitle"
-								 fontSize="16" 
-								 fontWeight="bold"
-								 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"/>
-						
+						<component1:LabelExpanded
+							id="fromToTitle"
+							width="100%"
+							expandedLabelStyleName="labelexpanded_label_fromto"
+							explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPLAIN_LABEL)}"
+							hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.HIDE_LABEL)}"
+							labelText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL)}"	
+							expandedText="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.MAIL_FROM_TO_LABEL_EXPANDED)}"/>
+
 					</s:VGroup>
 					
 					<s:VGroup width="100%" height="100%" gap="0">

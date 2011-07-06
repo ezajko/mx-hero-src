@@ -1,5 +1,6 @@
 package org.mxhero.console.frontend.application.command
 {
+	import mx.controls.Alert;
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;

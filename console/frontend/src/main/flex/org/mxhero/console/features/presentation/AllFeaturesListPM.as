@@ -19,7 +19,6 @@ package org.mxhero.console.features.presentation
 	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Category;
-	import org.mxhero.console.frontend.domain.EmailAccount;
 	import org.mxhero.console.frontend.domain.Feature;
 
 	[Landmark(name="main.dashboard.features.list")]
@@ -69,7 +68,7 @@ package org.mxhero.console.features.presentation
 		[Enter(time="every")]
 		public function every():void{
 			if(context.selectedDomain!=null){
-				dispatcher(new GetFeaturesByDomainIdEvent(context.selectedDomain.id));
+				dispatcher(new GetFeaturesByDomainIdEvent(context.selectedDomain.domain));
 			}else {
 				dispatcher(new GetFeaturesEvent());
 			}

@@ -109,6 +109,13 @@ s|Label.labelexpanded_label
 	fontWeight:"bold";
 }
 
+s|Label.labelexpanded_label_fromto
+{
+	fontWeight:"bold";
+	font-size:16;
+}
+
+
 s|Label.titleexpanded_expand
 {
 	fontWeight:"bold";

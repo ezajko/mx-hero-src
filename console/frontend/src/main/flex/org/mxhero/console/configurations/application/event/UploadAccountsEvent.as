@@ -6,11 +6,11 @@ package org.mxhero.console.configurations.application.event
 	{
 		public var accounts:ArrayCollection;
 		
-		public var domainId:Number;
+		public var domainId:String;
 		
 		public var failOnError:Boolean;
 		
-		public function UploadAccountsEvent(accounts:ArrayCollection, domainId:Number, failOnError:Boolean)
+		public function UploadAccountsEvent(accounts:ArrayCollection, domainId:String, failOnError:Boolean)
 		{
 			this.accounts=accounts;
 			this.domainId=domainId;

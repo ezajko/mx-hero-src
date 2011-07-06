@@ -14,7 +14,9 @@ package org.mxhero.console.frontend.domain
 		public var id:Number;
 		public var directionType:String;
 		public var freeValue:String;
-		public var valueId:Number;
+		public var domain:String;
+		public var account:String;
+		public var group:String;
 		
 		public function clone():FeatureRuleDirection{
 			var clonedDirection:FeatureRuleDirection = new FeatureRuleDirection();
@@ -22,7 +24,9 @@ package org.mxhero.console.frontend.domain
 			clonedDirection.directionType=this.directionType;
 			clonedDirection.freeValue=this.freeValue;
 			clonedDirection.id=this.id;
-			clonedDirection.valueId=this.valueId;
+			clonedDirection.domain=this.domain;
+			clonedDirection.account=this.account;
+			clonedDirection.group=this.group;
 			
 			return clonedDirection;
 		}

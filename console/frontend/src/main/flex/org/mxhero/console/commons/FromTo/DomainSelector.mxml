@@ -97,11 +97,15 @@
 					if(anyoneFT.isSelected){
 						direction.directionType=FeatureRuleDirection.ANYONEELSE;
 						direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					} else {
 						direction.directionType=FeatureRuleDirection.ANYONE;
 						direction.freeValue=FeatureRuleDirection.ANYONE;
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				} else if (currentState=="domain" &&
 					domainFT.ipeComboBox != null &&
@@ -109,9 +113,13 @@
 					direction.directionType=FeatureRuleDirection.DOMAIN;
 					direction.freeValue=domainFT.ipeComboBox.selectedLabel;
 					if(domainFT.ipeComboBox.selectedItem!=null){
-						direction.valueId=domainFT.ipeComboBox.selectedItem.id;
-					} else {
-						direction.valueId=-1;
+						direction.domain=domainFT.ipeComboBox.selectedItem.domain.domain;
+						direction.account=null;
+						direction.group=null;
+					}else {
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				} else if (currentState=="group" &&
 					groupFT.ipeDropDownList!=null &&
@@ -119,9 +127,13 @@
 					direction.directionType=FeatureRuleDirection.GROUP;
 					direction.freeValue=groupFT.ipeDropDownList.selectedLabel;
 					if(groupFT.ipeDropDownList.selectedItem!=null){
-						direction.valueId=groupFT.ipeDropDownList.selectedItem.id;
+						direction.group=groupFT.ipeDropDownList.selectedItem.name;
+						direction.domain=groupFT.ipeDropDownList.selectedItem.domain;
+						direction.account=null;
 					}else {
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				} else if (currentState=="individual" && 
 					individualFT.ipeComboBox!=null &&
@@ -129,9 +141,13 @@
 					direction.directionType=FeatureRuleDirection.INDIVIDUAL;
 					direction.freeValue=individualFT.ipeComboBox.selectedLabel;
 					if(individualFT.ipeComboBox.selectedItem!=null){
-						direction.valueId=individualFT.ipeComboBox.selectedItem.id;
+						direction.account=individualFT.ipeComboBox.selectedItem.account.account;
+						direction.domain=individualFT.ipeComboBox.selectedItem.account.domain;
+						direction.group=null;
 					}else {
-						direction.valueId=-1;
+						direction.account=null;
+						direction.group=null;
+						direction.domain=null;
 					}
 				}
 			}
@@ -165,9 +181,9 @@
 					anyoneFT.isSelected=true;
 				} else if(direction.directionType==FeatureRuleDirection.DOMAIN && 
 					domainFT !=null){
-					if(!isNaN(direction.valueId) && direction.valueId>-1){
+					if(direction.domain!=null){
 						for each(var domain:Object in domainFT.ipeComboBox.comboBox.dataProvider){
-							if(domain.id==direction.valueId){
+							if(domain.alias==direction.domain){
 								domainFT.ipeComboBox.comboBox.selectedItem=domain;
 								domainFT.ipeComboBox.selectedItem=domain;
 								break;
@@ -179,9 +195,9 @@
 					currentState="domain";
 				}else if(direction.directionType==FeatureRuleDirection.GROUP &&
 					groupFT!=null && groupFT.ipeDropDownList!=null){
-					if(!isNaN(direction.valueId) && direction.valueId>-1){
+					if(direction.group!=null && direction.domain!=null){
 						for each(var group:Object in groupFT.ipeDropDownList.dropDownList.dataProvider){
-							if(group.id==direction.valueId){
+							if(group.name==direction.group && group.domain==direction.domain){
 								groupFT.ipeDropDownList.dropDownList.selectedItem=group;
 								groupFT.ipeDropDownList.selectedItem=group;
 								break;
@@ -193,9 +209,9 @@
 					currentState="group";
 				} else if(direction.directionType==FeatureRuleDirection.INDIVIDUAL && 
 					individualFT !=null && individualFT.ipeComboBox!=null){
-					if(!isNaN(direction.valueId) && direction.valueId>-1){
+					if(direction.account!=null && direction.domain!=null){
 						for each(var account:Object in individualFT.ipeComboBox.comboBox.dataProvider){
-							if(account.id==direction.valueId){
+							if(account.name==direction.account && account.domain==direction.domain){
 								individualFT.ipeComboBox.comboBox.selectedItem=account;
 								individualFT.ipeComboBox.selectedItem=account;
 								break;

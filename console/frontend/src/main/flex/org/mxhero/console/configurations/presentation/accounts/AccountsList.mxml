@@ -9,19 +9,22 @@
 		<parsley:Configure/>
 		
 		<mx:DateFormatter id="creationDateFormatter" 
-						  formatString="DD-MM-YYYY"/>
+						  formatString="DD-MM-YYYY JJ:NN"/>
 		
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.frontend.domain.EmailAccount;
 			import mx.events.DataGridEvent;
 			import mx.events.ListEvent;
 			import mx.utils.ObjectUtil;
 			
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.commons.skin.TitleLessPanel;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			
 			[Inject]
 			[Bindable]
@@ -37,22 +40,20 @@
 			
 			protected function filterBtt_clickHandler(event:MouseEvent):void
 			{
-				var groupId:Number;
+				var groupId:String;
 				if(groupDdl.selectedItem==null){
-					groupId=-1;
+					groupId=null;
 				} else {
-					groupId=groupDdl.selectedItem.id;
+					groupId=groupDdl.selectedItem.name;
 				}
-				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text,groupId);
+				model.filterEmailAccounts(emailTI.text,groupId);
 			}
 			
 			protected function clearBtt_clickHandler(event:MouseEvent):void
 			{
 				emailTI.text="";
-				nameTI.text="";
-				lastNameTI.text="";
 				groupDdl.selectedIndex=-1;
-				model.filterEmailAccounts(emailTI.text,nameTI.text,lastNameTI.text,-1);
+				model.filterEmailAccounts(emailTI.text,null);
 			}
 			
 			
@@ -67,9 +68,9 @@
 			}
 			
 			protected function grouplabelFunction(item:Object, column:DataGridColumn):String{
-				if(item.groupId>0){
+				if(item.group!=null){
 					for each (var group:Object in model.context.groups){
-						if(group.id==item.groupId){
+						if(group.name==item.group){
 							return group.name;
 						}
 					}
@@ -77,6 +78,17 @@
 				return "";
 			}
 
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
+				var label:String="";
+				if(item.aliases!=null){
+					for each (var alias:Object in item.aliases){
+						var accountAlias:EmailAccountAlias = alias as EmailAccountAlias;
+						label=label+accountAlias.name+"@"+accountAlias.domain+'\n';
+					}
+					label=StringUtils.trimRight(label);
+				}
+				return label;
+			}
 
 			protected function datagrid1_itemDoubleClickHandler(event:ListEvent):void
 			{
@@ -143,14 +155,6 @@
 			<s:TextInput id="emailTI" width="100%"/>
 			<s:Label 
 				fontWeight="bold"
-				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_NAME_LABEL)}"/>
-			<s:TextInput id="nameTI" width="100%"/>
-			<s:Label 
-				fontWeight="bold"
-				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}"/>
-			<s:TextInput id="lastNameTI" width="100%"/>
-			<s:Label 
-				fontWeight="bold"
 				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}"/>
 			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="100%"/>
 			<mx:Spacer height="5"/>
@@ -177,10 +181,11 @@
 			<s:VerticalLayout/>
 		</s:layout>
 		
-		<mx:DataGrid dataProvider="{model.actualPage.elements}" 
+		<mx:DataGrid dataProvider="{model.accounts}" 
 					 width="100%" 
 					 height="100%"
 					 borderStyle="none"
+					 variableRowHeight="true"
 					 dropShadowVisible="false"
 					 selectedItem="@{model.selectedEmailAccount}"
 					 itemDoubleClick="datagrid1_itemDoubleClickHandler(event)"
@@ -190,24 +195,26 @@
 				<mx:DataGridColumn dataField="account" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
 								   minWidth="100"/>
-				<mx:DataGridColumn dataField="name" 
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
-								   minWidth="100"/>
-				<mx:DataGridColumn dataField="lastName" 
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-								   minWidth="100"/>
-				<mx:DataGridColumn dataField="groupId"
+				<mx:DataGridColumn dataField="group"
 								   labelFunction="{grouplabelFunction}"
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
 								   minWidth="100"/>
+				<mx:DataGridColumn dataField="dataSource"
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_DATASOURCE_LABEL)}" 
+								   minWidth="100"/>
+				<mx:DataGridColumn dataField="aliases"
+								   labelFunction="{aliaseslabelFunction}"
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+								   minWidth="100"
+								   sortable="false"/>
 				<mx:DataGridColumn dataField="updatedDate" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
 								   labelFunction="updatedDateLabelFunction"
-								   width="110" resizable="false"/>
+								   width="130" resizable="false"/>
 				<mx:DataGridColumn dataField="createdDate" 
 								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
 								   labelFunction="dateLabelFunction"
-								   width="110" resizable="false"/>
+								   width="130" resizable="false"/>
 				<mx:DataGridColumn  width="72" sortable="false" resizable="false">
 					<mx:itemRenderer>
 						<fx:Component>
@@ -215,6 +222,7 @@
 								<fx:Script>
 									<![CDATA[
 										import org.mxhero.console.commons.resources.ImageResources;
+										import org.mxhero.console.frontend.domain.EmailAccount;
 										import org.mxhero.console.configurations.application.resources.AccountsProperties;
 										
 									]]>
@@ -224,28 +232,14 @@
 													  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
 								<component1:GlowButton maxGlow="10.0" 
 													  click="{outerDocument.model.removeEmailAccount()}"
-													  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+													  source="{ImageResources.DELETE_ICO}" 
+													  enabled="{data.DataSource==EmailAccount.MANUAL}"
+													  toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
 							</mx:HBox>
 						</fx:Component>
 					</mx:itemRenderer>
 				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>
-		
-		<s:controlBarContent>
-			<s:HGroup width="100%" 
-					  horizontalAlign="right">
-				<component1:GlowButton
-									id="previusPageBtt"
-									source="{ImageResources.LEFT_ICO}" 
-									enabled="{model.actualPage.hasPreviousPage}"
-									click="model.prevPage()"/>
-				<component1:GlowButton 
-									id="nextPageBtt"
-									source="{ImageResources.RIGHT_ICO}" 
-									enabled="{model.actualPage.hasNextPage}"
-									click="model.nextPage()"/>			
-			</s:HGroup>			
-		</s:controlBarContent>
 	</s:Panel>
 </s:Group>

@@ -13,6 +13,7 @@ package org.mxhero.console.configurations.presentation.domains
 	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.commons.infrastructure.ErrorTranslator;
+	import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 	import org.mxhero.console.configurations.application.event.EditDomainEvent;
 	import org.mxhero.console.configurations.application.event.InsertDomainEvent;
@@ -135,7 +136,7 @@ package org.mxhero.console.configurations.presentation.domains
 		
 		public function removeHandler(event:CloseEvent):void{
 			if(event.detail==Alert.YES){
-				dispatcher(new RemoveDomainEvent(selectDomain.id));
+				dispatcher(new RemoveDomainEvent(selectDomain.domain));
 			}
 		}
 		
@@ -158,6 +159,10 @@ package org.mxhero.console.configurations.presentation.domains
 		}
 		
 		public function insertDomain(domain:Domain,hasAdmin:Boolean=false,password:String=null,email:String=null):void{
+			domain.domain=StringUtils.trim(domain.domain).toLowerCase();
+			if(email!=null){
+				email=StringUtils.trim(email).toLowerCase();
+			}
 			dispatcher(new InsertDomainEvent(domain,hasAdmin,password,email));
 			isLoading=true;
 		}
@@ -173,6 +178,9 @@ package org.mxhero.console.configurations.presentation.domains
 		}	
 		
 		public function updateDomain(domain:Domain,hasAdmin:Boolean=false,password:String=null,email:String=null):void{
+			if(email!=null){
+				email=StringUtils.trim(email).toLowerCase();
+			}
 			dispatcher(new EditDomainEvent(domain,hasAdmin,password,email));
 			isLoading=true;
 		}
@@ -203,6 +211,7 @@ package org.mxhero.console.configurations.presentation.domains
 			isLoading=false;
 			domainShow.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
 		}
+		
 		
 		public function enterDomain():void{
 			context.selectedDomain=selectDomain as Domain;

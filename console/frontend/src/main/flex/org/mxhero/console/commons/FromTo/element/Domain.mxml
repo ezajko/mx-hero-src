@@ -42,11 +42,13 @@
 			import mx.events.FlexEvent;
 			import mx.events.StateChangeEvent;
 			
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.ErrorsProperties;
 			import org.mxhero.console.commons.utils.Regex;
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
 			import org.mxhero.console.features.presentation.rule.RuleViewPM;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
+			import org.mxhero.console.frontend.domain.DomainAlias;
 			
 			[Inject]
 			[Bindable]
@@ -72,6 +74,16 @@
 				}
 			}
 
+			public function realDomainLabelFunction(item:Object):String{
+				if(item!=null){
+					if(item is String){
+						return item as String;
+					}
+					return item.domain.domain;
+				}
+				return "";
+			}
+			
 
 			protected function currentStateChangeHandler(event:StateChangeEvent):void
 			{
@@ -84,7 +96,28 @@
 				}
 			}
 
-
+			protected function aliasesToolTip(item:Object):String{
+				var label:String="";
+				if(item.domain.aliases!=null){
+					for each (var alias:Object in item.domain.aliases){
+						var domainAlias:String = alias as String;
+						label=label+domainAlias+'\n';
+					}
+					label=StringUtils.trimRight(label);
+				}
+				return label;
+			}
+			
+			protected function showAliasLabel(state:String,item:Object):Boolean{
+				if(state=='show'
+					&& item!=null
+					&& item.domain.aliases!=null
+					&& (item.domain.aliases as ArrayCollection).length>1){
+					aliasesLabel.toolTip=aliasesToolTip(item);
+					return true;
+				}
+				return false;
+			}
 		]]>
 	</fx:Script>
 	
@@ -113,19 +146,27 @@
 			<IPE:IPEComboBox id="ipeComboBox"
 							 subStyles="item"
 							 currentState="edit"
-							 dataProvider="{model.domains}"
+							 dataProvider="{model.domainsAliases}"
 							 enableItemSelectionCheck.active="false" 
 							 enableItemSelectionCheck.restricted="true" 
 							 enableLabelClickChangeStatus="true"
 							 enableEnterKeyChangeStatus="true"
 							 validator="{requiredValidator}"
+							 showLabelFunction="{realDomainLabelFunction}"
 							 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 							 width="100%"
-							 labelField="domain"
+							 labelField="alias"
 							 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_DOMAIN_NOT_VALID)}"
 							 currentStateChange="ipeComboBox_currentStateChangeHandler(event)"/>					
 		</s:VGroup>
 	</s:BorderContainer>
-
-
+	<s:Label id="aliasesLabel"
+			 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ALIASED_DOMAIN_LABEL)}" 
+			 textDecoration="underline" 
+			 fontStyle="italic" 
+			 fontWeight="bold"
+			 excludeFrom="inactive"
+			 visible="{showAliasLabel(ipeComboBox.currentState,ipeComboBox.selectedItem)}"
+			 buttonMode="true"
+			 />
 </s:HGroup>

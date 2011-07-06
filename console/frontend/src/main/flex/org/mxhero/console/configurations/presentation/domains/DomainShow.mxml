@@ -74,9 +74,8 @@
 
 			protected function addAliasBtt_clickHandler(event:MouseEvent):void
 			{
-				
-				if(aliasTi.text!=null && StringUtil.trim(aliasTi.text).length>0){
-					var textToValidate:String = StringUtil.trim(aliasTi.text);
+				var textToValidate:String = StringUtil.trim(aliasTi.text).toLowerCase();
+				if(aliasTi.text!=null && textToValidate.length>0){
 					var results:Array=aliasV.validate(textToValidate).results;
 					if(results!=null){
 						if(results.length>0){
@@ -92,15 +91,24 @@
 					if(domain.aliases==null){
 						domain.aliases=new ArrayCollection();
 					}
-					domain.aliases.addItem(aliasTi.text);
 					aliasTi.text="";
+					for each(var alias:String in domain.aliases){
+						if(alias==textToValidate){
+							return;
+						}
+					}
+					domain.aliases.addItem(textToValidate);
+					//model.insertAlias(textToValidate);
+					
 				}
 			}
 
 
 			protected function image1_dragEnterHandler(event:DragEvent):void
 			{
-				DragManager.acceptDragDrop(event.currentTarget as Image);
+				if(domain.domain!=(event.dragInitiator as List).selectedItem as String){
+					DragManager.acceptDragDrop(event.currentTarget as Image);
+				}
 			}
 			
 
@@ -108,10 +116,17 @@
 			{
 				if(event.keyCode==46)
 				{
-					if(aliasList.selectedItem!=null){
+					if(aliasList.selectedItem!=null && domain.domain!=aliasList.selectedItem as String){
 						domain.aliases.removeItemAt(domain.aliases.getItemIndex(aliasList.selectedItem));
 					}
 				}
+			}
+
+
+			protected function tashImg_dragDropHandler(event:DragEvent):void
+			{
+				effectDrop.play();
+				//model.removeAlias((event.dragInitiator as List).selectedItem);
 			}
 
 		]]>
@@ -228,7 +243,7 @@
 						 toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
 				<mx:Image id="tashImg" 
 						  source="{ImageResources.TRASHCAN}" dragEnter="image1_dragEnterHandler(event)" 
-						  dragDrop="{effectDrop.play()}"
+						  dragDrop="tashImg_dragDropHandler(event)"
 						  buttonMode="true"
 						  toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
 			</s:VGroup>

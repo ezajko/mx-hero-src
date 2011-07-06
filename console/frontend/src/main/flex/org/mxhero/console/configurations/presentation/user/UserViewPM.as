@@ -96,7 +96,11 @@ package org.mxhero.console.configurations.presentation.user
 		
 		public function changePassword(oldPassword:String,newPassword:String):void{
 			this.isUpdating=true;
-			dispatcher(new ChangePasswordEvent(oldPassword,newPassword));
+			if(context.selectedDomain!=null && context.selectedDomain.owner!=null){
+				dispatcher(new ChangePasswordEvent(oldPassword,newPassword,context.selectedDomain.owner.id));
+			}else{
+				dispatcher(new ChangePasswordEvent(oldPassword,newPassword));
+			}
 		}
 		
 		[CommandResult]

@@ -4,9 +4,10 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 gap="0" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
-		 creationComplete="vgroup1_creationCompleteHandler(event)">
+		 creationComplete="vgroup1_creationCompleteHandler(event)" xmlns:newslist="org.mxhero.console.home.presentation.newslist.*">
 	<fx:Declarations>
 		<parsley:Configure/>
+
 		<mx:SeriesInterpolate id="interpolateIn" duration="1000"/>
 		<fx:Array id="bge">
 			<mx:GridLines 
@@ -34,10 +35,14 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
+			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.home.application.resources.HomeProperties;
 			[Inject]
 			[Bindable]
 			public var model:HomeViewPM;
+			[Inject]
+			[Bindable]
+			public var context:ApplicationContext;
 			
 			private var hourUntil:Date = new Date();
 			
@@ -158,6 +163,8 @@
 		</s:VGroup>
 	</s:Panel>
 	
+
+	
 	<s:Panel title="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_TIPS_PANEL_TITLE)}" 
 			 width="100%"
 			 height="40%"
@@ -167,17 +174,7 @@
 					height="100%"
 					horizontalScrollPolicy="off" 
 					verticalScrollPolicy="auto">
-			<s:VGroup width="100%" paddingBottom="20" paddingLeft="10" paddingRight="10" paddingTop="20" gap="15">
-				<s:Label width="100%" text="When creating rules, you can distinguish between Anyone and Anyone not in your domain. Use the check box that appears after selecting anyone."/>
-				<mx:HRule width="100%" strokeColor="#70B2EE" height="3"/>
-				<s:Label width="100%" text="Create different rules to different situations. Example: set maximum email size for all outbound email, while setting a larger maximum for internal emails."/>
-				<mx:HRule width="100%" strokeColor="#70B2EE" height="3"/>
-				<s:Label width="100%" text="Use Restricted Delivery to limit company broadcast addresses for company use only. Ex. all@company.com can only receive from @company.com email addresses. Or limit even further to only one group or email, ex. only ceo@company.com can send a broadcast email."/>
-				<mx:HRule width="100%" strokeColor="#70B2EE" height="3"/>
-				<s:Label width="100%" text="Use Social From/To report to analyze Who is sending and receiving from Whom."/>
-				<mx:HRule width="100%" strokeColor="#70B2EE" height="3"/>
-				<s:Label width="100%" text="Observe outbound flow graphs. If you see an excess of email, check the source. It may not be the user that is sending all that email, but a bot virus that has infected the users computer."/>
-			</s:VGroup>
+			<newslist:NewsList language="{context.applicationUser.locale}" width="100%"/>
 		</s:Scroller>
 	</s:Panel>
 </s:VGroup>

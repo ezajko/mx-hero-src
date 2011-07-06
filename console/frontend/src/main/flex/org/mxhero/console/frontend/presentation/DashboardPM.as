@@ -2,8 +2,11 @@ package org.mxhero.console.frontend.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
 	
+	import flash.system.Security;
+	
 	import mx.controls.Alert;
 	import mx.core.Container;
+	import mx.core.FlexGlobals;
 	import mx.effects.SoundEffect;
 	import mx.events.CloseEvent;
 	import mx.resources.IResourceManager;
@@ -13,6 +16,7 @@ package org.mxhero.console.frontend.presentation
 	import org.mxhero.console.features.application.FeaturesDestinations;
 	import org.mxhero.console.frontend.application.MainDestination;
 	import org.mxhero.console.frontend.application.event.LogoutEvent;
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.application.resources.DashboardProperties;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
@@ -50,6 +54,13 @@ package org.mxhero.console.frontend.presentation
 		{
 			container.createComponentsFromDescriptors();
 			dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.HOME));
+			var url:String = FlexGlobals.topLevelApplication.url as String;
+			url = url.substr(0,url.lastIndexOf("/"));
+			try{
+				Security.loadPolicyFile(url+"/crossdomain.xml");
+			}catch( err:Error){
+				dispatcher(new ApplicationErrorMessage(err.message,true));
+			}
 		}
 		
 		public function logout():void{

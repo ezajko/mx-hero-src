@@ -8,9 +8,9 @@ package org.mxhero.console.features.application.event
 		
 		public var featureId:Number;
 		
-		public var domainId:Number;
+		public var domainId:String;
 		
-		public function CreateDomainRuleEvent(rule:FeatureRule, featureId:Number, domainId:Number)
+		public function CreateDomainRuleEvent(rule:FeatureRule, featureId:Number, domainId:String)
 		{
 			this.rule=rule;
 			this.featureId=featureId;

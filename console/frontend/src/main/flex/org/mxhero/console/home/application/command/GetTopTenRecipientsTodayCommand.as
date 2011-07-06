@@ -19,7 +19,7 @@ package org.mxhero.console.home.application.command
 		{
 			var sinceDay:Date = new Date();
 			sinceDay.setHours(0,0,0,0);
-			return service.getTopTenOutgoingRecipientsByDay(event.domainId,sinceDay.getTime(),true);
+			return service.getTopTenOutgoingRecipientsByDay(event.domainId,sinceDay.getTime(),false);
 		}
 		
 		public function error (fault:Fault) : void {

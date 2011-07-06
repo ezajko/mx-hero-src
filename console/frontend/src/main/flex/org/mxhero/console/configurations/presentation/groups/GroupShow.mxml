@@ -18,9 +18,11 @@
 			import mx.events.ListEvent;
 			import mx.managers.PopUpManager;
 			
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			import org.mxhero.console.configurations.application.resources.GroupsProperties;
+			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			import org.mxhero.console.frontend.domain.Group;
 			
 			[Bindable]
@@ -45,6 +47,18 @@
 				}
 			}
 
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
+				var label:String="";
+				if(item.aliases!=null){
+					for each (var alias:Object in item.aliases){
+						var accountAlias:EmailAccountAlias = alias as EmailAccountAlias;
+						label=label+accountAlias.name+"@"+accountAlias.domain+'\n';
+					}
+					label=StringUtils.trimRight(label);
+				}
+				return label;
+			}
+			
 			protected function groupAccountsDg_itemDoubleClickHandler(event:ListEvent):void
 			{
 				model.groupAccounts.removeItemAt(model.groupAccounts.getItemIndex(event.itemRenderer.data));
@@ -121,6 +135,7 @@
 							height="100%"
 							dropShadowVisible="false"
 							minWidth="420"
+							maxHeight="300"
 							dragEnabled="true"
 							dropEnabled="true"
 							allowMultipleSelection="true"
@@ -133,12 +148,11 @@
 						<mx:DataGridColumn dataField="account" 
 										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
 										   minWidth="180"/>
-						<mx:DataGridColumn dataField="name" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
-										   minWidth="120"/>
-						<mx:DataGridColumn dataField="lastName" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-										   minWidth="120"/>
+						<mx:DataGridColumn dataField="aliases"
+										   labelFunction="{aliaseslabelFunction}"
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+										   minWidth="100"
+										   sortable="false"/>
 					</mx:columns>
 				</mx:DataGrid>				
 			</s:VGroup>
@@ -153,6 +167,7 @@
 							height="100%"
 							dropShadowVisible="false" 
 							minWidth="420"
+							maxHeight="300"
 							dragEnabled="true"
 							dropEnabled="true"
 							allowMultipleSelection="true"
@@ -165,12 +180,11 @@
 						<mx:DataGridColumn dataField="account" 
 										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
 										   minWidth="180"/>
-						<mx:DataGridColumn dataField="name" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_NAME_LABEL)}" 
-										   minWidth="120"/>
-						<mx:DataGridColumn dataField="lastName" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_LAST_NAME_LABEL)}" 
-										   minWidth="120"/>
+						<mx:DataGridColumn dataField="aliases"
+										   labelFunction="{aliaseslabelFunction}"
+										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+										   minWidth="100"
+										   sortable="false"/>
 					</mx:columns>
 				</mx:DataGrid>
 			</s:VGroup>

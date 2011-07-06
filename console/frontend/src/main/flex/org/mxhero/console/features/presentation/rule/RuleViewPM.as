@@ -69,8 +69,8 @@ package org.mxhero.console.features.presentation.rule
 				var newDomains:ArrayCollection = new ArrayCollection();
 				newDomains.addItem(context.selectedDomain);
 				context.domains=newDomains;
-				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.id));
-				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.id));
+				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.domain));
+				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.domain));
 			}
 		}
 		
@@ -78,7 +78,7 @@ package org.mxhero.console.features.presentation.rule
 			//new rule
 			if(isNaN(rule.id) || rule.id<0){
 				if(context.selectedDomain!=null){
-					dispatcher(new CreateDomainRuleEvent(rule,this.feature.id,context.selectedDomain.id));
+					dispatcher(new CreateDomainRuleEvent(rule,this.feature.id,context.selectedDomain.domain));
 				} else {
 					dispatcher(new CreateNoDomainRuleEvent(rule,this.feature.id));
 				}

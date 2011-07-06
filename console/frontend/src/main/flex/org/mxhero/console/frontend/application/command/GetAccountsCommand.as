@@ -11,7 +11,6 @@ package org.mxhero.console.frontend.application.command
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.EmailAccount;
-	import org.mxhero.console.frontend.domain.Page;
 
 	public class GetAccountsCommand
 	{

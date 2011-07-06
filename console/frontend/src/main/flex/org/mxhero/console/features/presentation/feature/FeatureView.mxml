@@ -165,11 +165,7 @@
 				<mx:DataGridColumn dataField="updated" 
 								   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_UPDATED_LABEL)}" 
 								   labelFunction="updateLabelFunction"
-								   minWidth="110"/>
-				<mx:DataGridColumn dataField="created" 
-								   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_CREATED_LABEL)}"
-								   labelFunction="createdLabelFunction"
-								   minWidth="110"/>
+								   minWidth="120"/>
 				<mx:DataGridColumn  width="92" minWidth="92" sortable="false" resizable="false">
 					<mx:itemRenderer>
 						<fx:Component>
@@ -178,15 +174,16 @@
 									<![CDATA[
 										import org.mxhero.console.commons.resources.ImageResources;
 										import org.mxhero.console.configurations.application.resources.DomainsShowProperties;
+										import org.mxhero.console.features.application.resources.FeatureViewProperties;
 										
 									]]>
 								</fx:Script>
 								<component1:GlowButton maxGlow="10.0" 
 													  click="{outerDocument.model.editRule()}"
-													  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+													  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.EDIT_RULE_TOOLTIP)}"/>
 								<component1:GlowButton maxGlow="10.0" 
 													  click="{outerDocument.model.removeRule()}"
-													  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+													  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.REMOVE_RULE_TOOLTIP)}"/>						
 							</mx:HBox>
 						</fx:Component>
 					</mx:itemRenderer>

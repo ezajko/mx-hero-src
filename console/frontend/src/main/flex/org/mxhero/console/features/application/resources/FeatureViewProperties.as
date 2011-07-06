@@ -13,6 +13,9 @@ package org.mxhero.console.features.application.resources
 		
 		public static const REMOVE_RULE_CONFIRMATION_TEXT:String="remove.rule.confirmation.text";
 		
+		public static const REMOVE_RULE_TOOLTIP:String="remove.rule.tooltip";
+		public static const EDIT_RULE_TOOLTIP:String="edit.rule.tooltip";
+		
 		public static const COLUMN_RULE_ENBABLE_TOOLTIP:String="remove.rule.enable.tooltip";
 		public static const COLUMN_RULE_DISABLE_TOOLTIP:String="remove.rule.disable.tooltip";
 		

@@ -20,6 +20,8 @@ package org.mxhero.console.features.application.resources
 		
 		public static const MAIL_FROM_TO_LABEL:String="mail.from.to.label";
 		
+		public static const MAIL_FROM_TO_LABEL_EXPANDED:String="mail.from.to.label.expanded";
+		
 		public static const ITEM_EDIT_TOOLTIP:String="item.edit.tooltip";
 		
 		public static const ITEM_CLEAR_TOOLTIP:String="item.clear.tooltip";
@@ -73,6 +75,10 @@ package org.mxhero.console.features.application.resources
 		public static const BOTH_WAYS_LABEL:String="both.ways.label";
 		
 		public static const BOTH_WAYS_EXPANDED:String="both.ways.expanded";
+		
+		public static const ALIASED_DOMAIN_LABEL:String="aliased.domain.label";
+		
+		public static const ALIASED_ACCOUNT_LABEL:String="aliased.account.label";
 		
 	}
 }

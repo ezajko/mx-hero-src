@@ -70,7 +70,7 @@ package org.mxhero.console.configurations.presentation.groups
 		}
 		
 		public function loadGroups():void{
-			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.id));
+			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain));
 			isLoading=true;
 		}
 		
@@ -84,11 +84,12 @@ package org.mxhero.console.configurations.presentation.groups
 			groupShow.model=this;
 			groupShow.currentState="new";
 			groupShow.group=new Group();
+			groupShow.group.domain=context.selectedDomain.domain;
 			PopUpManager.addPopUp(groupShow,parent,true);
 			PopUpManager.centerPopUp(groupShow);
 			PopUpManager.bringToFront(groupShow);
 			this.groupAccounts=new ArrayCollection();
-			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.id));
+			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.domain));
 			isLoading=true;
 		}
 
@@ -117,7 +118,7 @@ package org.mxhero.console.configurations.presentation.groups
 			PopUpManager.addPopUp(groupShow,parent,true);
 			PopUpManager.centerPopUp(groupShow);
 			PopUpManager.bringToFront(groupShow);
-			dispatcher(new LoadEmailAccountsByGroupEvent(this.selectGroup.id));
+			dispatcher(new LoadEmailAccountsByGroupEvent(this.selectGroup.name,this.selectGroup.domain));
 			isLoading=true;
 		}
 
@@ -132,7 +133,7 @@ package org.mxhero.console.configurations.presentation.groups
 			} else {
 				this.groupAccounts=result;
 			}
-			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.id));
+			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.domain));
 		}
 		
 		[CommandError]
@@ -147,7 +148,7 @@ package org.mxhero.console.configurations.presentation.groups
 		
 		public function removeHandler(event:CloseEvent):void{
 			if(event.detail==Alert.YES){
-				dispatcher(new RemoveGroupEvent(selectGroup.id));
+				dispatcher(new RemoveGroupEvent(selectGroup.name,selectGroup.domain));
 			}
 		}
 		
@@ -160,7 +161,7 @@ package org.mxhero.console.configurations.presentation.groups
 		}
 		
 		public function insertGroup(newGroup:Group):void{
-			dispatcher(new InsertGroupEvent(newGroup,context.selectedDomain.id,groupAccounts));
+			dispatcher(new InsertGroupEvent(newGroup,groupAccounts));
 			isLoading=true;
 		}
 		

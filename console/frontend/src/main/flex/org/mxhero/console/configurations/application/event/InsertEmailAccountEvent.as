@@ -6,9 +6,9 @@ package org.mxhero.console.configurations.application.event
 	{
 		public var emailAccount:EmailAccount;
 		
-		public var domainId:Number;
+		public var domainId:String;
 		
-		public function InsertEmailAccountEvent(domainId:Number,emailAccount:EmailAccount)
+		public function InsertEmailAccountEvent(domainId:String,emailAccount:EmailAccount)
 		{
 			this.domainId=domainId;
 			this.emailAccount=emailAccount;

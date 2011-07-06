@@ -61,8 +61,8 @@
 						<mx:fills>
 							<s:SolidColor color="0xffd512" alpha="0.8"/>
 							<s:SolidColor color="red" alpha="0.8"/>
-							<s:SolidColor color="purple" alpha="0.8"/>
 							<s:SolidColor color="0xd1dfe7" alpha="0.8"/>
+							<s:SolidColor color="purple" alpha="0.8"/>
 						</mx:fills>
 						<mx:calloutStroke>
 							<s:SolidColorStroke

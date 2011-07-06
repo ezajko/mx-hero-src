@@ -22,6 +22,8 @@ package org.mxhero.console.commons.domain
 		
 		public var adminExclusive:Boolean=false;
 		
+		public var needsOwner:Boolean=false;
+		
 		public var navigateTo:String;
 		
 		public function LCChild(){

@@ -54,6 +54,8 @@
 			
 			private var _labelFunction:Function;
 			
+			public var showLabelFunction:Function;
+			
 			private var _sort:Sort;
 			
 			public function switchState():void{
@@ -163,7 +165,11 @@
 					comboBox.errorString="";
 				}
 				if(comboBox.selectedItem!=null){
-					this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+					if(showLabelFunction!=null){
+						this.selectedLabel=showLabelFunction(comboBox.selectedItem);
+					}else{
+						this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+					}
 				}	
 				this.switchState();
 			}
@@ -183,7 +189,11 @@
 					comboBox.errorString="";
 				}
 				if(comboBox.selectedItem!=null){
-					this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+					if(showLabelFunction!=null){
+						this.selectedLabel=showLabelFunction(comboBox.selectedItem);
+					}else{
+						this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+					}
 				}
 			}
 

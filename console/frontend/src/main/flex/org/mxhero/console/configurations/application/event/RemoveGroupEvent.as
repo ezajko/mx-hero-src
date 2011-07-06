@@ -2,11 +2,13 @@ package org.mxhero.console.configurations.application.event
 {
 	public class RemoveGroupEvent
 	{
-		public var groupId:Number;
+		public var groupName:String;
+		public var domainId:String;
 		
-		public function RemoveGroupEvent(groupId:Number)
+		public function RemoveGroupEvent(groupName:String,domainId:String)
 		{
-			this.groupId=groupId;
+			this.groupName=groupName;
+			this.domainId=domainId;
 		}
 	}
 }

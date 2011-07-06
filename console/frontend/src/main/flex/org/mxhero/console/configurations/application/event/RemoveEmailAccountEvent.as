@@ -2,11 +2,13 @@ package org.mxhero.console.configurations.application.event
 {
 	public class RemoveEmailAccountEvent
 	{
-		public var id:String;
+		public var account:String;
+		public var domainId:String;
 		
-		public function RemoveEmailAccountEvent(id:String)
+		public function RemoveEmailAccountEvent(account:String,domainId:String)
 		{
-			this.id=id;
+			this.account=account;
+			this.domainId=domainId;
 		}
 	}
 }

@@ -16,21 +16,27 @@ package org.mxhero.console.frontend.infrastructure
 		
 		public function authorizeList(list:Object):Object{
 			var authorizedList:ArrayCollection = new ArrayCollection();		
-			
+			var newCategory:Object;
 			for each (var category:Object in list){
 				if(category.hasOwnProperty("requiredAuthority") &&
 					category.requiredAuthority!=null){
 					if(checkUserForAuthority(category.requiredAuthority,category.domainExclusive,category.adminExclusive)){
-						authorizedList.addItem(getCategory(category));
+						newCategory = getCategory(category);
+						if((newCategory.childs as ArrayCollection).length>0){
+							authorizedList.addItem(newCategory);
+						}
 					}
 				}else{
-					authorizedList.addItem(getCategory(category));
+					newCategory = getCategory(category);
+					if((newCategory.childs as ArrayCollection).length>0){
+						authorizedList.addItem(newCategory);
+					}
 				}
 			}
 			return authorizedList;
 		}
 		
-		public function checkUserForAuthority(authority:String,exclusive:Boolean=false,adminExclusive:Boolean=false):Boolean{
+		public function checkUserForAuthority(authority:String,exclusive:Boolean=false,adminExclusive:Boolean=false,needsOwner:Boolean=false):Boolean{
 			if (context==null || 
 				context.applicationUser==null){
 				return false;
@@ -40,10 +46,22 @@ package org.mxhero.console.frontend.infrastructure
 				return false;
 			}
 			
+			if(needsOwner 
+				&& checkAuthority("ROLE_ADMIN") 
+				&& context.selectedDomain!=null 
+				&& context.selectedDomain.owner==null){
+				return false;
+			}
+			
 			if(adminExclusive && context.selectedDomain!=null){
 				return false;
 			}
 			
+
+			return checkAuthority(authority);
+		}
+		
+		public function checkAuthority(authority:String):Boolean{
 			for each(var userAuthority:Authority in context.applicationUser.authorities){
 				if(authority==userAuthority.authority){
 					return true;
@@ -51,6 +69,7 @@ package org.mxhero.console.frontend.infrastructure
 			}
 			return false;
 		}
+		
 		
 		private function getCategory(category:Object):Object{
 			var newChilds:ArrayCollection = new ArrayCollection();
@@ -64,7 +83,7 @@ package org.mxhero.console.frontend.infrastructure
 			for each (var child:Object in category.childs){
 				if(child.hasOwnProperty("requiredAuthority") &&
 					child.requiredAuthority!=null){
-					if(checkUserForAuthority(child.requiredAuthority,child.domainExclusive,child.adminExclusive)){
+					if(checkUserForAuthority(child.requiredAuthority,child.domainExclusive,child.adminExclusive,child.needsOwner)){
 						newChilds.addItem(child);
 					}
 				}else{

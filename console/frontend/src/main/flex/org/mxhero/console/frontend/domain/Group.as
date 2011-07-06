@@ -4,7 +4,7 @@ package org.mxhero.console.frontend.domain
 	[RemoteClass(alias="org.mxhero.console.backend.vo.GroupVO")]
 	public class Group
 	{
-		public var id:Number;
+		public var domain:String;
 		public var name:String;
 		public var description:String;
 		public var createdDate:Date;
@@ -12,7 +12,7 @@ package org.mxhero.console.frontend.domain
 		
 		public function clone():Group{
 			var clonedGroup:Group = new Group();
-			clonedGroup.id=this.id;
+			clonedGroup.domain=this.domain;
 			clonedGroup.name=this.name;
 			clonedGroup.description=this.description;
 			clonedGroup.name=this.name;

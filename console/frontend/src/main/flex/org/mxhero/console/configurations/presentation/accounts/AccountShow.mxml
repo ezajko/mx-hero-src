@@ -9,22 +9,33 @@
 			   enabled="{!model.isLoading}"
 			   title.new="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADD_NEW_EMAIL_LABEL)}"
 			   title.edit="{account.account+'@'+model.context.selectedDomain.domain}"
-			   creationComplete="creationCompleteHandler(event)">
+			   creationComplete="creationCompleteHandler(event)" xmlns:component1="org.mxhero.console.commons.feature.component.*">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.DragManager;
 			import mx.managers.PopUpManager;
+			import mx.validators.ValidationResult;
 			
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.commons.resources.ErrorsProperties;
+			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			import org.mxhero.console.frontend.domain.EmailAccount;
+			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			
 			import spark.events.IndexChangeEvent;
 			import spark.events.TextOperationEvent;
 			
 			private var _emailStr:String;
+			
+			[Bindable]
+			public var domains:ArrayCollection;
 			
 			[Bindable]
 			public var model:AccountsViewPM;
@@ -45,12 +56,13 @@
 				if(validateAll.isValid){
 					
 					if(groupDdl.selectedItem!=null){
-						account.groupId=groupDdl.selectedItem.id;
+						account.group=groupDdl.selectedItem.name;
 					}else{
-						account.groupId=-1;
+						account.group=null;
 					}
 					
 					if(currentState=="new"){
+						account.dataSource=EmailAccount.MANUAL;
 						model.insertAccount(account);
 					}
 					if(currentState=="edit"){
@@ -79,13 +91,13 @@
 			{
 				if(currentState=="new"){
 					groupDdl.selectedIndex=-1;
-					account.groupId=-1;
+					account.group=null;
 					callLater(this.emailTi.setFocus);
 				} else {
-					callLater(this.nameTi.setFocus);
+					callLater(groupDdl.setFocus);
 					groupDdl.selectedIndex=-1;
 					for each(var group:Object in groupDdl.dataProvider){
-						if(group.id==account.groupId){
+						if(group.name==account.group){
 							groupDdl.selectedIndex=groupDdl.dataProvider.getItemIndex(group);
 							break;
 						}
@@ -93,11 +105,81 @@
 				}
 			}
 
+
+			protected function addAliasBtt_clickHandler(event:MouseEvent):void
+			{
+				var name:String=StringUtils.trim(aliasTi.text).toLowerCase();
+				var result:ValidationResultEvent = aliasV.validate(name+"@"+domainAliasDdl.selectedItem);
+
+				 if(result!=null && result.results!=null && result.results.length>0){
+					 for each(var resultValue:ValidationResult in result.results){
+						 if(resultValue.isError){
+							 addAliasBtt.errorString=resultValue.errorMessage;
+							 return;
+						 }
+					 }
+				 }
+				 addAliasBtt.errorString="";
+				 for each(var item:Object in account.aliases){
+					 var alias:EmailAccountAlias = item as EmailAccountAlias;
+					 if(alias.name==name && alias.domain==domainAliasDdl.selectedItem){
+						 aliasTi.text="";
+						 return;
+					 }
+				 }
+				 var newAlias:EmailAccountAlias = new EmailAccountAlias();
+				 newAlias.domain=domainAliasDdl.selectedItem;
+				 newAlias.name=name;
+				 newAlias.dataSource=EmailAccountAlias.MANUAL;
+				 account.aliases.addItem(newAlias);
+				 aliasTi.text="";
+			}
+
+
+			protected function aliasList_keyUpHandler(event:KeyboardEvent):void
+			{
+				if(event.keyCode==46)
+				{
+					if(aliasList.selectedItem!=null){
+						var alias:EmailAccountAlias = aliasList.selectedItem as EmailAccountAlias;
+						if((alias.name!=account.account || alias.domain!=account.domain) && alias.dataSource==EmailAccountAlias.MANUAL ){
+							account.aliases.removeItemAt(account.aliases.getItemIndex(aliasList.selectedItem));
+						}
+					}
+				}
+			}
+
+
+			protected function tashImg_dragEnterHandler(event:DragEvent):void
+			{
+				var alias:EmailAccountAlias = (event.dragInitiator as List).selectedItem as EmailAccountAlias;
+				if((alias.name!=account.account || alias.domain!=account.domain) && alias.dataSource==EmailAccountAlias.MANUAL ){
+					DragManager.acceptDragDrop(event.currentTarget as Image);
+				}
+			}
+
+			private function listLabelFunc(item:Object):String {
+				return item.name + "@" + item.domain+" ("+item.dataSource+")";
+			}
+
+			protected function tashImg_dragDropHandler(event:DragEvent):void
+			{
+				effectDrop.play();
+			}
+
 		]]>
 	</fx:Script>
 	
 	<fx:Declarations>
-		
+		<mx:EmailValidator id="aliasV" required="true"/>
+		<s:Sequence id="effectDrop" target="{tashImg}" >
+			<mx:Blur id="blurImage" duration="150" 
+					 blurXFrom="0.0" blurXTo="10.0" 
+					 blurYFrom="0.0" blurYTo="10.0"/>
+			<mx:Blur id="unblurImage" duration="150" 
+					 blurXFrom="10.0" blurXTo="0.0" 
+					 blurYFrom="10.0" blurYTo="0.0"/>			
+		</s:Sequence>
 		<cairngorm:ValidatorGroup id="validateAll">
 			<cairngorm:validators>
 				<mx:EmailValidator id="emailV" 
@@ -123,20 +205,58 @@
 	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
 		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ACCOUNT_LABEL)}" width="100%">
 			<s:HGroup verticalAlign="middle">
-				<s:TextInput id="emailTi" width="100%" enabled.edit="false" enabled.new="true" 
+				<s:TextInput id="emailTi" width="200" enabled.edit="false" enabled.new="true" 
 							 text="@{account.account}"/>
 				<s:Label fontWeight="bold" text="{'@'+model.context.selectedDomain.domain}"/>
 			</s:HGroup>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_NAME_LABEL)}" width="100%">
-			<s:TextInput id="nameTi" text="@{account.name}" width="100%"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_LAST_NAME_LABEL)}" width="100%">
-			<s:TextInput id="lastNameTi" text="@{account.lastName}" width="100%"/>
-		</mx:FormItem>
 		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}" width="100%">
-			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="100%"/>
+			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="200"/>
 		</mx:FormItem>
+		<mx:Spacer height="15"/>
+		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
+			<s:VGroup height="100%">
+				<component1:LabelExpanded labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ALIASES_LABEL)}" 
+										  explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+										  hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+										  expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ALIASES_EXPLAIN)}" 
+										  width="100%"/>
+				<mx:Form defaultButton="{addAliasBtt}" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+					<s:HGroup verticalAlign="middle">
+						<s:TextInput id="aliasTi" width="150"/>
+						<s:Label text="@" fontWeight="bold"/>
+						<s:DropDownList
+							id="domainAliasDdl"
+							dataProvider="{domains}"
+							requireSelection="true"
+							width="150"/>
+						<s:Button id="addAliasBtt" 
+								  label="Add" 
+								  click="addAliasBtt_clickHandler(event)" 
+								  buttonMode="true"/>							
+					</s:HGroup>
+				</mx:Form>
+				<s:List id="aliasList"
+						dataProvider="{account.aliases}" 
+						width="100%" 
+						height="100%"
+						maxHeight="140"
+						dragEnabled="true" 
+						dragMoveEnabled="true"
+						labelFunction="listLabelFunc"
+						keyUp="aliasList_keyUpHandler(event)"/>				
+			</s:VGroup>
+			<s:VGroup horizontalAlign="center">
+				<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.DRAG_HERE)}" 
+						 styleName="draghere"
+						 buttonMode="true"/>
+				<mx:Image id="tashImg" 
+						  source="{ImageResources.TRASHCAN}" 
+						  dragEnter="{tashImg_dragEnterHandler(event)}" 
+						  dragDrop="tashImg_dragDropHandler(event)"
+						  buttonMode="true"/>
+			</s:VGroup>
+		</s:HGroup>			
 		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">
 			<s:Button id="saveBtt" 
 					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
@@ -148,5 +268,6 @@
 					  buttonMode="true"/>
 		</s:HGroup>
 	</mx:Form>
+	
 </s:TitleWindow>
 

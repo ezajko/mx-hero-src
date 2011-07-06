@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:parsley="http://www.spicefactory.org/parsley"
+		 creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Declarations>
+		<parsley:Configure/>
+		<s:HTTPService id="rssService" url="{feedUrl}" 
+					   useProxy="false"  resultFormat="e4x"  
+					   result="rssService_resultHandler(event)"
+					   fault="rssService_faultHandler(event)"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.XMLListCollection;
+			import mx.controls.Alert;
+			import mx.controls.HRule;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.mxhero.console.home.presentation.HomeViewPM;
+			
+			[Bindable]
+			private var feedUrl:String;
+			
+			private var _language:String;
+			
+			private var _newsList:XMLListCollection;
+
+			protected function rssService_resultHandler(event:ResultEvent):void
+			{
+				var xmlResult:XML = XML(event.result);
+				var news:XMLList = xmlResult.channel.item;
+				var list:XMLListCollection = new XMLListCollection(news);
+				newsList=list;
+			}
+			
+			public function get newsList():XMLListCollection
+			{
+				return _newsList;
+			}
+
+			[Bindable]
+			public function set newsList(value:XMLListCollection):void
+			{
+				_newsList = value;
+				this.removeAllElements();
+				if(_newsList!=null){
+					for each (var news:Object in _newsList){
+						var newsDisplay:News = new News();
+						newsDisplay.title=news.title;
+						newsDisplay.description=news.description;
+						newsDisplay.url=news.link;
+						addElement(newsDisplay);
+						var hrule:HRule = new HRule();
+						hrule.percentWidth=100;
+						hrule.height=3;
+						addElement(hrule);
+					}
+					if(numElements>0){
+						removeElementAt(numElements-1);
+					}
+				}
+			}
+
+			[Bindable]
+			public function get language():String
+			{
+				return _language;
+			}
+
+			public function set language(value:String):void
+			{
+				_language = value;
+				refresh();
+			}
+
+			public function refresh():void{
+
+				if(_language=="es_ES"){
+					feedUrl="http://mxhero.com/wp/?cat=6&feed=rss&lang=es";
+				}else if(_language=="pt_BR"){
+					feedUrl="http://mxhero.com/wp/?cat=6&feed=rss&lang=pt-br";
+				}else{
+					feedUrl="http://mxhero.com/wp/?cat=6&feed=rss";
+				}
+				rssService.send();
+			}
+
+
+			protected function rssService_faultHandler(event:FaultEvent):void
+			{
+				Alert.show("[errorID:"+event.fault.errorID+"]\n[code:"+event.fault.faultCode+"]\n[detail:"+event.fault.faultDetail+"]\n[string:"+event.fault.faultString);
+			}
+
+
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				HomeViewPM.refreshFeed=refresh;
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout gap="10" paddingTop="5"/>
+	</s:layout>
+	
+</s:Group>
