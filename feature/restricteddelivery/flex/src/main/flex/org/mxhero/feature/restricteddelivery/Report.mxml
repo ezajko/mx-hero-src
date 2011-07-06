@@ -99,28 +99,24 @@
 			[Bindable]
 			private var _emails:ArrayCollection;
 			
-			private var _dataQuery:String = " select count(record0_.insert_date) ,record0_.from_recipeints " 
-				+" from statistics.mail_records record0_ "
-				+" inner join statistics.mail_stats stats1_ on record0_.insert_date=stats1_.insert_date "
-				+" and record0_.record_sequence=stats1_.record_sequence "
-				+" where record0_.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
-				+" and stats1_.stat_key = 'org.mxhero.feature.restricteddelivery.sender' ";
+			private var _dataQuery:String =	"SELECT COUNT(*), r0.from_recipeints " 
+				+" FROM mail_records r0 " 
+				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
+				+" AND EXISTS( SELECT 1 FROM mail_stats s "
+				+" WHERE s.insert_date = r0.insert_date " 
+				+" AND s.record_sequence = r0.record_sequence " 
+				+" AND s.stat_key = 'org.mxhero.feature.restricteddelivery.sender' ) ";
 			
-			private var _emailsQuery:String = 
-				" SELECT record0_.message_id, record0_.from_recipeints, record0_.sender, record0_.recipient, " +
-				" record0_.to_recipeints, record0_.cc_recipeints, record0_.bcc_recipeints, " +
-				" record0_.subject, record0_.phase, record0_.bytes_size, record0_.state, " +
-				" record0_.state_reason, record0_.insert_date " 
-				+" from statistics.mail_records record0_ "
-				+" inner join statistics.mail_records record2_ " 
-				+" on record2_.parent_insert_date=record0_.parent_insert_date "
-				+" and record2_.parent_sequence=record0_.parent_sequence "
-				+" inner join statistics.mail_stats stats1_ on record2_.insert_date=stats1_.insert_date "
-				+" and record2_.record_sequence=stats1_.record_sequence "
-				+" where record0_.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
-				+" and record2_.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
-				+" and stats1_.stat_key = 'org.mxhero.feature.restricteddelivery.sender' "
-				+" and (record0_.phase='send' and record0_.state='drop' or record0_.phase='receive' )";
+			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipeints, r0.sender, r0.recipient, " 
+				+" r0.to_recipeints, r0.cc_recipeints, r0.bcc_recipeints, " 
+				+" r0.subject, r0.phase, r0.bytes_size, r0.state, " 
+				+" r0.state_reason, r0.insert_date " 
+				+" FROM mail_records r0 " 
+				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' )  "
+				+" AND EXISTS( SELECT 1 FROM mail_stats s "
+				+" WHERE s.insert_date = r0.insert_date " 
+				+" AND s.record_sequence = r0.record_sequence " 
+				+" AND s.stat_key = 'org.mxhero.feature.restricteddelivery.sender' ) ";
 			
 			public function setResult(queryId:String, result:*):void{
 				if(queryId==DATA_QUERY){
@@ -132,7 +128,7 @@
 				}else if(queryId==EMAIL_QUERY){
 					var emailArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
-						emailArray.addItem({messageId:row[0],from:row[1],sender:[2]
+						emailArray.addItem({messageId:row[0],from:row[1],sender:row[2]
 							,recipient:row[3],toRecipients:row[4]
 							,ccRecipients:row[5],bccRecipients:row[6]
 							,subject:row[7],phase:row[8],bytesSize:row[9]
@@ -167,13 +163,12 @@
 				var emailsQuery:String = _emailsQuery;
 				
 				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
-				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
 
 				if(domain!=null){
 					params.push(domain,domain);
-					emailsQuery = emailsQuery + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+					emailsQuery = emailsQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				emailsQuery = emailsQuery + " order by record0_.insert_date desc ";
+				emailsQuery = emailsQuery + " order by r0.insert_date desc ";
 				
 				_reportService.processQuery(EMAIL_QUERY,emailsQuery,params,this);
 				
@@ -187,9 +182,9 @@
 				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
 				if(domain!=null){
 					params.push(domain,domain);
-					dataQuery = dataQuery + " and (record0_.recipient_domain_id = ? or record0_.sender_domain_id = ?) ";
+					dataQuery = dataQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				dataQuery = dataQuery + " group by record0_.from_recipeints ORDER BY 1 DESC ";
+				dataQuery = dataQuery + " group by r0.from_recipeints ORDER BY 1 DESC ";
 				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
 				
 			}
