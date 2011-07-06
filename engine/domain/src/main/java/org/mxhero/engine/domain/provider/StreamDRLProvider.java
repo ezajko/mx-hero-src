@@ -110,8 +110,9 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 
 		ftsb.append(" )");
 		
-		sb.replace(sb.indexOf(FROM_TO), sb.indexOf(FROM_TO)+FROM_TO.length(), ftsb.toString());
-		
+		while(sb.indexOf(FROM_TO)>-1){
+			sb.replace(sb.indexOf(FROM_TO), sb.indexOf(FROM_TO)+FROM_TO.length(), ftsb.toString());
+		}
 		return priority;
 	}
 	
@@ -132,15 +133,15 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 			priority=priority+4;
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			ftsb.append(" (fromSender.domain.id == \"").append(from.getFreeValue()).append("\" || ").append(" sender.domain.id == \"").append(from.getFreeValue()).append("\") ");
+			ftsb.append(" (fromSender.domain.id == \"").append(from.getDomain()).append("\" || ").append(" sender.domain.id == \"").append(from.getDomain()).append("\") ");
 			priority=priority+8;
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group id ? What the hell is group id !!!*/
-			ftsb.append(" (fromSender.group!= null && fromSender.group.name == \"").append(from.getFreeValue()).append("\" || ").append(" sender.group!= null && sender.group.name == \"").append(from.getFreeValue()).append("\") ");
+			ftsb.append(" ( (fromSender.group == \"").append(from.getGroup()).append("\" && fromSender.domain.id == \"").append(from.getDomain()).append("\") || (").append(" sender.group == \"").append(from.getGroup()).append("\") && sender.domain.id == \"").append(from.getDomain()).append("\") )");
 			priority=priority+16;
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			ftsb.append(" (fromSender.mail == \"").append(from.getFreeValue()).append("\" || ").append(" sender.mail == \"").append(from.getFreeValue()).append("\") ");
+			ftsb.append(" (fromSender.mail == \"").append(from.getAccount()+"@"+from.getDomain()).append("\" || ").append(" sender.mail == \"").append(from.getAccount()+"@"+from.getDomain()).append("\") ");
 			priority=priority+32;
 		}else{
 			log.debug("no FROM");
@@ -165,15 +166,15 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 			priority=priority+4;
 		}else if(to.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			ftsb.append(" recipient.domain.id == \"").append(to.getFreeValue()).append("\" ");
+			ftsb.append(" recipient.domain.id == \"").append(to.getDomain()).append("\" ");
 			priority=priority+8;
 		}else if(to.getDirectionType().equals(GROUP)){
 			/*group id ? What the hell is group id !!!*/
-			ftsb.append("  recipient.group!= null && recipient.group.name == \"").append(to.getFreeValue()).append("\"");
+			ftsb.append("  (recipient.group == \"").append(to.getGroup()).append("\" && recipient.domain.id == \"").append(to.getDomain()).append("\") ");
 			priority=priority+16;
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			ftsb.append(" recipient.mail == \"").append(to.getFreeValue()).append("\"");
+			ftsb.append(" recipient.mail == \"").append(to.getAccount()+"@"+to.getDomain()).append("\"");
 			priority=priority+32;
 		}else{
 			log.debug("no TO");

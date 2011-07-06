@@ -7,5 +7,11 @@ public interface RuleDirection {
 	public String getFreeValue();
 	
 	public Integer getId();
+	
+	public String getGroup();
+	
+	public String getAccount();
+	
+	public String getDomain();
 
 }

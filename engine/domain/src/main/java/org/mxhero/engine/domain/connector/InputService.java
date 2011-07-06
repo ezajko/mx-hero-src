@@ -14,6 +14,6 @@ public interface InputService {
 	 * @param mail is the of the mail
 	 * @throws IllegalArgumentException may throw this exception is any of the parameters are null.
 	 */
-	void addMail(MimeMail mail);
+	void addMail(MimeMail mail) throws QueueFullException;
 	
 }

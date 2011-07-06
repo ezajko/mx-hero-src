@@ -25,8 +25,8 @@ public class StreamDRLProviderTest extends StreamDRLProvider {
 	@Test
 	public void testFromToConditions(){
 		StringBuilder sb = new StringBuilder(StreamDRLProvider.FROM_TO);
-		RuleDirection from = new RuleDirectionVO(DOMAIN,"gmail.com",1);
-		RuleDirection to = new RuleDirectionVO(DOMAIN,"mxhero.com",0);
+		RuleDirection from = new RuleDirectionVO(INDIVIDUAL,"gmail.com",1,"gmail.com","one","example");
+		RuleDirection to = new RuleDirectionVO(INDIVIDUAL,"mxhero.com",0,"mxhero.com","two","other");
 		
 		this.getFromToConditions(from, to, true, sb);
 		
@@ -38,13 +38,19 @@ public class StreamDRLProviderTest extends StreamDRLProvider {
 		String directionType;
 		String freeValue;
 		Integer id;
+		String group;
+		String account;
+		String domain;
 
 		public RuleDirectionVO(String directionType, String freeValue,
-				Integer id) {
+				Integer id,String domain,String group,String account) {
 			super();
 			this.directionType = directionType;
 			this.freeValue = freeValue;
 			this.id = id;
+			this.domain=domain;
+			this.group=group;
+			this.account=account;
 		}
 		public String getDirectionType() {
 			return directionType;
@@ -63,6 +69,24 @@ public class StreamDRLProviderTest extends StreamDRLProvider {
 		}
 		public void setId(Integer id) {
 			this.id = id;
+		}
+		public String getGroup() {
+			return group;
+		}
+		public void setGroup(String group) {
+			this.group = group;
+		}
+		public String getAccount() {
+			return account;
+		}
+		public void setAccount(String account) {
+			this.account = account;
+		}
+		public String getDomain() {
+			return domain;
+		}
+		public void setDomain(String domain) {
+			this.domain = domain;
 		}
 
 	}
