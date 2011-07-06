@@ -2,6 +2,7 @@ package org.mxhero.engine.core.internal.pool.filler;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import javax.mail.internet.InternetAddress;
 
@@ -19,7 +20,6 @@ import org.mxhero.engine.domain.mail.business.Domain;
 import org.mxhero.engine.domain.mail.business.MailFlow;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.business.User;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.statistic.LogRecord;
@@ -52,13 +52,13 @@ public class PhaseSessionFiller implements SessionFiller {
 	 */
 	@Override
 	public String fill(StatefulKnowledgeSession ksession,
-			UserFinder userFinder, DomainFinder domainFinder, MimeMail mail) {
+			UserFinder userFinder, MimeMail mail) {
 
 		String domainAgendaGroup = null;
 		InitialDataVO initialData = null;
 
 		
-		initialData = getInitialData(userFinder, domainFinder, mail);
+		initialData = getInitialData(userFinder, mail);
 		
 		if(mail.getPhase().equals(RulePhase.SEND)){
 			domainAgendaGroup = mail.getSenderDomainId();
@@ -99,7 +99,7 @@ public class PhaseSessionFiller implements SessionFiller {
 	 * @param mail
 	 * @return
 	 */
-	private InitialDataVO getInitialData(UserFinder userFinder, DomainFinder domainFinder, MimeMail mail){
+	private InitialDataVO getInitialData(UserFinder userFinder, MimeMail mail){
 		InitialDataVO initialData = null;
 		String fromId = null;
 		String fromDomainId = null;
@@ -116,78 +116,77 @@ public class PhaseSessionFiller implements SessionFiller {
 			mail.setSenderDomainId(mail.getSenderId().substring(mail.getSenderId().indexOf(DIV_CHAR) + 1).trim());
 			mail.setRecipientDomainId(mail.getRecipientId().substring(mail.getRecipientId().indexOf(DIV_CHAR) + 1).trim());
 			
-			if (domainFinder != null) {
-				senderDomain = domainFinder.getDomain(mail.getSenderDomainId());
-				if(senderDomain!=null){
-					log.debug("found senderDomain:"+senderDomain.getId());
+			if (userFinder != null) {
+				sender = userFinder.getUser(mail.getSenderId());
+				if(sender!=null){
+					log.debug("found sender:"+sender.getMail());
+					senderDomain=sender.getDomain();
+					mail.setSenderId(sender.getMail());
 					mail.setSenderDomainId(senderDomain.getId());
-					if (userFinder != null) {
-						sender = userFinder.getUser(mail.getSenderId(), mail.getSenderDomainId());
-						if(sender!=null){
-							log.debug("found sender:"+sender.getMail());
-							mail.setSenderId(sender.getMail());
-						}
-					}
+					log.debug("found senderDomain:"+senderDomain.getId());
 				}
-				try {
-					if(mail.getMessage().getFrom()!=null && mail.getMessage().getFrom().length>0){
-						fromId = new InternetAddress(mail.getMessage().getFrom()[0].toString()).getAddress().trim();
-					}else{
-						fromId = mail.getSenderId();
-					}
-				} catch (Exception e) {
-					fromId = mail.getSenderId();
-				} 
-				
-				fromDomainId = fromId.substring(fromId.indexOf(DIV_CHAR) + 1).trim();
-				
-				if(!fromId.equals(mail.getSenderId())){
-					fromDomain = domainFinder.getDomain(fromDomainId);
-					if(fromDomain!=null){
-						log.debug("found fromDomain:"+fromDomain.getId());
-						if (userFinder != null) {
-							from = userFinder.getUser(fromId, fromDomain.getId());
-							if(from!=null){
-								log.debug("found form:"+from.getMail());
-							}
-						}
-					}
-				}else{
-					fromDomain = senderDomain;
-					from = sender;
-				}
+			}
 
-				recipientDomain = domainFinder.getDomain(mail.getRecipientDomainId());	
-				if(recipientDomain!=null){
-					mail.setRecipientDomainId(recipientDomain.getId());
-					log.debug("found recipientDomain:"+recipientDomain.getId());
-					if (userFinder != null) {
-						recipient = userFinder.getUser(mail.getRecipientId(), mail.getRecipientDomainId());
-						if(recipient!=null){
-							log.debug("found recipient:"+recipient.getMail());
-							mail.setRecipientId(recipient.getMail());
-						}
+			try {
+				if(mail.getMessage().getFrom()!=null && mail.getMessage().getFrom().length>0){
+					fromId = new InternetAddress(mail.getMessage().getFrom()[0].toString()).getAddress().trim();
+				}else{
+					fromId = mail.getSenderId();
+				}
+			} catch (Exception e) {
+				fromId = mail.getSenderId();
+			} 
+			
+			fromDomainId = fromId.substring(fromId.indexOf(DIV_CHAR) + 1).trim();
+			
+			if(!fromId.equals(mail.getSenderId())){
+				if (userFinder != null) {
+					from = userFinder.getUser(fromId);
+					if(from!=null){
+						fromDomain = from.getDomain();
+						log.debug("found form:"+from.getMail());
+						log.debug("found fromDomain:"+fromDomain.getId());
 					}
 				}
-			}			
+			}else{
+				fromDomain = senderDomain;
+				from = sender;
+			}
+
 			
+			if (userFinder != null) {
+				recipient = userFinder.getUser(mail.getRecipientId());
+				if(recipient!=null){
+					log.debug("found recipient:"+recipient.getMail());
+					recipientDomain=recipient.getDomain();
+					log.debug("found recipientDomain:"+recipientDomain.getId());
+					mail.setRecipientDomainId(recipientDomain.getId());
+					mail.setRecipientId(recipient.getMail());
+				}
+			}
+		
 			if (senderDomain == null){
 				senderDomain = new Domain();
 				senderDomain.setId(mail.getSenderDomainId());
 				senderDomain.setManaged(false);
+				senderDomain.setAliases(new HashSet<String>());
+				senderDomain.getAliases().add(senderDomain.getId());
 			}
 			
 			if (fromDomain == null){
-
 				fromDomain = new Domain();
 				fromDomain.setId(fromDomainId);
 				fromDomain.setManaged(false);
+				fromDomain.setAliases(new HashSet<String>());
+				fromDomain.getAliases().add(fromDomain.getId());
 			}
 			
 			if(recipientDomain==null){
 				recipientDomain = new Domain();
 				recipientDomain.setId(mail.getRecipientDomainId());
 				recipientDomain.setManaged(false);
+				recipientDomain.setAliases(new HashSet<String>());
+				recipientDomain.getAliases().add(recipientDomain.getId());
 			}
 			
 			if (sender == null){
@@ -195,6 +194,8 @@ public class PhaseSessionFiller implements SessionFiller {
 				sender.setMail(mail.getSenderId());
 				sender.setManaged(false);
 				sender.setDomain(senderDomain);
+				sender.setAliases(new HashSet<String>());
+				sender.getAliases().add(sender.getMail());
 			}
 			
 			if (from == null){
@@ -202,6 +203,8 @@ public class PhaseSessionFiller implements SessionFiller {
 				from.setMail(fromId);
 				from.setManaged(false);
 				from.setDomain(fromDomain);
+				from.setAliases(new HashSet<String>());
+				from.getAliases().add(from.getMail());
 			}
 			
 			if (recipient == null){
@@ -209,6 +212,8 @@ public class PhaseSessionFiller implements SessionFiller {
 				recipient.setMail(mail.getRecipientId());
 				recipient.setManaged(false);
 				recipient.setDomain(recipientDomain);
+				recipient.setAliases(new HashSet<String>());
+				recipient.getAliases().add(recipient.getMail());
 			}
 			
 			if(sender.getManaged() && recipient.getManaged()){

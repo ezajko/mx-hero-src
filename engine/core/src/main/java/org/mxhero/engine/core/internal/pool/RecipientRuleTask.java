@@ -3,13 +3,13 @@ package org.mxhero.engine.core.internal.pool;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
-import org.mxhero.engine.core.internal.queue.OutputQueue;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.business.MailState;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
+import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
+import org.mxhero.engine.domain.queue.MimeMailQueueService;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.slf4j.Logger;
@@ -28,8 +28,6 @@ public final class RecipientRuleTask implements Runnable {
 
 	private StatefulKnowledgeSession ksession;
 
-	private DomainFinder domainFinderService;
-
 	private UserFinder userFinderService;
 
 	private MimeMail mail;
@@ -43,6 +41,8 @@ public final class RecipientRuleTask implements Runnable {
 	private LogRecord logRecordService;
 
 	private LogStat logStatService;
+	
+	private MimeMailQueueService queueService;
 
 	/**
 	 * Creates the object
@@ -56,12 +56,11 @@ public final class RecipientRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public RecipientRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail,
-			DomainFinder domainFinderService, UserFinder userFinderService) {
+	public RecipientRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail, UserFinder userFinderService, MimeMailQueueService queueService) {
 		this.mail = mail;
 		this.ksession = sKSession;
-		this.domainFinderService = domainFinderService;
 		this.userFinderService = userFinderService;
+		this.queueService = queueService;
 	}
 
 	/**
@@ -73,8 +72,7 @@ public final class RecipientRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			this.processor.process(ksession, filler, userFinderService,
-					domainFinderService, mail);
+			this.processor.process(ksession, filler, userFinderService, mail);
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,
@@ -85,12 +83,20 @@ public final class RecipientRuleTask implements Runnable {
 		}
 		try{
 			if (!mail.getStatus().equals(MailState.DROP)) {
-				OutputQueue.getInstance().add(mail);
+				mail.getMessage().saveChanges();
+				this.queueService.removeAddTo(ReceivePool.MODULE, ReceivePool.PHASE, mail, mail, OutputPool.MODULE, OutputPool.PHASE);
 				log.debug("Mail sent to out queue for " + mail);
+				if(log.isTraceEnabled()){
+					LogMail.saveErrorMail(mail.getMessage(),
+							getProperties().getValue(Core.ERROR_PREFIX)+"receive",
+							getProperties().getValue(Core.ERROR_SUFFIX),
+							getProperties().getValue(Core.ERROR_DIRECTORY));
+				}
 			} else {
 				if(getLogRecordService()!=null){
 					getLogRecordService().log(mail);
 				}
+				queueService.remove(ReceivePool.MODULE, ReceivePool.PHASE, mail);
 				log.debug("mail droped " + mail);
 			}
 		} catch (Exception e) {
@@ -98,6 +104,18 @@ public final class RecipientRuleTask implements Runnable {
 				getLogStatService().log(mail,
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),
 						e.getMessage());
+			}
+			LogMail.saveErrorMail(mail.getMessage(), 
+					getProperties().getValue(Core.ERROR_PREFIX),
+					getProperties().getValue(Core.ERROR_SUFFIX),
+					getProperties().getValue(Core.ERROR_DIRECTORY));
+			boolean removed = false;
+			while(!removed){
+				try {
+					removed = queueService.remove(ReceivePool.MODULE, ReceivePool.PHASE, mail);
+				} catch (InterruptedException e1) {
+					log.error("error while removing email:",e1);
+				}
 			}
 			log.error("error while sending email to next phase:",e);
 		}

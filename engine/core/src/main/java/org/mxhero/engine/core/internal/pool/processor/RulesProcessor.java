@@ -3,7 +3,6 @@ package org.mxhero.engine.core.internal.pool.processor;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 
 /**
@@ -23,5 +22,5 @@ public interface RulesProcessor {
 	 * @param domainFinder passed to the filler
 	 * @param mail 
 	 */
-	void process(StatefulKnowledgeSession session, SessionFiller filler, UserFinder userfinder, DomainFinder domainFinder, MimeMail mail);
+	void process(StatefulKnowledgeSession session, SessionFiller filler, UserFinder userfinder, MimeMail mail);
 }

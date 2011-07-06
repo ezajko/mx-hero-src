@@ -29,7 +29,11 @@ public class BodyVO extends Body{
 	 */
 	@Override
 	public String getText() {
-		return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_PLAIN_TYPE,false);
+		try{
+			return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_PLAIN_TYPE,false);
+		}catch(Exception e){
+			return "";
+		}
 	}
 
 	/**
@@ -46,7 +50,11 @@ public class BodyVO extends Body{
 	 */
 	@Override
 	public String getHtmlText() {
-		return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_HTML_TYPE,false);
+		try{
+			return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_HTML_TYPE,false);
+		}catch(Exception e){
+			return "";
+		}
 	}
 
 	/**
@@ -63,7 +71,11 @@ public class BodyVO extends Body{
 	 */
 	@Override
 	public String getDeepText() {
-		return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_PLAIN_TYPE,true);
+		try{
+			return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_PLAIN_TYPE,true);
+		}catch(Exception e){
+			return "";
+		}
 	}
 
 	/**
@@ -80,7 +92,11 @@ public class BodyVO extends Body{
 	 */
 	@Override
 	public String getDeepHtmlText() {
-		return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_PLAIN_TYPE,true);
+		try{
+			return MailUtils.getText(this.mimeMail.getMessage(),MailUtils.TEXT_PLAIN_TYPE,true);
+		}catch(Exception e){
+			return "";
+		}
 	}
 
 	/**

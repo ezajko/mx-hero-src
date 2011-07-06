@@ -18,10 +18,10 @@
 	<osgi:reference id="logRecordService" interface="org.mxhero.engine.domain.statistic.LogRecord" cardinality="0..1"/>
 	
 	<osgi:reference id="logStatService" interface="org.mxhero.engine.domain.statistic.LogStat" cardinality="0..1"/>
-
-	<osgi:reference id="domainFinder" interface="org.mxhero.engine.domain.mail.finders.DomainFinder" cardinality="0..1"/>
 	
 	<osgi:reference id="userFinder" interface="org.mxhero.engine.domain.mail.finders.UserFinder" cardinality="0..1"/>
+
+	<osgi:reference id="queuesService" interface="org.mxhero.engine.domain.queue.MimeMailQueueService" cardinality="1..1"/>
 
 	<osgi:reference id="serviceRegistry" interface="org.drools.util.ServiceRegistry"/>
 
@@ -32,6 +32,8 @@
 	</osgi:service>
 	
 	<bean id="coreInputService" class="org.mxhero.engine.core.internal.service.CoreInputService">
+		<property name="queueService" ref="queuesService"/>
+		<property name="properties" ref="corePropertyService"/>
 	</bean>
 
 	<osgi:service interface="org.osgi.service.cm.ManagedService" ref="corePropertyService">
@@ -69,9 +71,20 @@
 		<constructor-arg ref="bundleContext"/>
 	</bean>
 
-	<bean id="inputPool" class="org.mxhero.engine.core.internal.pool.InputPool" init-method="start" destroy-method="stop">
+	<bean id="sendPool" class="org.mxhero.engine.core.internal.pool.SendPool" init-method="start" destroy-method="stop">
+		<constructor-arg ref="queuesService"/>
 		<property name="userFinderService" ref="userFinder"/>
-		<property name="domainFinderService" ref="domainFinder"/>
+		<property name="filler" ref="psfiller"/>
+		<property name="processor" ref="drprocessor"/>
+		<property name="loader" ref="kbloader"/>
+		<property name="properties" ref="corePropertyService"/>
+		<property name="logRecordService" ref="logRecordService"/>
+		<property name="logStatService" ref="logStatService"/>
+	</bean>
+	
+	<bean id="receivePool" class="org.mxhero.engine.core.internal.pool.ReceivePool" init-method="start" destroy-method="stop">
+		<constructor-arg ref="queuesService"/>
+		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
 		<property name="processor" ref="drprocessor"/>
 		<property name="loader" ref="kbloader"/>
@@ -82,6 +95,7 @@
 
 	<bean id="outputPool" class="org.mxhero.engine.core.internal.pool.OutputPool" init-method="start" destroy-method="stop">
 		<constructor-arg ref="bundleContext"/>
+		<constructor-arg ref="queuesService"/>
 		<property name="properties" ref="corePropertyService"/>
 		<property name="logStatService" ref="logStatService"/>
 	</bean>
