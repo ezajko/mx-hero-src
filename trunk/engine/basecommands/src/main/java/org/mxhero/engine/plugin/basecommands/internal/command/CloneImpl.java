@@ -6,6 +6,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.domain.connector.InputService;
+import org.mxhero.engine.domain.connector.QueueFullException;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
@@ -89,7 +90,7 @@ public class CloneImpl implements Clone {
 				try {
 					clonedMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							new MimeMessage(mail.getMessage()), outputService);
-					clonedMail.setPhase(args[PHASE_PARAM_NUMBER]);
+					clonedMail.setPhase(RulePhase.SEND);
 					clonedMail.getProperties().putAll(mail.getProperties());
 					clonedMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
 				} catch (MessagingException e) {
@@ -101,7 +102,12 @@ public class CloneImpl implements Clone {
 					log.warn("core input service is not online");
 					return result;
 				}
-				service.addMail(clonedMail);
+				try {
+					service.addMail(clonedMail);
+				} catch (QueueFullException e) {
+					log.warn("queue is full",e);
+					return result;
+				}
 			}
 			result.setResult(true);
 		}

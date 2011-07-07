@@ -9,6 +9,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.domain.connector.InputService;
+import org.mxhero.engine.domain.connector.QueueFullException;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.command.Result;
@@ -151,11 +152,8 @@ public class ReplayImpl implements Replay {
 					replayMessage.setText(sb.toString());
 					replayMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							replayMessage, outputService);
-					replayMail.setPhase(args[PHASE_PARAM_NUMBER]);
+					replayMail.setPhase(RulePhase.SEND);
 					replayMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
-					if (args[0].equals(RulePhase.RECEIVE)) {
-						replayMail.setRecipient(recipient.getAddress());
-					}
 				} catch (MessagingException e) {
 					log.warn("error while creating replay message");
 					return result;
@@ -168,7 +166,12 @@ public class ReplayImpl implements Replay {
 					log.warn("core input service is not online");
 					return result;
 				}
-				service.addMail(replayMail);
+				try {
+					service.addMail(replayMail);
+				} catch (QueueFullException e) {
+					log.error("queue is full", e);
+					return result;
+				}
 			}
 			result.setResult(true);
 		}
