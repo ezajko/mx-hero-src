@@ -12,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.mxhero.engine.domain.connector.InputService;
+import org.mxhero.engine.domain.connector.QueueFullException;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.command.Result;
@@ -113,7 +114,12 @@ public class CreateImpl implements Create {
 						log.warn("core input service is not online");
 						return result;
 					}
-					service.addMail(newMail);
+					try {
+						service.addMail(newMail);
+					} catch (QueueFullException e) {
+						log.error("queue is full", e);
+						return result;
+					}
 
 				} catch (MessagingException e) {
 					log.warn("error while creating new message", e);
