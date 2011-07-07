@@ -49,8 +49,7 @@ public final class Utils {
 		record.setCcRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.CC));
 		record.setToRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.TO));
 		record.setNgRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.NEWSGROUPS));
-		record.setParentInsertDate(mail.getParentTime());
-		record.setParentSequence(mail.getParentSequence());
+
 		if (mail.getSenderId()!=null){
 			record.setSenderId(mail.getSenderId());
 		} else {
@@ -130,6 +129,9 @@ public final class Utils {
 		Stat stat = new Stat();
 		StatPk pk = new StatPk();
 		pk.setKey(key);
+		pk.setPhase(mail.getPhase());
+		pk.setInsertDate(mail.getTime());
+		pk.setSequence(mail.getSequence());
 		stat.setId(pk);
 		stat.setValue(value);
 		return stat;
