@@ -26,6 +26,15 @@ public class JpaRuleDirection implements RuleDirection {
 	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE})
 	private JpaRule rule;
 	
+	@Column(name="domain",length=100)
+	private String domain;
+	
+	@Column(name="group_name", length=100)
+	private String group;
+	
+	@Column(name="account", length=100)
+	private String account;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -56,6 +65,30 @@ public class JpaRuleDirection implements RuleDirection {
 
 	public void setRule(JpaRule rule) {
 		this.rule = rule;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 	@Override

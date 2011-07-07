@@ -15,22 +15,12 @@ import javax.persistence.Table;
 public class JpaDomain {
 
 	@Id
-	private Integer id;
-	
 	@Column(name="domain", nullable=false, length=100)
 	private String domain;
 
 	@OneToMany(mappedBy="domainEntity", cascade=CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
 	private Set<JpaRule> rules;
 	
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	public String getDomain() {
 		return domain;
 	}
@@ -51,7 +41,7 @@ public class JpaDomain {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		return result;
 	}
 
@@ -64,12 +54,13 @@ public class JpaDomain {
 		if (getClass() != obj.getClass())
 			return false;
 		JpaDomain other = (JpaDomain) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (domain == null) {
+			if (other.domain != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!domain.equals(other.domain))
 			return false;
 		return true;
 	}
+
 	
 }
