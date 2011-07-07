@@ -18,9 +18,9 @@
 		<prop key="initial.hibernate.generate_statistics">true</prop>
 		<prop key="initial.hibernate.format_sql">true</prop>
 		<prop key="initial.showSql">true</prop>
-		<prop key="initial.jdbcUrl">jdbc:mysql://127.0.0.1/mxhero_dev</prop>
-		<prop key="initial.username">mxhero_dev</prop>
-		<prop key="initial.password">mxhero_dev</prop>
+		<prop key="initial.jdbcUrl">jdbc:mysql://127.0.0.1/mxhero</prop>
+		<prop key="initial.username">mxhero</prop>
+		<prop key="initial.password">mxhero</prop>
 		<prop key="initial.idleConnectionTestPeriod">60</prop>
 		<prop key="initial.idleMaxAge">240</prop>
 		<prop key="initial.maxConnectionsPerPartition">30</prop>
@@ -40,20 +40,6 @@
 
 	<tx:annotation-driven />
 
-	<bean id="dbDomainDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.dbfinder.internal.dao.DbDomainDao"/>
-	</bean>
-	
-	<osgi:service interface="org.mxhero.engine.domain.mail.finders.DomainFinder" ref="domainFinderService" >
-	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.dbfinder.internal.service.JpaDomainFinder"/>
-   		</osgi:service-properties>
-	</osgi:service>
-	
-	<bean id="domainFinderService" class="org.mxhero.engine.plugin.dbfinder.internal.service.JpaDomainFinder">
-		<property name="dbDomainDao" ref="dbDomainDao" />
-	</bean>
-
 	<osgi:service interface="org.mxhero.engine.domain.mail.finders.UserFinder" ref="userFinderService" >
 	  	<osgi:service-properties>
      		<entry key="service.pid" value="org.mxhero.engine.plugin.dbfinder.internal.service.JpaUserFinder"/>
@@ -61,7 +47,11 @@
 	</osgi:service>
 	
 	<bean id="userFinderService" class="org.mxhero.engine.plugin.dbfinder.internal.service.JpaUserFinder">
-		<property name="dbDomainDao" ref="dbDomainDao" />
+		<property name="dao" ref="emailAccountDao"/>
+	</bean>
+
+	<bean id="emailAccountDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
+		<property name="daoInterface" value="org.mxhero.engine.plugin.dbfinder.internal.dao.EmailAccountDao"/>
 	</bean>
 
 	<bean
@@ -95,13 +85,13 @@
 				<prop key="net.sf.ehcache.configurationResourceName">/ehcache.xml</prop>
 				
 				<prop
-					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain">read-only</prop>
+					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DBAliasAccount">read-only</prop>
 				<prop
-					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DbGroup">read-only</prop>
+					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomain">read-only</prop>
 				<prop
-					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DbAlias">read-only</prop>
+					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomainAlias">read-only</prop>
 				<prop
-					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DbUser">read-only</prop>
+					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.dbfinder.internal.entity.DBEmailAccount">read-only</prop>
 					
 				<prop key="hibernate.format_sql">${initial.hibernate.format_sql}</prop>
 			</props>

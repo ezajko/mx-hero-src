@@ -27,7 +27,7 @@
 		
 	<cache
     name="org.hibernate.cache.StandardQueryCache"
-    maxElementsInMemory="10000"
+    maxElementsInMemory="40000"
     eternal="false"
     timeToLiveSeconds="300"
     overflowToDisk="false"/>
@@ -37,20 +37,9 @@ maxElementsInMemory="10000"
 timeToIdleSeconds="300"
 />
 
-    
 		
-		<cache name="Domain"
-		maxElementsInMemory="2000" 
-		eternal="false"
-		timeToIdleSeconds="300" 
-		timeToLiveSeconds="300" 
-		overflowToDisk="false"
-		diskPersistent="false" 
-		diskExpiryThreadIntervalSeconds="300"
-		memoryStoreEvictionPolicy="FIFO" />	
-		
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain"
-		maxElementsInMemory="2000" 
+	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomain"
+		maxElementsInMemory="4000" 
 		eternal="false"
 		timeToIdleSeconds="300" 
 		timeToLiveSeconds="300" 
@@ -58,9 +47,19 @@ timeToIdleSeconds="300"
 		diskPersistent="false" 
 		diskExpiryThreadIntervalSeconds="300"
 		memoryStoreEvictionPolicy="FIFO" />
+		
+	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomainAlias"
+		maxElementsInMemory="12000" 
+		eternal="false"
+		timeToIdleSeconds="300" 
+		timeToLiveSeconds="300" 
+		overflowToDisk="false"
+		diskPersistent="false" 
+		diskExpiryThreadIntervalSeconds="300"
+		memoryStoreEvictionPolicy="FIFO" />		
 
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain.groups"
-		maxElementsInMemory="40000" 
+	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DBEmailAccount"
+		maxElementsInMemory="60000" 
 		eternal="false"
 		timeToIdleSeconds="300" 
 		timeToLiveSeconds="300" 
@@ -69,53 +68,15 @@ timeToIdleSeconds="300"
 		diskExpiryThreadIntervalSeconds="300"
 		memoryStoreEvictionPolicy="FIFO" />
 		
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain.aliases"
-		maxElementsInMemory="6000" 
+	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DBAliasAccount"
+		maxElementsInMemory="180000" 
 		eternal="false"
 		timeToIdleSeconds="300" 
 		timeToLiveSeconds="300" 
 		overflowToDisk="false"
 		diskPersistent="false" 
 		diskExpiryThreadIntervalSeconds="300"
-		memoryStoreEvictionPolicy="FIFO" />
+		memoryStoreEvictionPolicy="FIFO" />			
 
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain.users"
-		maxElementsInMemory="100000" 
-		eternal="false"
-		timeToIdleSeconds="300" 
-		timeToLiveSeconds="300" 
-		overflowToDisk="false"
-		diskPersistent="false" 
-		diskExpiryThreadIntervalSeconds="300"
-		memoryStoreEvictionPolicy="FIFO" />
-		
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbGroup"
-		maxElementsInMemory="40000" 
-		eternal="false"
-		timeToIdleSeconds="300" 
-		timeToLiveSeconds="300" 
-		overflowToDisk="false"
-		diskPersistent="false" 
-		diskExpiryThreadIntervalSeconds="300"
-		memoryStoreEvictionPolicy="FIFO" />
-		
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbAlias"
-		maxElementsInMemory="6000" 
-		eternal="false"
-		timeToIdleSeconds="300" 
-		timeToLiveSeconds="300" 
-		overflowToDisk="false"
-		diskPersistent="false" 
-		diskExpiryThreadIntervalSeconds="300"
-		memoryStoreEvictionPolicy="FIFO" />
-		
-	<cache name="org.mxhero.engine.plugin.dbfinder.internal.entity.DbUser"
-		maxElementsInMemory="100000" 
-		eternal="false"
-		timeToIdleSeconds="300" 
-		timeToLiveSeconds="300" 
-		overflowToDisk="false"
-		diskPersistent="false" 
-		diskExpiryThreadIntervalSeconds="300"
-		memoryStoreEvictionPolicy="FIFO" />						
+	
 </ehcache>

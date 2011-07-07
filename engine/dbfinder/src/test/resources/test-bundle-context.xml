@@ -17,16 +17,12 @@
 
 	<tx:annotation-driven />
 
-	<bean id="dbDomainDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.dbfinder.internal.dao.DbDomainDao"/>
-	</bean>
-	
-	<bean id="domainFinderService" class="org.mxhero.engine.plugin.dbfinder.internal.service.JpaDomainFinder">
-		<property name="dbDomainDao" ref="dbDomainDao" />
-	</bean>
-	
 	<bean id="userFinderService" class="org.mxhero.engine.plugin.dbfinder.internal.service.JpaUserFinder">
-		<property name="dbDomainDao" ref="dbDomainDao" />
+		<property name="dao" ref="emailAccountDao"/>
+	</bean>
+
+	<bean id="emailAccountDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
+		<property name="daoInterface" value="org.mxhero.engine.plugin.dbfinder.internal.dao.EmailAccountDao"/>
 	</bean>
 
 	<bean
@@ -81,9 +77,9 @@
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/mxhero_dev" />
-		<property name="username" value="mxhero_dev" />
-		<property name="password" value="mxhero_dev" />
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/mxhero" />
+		<property name="username" value="mxhero" />
+		<property name="password" value="mxhero" />
 		<property name="idleConnectionTestPeriod" value="60" />
 		<property name="idleMaxAge" value="240" />
 		<property name="maxConnectionsPerPartition" value="30" />

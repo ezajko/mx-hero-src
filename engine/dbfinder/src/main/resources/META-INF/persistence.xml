@@ -5,11 +5,12 @@
 
 	<persistence-unit name="mxheroPer" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jar-file></jar-file>
-		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbDomain</class> 
-		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbAlias</class>
-		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbGroup</class> 
-		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DbUser</class>	
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DBAliasAccount</class> 
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DBAliasAccountPk</class>
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomain</class> 
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomainAlias</class>	
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DBEmailAccount</class>	
+		<class>org.mxhero.engine.plugin.dbfinder.internal.entity.DBEmailAccountPk</class>	
 		<exclude-unlisted-classes/>
 	</persistence-unit>
 
