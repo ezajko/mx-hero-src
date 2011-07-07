@@ -35,7 +35,7 @@ public final class SMTPListener implements Runnable {
 	 * 
 	 * @param listener
 	 */
-	public SMTPListener(SMTPMessageListener listener) {
+	public SMTPListener(MessageListener listener) {
 		server = new CustomSMTPServer(listener);
 		server.getDeliveryHandlerFactory().setDeliveryHandlerImplClass(
 				CustomDeliveryHandler.class);

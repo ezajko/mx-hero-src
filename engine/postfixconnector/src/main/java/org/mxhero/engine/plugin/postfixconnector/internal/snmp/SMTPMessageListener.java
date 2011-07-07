@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -19,7 +20,6 @@ import org.mxhero.engine.domain.filter.PreFilter;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
 import org.mxhero.engine.domain.mail.business.User;
-import org.mxhero.engine.domain.mail.finders.DomainFinder;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
@@ -47,8 +47,6 @@ public final class SMTPMessageListener implements MessageListener {
 	private LogStat logStatService;
 
 	private PropertiesService properties;
-
-	private DomainFinder domainFinderService;
 
 	private UserFinder userFinderService;
 
@@ -85,32 +83,29 @@ public final class SMTPMessageListener implements MessageListener {
 
 	private User getUser(String email) {
 		User user = null;
-		Domain userDomain = null;
-		String userId = email.trim();
+		
+		String userId = email.trim().toLowerCase();
 		String userDomianId = userId.substring(userId.indexOf(DIV_CHAR) + 1)
-				.trim();
+				.trim().toLowerCase();
 
-		if (domainFinderService != null) {
-			userDomain = domainFinderService.getDomain(userDomianId);
-			if (userDomain != null) {
-				if (userFinderService != null) {
-					user = userFinderService
-							.getUser(userId, userDomain.getId());
-				}
-			}
+		if (userFinderService != null) {
+			user = userFinderService.getUser(userId);
 		}
 
-		if (userDomain == null) {
+
+		if (user == null) {
+			Domain userDomain = null;
 			userDomain = new Domain();
 			userDomain.setId(userDomianId);
 			userDomain.setManaged(false);
-		}
-
-		if (user == null) {
+			userDomain.setAliases(new HashSet<String>());
+			userDomain.getAliases().add(userDomianId);
 			user = new User();
 			user.setMail(userId);
 			user.setManaged(false);
 			user.setDomain(userDomain);
+			user.setAliases(new HashSet<String>());
+			user.getAliases().add(userId);
 		}
 
 		return user;
@@ -129,6 +124,13 @@ public final class SMTPMessageListener implements MessageListener {
 		try {
 			message = new MimeMessage(
 					Session.getDefaultInstance(new Properties()), data);
+			
+			if(log.isTraceEnabled()){
+				LogMail.saveErrorMail(message,
+						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"received",
+						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			}
 			/* fix content type */
 			if (fixers != null && fixers.size() > 0) {
 				for (Fixer fixer : fixers) {
@@ -157,7 +159,7 @@ public final class SMTPMessageListener implements MessageListener {
 			}
 			message.saveChanges();
 			mail = new MimeMail(from, recipient, message,
-					PostFixConnectorOutputService.class.getName(), false);
+					PostFixConnectorOutputService.class.getName());
 		} catch (Exception e1) {
 			log.error("error while receiving email", e1);
 			LogMail.saveErrorMail(message,
@@ -178,13 +180,25 @@ public final class SMTPMessageListener implements MessageListener {
 		}
 		
 		try {
+			if(log.isTraceEnabled()){
+				LogMail.saveErrorMail(message,
+						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"fixed",
+						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			}
 			service.addMail(mail);
+
 		} catch (QueueFullException e) {
 			log.error("queue is full, rejecting email "+mail,e);
+			throw new IOException(e);
+		} catch (Exception e1){
+			LogMail.saveErrorMail(message,
+					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
+					getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+					getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			throw new IOException(e1);
 		}
 		log.debug("Mail added:" + mail);
-
-		log.debug("Mail added to queue:" + mail);
 
 	}
 
@@ -250,14 +264,6 @@ public final class SMTPMessageListener implements MessageListener {
 	 */
 	public void setFormat(SimpleDateFormat format) {
 		this.format = format;
-	}
-
-	public DomainFinder getDomainFinderService() {
-		return domainFinderService;
-	}
-
-	public void setDomainFinderService(DomainFinder domainFinderService) {
-		this.domainFinderService = domainFinderService;
 	}
 
 	public UserFinder getUserFinderService() {
