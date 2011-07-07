@@ -45,7 +45,6 @@
     <module>core</module>
     <module>postfixconnector</module>
     <module>branding</module>
-    <module>xmlfinder</module>
     <module>basecommands</module>
     <module>clamd</module>
     <module>spamd</module>
@@ -53,6 +52,7 @@
     <module>dbfinder</module>
     <module>featuresfp</module>
     <module>shutdownhook</module>
+    <module>mqueues</module>
   </modules>
 
   <build>
