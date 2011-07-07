@@ -1,54 +1,45 @@
 package org.mxhero.engine.plugin.dbfinder.internal.translator;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
-import org.mxhero.engine.domain.mail.business.Group;
+import org.mxhero.engine.domain.mail.business.Domain;
 import org.mxhero.engine.domain.mail.business.User;
-import org.mxhero.engine.plugin.dbfinder.internal.entity.DbAlias;
-import org.mxhero.engine.plugin.dbfinder.internal.entity.DbUser;
+import org.mxhero.engine.plugin.dbfinder.internal.entity.DBAliasAccount;
+import org.mxhero.engine.plugin.dbfinder.internal.entity.DBDomainAlias;
+import org.mxhero.engine.plugin.dbfinder.internal.entity.DBEmailAccount;
 
 public abstract class UserTranslate {
 
-	public static User translate(DbUser entity){
+	public static User translate(DBEmailAccount entity){
 		
 		if(entity==null){
 			return null;
 		}
 		
-		User user = internal(entity);
-		
-		user.setDomain(DomainTranslator.translate(entity.getDomain()));
-		if(entity.getGroup()!=null){
-			Group group = new Group();
-			group.setName(entity.getGroup().getId()+entity.getGroup().getName());
-			group.setAliases(new ArrayList<String>());
-			group.setMails(new ArrayList<String>());
-			for(DbUser dbUser : entity.getGroup().getUsers()){
-				group.getMails().add(dbUser.getAccount()+"@"+entity.getGroup().getDomain().getDomain());
-				group.getAliases().add(dbUser.getAccount()+"@"+entity.getGroup().getDomain().getDomain());
-				for(String alias : user.getDomain().getAliases()){
-					group.getAliases().add(dbUser.getAccount()+"@"+alias);
-				}
+		User user = new User();
+		user.setMail(entity.getId().getAccount()+"@"+entity.getId().getDomainId());
+		user.setGroup(entity.getGroup());
+		user.setManaged(true);
+		user.setAliases(new HashSet<String>());
+		if(entity.getAliases()!=null){
+			for(DBAliasAccount alias : entity.getAliases()){
+				user.getAliases().add(alias.getId().getAccountAlias()+"@"+alias.getId().getDomainAlias());
 			}
 		}
-		return user;
-	}
-	
-	
-	private static User internal(DbUser entity){
-
-		User user = new User();
-		
-		user.setMail(entity.getAccount()+"@"+entity.getDomain().getDomain());
-		user.setAliases(new ArrayList<String>());
-		user.getAliases().add(user.getMail());
-		user.setManaged(true);
-		
-		for(DbAlias dbAlias : entity.getDomain().getAliases()){
-			user.getAliases().add(entity.getAccount()+"@"+dbAlias.getAlias());
+		user.getAliases().add(entity.getId().getAccount()+"@"+entity.getId().getDomainId());
+		Domain domain = new Domain();
+		domain.setId(entity.getDomain().getDomain());
+		domain.setManaged(true);
+		domain.setAliases(new HashSet<String>());
+		if(entity.getDomain().getAliases()!=null){
+			for(DBDomainAlias domainAlias : entity.getDomain().getAliases()){
+				domain.getAliases().add(domainAlias.getAlias());
+			}
 		}
-		// TODO implement LISTS
+		user.setDomain(domain);
 		return user;
 	}
+	
+	
 	
 }

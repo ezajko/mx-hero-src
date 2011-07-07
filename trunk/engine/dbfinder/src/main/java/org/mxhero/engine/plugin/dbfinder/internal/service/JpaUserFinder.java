@@ -2,40 +2,35 @@ package org.mxhero.engine.plugin.dbfinder.internal.service;
 
 import org.mxhero.engine.domain.mail.business.User;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
-import org.mxhero.engine.plugin.dbfinder.internal.dao.DbDomainDao;
-import org.mxhero.engine.plugin.dbfinder.internal.entity.DbUser;
-import org.springframework.transaction.annotation.Transactional;
+import org.mxhero.engine.plugin.dbfinder.internal.dao.EmailAccountDao;
+import org.mxhero.engine.plugin.dbfinder.internal.entity.DBEmailAccount;
 
 import static org.mxhero.engine.plugin.dbfinder.internal.translator.UserTranslate.translate;
 
-@Transactional(readOnly=true)
 public class JpaUserFinder implements UserFinder{
 
-	private DbDomainDao dbDomainDao;
-	
-	public User getUser(String mailAdress, String domainId) {
+	private EmailAccountDao dao;
+
+	public User getUser(String mailAdress) {
 		
 		if(mailAdress==null || mailAdress.trim().isEmpty() ||
-			domainId==null || domainId.trim().isEmpty()){
+				mailAdress.split("@").length!=2){
 			return null;
 		}
-		DbUser user = dbDomainDao.findUserByDomainAndAccount(domainId, mailAdress.trim().toLowerCase().split("@")[0]);
+		String account = mailAdress.trim().toLowerCase().split("@")[0];
+		String domain = mailAdress.trim().toLowerCase().split("@")[1];
+		
+		DBEmailAccount user = dao.findEmailAccount(account, domain);
 		
 		return translate(user);
 	}
 
-	/**
-	 * @return the dbDomainDao
-	 */
-	public DbDomainDao getDbDomainDao() {
-		return dbDomainDao;
+	public EmailAccountDao getDao() {
+		return dao;
 	}
 
-	/**
-	 * @param dbDomainDao the dbDomainDao to set
-	 */
-	public void setDbDomainDao(DbDomainDao dbDomainDao) {
-		this.dbDomainDao = dbDomainDao;
+	public void setDao(EmailAccountDao dao) {
+		this.dao = dao;
 	}
 
 }
