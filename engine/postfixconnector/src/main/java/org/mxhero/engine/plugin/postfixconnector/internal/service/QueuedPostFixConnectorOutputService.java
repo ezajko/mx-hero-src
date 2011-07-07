@@ -76,8 +76,18 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 		    t.sendMessage(msg, new InternetAddress[] { new InternetAddress(mail.getRecipient()) });
 		    t.close();
 		    log.debug("Message sent:"+mail);
-		    if(getLogStat()!=null){
-		    	getLogStat().log(mail, getProperties().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
+			if(log.isTraceEnabled()){
+				LogMail.saveErrorMail(msg,
+						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"sent",
+						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			}
+		    try{
+			    if(getLogStat()!=null){
+			    	getLogStat().log(mail, getProperties().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
+			    }
+		    }catch(Exception e){
+		    	log.warn("Error while saving stat, probably becaouse of late inserts, this is not important",e);
 		    }
 		} catch (Exception e) {
 			if(getLogStat()!=null){
@@ -88,6 +98,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
 					getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
 					getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			throw new RuntimeException(e);
 		}	
 
 	}
