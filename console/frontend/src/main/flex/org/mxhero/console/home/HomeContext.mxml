@@ -32,7 +32,7 @@
 		<presentation:HomeViewPM/>
 		
 		<parsley:Object type="{RemoteObject}" id="toptenReportService">
-			<parsley:Property name="destination" value="trafficReportService"/>
+			<parsley:Property name="destination" value="customReportService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>
