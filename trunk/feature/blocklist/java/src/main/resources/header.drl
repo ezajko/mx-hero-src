@@ -8,7 +8,6 @@ import org.mxhero.engine.domain.mail.business.InitialData
 import org.mxhero.engine.domain.mail.business.Body
 import org.mxhero.engine.domain.mail.business.Subject
 import org.mxhero.engine.domain.mail.command.Command
-import org.mxhero.engine.domain.mail.business.Group
 import org.mxhero.engine.domain.mail.business.Recipients
 import org.mxhero.engine.domain.mail.business.User
 import org.mxhero.engine.domain.mail.business.Mail
