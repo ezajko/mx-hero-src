@@ -66,7 +66,8 @@ public class ServicesTest {
 		LogStat service = ctx.getBean(LogStat.class);
 		service.log(mail, "somekey", "somevalue");
 		StatPk statPk = Utils.createStat(mail, "somekey", "somevalue").getId();
-		statPk.setRecordId(recordPk);
+		statPk.setInsertDate(recordPk.getInsertDate());
+		statPk.setSequence(recordPk.getSequence());
 		
 		Assert.assertTrue(statDao.exists(statPk));
 

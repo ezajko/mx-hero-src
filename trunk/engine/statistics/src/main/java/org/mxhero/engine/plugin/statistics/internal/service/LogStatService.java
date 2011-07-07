@@ -4,7 +4,6 @@ import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.plugin.statistics.internal.dao.RecordDao;
 import org.mxhero.engine.plugin.statistics.internal.dao.StatDao;
-import org.mxhero.engine.plugin.statistics.internal.entity.Record;
 import org.mxhero.engine.plugin.statistics.internal.entity.RecordPk;
 import org.mxhero.engine.plugin.statistics.internal.entity.Stat;
 import org.mxhero.engine.plugin.statistics.internal.entity.Utils;
@@ -44,8 +43,6 @@ public class LogStatService implements LogStat{
 		Stat stat = Utils.createStat(mail, key, value);
 		
 		try{
-			Record record = getRecordDao().readByPrimaryKey(recordPk);
-			stat.setRecord(record);
 			getDao().save(stat);
 		} catch(Exception e) {
 			log.warn("Error while persisting "+stat,e);

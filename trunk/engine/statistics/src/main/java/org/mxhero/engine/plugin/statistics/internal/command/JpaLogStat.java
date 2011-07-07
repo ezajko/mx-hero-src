@@ -5,7 +5,6 @@ import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.plugin.statistics.command.LogStat;
 import org.mxhero.engine.plugin.statistics.internal.dao.RecordDao;
 import org.mxhero.engine.plugin.statistics.internal.dao.StatDao;
-import org.mxhero.engine.plugin.statistics.internal.entity.Record;
 import org.mxhero.engine.plugin.statistics.internal.entity.RecordPk;
 import org.mxhero.engine.plugin.statistics.internal.entity.Stat;
 import org.mxhero.engine.plugin.statistics.internal.entity.Utils;
@@ -46,8 +45,6 @@ public class JpaLogStat implements LogStat{
 		recordPk.setInsertDate(mail.getTime());
 		Stat stat = Utils.createStat(mail, args[0], args[1]);
 		try{
-			Record record = getRecordDao().readByPrimaryKey(recordPk);
-			stat.setRecord(record);
 			getDao().save(stat);
 			result.setResult(true);
 			log.debug("saved with success");

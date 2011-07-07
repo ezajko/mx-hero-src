@@ -1,7 +1,6 @@
 package org.mxhero.engine.plugin.statistics.internal.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -28,13 +27,7 @@ public class Record implements Serializable{
 
 	@Column(name = "message_id", length = 1024, nullable=false)
 	private String messageId;
-	
-	@Column(name="parent_insert_date")
-	private Timestamp parentInsertDate;
-	
-	@Column(name="parent_sequence")
-	private Long parentSequence;
-	
+
 	@Column(name = "phase", length = 10, nullable=false)
 	private String phase;
 
@@ -116,22 +109,6 @@ public class Record implements Serializable{
 	 */
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
-	}
-
-	public Timestamp getParentInsertDate() {
-		return parentInsertDate;
-	}
-
-	public void setParentInsertDate(Timestamp parentInsertDate) {
-		this.parentInsertDate = parentInsertDate;
-	}
-
-	public Long getParentSequence() {
-		return parentSequence;
-	}
-
-	public void setParentSequence(Long parentSequence) {
-		this.parentSequence = parentSequence;
 	}
 
 	/**

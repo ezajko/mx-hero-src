@@ -90,9 +90,9 @@
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/dev_statistics" />
-		<property name="username" value="dev_statistics" />
-		<property name="password" value="dev_statistics" />
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/statistics" />
+		<property name="username" value="mxhero" />
+		<property name="password" value="mxhero" />
 		<property name="idleConnectionTestPeriod" value="60" />
 		<property name="idleMaxAge" value="240" />
 		<property name="maxConnectionsPerPartition" value="30" />
