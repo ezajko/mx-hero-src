@@ -1,9 +1,7 @@
 package org.mxhero.console.backend.statistics.entity;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
 
-import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 

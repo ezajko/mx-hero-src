@@ -1,7 +1,6 @@
 package org.mxhero.console.backend.statistics.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Calendar;
 
 import javax.persistence.Column;
