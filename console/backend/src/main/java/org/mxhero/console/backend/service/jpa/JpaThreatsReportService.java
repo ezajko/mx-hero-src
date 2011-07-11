@@ -1,27 +1,16 @@
 package org.mxhero.console.backend.service.jpa;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.SetJoin;
 
 import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.service.ThreatsReportService;
 import org.mxhero.console.backend.statistics.dao.RecordDao;
 import org.mxhero.console.backend.statistics.entity.Record;
-import org.mxhero.console.backend.statistics.entity.RecordPk_;
-import org.mxhero.console.backend.statistics.entity.Record_;
-import org.mxhero.console.backend.statistics.entity.Stat;
-import org.mxhero.console.backend.statistics.entity.StatPk_;
-import org.mxhero.console.backend.statistics.entity.Stat_;
 import org.mxhero.console.backend.translator.RecordTranslator;
 import org.mxhero.console.backend.vo.RecordVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +73,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = hitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		}
 		
 		queryString = queryString + " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ";
@@ -112,7 +101,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = dayHitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		}
 		
 		queryString = queryString + " group by date(r0.insert_date),hour(r0.insert_date) ";
@@ -136,7 +125,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = hitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		}
 		
 		queryString = queryString + " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ";
@@ -164,7 +153,7 @@ public class JpaThreatsReportService implements ThreatsReportService {
 
 		String queryString = dayHitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
-			queryString = queryString + " AND (r.recipient_domain_id = ? OR r.sender_domain_id = ?) ";
+			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		}
 		
 		queryString = queryString + " group by date(r0.insert_date),hour(r0.insert_date) ";
