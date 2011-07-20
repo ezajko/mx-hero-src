@@ -17,9 +17,9 @@ public class JpaUserFinderTest {
 	
 	@Test
 	public void testFind() throws InterruptedException{
-		User user = finder.getUser("aaaaa@more.net");
-		user = finder.getUser("just@example.org");
-		user = finder.getUser("two@more.org");
+		User user = finder.getUser("and@example.org");
+		user = finder.getUser("zzzz@example.net");
+		user = finder.getUser("xxxx@xxxx.org");
 		System.out.println(user.toString());
 	}
 	
