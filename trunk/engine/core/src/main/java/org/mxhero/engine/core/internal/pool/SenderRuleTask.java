@@ -1,7 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import javax.mail.internet.MimeMessage;
-
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;

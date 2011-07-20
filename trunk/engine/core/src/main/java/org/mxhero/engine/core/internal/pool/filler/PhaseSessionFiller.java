@@ -1,7 +1,6 @@
 package org.mxhero.engine.core.internal.pool.filler;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashSet;
 
 import javax.mail.internet.InternetAddress;
@@ -68,10 +67,6 @@ public class PhaseSessionFiller implements SessionFiller {
 		
 		if(getLogRecordService()!=null){
 			getLogRecordService().log(mail);
-		}
-		
-		if (getLogStatService() != null && mail.getPhase().equals(RulePhase.SEND)) {
-			getLogStatService().log(mail, getProperties().getValue(Core.IN_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
 		}
 		
 		ksession.insert(new MailVO(mail));
@@ -216,11 +211,11 @@ public class PhaseSessionFiller implements SessionFiller {
 				recipient.getAliases().add(recipient.getMail());
 			}
 			
-			if(sender.getManaged() && recipient.getManaged()){
+			if(sender.getDomain().getManaged() && recipient.getDomain().getManaged()){
 				mail.setFlow(MailFlow.BOTH);
-			}else if(sender.getManaged()){
+			}else if(sender.getDomain().getManaged()){
 				mail.setFlow(MailFlow.OUT);
-			}else if(recipient.getManaged()){
+			}else if(recipient.getDomain().getManaged()){
 				mail.setFlow(MailFlow.IN);
 			}else {
 				mail.setFlow(MailFlow.NONE);
