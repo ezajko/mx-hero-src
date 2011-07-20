@@ -76,6 +76,7 @@
 			import org.mxhero.console.frontend.domain.Category;
 			import org.mxhero.console.frontend.domain.Configuration;
 			import org.mxhero.console.frontend.domain.Domain;
+			import org.mxhero.console.frontend.domain.DomainAdLdap;
 			import org.mxhero.console.frontend.domain.EmailAccount;
 			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			import org.mxhero.console.frontend.domain.Feature;
@@ -117,6 +118,7 @@
 				registerClassAlias("org.mxhero.console.backend.vo.MessagesCompositionVO",MessagesComposition);
 				registerClassAlias("org.mxhero.console.backend.vo.ActivityDataVO",ActivityData);
 				registerClassAlias("org.mxhero.console.backend.vo.EmailAccountAliasVO",EmailAccountAlias);
+				registerClassAlias("org.mxhero.console.backend.vo.DomainAdLdapVO",DomainAdLdap);
 			}
 			
 			[Inject]

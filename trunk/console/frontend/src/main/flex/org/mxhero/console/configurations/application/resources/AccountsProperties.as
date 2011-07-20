@@ -36,6 +36,8 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const UPLOAD_EMAILS_LABEL:String="upload.emails.label";
 		
+		public static const LDAP_EMAILS_LABEL:String="ldap.emails.label";
+		
 		public static const REMOVE_EMAIL_ACCOUNT_CONFIRMATION_TEXT:String="remove.email.account.confirmation.text";
 		
 		public static const FORM_ACCOUNT_LABEL:String="form.account.label";
@@ -59,6 +61,24 @@ package org.mxhero.console.configurations.application.resources
 		public static const FORM_ALIASES_EXPLAIN:String="form.aliases.explain";
 		
 		public static const COLUMN_GROUP_LABEL:String="column.group.label";
+		
+		public static const ADLDAP_RESOURCE:String="adldap.resource.";
+		
+		public static const ADLDAP_EXPANDED_TEXT:String="adldap.expanded.text";
+		
+		public static const ADLDAP_SERVER_TYPE_LABEL:String="adldap.server.type.label";
+		
+		public static const ADLDAP_SERVER_ADDRESS:String="adldap.server.address";
+		
+		public static const ADLDAP_USER:String="adldap.user";
+		
+		public static const ADLDAP_PASSWORD:String="adldap.password";
+		
+		public static const ADLDAP_FILTER:String="adldap.filter";
+		
+		public static const ADLDAP_SEARCH:String="adldap.search";
+		
+		public static const ADLDAP_OVERRIDE:String="adldap.override";
 
 	}
 }

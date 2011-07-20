@@ -3,7 +3,9 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
-		 xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*">
+		 xmlns:component="org.mxhero.console.commons.component.*" 
+		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
+		 currentState="{model.accountsState}">
 	
 	<fx:Declarations>
 		<parsley:Configure/>
@@ -13,9 +15,13 @@
 		
 	</fx:Declarations>
 	
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="sync"/>
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
-			import org.mxhero.console.frontend.domain.EmailAccount;
 			import mx.events.DataGridEvent;
 			import mx.events.ListEvent;
 			import mx.utils.ObjectUtil;
@@ -24,6 +30,7 @@
 			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.commons.skin.TitleLessPanel;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			import org.mxhero.console.frontend.domain.EmailAccount;
 			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			
 			[Inject]
@@ -95,6 +102,12 @@
 				model.editEmailAccount(this);
 			}
 
+
+			protected function ldapLink_clickHandler(event:MouseEvent):void
+			{
+				model.configureAdLdap(this)
+			}
+
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -145,6 +158,21 @@
 						   click="uploadAccounstLink_clickHandler(event)"
 						   width="100%"/>
 			</s:BorderContainer>
+			<s:BorderContainer
+				minHeight="0"
+				minWidth="0"
+				styleName="action"
+				width="100%">
+				<s:layout>
+					<s:VerticalLayout paddingBottom="2" paddingTop="2"/>
+				</s:layout>
+				<mx:LinkButton id="ldapLink"
+							   icon="{(model.context.selectedDomain.adLdap!=null)?ImageResources.ENABLED_ICO:ImageResources.DISABLED_ICO}"
+							   label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.LDAP_EMAILS_LABEL)}" 
+							   styleName="action"
+							   click="ldapLink_clickHandler(event)"
+							   width="100%"/>
+			</s:BorderContainer>			
 		</s:VGroup>
 		<mx:Form defaultButton="{filterBtt}" paddingTop="0" width="100%">
 			<mx:FormHeading
@@ -172,74 +200,87 @@
 		</mx:Form>		
 	</s:BorderContainer>
 	
-	<s:Panel width="100%" 
-			height="100%"
-			minWidth="600"
-			skinClass="{TitleLessPanel}"
-			cornerRadius="0">
-		<s:layout>
-			<s:VerticalLayout/>
-		</s:layout>
-		
-		<mx:DataGrid dataProvider="{model.accounts}" 
-					 width="100%" 
-					 height="100%"
-					 borderStyle="none"
-					 variableRowHeight="true"
-					 dropShadowVisible="false"
-					 selectedItem="@{model.selectedEmailAccount}"
-					 itemDoubleClick="datagrid1_itemDoubleClickHandler(event)"
-					 doubleClickEnabled="true"
-					 mouseChildren="true">
-			<mx:columns>
-				<mx:DataGridColumn dataField="account" 
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
-								   minWidth="100"/>
-				<mx:DataGridColumn dataField="group"
-								   labelFunction="{grouplabelFunction}"
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
-								   minWidth="100"/>
-				<mx:DataGridColumn dataField="dataSource"
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_DATASOURCE_LABEL)}" 
-								   minWidth="100"/>
-				<mx:DataGridColumn dataField="aliases"
-								   labelFunction="{aliaseslabelFunction}"
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
-								   minWidth="100"
-								   sortable="false"/>
-				<mx:DataGridColumn dataField="updatedDate" 
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
-								   labelFunction="updatedDateLabelFunction"
-								   width="130" resizable="false"/>
-				<mx:DataGridColumn dataField="createdDate" 
-								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
-								   labelFunction="dateLabelFunction"
-								   width="130" resizable="false"/>
-				<mx:DataGridColumn  width="72" sortable="false" resizable="false">
-					<mx:itemRenderer>
-						<fx:Component>
-							<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-								<fx:Script>
-									<![CDATA[
-										import org.mxhero.console.commons.resources.ImageResources;
-										import org.mxhero.console.frontend.domain.EmailAccount;
-										import org.mxhero.console.configurations.application.resources.AccountsProperties;
-										
-									]]>
-								</fx:Script>
-								<component1:GlowButton maxGlow="10.0" 
-													  click="{outerDocument.model.editEmailAccount(outerDocument)}"
-													  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
-								<component1:GlowButton maxGlow="10.0" 
-													  click="{outerDocument.model.removeEmailAccount()}"
-													  source="{ImageResources.DELETE_ICO}" 
-													  enabled="{data.DataSource==EmailAccount.MANUAL}"
-													  toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
-							</mx:HBox>
-						</fx:Component>
-					</mx:itemRenderer>
-				</mx:DataGridColumn>
-			</mx:columns>
-		</mx:DataGrid>
-	</s:Panel>
+	<s:VGroup width="100%" 
+			  height="100%">
+		<s:HGroup includeIn="sync">
+			<s:Label text="Scheduled Update:" fontWeight="bold"/>
+			<s:Label text="{creationDateFormatter.format(model.context.selectedDomain.adLdap.nextUpdate)}"/>
+			<mx:Spacer width="5"/>
+			<s:Label text="Last Update:" fontWeight="bold"/>
+			<s:Label text="{creationDateFormatter.format(model.context.selectedDomain.adLdap.lastUpdate)}"/>
+			<mx:Spacer width="5"/>
+			<s:Label text="Error:" visible="{model.context.selectedDomain.adLdap.error!=null}"/>
+			<s:Label text="{model.context.selectedDomain.adLdap.error}" visible="{model.context.selectedDomain.adLdap.error!=null}"/>
+		</s:HGroup>
+		<s:Panel width="100%" 
+				 height="100%"
+				 minWidth="600"
+				 skinClass="{TitleLessPanel}"
+				 cornerRadius="0">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<mx:DataGrid dataProvider="{model.accounts}" 
+						 width="100%" 
+						 height="100%"
+						 borderStyle="none"
+						 variableRowHeight="true"
+						 dropShadowVisible="false"
+						 selectedItem="@{model.selectedEmailAccount}"
+						 itemDoubleClick="datagrid1_itemDoubleClickHandler(event)"
+						 doubleClickEnabled="true"
+						 mouseChildren="true">
+				<mx:columns>
+					<mx:DataGridColumn dataField="account" 
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+									   minWidth="100"/>
+					<mx:DataGridColumn dataField="group"
+									   labelFunction="{grouplabelFunction}"
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
+									   minWidth="100"/>
+					<mx:DataGridColumn dataField="dataSource"
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_DATASOURCE_LABEL)}" 
+									   minWidth="100"/>
+					<mx:DataGridColumn dataField="aliases"
+									   labelFunction="{aliaseslabelFunction}"
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+									   minWidth="100"
+									   sortable="false"/>
+					<mx:DataGridColumn dataField="updatedDate" 
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
+									   labelFunction="updatedDateLabelFunction"
+									   width="130" resizable="false"/>
+					<mx:DataGridColumn dataField="createdDate" 
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
+									   labelFunction="dateLabelFunction"
+									   width="130" resizable="false"/>
+					<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+						<mx:itemRenderer>
+							<fx:Component>
+								<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+									<fx:Script>
+										<![CDATA[
+											import org.mxhero.console.commons.resources.ImageResources;
+											import org.mxhero.console.frontend.domain.EmailAccount;
+											import org.mxhero.console.configurations.application.resources.AccountsProperties;
+											
+										]]>
+									</fx:Script>
+									<component1:GlowButton maxGlow="10.0" 
+														   click="{outerDocument.model.editEmailAccount(outerDocument)}"
+														   source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+									<component1:GlowButton maxGlow="10.0" 
+														   click="{outerDocument.model.removeEmailAccount()}"
+														   source="{ImageResources.DELETE_ICO}" 
+														   enabled="{data.DataSource==EmailAccount.MANUAL}"
+														   toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+								</mx:HBox>
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>
+		</s:Panel>
+	</s:VGroup>
+
 </s:Group>

@@ -13,6 +13,7 @@ package org.mxhero.console.frontend.domain
 		public var owner:Owner;
 		public var updatedDate:Date;
 		public var aliases:ArrayCollection;
+		public var adLdap:DomainAdLdap;
 		
 		public function clone():Domain{
 			var clonedDomain:Domain=new Domain();
@@ -27,6 +28,9 @@ package org.mxhero.console.frontend.domain
 			if(this.aliases!=null){
 				clonedDomain.aliases=new ArrayCollection();
 				clonedDomain.aliases.addAll(this.aliases);
+			}
+			if(this.adLdap!=null){
+				clonedDomain.adLdap=this.adLdap.clone();
 			}
 			return clonedDomain;
 		}
