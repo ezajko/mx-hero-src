@@ -1,11 +1,11 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.service;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Properties;
 
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -69,35 +69,33 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 				msg.addHeader(getProperties().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER), mail.getRecipient());
 			}
 			
-			msg.saveChanges();
+			try{
+				msg.saveChanges();
+			}catch (Exception e){
+				LogMail.saveErrorMail(msg, 
+						getProperties().getValue(PostfixConnector.ERROR_PREFIX),
+						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+				throw new RuntimeException(e);
+			}
 			
 		    Transport t = session.getTransport("smtp");
 		    t.connect();
-		    t.sendMessage(msg, new InternetAddress[] { new InternetAddress(mail.getRecipient()) });
+		    InternetAddress recipient=null;
+		    try{
+		    	recipient = new InternetAddress(mail.getRecipient());
+		    }catch(AddressException e){
+		    	recipient = new InternetAddress(mail.getRecipient(),null,"utf-8");
+		    }
+		    t.sendMessage(msg, new InternetAddress[] { recipient });
 		    t.close();
 		    log.debug("Message sent:"+mail);
-			if(log.isTraceEnabled()){
-				LogMail.saveErrorMail(msg,
-						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"sent",
-						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
-			}
-		    try{
-			    if(getLogStat()!=null){
-			    	getLogStat().log(mail, getProperties().getValue(PostfixConnector.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
-			    }
-		    }catch(Exception e){
-		    	log.warn("Error while saving stat, probably becaouse of late inserts, this is not important",e);
-		    }
+
 		} catch (Exception e) {
+			log.error("Couldnt send the mail:"+mail,e);
 			if(getLogStat()!=null){
 				getLogStat().log(mail, getProperties().getValue(PostfixConnector.DELIVER_ERROR_STAT), e.getMessage());
 			}
-			log.error("Couldnt send the mail:"+mail,e);
-			LogMail.saveErrorMail(msg, 
-					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
-					getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-					getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
 			throw new RuntimeException(e);
 		}	
 
