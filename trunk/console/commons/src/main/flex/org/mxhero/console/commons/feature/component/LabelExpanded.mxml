@@ -16,6 +16,9 @@
 			public var expandedText:String;
 			[Bindable]
 			public var expandedLabelStyleName:String='labelexpanded_label';
+			[Bindable]
+			public var labelExplainStyleName:String='labelexpanded_explain';			
+			
 			
 			[Bindable]
 			public var expandedTextStyleName:String='labelexpanded_expandedtext';
@@ -53,11 +56,12 @@
 		</s:Transition> 
 	</s:transitions> 
 	
-	<s:HGroup>
+	<s:HGroup width="100%">
 		<s:Label text="{labelText}" styleName="{expandedLabelStyleName}"/>
 		<s:Label text.default="{explainText}" text.expanded="{hideText}" 
-				 styleName="labelexpanded_explain" buttonMode="true" 
-				 click="explain_clickHandler(event)"/>
+				 styleName="{labelExplainStyleName}" buttonMode="true" 
+				 click="explain_clickHandler(event)"
+				 width="100%" />
 	</s:HGroup>
 
 	<mx:Text text="{expandedText}" styleName="{expandedTextStyleName}" id="expandedTextText" width="100%" includeIn="expanded"/>
