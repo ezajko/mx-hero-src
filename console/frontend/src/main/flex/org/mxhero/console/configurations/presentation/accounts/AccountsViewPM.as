@@ -16,26 +16,40 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 	import org.mxhero.console.commons.resources.ErrorsProperties;
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+	import org.mxhero.console.configurations.application.command.InsertAdLdapCommand;
+	import org.mxhero.console.configurations.application.event.EditAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.EditEmailAccountEvent;
+	import org.mxhero.console.configurations.application.event.InsertAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.InsertEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllEmailAccountsEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllGroupsEvent;
+	import org.mxhero.console.configurations.application.event.RemoveAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.UploadAccountsEvent;
 	import org.mxhero.console.configurations.application.resources.AccountsProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
+	import org.mxhero.console.frontend.domain.DomainAdLdap;
 	import org.mxhero.console.frontend.domain.EmailAccount;
 	import org.mxhero.console.frontend.domain.EmailAccountAlias;
 
 	[Landmark(name="main.dashboard.configurations.accounts")]
 	public class AccountsViewPM
 	{
+		public static const DEFAULT_STATE:String = "default";
+		public static const SYNC_STATE:String = "sync";
+		
+		[Bindable]
+		public var accountsState:String=DEFAULT_STATE;
+		
 		[Bindable]
 		private var accountShow:AccountShow;
 		
 		[Bindable]
 		private var accountUpload:AccountUpload;
+		
+		[Bindable]
+		private var accountsAdLdap:ConfigureAdLdap;
 		
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
@@ -70,6 +84,11 @@ package org.mxhero.console.configurations.presentation.accounts
 		public function every():void{
 			loadEmailAccounts();
 			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain));
+			if(context.selectedDomain.adLdap!=null){
+				this.accountsState=SYNC_STATE;
+			}else{
+				this.accountsState=DEFAULT_STATE;
+			}
 		}
 		
 		public function loadEmailAccounts():void{
@@ -99,6 +118,7 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountShow=new AccountShow();
 			accountShow.account=new EmailAccount();
 			accountShow.account.domain=context.selectedDomain.domain;
+			accountShow.account.dataSource=EmailAccount.MANUAL;
 			accountShow.model=this;
 			accountShow.currentState="new";
 			PopUpManager.addPopUp(accountShow,parent,true);
@@ -184,6 +204,74 @@ package org.mxhero.console.configurations.presentation.accounts
 			PopUpManager.centerPopUp(accountUpload);
 			PopUpManager.bringToFront(accountUpload)
 		}
+		
+		public function configureAdLdap(parent:DisplayObject):void{
+			accountsAdLdap=new ConfigureAdLdap();
+			accountsAdLdap.model=this;
+			if(context.selectedDomain.adLdap!=null){
+				accountsAdLdap.adLdap=context.selectedDomain.adLdap.clone();
+			}else{
+				accountsAdLdap.adLdap=new DomainAdLdap();
+				accountsAdLdap.adLdap.domainId=context.selectedDomain.domain;
+			}
+			PopUpManager.addPopUp(accountsAdLdap,parent,true);
+			PopUpManager.centerPopUp(accountsAdLdap);
+			PopUpManager.bringToFront(accountsAdLdap)
+		}
+		
+		public function updateAdLdap(adLdap:DomainAdLdap):void{
+			if(adLdap.directoryType=="none" && context.selectedDomain.adLdap!=null){
+				dispatcher(new RemoveAdLdapEvent(context.selectedDomain.domain));
+				accountsAdLdap.enabled=false;
+			}else if(adLdap.directoryType!="none" && context.selectedDomain.adLdap!=null){
+				dispatcher(new EditAdLdapEvent(accountsAdLdap.adLdap));
+				accountsAdLdap.enabled=false;
+			}else if(adLdap.directoryType!="none" && context.selectedDomain.adLdap==null){
+				dispatcher(new InsertAdLdapEvent(accountsAdLdap.adLdap));
+				accountsAdLdap.enabled=false;
+			}else{
+				PopUpManager.removePopUp(accountsAdLdap);
+			}
+		}
+		
+		[CommandResult]
+		public function editAdLdapResult (result:*, event:EditAdLdapEvent) : void {
+			context.selectedDomain.adLdap=result;
+			PopUpManager.removePopUp(accountsAdLdap);
+		}
+		
+		[CommandError]
+		public function editAdLdapError (faultEvent:FaultEvent, event:InsertEmailAccountEvent) : void {
+			accountsAdLdap.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+			accountsAdLdap.enabled=true;
+		}
+		
+		[CommandResult]
+		public function insertAdLdapResult (result:*, event:InsertAdLdapEvent) : void {
+			context.selectedDomain.adLdap=result;
+			this.accountsState=SYNC_STATE;
+			PopUpManager.removePopUp(accountsAdLdap);
+		}
+		
+		[CommandError]
+		public function insertAdLdapError (faultEvent:FaultEvent, event:InsertEmailAccountEvent) : void {
+			accountsAdLdap.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+			accountsAdLdap.enabled=true;
+		}
+		
+		[CommandResult]
+		public function removeAdLdapResult (result:*, event:RemoveAdLdapEvent) : void {
+			context.selectedDomain.adLdap=null;
+			this.accountsState=DEFAULT_STATE;
+			PopUpManager.removePopUp(accountsAdLdap);
+		}
+		
+		[CommandError]
+		public function removeAdLdapError (faultEvent:FaultEvent, event:InsertEmailAccountEvent) : void {
+			accountsAdLdap.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+			accountsAdLdap.enabled=true;
+		}
+		
 		
 		public function uploadAllAccounts(uploadAccounts:ArrayCollection,failOnError:Boolean):void{
 			dispatcher(new UploadAccountsEvent(uploadAccounts,context.selectedDomain.domain,failOnError));

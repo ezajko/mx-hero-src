@@ -159,7 +159,7 @@
 			}
 
 			private function listLabelFunc(item:Object):String {
-				return item.name + "@" + item.domain+" ("+item.dataSource+")";
+				return item.name + "@" + item.domain;
 			}
 
 			protected function tashImg_dragDropHandler(event:DragEvent):void
@@ -221,7 +221,9 @@
 										  hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 										  expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ALIASES_EXPLAIN)}" 
 										  width="100%"/>
-				<mx:Form defaultButton="{addAliasBtt}" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+				<mx:Form defaultButton="{addAliasBtt}" 
+						 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"
+						 enabled="{account.dataSource==EmailAccount.MANUAL}">
 					<s:HGroup verticalAlign="middle">
 						<s:TextInput id="aliasTi" width="150"/>
 						<s:Label text="@" fontWeight="bold"/>
@@ -243,6 +245,7 @@
 						maxHeight="140"
 						dragEnabled="true" 
 						dragMoveEnabled="true"
+						enabled="{account.dataSource==EmailAccount.MANUAL}"
 						labelFunction="listLabelFunc"
 						keyUp="aliasList_keyUpHandler(event)"/>				
 			</s:VGroup>

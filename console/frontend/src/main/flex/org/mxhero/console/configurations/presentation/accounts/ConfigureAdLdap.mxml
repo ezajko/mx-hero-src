@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 close="{cancelBtt_clickHandler()}"
+		 title="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.LDAP_EMAILS_LABEL)}" 
+		 xmlns:component="org.mxhero.console.commons.component.*" 
+		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
+		 creationComplete="titlewindow1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.validation.ValidatorGroup;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.validators.Validator;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.application.resources.AccountsProperties;
+			import org.mxhero.console.frontend.domain.DomainAdLdap;
+			
+			import spark.events.IndexChangeEvent;
+
+			[Bindable]
+			public var model:AccountsViewPM;
+			
+			[Bindable]
+			public var adLdap:DomainAdLdap;
+			
+			private var customVG:ValidatorGroup = new ValidatorGroup();
+			
+			private var ldapVG:ValidatorGroup = new ValidatorGroup();
+			
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				var isValid:Boolean=false;
+				if(currentState=='zimbra' ||
+					currentState=='exchange'){
+					this.customVG.validate();
+					if(customVG.isValid){
+						isValid=true;
+					}
+				}else if(currentState=='ldap'){
+					this.ldapVG.validate();
+					if(ldapVG.isValid){
+						isValid=true;
+					}
+				}else if(currentState=='none'){
+					isValid=true;
+				}
+				if(isValid){
+					model.updateAdLdap(adLdap);
+				}
+			}
+
+
+			protected function cancelBtt_clickHandler(event:MouseEvent=null):void
+			{
+				PopUpManager.removePopUp(this);
+			}
+
+			[Bindable]
+			protected var resources:ArrayCollection = new ArrayCollection(['none','exchange','zimbra','ldap']);
+			
+
+			protected function typeDdl_valueCommitHandler(event:FlexEvent):void
+			{
+				this.currentState=typeDdl.selectedItem;
+				selectType(typeDdl.selectedItem);
+				PopUpManager.centerPopUp(this);
+			}
+
+
+			protected function typeDdl_changeHandler(event:IndexChangeEvent):void
+			{
+				this.currentState=typeDdl.selectedItem;
+				selectType(typeDdl.selectedItem);
+				PopUpManager.centerPopUp(this);
+			}
+			
+			private function typeDdl_labelFunc(item:Object):String {
+				var label:String="";
+				if( item!=null && item is String){
+					label=this.resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_RESOURCE+item as String);
+					if(label==null || label.length<1){
+						label=item as String;
+					}
+				}
+				return label;
+			}
+
+
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				customVG.addValidator(addressV);
+				customVG.addValidator(portV);
+				customVG.addValidator(userV);
+				customVG.addValidator(passwordV);
+				customVG.addValidator(baseV);
+				
+				ldapVG.addValidator(addressV);
+				ldapVG.addValidator(portV);
+				ldapVG.addValidator(userV);
+				ldapVG.addValidator(passwordV);
+				ldapVG.addValidator(filterV);
+				ldapVG.addValidator(baseV);
+				
+				//if this is an empty entity
+				if(adLdap.directoryType==null){
+					typeDdl.selectedIndex=resources.getItemIndex("none");
+				}else{
+					selectType(adLdap.directoryType);
+				}
+			}
+			
+			private function selectType(type:String):void{
+				adLdap.directoryType=type;
+				if(type!="ldap"){
+					adLdap.filter=null;
+				}
+				typeDdl.selectedIndex=resources.getItemIndex(type);
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<mx:StringValidator id="addressV" required="true" property="text" source="{addressTi}"/>
+		<mx:NumberValidator id="portV" required="true" property="text" source="{portTi}"/>
+		<mx:StringValidator id="userV" required="true" property="text" source="{userTi}"/>
+		<mx:StringValidator id="passwordV" required="true" property="text" source="{passwordTi}"/>
+		<mx:StringValidator id="filterV" required="true" property="text" source="{filterTi}"/>
+		<mx:StringValidator id="baseV" required="true" property="text" source="{baseTi}"/>
+	</fx:Declarations>
+	
+	<s:states> 
+		<s:State name="none"/>    
+		<s:State name="zimbra"/>
+		<s:State name="exchange"/>
+		<s:State name="ldap"/>
+	</s:states> 
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
+	</s:layout>
+	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
+
+	<mx:Form verticalGap="10">
+		<component1:LabelExpanded
+			width="100%"
+			labelExplainStyleName="labelexpanded_explain_right"
+			expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_EXPANDED_TEXT)}"
+			explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+			hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" />
+
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_TYPE_LABEL)}" width="100%">
+				<s:DropDownList id="typeDdl"
+								dataProvider="{resources}" 
+								width="100%"
+								valueCommit="typeDdl_valueCommitHandler(event)"
+								change="typeDdl_changeHandler(event)"
+								labelFunction="{typeDdl_labelFunc}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none">
+				<s:HGroup verticalAlign="middle">
+					<s:Label text="ldap://"/>
+					<s:TextInput id="addressTi" text="@{adLdap.addres}"/>
+					<s:Label text=":"/>
+					<s:TextInput id="portTi" width="30" text="@{adLdap.port}"/>
+					<s:CheckBox textAlign="left" label="ssl" selected="@{adLdap.sslFlag}"/>
+				</s:HGroup>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_USER)}" width="100%" excludeFrom="none">
+				<s:TextInput id="userTi" width="100%" text="@{adLdap.user}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none">
+				<s:TextInput id="passwordTi" width="100%" text="@{adLdap.password}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra">
+				<s:TextArea id="filterTi" width="100%" heightInLines="3" text="@{adLdap.filter}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none">
+				<s:TextArea id="baseTi" width="100%" heightInLines="3" text="@{adLdap.base}"/>
+			</mx:FormItem>
+			<mx:FormItem width="100%" excludeFrom="none">
+				<s:CheckBox label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_OVERRIDE)}" selected="@{adLdap.overrideFlag}"/>
+			</mx:FormItem>
+
+		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">
+			<s:Button id="saveBtt" 
+					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
+					  click="saveBtt_clickHandler(event)"
+					  buttonMode="true"/>
+			<s:Button id="cancelBtt" 
+					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" 
+					  click="cancelBtt_clickHandler(event)"
+					  buttonMode="true"/>
+		</s:HGroup>
+	</mx:Form>
+</s:TitleWindow>

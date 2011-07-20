@@ -6,6 +6,14 @@ package org.mxhero.console.commons.resources
 		[Bindable]
 		public static var ALERT_ICON:Class; 
 		
+		[Embed(source="/images/enabled.png")] 
+		[Bindable]
+		public static var ENABLED_ICO:Class; 
+		
+		[Embed(source="/images/disabled.png")] 
+		[Bindable]
+		public static var DISABLED_ICO:Class; 
+		
 		[Embed(source="/images/check.png")] 
 		[Bindable]
 		public static var CHECK_ICON:Class; 

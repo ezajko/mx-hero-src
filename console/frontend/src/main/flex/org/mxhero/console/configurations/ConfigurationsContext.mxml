@@ -14,11 +14,13 @@
 			
 			import org.mxhero.console.configurations.application.ConfigurationsDestinations;
 			import org.mxhero.console.configurations.application.command.ChangePasswordCommand;
+			import org.mxhero.console.configurations.application.command.EditAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.EditApplicationUserCommand;
 			import org.mxhero.console.configurations.application.command.EditConfigurationCommand;
 			import org.mxhero.console.configurations.application.command.EditDomainCommand;
 			import org.mxhero.console.configurations.application.command.EditEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.EditGroupCommand;
+			import org.mxhero.console.configurations.application.command.InsertAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.InsertDomainCommand;
 			import org.mxhero.console.configurations.application.command.InsertEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.InsertGroupCommand;
@@ -28,6 +30,7 @@
 			import org.mxhero.console.configurations.application.command.LoadConfigurationCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsByGroupCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsWithNoGroupCommand;
+			import org.mxhero.console.configurations.application.command.RemoveAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupCommand;
@@ -63,6 +66,10 @@
 		<parsley:DynamicCommand type="{LoadConfigurationCommand}"/>
 		<parsley:DynamicCommand type="{EditConfigurationCommand}"/>
 		<parsley:DynamicCommand type="{TestEmailCommand}"/>
+		
+		<parsley:DynamicCommand type="{EditAdLdapCommand}"/>
+		<parsley:DynamicCommand type="{InsertAdLdapCommand}"/>
+		<parsley:DynamicCommand type="{RemoveAdLdapCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

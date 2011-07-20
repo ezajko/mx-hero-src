@@ -135,6 +135,14 @@ s|Label.labelexpanded_explain
 	color:#70B2EE;
 }
 
+s|Label.labelexpanded_explain_right
+{
+	fontWeight:"bold";
+	fontSize:14;
+	color:#70B2EE;
+	text-align:right;
+}
+
 mx|Text.labelexpanded_expandedtext
 {
 	fontStyle:"italic";
