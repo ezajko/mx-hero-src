@@ -8,7 +8,6 @@ import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.InputService;
 import org.mxhero.engine.domain.connector.QueueFullException;
 import org.mxhero.engine.domain.mail.MimeMail;
-import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
 import org.slf4j.Logger;
@@ -56,12 +55,7 @@ public final class CoreInputService implements InputService {
 		}
 		log.debug("Mail added to queue:"+mail);
 		log.debug(queueService.getQueuesCount().toString());
-		if(log.isTraceEnabled()){
-			LogMail.saveErrorMail(mail.getMessage(),
-					getProperties().getValue(Core.ERROR_PREFIX)+"input",
-					getProperties().getValue(Core.ERROR_SUFFIX),
-					getProperties().getValue(Core.ERROR_DIRECTORY));
-		}
+
 		if(log.isDebugEnabled()){
 			queueService.logState();
 		}

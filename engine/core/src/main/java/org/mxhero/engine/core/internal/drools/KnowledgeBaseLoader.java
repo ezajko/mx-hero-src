@@ -72,7 +72,11 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 							builder.setFilePath(filePath);
 							builder.setBackupdirbase(backupdirbase);
 							builder.buildBase();
-							log.debug("loaded "+builder.getKnowledgeBase().getKnowledgePackages().size()+" packages");
+							if(builder.getKnowledgeBase()!=null){
+								log.debug("loaded "+builder.getKnowledgeBase().getKnowledgePackages().size()+" packages");
+							}else{
+								log.debug("rule base is empty");
+							}
 						} else {
 							log.warn("cant read file "+this.filePath);
 						}

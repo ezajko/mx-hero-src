@@ -1,7 +1,6 @@
 package org.mxhero.engine.core.internal.pool;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 
 import org.mxhero.engine.core.internal.service.Core;
@@ -75,19 +74,12 @@ public final class DeliverTask implements Runnable {
 							log.error("error while removing email:",e1);
 						}
 					}
-					if(log.isTraceEnabled()){
-						LogMail.saveErrorMail(mail.getMessage(),
-								getProperties().getValue(Core.ERROR_PREFIX)+"output",
-								getProperties().getValue(Core.ERROR_SUFFIX),
-								getProperties().getValue(Core.ERROR_DIRECTORY));
-					}
 					log.debug(queueService.getQueuesCount().toString());
 					if(log.isDebugEnabled()){
 						queueService.logState();
 						}
-					if (getLogStatService() != null) {
-						getLogStatService().log(mail, getProperties().getValue(Core.OUT_TIME_STAT), getFormat().format(Calendar.getInstance().getTime()));
-					}
+				}else{
+					throw new Exception("service is null");
 				}
 				bc.ungetService(serviceReference);
 				log
