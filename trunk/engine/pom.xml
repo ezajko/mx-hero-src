@@ -53,6 +53,7 @@
     <module>featuresfp</module>
     <module>shutdownhook</module>
     <module>mqueues</module>
+    <module>adsync</module>
   </modules>
 
   <build>
