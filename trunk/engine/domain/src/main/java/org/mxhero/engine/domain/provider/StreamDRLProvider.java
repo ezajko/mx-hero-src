@@ -210,6 +210,7 @@ public abstract class StreamDRLProvider extends ResourcesByDomain{
 		if(startName==null || startName.trim().isEmpty()){
 			startName = "admin";
 		}
+		startName=startName.replaceAll("-", "_");
 		return startName+"."+getFeature().getComponent()+getFeature().getVersion();
 	}
 	
