@@ -20,12 +20,12 @@
 		<prop key="initial.jdbcUrl">jdbc:mysql://127.0.0.1/statistics</prop>
 		<prop key="initial.username">mxhero</prop>
 		<prop key="initial.password">mxhero</prop>
-		<prop key="initial.idleConnectionTestPeriod">60</prop>
-		<prop key="initial.idleMaxAge">240</prop>
+		<prop key="initial.idleConnectionTestPeriod">1</prop>
+		<prop key="initial.idleMaxAge">5</prop>
 		<prop key="initial.maxConnectionsPerPartition">30</prop>
 		<prop key="initial.minConnectionsPerPartition">10</prop>
-		<prop key="initial.partitionCount">3</prop>
-		<prop key="initial.acquireIncrement">3</prop>
+		<prop key="initial.partitionCount">2</prop>
+		<prop key="initial.acquireIncrement">2</prop>
 		<prop key="initial.statementsCacheSize">100</prop>
 		<prop key="initial.releaseHelperThreads">3</prop>
 	</osgix:cm-properties>
@@ -128,7 +128,9 @@
 				<!--<prop key="hibernate.hbm2ddl.auto">${initial.hibernate.hbm2ddl.auto}</prop>-->
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
-				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</prop>
+				<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop>
+				<!--<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</prop>
+				-->
 				<prop key="net.sf.ehcache.configurationResourceName">/ehcache.xml</prop>
 				<prop
 					key="hibernate.ejb.classcache.org.mxhero.engine.plugin.statistics.internal.entity.Stat">nonstrict-read-write</prop>

@@ -5,12 +5,10 @@
 
 	<persistence-unit name="statisticsPer" transaction-type="RESOURCE_LOCAL">
 	<provider>org.hibernate.ejb.HibernatePersistence</provider>
-	<jar-file></jar-file>
 	<class>org.mxhero.engine.plugin.statistics.internal.entity.Stat</class> 
 	<class>org.mxhero.engine.plugin.statistics.internal.entity.Record</class>
 	<class>org.mxhero.engine.plugin.statistics.internal.entity.StatPk</class> 
 	<class>org.mxhero.engine.plugin.statistics.internal.entity.RecordPk</class>	
-	<exclude-unlisted-classes/>
 	</persistence-unit>
 
 </persistence>
