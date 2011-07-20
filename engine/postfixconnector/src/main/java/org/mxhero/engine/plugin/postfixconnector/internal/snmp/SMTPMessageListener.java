@@ -3,7 +3,6 @@ package org.mxhero.engine.plugin.postfixconnector.internal.snmp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -173,29 +172,14 @@ public final class SMTPMessageListener implements MessageListener {
 		if (getLogRecordService() != null) {
 			getLogRecordService().log(mail);
 		}
-		if (getLogStatService() != null) {
-			getLogStatService().log(mail,
-					getProperties().getValue(PostfixConnector.IN_TIME_STAT),
-					getFormat().format(Calendar.getInstance().getTime()));
-		}
 		
 		try {
-			if(log.isTraceEnabled()){
-				LogMail.saveErrorMail(message,
-						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"fixed",
-						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
-			}
 			service.addMail(mail);
-
 		} catch (QueueFullException e) {
 			log.error("queue is full, rejecting email "+mail,e);
 			throw new IOException(e);
 		} catch (Exception e1){
-			LogMail.saveErrorMail(message,
-					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
-					getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-					getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			log.error("error while sending mail to queue "+mail,e1);
 			throw new IOException(e1);
 		}
 		log.debug("Mail added:" + mail);
