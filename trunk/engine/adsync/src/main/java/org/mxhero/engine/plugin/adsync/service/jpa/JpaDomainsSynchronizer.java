@@ -123,6 +123,7 @@ public class JpaDomainsSynchronizer implements DomainsSynchronizer{
 			Calendar nextUpdate = Calendar.getInstance();
 			nextUpdate.add(Calendar.HOUR, 1);
 			domainAd.setNextUpdate(nextUpdate);
+			domainAd.setError(null);
 			dao.saveAndFlush(domainAd);
 		}catch(Exception e){
 			log.warn("domain "+domain+" had an error while processing",e);
