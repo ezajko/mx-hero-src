@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.GroupVO;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface GroupService {
 

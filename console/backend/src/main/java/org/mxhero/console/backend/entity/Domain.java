@@ -17,10 +17,10 @@ import javax.persistence.Table;
 public class Domain {
 	
 	@Id
-	@Column(name="domain",length=100, nullable=false)
+	@Column(name="domain", nullable=false)
 	private String domain;
 	
-	@Column(name="server",length=100, nullable=false)
+	@Column(name="server", nullable=false)
 	private String server;
 	
 	@Column(name="creation",nullable=false)
@@ -44,6 +44,9 @@ public class Domain {
 	@OneToMany(mappedBy="domain", cascade={CascadeType.REFRESH}, fetch=FetchType.EAGER)
 	private Set<FeatureRule> rules;
 
+	@OneToOne(mappedBy="domain",fetch=FetchType.EAGER,cascade=CascadeType.ALL, orphanRemoval=true) 
+	private DomainAdLdap adLdap;
+	
 	public String getDomain() {
 		return domain;
 	}
@@ -114,6 +117,14 @@ public class Domain {
 
 	public void setRules(Set<FeatureRule> rules) {
 		this.rules = rules;
+	}
+	
+	public DomainAdLdap getAdLdap() {
+		return adLdap;
+	}
+
+	public void setAdLdap(DomainAdLdap adLdap) {
+		this.adLdap = adLdap;
 	}
 
 	@Override

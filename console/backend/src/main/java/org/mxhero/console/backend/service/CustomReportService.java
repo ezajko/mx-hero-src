@@ -1,12 +1,10 @@
 package org.mxhero.console.backend.service;
 
-import java.util.Calendar;
 import java.util.Collection;
 
 import org.mxhero.console.backend.vo.FeatureRuleDirectionVO;
 import org.mxhero.console.backend.vo.RecordVO;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface CustomReportService {
 

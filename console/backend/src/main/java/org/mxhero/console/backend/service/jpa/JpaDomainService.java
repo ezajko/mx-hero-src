@@ -8,17 +8,23 @@ import org.mxhero.console.backend.dao.AliasAccountDao;
 import org.mxhero.console.backend.dao.AuthorityDao;
 import org.mxhero.console.backend.dao.DomainAliasDao;
 import org.mxhero.console.backend.dao.DomainDao;
+import org.mxhero.console.backend.dao.EmailAccountDao;
 import org.mxhero.console.backend.dao.FeatureRuleDao;
 import org.mxhero.console.backend.dao.SystemPropertyDao;
+import org.mxhero.console.backend.entity.AliasAccount;
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Authority;
 import org.mxhero.console.backend.entity.Domain;
+import org.mxhero.console.backend.entity.DomainAdLdap;
 import org.mxhero.console.backend.entity.DomainAlias;
+import org.mxhero.console.backend.entity.EmailAccount;
 import org.mxhero.console.backend.entity.FeatureRule;
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.service.DomainService;
 import org.mxhero.console.backend.service.FeatureService;
+import org.mxhero.console.backend.translator.DomainAdLdaoTranslator;
 import org.mxhero.console.backend.translator.DomainTranslator;
+import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -60,6 +66,10 @@ public class JpaDomainService implements DomainService {
 	
 	private AliasAccountDao aliasAccountDao;
 	
+	private DomainAdLdaoTranslator adLdapTranslator;
+	
+	private EmailAccountDao emailAccountDao;
+	
 	@Autowired(required=true)
 	public JpaDomainService(DomainDao dao, AuthorityDao authorityDao,
 			DomainAliasDao domainaliasDao, DomainTranslator domainTranslator,
@@ -67,7 +77,9 @@ public class JpaDomainService implements DomainService {
 			SystemPropertyDao systemPropertyDao,
 			FeatureService featureService,
 			FeatureRuleDao featureRuleDao,
-			AliasAccountDao aliasAccountDao) {
+			AliasAccountDao aliasAccountDao,
+			DomainAdLdaoTranslator adLdapTranslator,
+			EmailAccountDao emailAccountDao) {
 		super();
 		this.dao = dao;
 		this.authorityDao = authorityDao;
@@ -78,6 +90,8 @@ public class JpaDomainService implements DomainService {
 		this.featureService = featureService;
 		this.featureRuleDao = featureRuleDao;
 		this.aliasAccountDao = aliasAccountDao;
+		this.adLdapTranslator = adLdapTranslator;
+		this.emailAccountDao = emailAccountDao;
 	}
 
 	@Override
@@ -129,9 +143,7 @@ public class JpaDomainService implements DomainService {
 			user.getAuthorities().add(authority);
 			user.setCreationDate(Calendar.getInstance());
 			user.setEnabled(true);
-			user.setLastName(domainVO.getDomain());
 			user.setLocale(systemPropertyDao.findByKey(DEFAULT_LANGUAGE).getPropertyValue());
-			user.setName(domainVO.getDomain());
 			user.setNotifyEmail(email);
 			user.setPassword(encoder.encodePassword(password, null));
 			user.setUserName(domainVO.getDomain());
@@ -170,9 +182,7 @@ public class JpaDomainService implements DomainService {
 				user.getAuthorities().add(authority);
 				user.setCreationDate(Calendar.getInstance());
 				user.setEnabled(true);
-				user.setLastName(domainVO.getDomain());
 				user.setLocale(systemPropertyDao.findByKey(DEFAULT_LANGUAGE).getPropertyValue());
-				user.setName(domainVO.getDomain());
 				user.setNotifyEmail(email);
 				user.setPassword(encoder.encodePassword(password, null));
 				user.setUserName(domainVO.getDomain());
@@ -229,5 +239,75 @@ public class JpaDomainService implements DomainService {
 		
 		dao.save(domain);
 	}
+	
+	public DomainAdLdapVO insertAdLdap(DomainAdLdapVO adLdapVO){
+		DomainAdLdap entity = new DomainAdLdap();
+		Domain domain = dao.readByPrimaryKey(adLdapVO.getDomainId());
+		entity.setAddres(adLdapVO.getAddres());
+		entity.setBase(adLdapVO.getBase());
+		entity.setDirectoryType(adLdapVO.getDirectoryType());
+		entity.setDomain(domain);
+		entity.setDomainId(domain.getDomain());
+		entity.setFilter(adLdapVO.getFilter());
+		entity.setNextUpdate(Calendar.getInstance());
+		entity.setOverrideFlag(adLdapVO.getOverrideFlag());
+		entity.setPassword(adLdapVO.getPassword());
+		entity.setPort(adLdapVO.getPort());
+		entity.setSslFlag(adLdapVO.getSslFlag());
+		entity.setUser(adLdapVO.getUser());
+		domain.setAdLdap(entity);
+		domain = dao.save(domain);
+		return adLdapTranslator.translate(domain.getAdLdap());
+	}
 
+	public DomainAdLdapVO editAdLdap(DomainAdLdapVO adLdapVO){
+		DomainAdLdap entity = dao.readByPrimaryKey(adLdapVO.getDomainId()).getAdLdap();
+		
+		entity.setAddres(adLdapVO.getAddres());
+		entity.setBase(adLdapVO.getBase());
+		entity.setDirectoryType(adLdapVO.getDirectoryType());
+		entity.setFilter(adLdapVO.getFilter());
+		entity.setNextUpdate(Calendar.getInstance());
+		entity.setOverrideFlag(adLdapVO.getOverrideFlag());
+		entity.setPassword(adLdapVO.getPassword());
+		entity.setPort(adLdapVO.getPort());
+		entity.setSslFlag(adLdapVO.getSslFlag());
+		entity.setUser(adLdapVO.getUser());
+	
+		return adLdapTranslator.translate(dao.save(entity.getDomain()).getAdLdap());
+	}
+	
+	public void removeAdLdap(String domainId){
+		Domain domain = dao.readByPrimaryKey(domainId);
+		if(domain.getAdLdap()!=null){
+			domain.getAdLdap().setDomain(null);
+			domain.getAdLdap().setDomainId(null);
+			domain.setAdLdap(null);
+			this.dao.save(domain);
+			Collection<EmailAccount> accounts = this.emailAccountDao.finbAllByDomainId(domain.getDomain());
+			
+			if(accounts!=null){
+				for(EmailAccount account : accounts){
+					account.setDataSource(EmailAccount.MANUAL);
+					if(account.getAliases()!=null){
+						for(AliasAccount alias : account.getAliases()){
+							alias.setDataSource(EmailAccount.MANUAL);
+						}
+					}
+				}
+			}
+			this.emailAccountDao.save(accounts);
+		}
+	}
+	
+	public DomainAdLdapVO refreshAdLdap(String domainId){
+		DomainAdLdap adLdap = null;
+		Domain domain = dao.readByPrimaryKey(domainId);
+		if(domain.getAdLdap()!=null){
+			domain.getAdLdap().setNextUpdate(Calendar.getInstance());
+			domain.getAdLdap().setError(null);
+			adLdap = this.dao.save(domain).getAdLdap();
+		}
+		return adLdapTranslator.translate(adLdap);
+	}
 }

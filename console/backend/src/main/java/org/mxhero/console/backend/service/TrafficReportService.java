@@ -1,10 +1,8 @@
 package org.mxhero.console.backend.service;
 
-import java.util.Calendar;
 import java.util.Collection;
 
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface TrafficReportService {
 

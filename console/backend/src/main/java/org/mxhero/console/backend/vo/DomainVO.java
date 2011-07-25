@@ -19,6 +19,8 @@ public class DomainVO {
 	
 	private String userName;
 
+	private DomainAdLdapVO adLdap;
+	
 	public String getDomain() {
 		return domain;
 	}
@@ -75,4 +77,12 @@ public class DomainVO {
 		this.userName = userName;
 	}
 
+	public DomainAdLdapVO getAdLdap() {
+		return adLdap;
+	}
+
+	public void setAdLdap(DomainAdLdapVO adLdap) {
+		this.adLdap = adLdap;
+	}
+	
 }

@@ -2,7 +2,9 @@ package org.mxhero.console.backend.translator;
 
 import org.mxhero.console.backend.entity.ApplicationUser;
 import org.mxhero.console.backend.entity.Domain;
+import org.mxhero.console.backend.entity.DomainAdLdap;
 import org.mxhero.console.backend.entity.DomainAlias;
+import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
 import org.mxhero.console.backend.vo.OwnerVO;
 import org.springframework.stereotype.Repository;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Repository;
 public class DomainTranslator extends AbstractTranslator<DomainVO, Domain>{
 
 	private AbstractTranslator<OwnerVO, ApplicationUser> ownerTranslator = new OwnerTranslator();
+	
+	private AbstractTranslator<DomainAdLdapVO, DomainAdLdap> adLdapTranslator = new DomainAdLdaoTranslator();
 	
 	@Override
 	protected DomainVO doTranslate(Domain entity) {
@@ -27,6 +31,7 @@ public class DomainTranslator extends AbstractTranslator<DomainVO, Domain>{
 				domainVO.getAliases().add(alias.getAlias());
 			}
 		}
+		domainVO.setAdLdap(adLdapTranslator.translate(entity.getAdLdap()));
 		return domainVO;
 	}
 
