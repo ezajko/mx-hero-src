@@ -58,14 +58,12 @@ public final class DeliverTask implements Runnable {
 			}
 			serviceReference = bc.getServiceReference(mail
 					.getResponseServiceId());
-			log.debug("Got this ServiceReference:" + serviceReference);
 			if (serviceReference != null) {
 				service = (OutputService) bc.getService(serviceReference);
-				log.debug("Got this OutputService:" + service);
 				if (service != null) {
 					mail.getMessage().saveChanges();
 					service.addOutMail(mail);
-					log.debug("Mail sent using outputservice:" + mail);
+					log.info("Mail sent using outputservice:" + mail);
 					boolean removed = false;
 					while(!removed){
 						try {
@@ -74,7 +72,7 @@ public final class DeliverTask implements Runnable {
 							log.error("error while removing email:",e1);
 						}
 					}
-					log.debug(queueService.getQueuesCount().toString());
+					log.info(queueService.getQueuesCount().toString());
 					if(log.isDebugEnabled()){
 						queueService.logState();
 						}
@@ -82,11 +80,8 @@ public final class DeliverTask implements Runnable {
 					throw new Exception("service is null");
 				}
 				bc.ungetService(serviceReference);
-				log
-						.debug("UnGetting this ServiceReference:"
-								+ serviceReference);
 			} else {
-				log.debug("Output Service was not found for mail:" + mail);
+				log.warn("Output Service was not found for mail:" + mail);
 				if (getLogStatService() != null) {
 					getLogStatService().log(mail, 
 							properties.getValue(Core.CONNECTOR_ERROR_STAT),

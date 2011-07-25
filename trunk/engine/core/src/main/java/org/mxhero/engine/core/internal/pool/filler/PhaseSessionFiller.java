@@ -114,11 +114,9 @@ public class PhaseSessionFiller implements SessionFiller {
 			if (userFinder != null) {
 				sender = userFinder.getUser(mail.getSenderId());
 				if(sender!=null){
-					log.debug("found sender:"+sender.getMail());
 					senderDomain=sender.getDomain();
 					mail.setSenderId(sender.getMail());
 					mail.setSenderDomainId(senderDomain.getId());
-					log.debug("found senderDomain:"+senderDomain.getId());
 				}
 			}
 
@@ -139,8 +137,6 @@ public class PhaseSessionFiller implements SessionFiller {
 					from = userFinder.getUser(fromId);
 					if(from!=null){
 						fromDomain = from.getDomain();
-						log.debug("found form:"+from.getMail());
-						log.debug("found fromDomain:"+fromDomain.getId());
 					}
 				}
 			}else{
@@ -152,9 +148,7 @@ public class PhaseSessionFiller implements SessionFiller {
 			if (userFinder != null) {
 				recipient = userFinder.getUser(mail.getRecipientId());
 				if(recipient!=null){
-					log.debug("found recipient:"+recipient.getMail());
 					recipientDomain=recipient.getDomain();
-					log.debug("found recipientDomain:"+recipientDomain.getId());
 					mail.setRecipientDomainId(recipientDomain.getId());
 					mail.setRecipientId(recipient.getMail());
 				}

@@ -35,18 +35,19 @@ public class DefaultCommandResolver implements CommandResolver {
 	 */
 	@Override
 	public Result resolve(MimeMail mail, String commandId, String... args) {
-		log.debug("trying to found command " + commandId);
+
 		ServiceReference serviceReference = bc.getServiceReference(commandId);
 		Command command = null;
 		Result result = null;
 		if (serviceReference != null) {
-			log.debug("command found " + commandId);
+			if(log.isDebugEnabled()){
+				log.debug("command found " + commandId);
+			}
 			command = (Command) bc.getService(serviceReference);
 			if (command != null) {
 				result = command.exec(mail, args);
 			}
 			bc.ungetService(serviceReference);
-			log.debug("command reference release");
 		}
 		log.debug("result is " + result);
 		return result;
