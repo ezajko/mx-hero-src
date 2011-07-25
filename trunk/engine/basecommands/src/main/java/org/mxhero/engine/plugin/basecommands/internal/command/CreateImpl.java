@@ -60,12 +60,12 @@ public class CreateImpl implements Create {
 		result.setResult(false);
 
 		if (args == null || args.length < MIM_PARAMS) {
-			log.debug("wrong ammount of params.");
+			log.warn("wrong ammount of params.");
 			return result;
 		} else {
 			for (String param : args) {
 				if (param == null || param.trim().isEmpty()) {
-					log.debug("wrong params.");
+					log.warn("wrong params.");
 					return result;
 				}
 			}
