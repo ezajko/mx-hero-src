@@ -50,7 +50,6 @@ public class GetSizeImpl implements GetSize {
 			if (args[FORMAT_TYPE_PARAM_NUMBER].length() == 1) {
 				formatBytes = args[FORMAT_TYPE_PARAM_NUMBER].toLowerCase(
 						Locale.ENGLISH).charAt(0);
-				log.debug("format passed is " + formatBytes);
 				if (!(formatBytes == BYTES || formatBytes == KBYTES || formatBytes == MEGABYTES)) {
 					formatBytes = WRONG_FORMAT;
 				}

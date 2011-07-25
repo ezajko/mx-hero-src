@@ -51,18 +51,18 @@ public class CloneImpl implements Clone {
 		result.setResult(false);
 
 		if (args == null || args.length < MIM_PARAMANS) {
-			log.debug("wrong ammount of params.");
+			log.warn("wrong ammount of params.");
 			return result;
 		} else if (args[PHASE_PARAM_NUMBER] == null
 				|| !(args[PHASE_PARAM_NUMBER].equalsIgnoreCase(RulePhase.SEND) || args[PHASE_PARAM_NUMBER]
 						.equalsIgnoreCase(RulePhase.RECEIVE))) {
-			log.debug("wrong params.");
+			log.warn("wrong params.");
 			return result;
 		} else if (args[SENDER_PARAM_NUMBER] == null
 				|| args[RECIPIENT_PARAM_NUMBER] == null
 				|| args[SENDER_PARAM_NUMBER].isEmpty()
 				|| args[RECIPIENT_PARAM_NUMBER].isEmpty()) {
-			log.debug("wrong params.");
+			log.warn("wrong params.");
 			return result;
 		} else {
 			try {

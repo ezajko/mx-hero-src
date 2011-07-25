@@ -45,12 +45,11 @@ public class RemoveByTypeImpl implements RemoveByType {
 				if (extension != null && !extension.trim().isEmpty()) {
 					types.add(extension.toLowerCase(Locale.ENGLISH));
 				} else {
-					log.debug("wont add type " + extension);
+					log.warn("wont add type " + extension);
 				}
 			}
 			if (types.size() > 0) {
 				try {
-					log.debug("types are " + Arrays.toString(types.toArray()));
 					remove(mail.getMessage(), null, types, typesRemoved);
 					result.setResult(typesRemoved.size() > 0);
 					result.setLongField(typesRemoved.size());
@@ -88,35 +87,22 @@ public class RemoveByTypeImpl implements RemoveByType {
 	private void remove(Part part, Multipart parent, Set<String> types,
 			Collection<String> typesRemoved) throws MessagingException,
 			IOException {
-		log.debug("scanning part " + part);
 		if (!part.isMimeType(MULTIPART_TYPE)
 				&& !part.isMimeType(MULTIPART_MESSAGE)
 				&& !(part.isMimeType(TEXT_TYPE) && (part.getDisposition() == null || part
 						.getDisposition().equals(Part.INLINE)))) {
-			log
-					.debug("scanning part with conten type "
-							+ part.getContentType());
-			log.debug("parent=" + parent);
 			if (parent != null && part.getContentType() != null) {
-				log.debug("types:" + Arrays.toString(types.toArray()));
 				for (String typeToRemove : types) {
-					log.debug("type to match:" + typeToRemove + " type is:"
-							+ part.getContentType().trim());
 					if (part.getContentType().trim().contains(typeToRemove)) {
-						log.debug("removing part with conten type "
-								+ part.getContentType());
 						parent.removeBodyPart((BodyPart) part);
 						typesRemoved.add(part.getContentType());
 						break;
 					}
 				}
-				log.debug("types removed:"
-						+ Arrays.toString(typesRemoved.toArray()));
 			}
 
 		} else if (part.isMimeType(MULTIPART_TYPE)) {
 			Multipart mp = (Multipart) part.getContent();
-			log.debug("scanning multipart");
 			Collection<BodyPart> childs = new ArrayList<BodyPart>();
 			for (int i = 0; i < mp.getCount(); i++) {
 				childs.add(mp.getBodyPart(i));
@@ -132,7 +118,6 @@ public class RemoveByTypeImpl implements RemoveByType {
 				((Message) part).saveChanges();
 			}
 		} else if (part.isMimeType(MULTIPART_MESSAGE)) {
-			log.debug("scanning message " + part.getContent());
 			remove((Part) part.getContent(), null, types, typesRemoved);
 		}
 

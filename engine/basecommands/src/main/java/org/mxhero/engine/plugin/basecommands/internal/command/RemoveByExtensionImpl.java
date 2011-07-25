@@ -92,25 +92,18 @@ public class RemoveByExtensionImpl implements RemoveByExtension {
 	private void remove(Part part, Multipart parent, Set<String> extensions,
 			Collection<String> filesRemoved) throws MessagingException,
 			IOException {
-		log.debug("scanning part");
 		if (part.getFileName() != null && !part.getFileName().trim().isEmpty()) {
-			log.debug("file found:" + part.getFileName().trim());
 			int i = part.getFileName().trim().lastIndexOf('.');
 			if (i > 0 && i < part.getFileName().trim().length() - 1) {
-				log.debug("has extension "
-						+ part.getFileName().trim().substring(i));
-				log.debug("parent is " + parent);
 				if (parent != null
 						&& extensions.contains(part.getFileName().trim()
 								.substring(i + 1).toLowerCase(Locale.ENGLISH))) {
-					log.debug("removing file " + part.getFileName().trim());
 					parent.removeBodyPart((BodyPart) part);
 					filesRemoved.add(part.getFileName().trim());
 				}
 			}
 		} else if (part.isMimeType(MULTIPART_TYPE)) {
 			Multipart mp = (Multipart) part.getContent();
-			log.debug("scanning multipart");
 			Collection<BodyPart> childs = new ArrayList<BodyPart>();
 			for (int i = 0; i < mp.getCount(); i++) {
 				childs.add(mp.getBodyPart(i));
@@ -126,7 +119,6 @@ public class RemoveByExtensionImpl implements RemoveByExtension {
 				((Message) part).saveChanges();
 			}
 		} else if (part.isMimeType(MULTIPART_MESSAGE)) {
-			log.debug("scanning message " + part.getContent());
 			remove((Part) part.getContent(), null, extensions, filesRemoved);
 		}
 
