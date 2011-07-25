@@ -85,19 +85,11 @@ public final class RecipientRuleTask implements Runnable {
 			if (!mail.getStatus().equals(MailState.DROP)) {
 				mail.getMessage().saveChanges();
 				this.queueService.removeAddTo(ReceivePool.MODULE, ReceivePool.PHASE, mail, mail, OutputPool.MODULE, OutputPool.PHASE);
-				log.debug("Mail sent to out queue for " + mail);
-				if(log.isTraceEnabled()){
-					LogMail.saveErrorMail(mail.getMessage(),
-							getProperties().getValue(Core.ERROR_PREFIX)+"receive",
-							getProperties().getValue(Core.ERROR_SUFFIX),
-							getProperties().getValue(Core.ERROR_DIRECTORY));
-				}
 			} else {
 				if(getLogRecordService()!=null){
 					getLogRecordService().log(mail);
 				}
 				queueService.remove(ReceivePool.MODULE, ReceivePool.PHASE, mail);
-				log.debug("mail droped " + mail);
 			}
 		} catch (Exception e) {
 			if (getLogStatService() != null) {

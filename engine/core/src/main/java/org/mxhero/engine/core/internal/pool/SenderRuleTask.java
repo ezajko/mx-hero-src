@@ -94,26 +94,16 @@ public final class SenderRuleTask implements Runnable {
 				boolean removedAdded = false;
 				while(!removedAdded){
 					try{
-						log.debug("adding email to RECEIVE queue "+mail);
 						this.queueService.removeAddTo(SendPool.MODULE, SendPool.PHASE, mail, mail, ReceivePool.MODULE, ReceivePool.PHASE);
 						removedAdded=true;
 					}catch(InterruptedException e){
 						log.error("interrupted while removingAdding mail");
 					}
 				}
-				log.debug("Mail sent input queue again for recipeints processing "
-									+ mail);
-				if(log.isTraceEnabled()){
-					LogMail.saveErrorMail(mail.getMessage(),
-							getProperties().getValue(Core.ERROR_PREFIX)+"send",
-							getProperties().getValue(Core.ERROR_SUFFIX),
-							getProperties().getValue(Core.ERROR_DIRECTORY));
-				}
 			} else {
 				if(getLogRecordService()!=null){
 					getLogRecordService().log(mail);
 				}
-				log.debug("mail droped " + mail);
 				queueService.remove(SendPool.MODULE, SendPool.PHASE, mail);
 			}
 		} catch (Exception e) {

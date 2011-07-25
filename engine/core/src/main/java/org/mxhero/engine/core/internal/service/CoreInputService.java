@@ -53,12 +53,9 @@ public final class CoreInputService implements InputService {
 		if(!added){
 			throw new QueueFullException();
 		}
-		log.debug("Mail added to queue:"+mail);
-		log.debug(queueService.getQueuesCount().toString());
+		log.info("Mail added to queue:"+mail);
+		log.info(queueService.getQueuesCount().toString());
 
-		if(log.isDebugEnabled()){
-			queueService.logState();
-		}
 	}
 
 	public Collection<MailFilter> getInFilters() {

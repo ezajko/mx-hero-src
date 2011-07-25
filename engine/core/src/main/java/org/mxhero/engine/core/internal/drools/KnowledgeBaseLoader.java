@@ -44,7 +44,7 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 	 * Creates a thread and pass this object as runnable, after that starts the thread.
 	 */
 	public void start(){
-		log.debug("started");
+		log.info("started");
 		thread = new Thread(this);
 		thread.start();
 	}
@@ -98,7 +98,7 @@ public class KnowledgeBaseLoader implements Runnable, PropertiesListener{
 	 * Stop the thread.
 	 */
 	public void stop(){
-		log.debug("stopped");
+		log.info("stopped");
 		working = false;
 		if(thread!=null){
 			try {

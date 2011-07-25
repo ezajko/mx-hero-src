@@ -80,14 +80,13 @@ public final class SendPool extends QueueTaskPool implements
 	 */
 	@Override
 	protected Runnable createTask(MimeMail object) {
-		log.debug("creating task for mail "+object);
 		try{
 			if(loader.getBuilder().getKnowledgeBase()==null){
 				final MimeMail mail = object;
 				return new Runnable() {
 					@Override
 					public void run() {
-						log.error("Rule database is not ready " + mail);
+						log.warn("Rule database is not ready " + mail);
 						try {
 							queueService.reEnqueue(MODULE, PHASE, mail);
 						} catch (InterruptedException e1) {
@@ -167,7 +166,6 @@ public final class SendPool extends QueueTaskPool implements
 	 */
 	@Override
 	public void updated() {
-		log.debug("Updating.");
 		setCorePoolsize(getProperties().getValue(Core.SENDPOOL_COREPOOLSIZE));
 		setMaximumPoolSize(getProperties().getValue(
 				Core.SENDPOOL_MAXIMUMPOOLSIZE));

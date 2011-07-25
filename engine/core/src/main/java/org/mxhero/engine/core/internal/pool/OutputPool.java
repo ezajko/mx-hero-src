@@ -76,7 +76,6 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 	 */
 	@Override
 	protected Runnable createTask(MimeMail mail) {
-		log.debug("creating task for mail "+mail);
 		DeliverTask task = new DeliverTask(mail,bc,queueService);
 		task.setProperties(getProperties());
 		task.setLogStatService(getLogStatService());
@@ -91,7 +90,6 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 	 */
 	@Override
 	public void updated() {
-		log.debug("Updating.");
 		setCorePoolsize(getProperties().getValue(Core.OUTPUTPOOL_COREPOOLSIZE));
 		setMaximumPoolSize(getProperties().getValue(Core.OUTPUTPOOL_MAXIMUMPOOLSIZE));
 		setKeepAliveTime(getProperties().getValue(Core.OUTPUTPOOL_KEEPALIVETIME));

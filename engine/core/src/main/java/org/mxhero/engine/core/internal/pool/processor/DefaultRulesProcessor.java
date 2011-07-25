@@ -26,9 +26,7 @@ public class DefaultRulesProcessor implements RulesProcessor{
 	@Override
 	public void process(StatefulKnowledgeSession ksession, SessionFiller filler,
 			UserFinder userfinder, MimeMail mail) {
-		
-		log.debug("Executing rules for "+mail);
-		
+			
 		try{
 		ksession.getAgenda().clear();
 
@@ -38,25 +36,25 @@ public class DefaultRulesProcessor implements RulesProcessor{
 		//Adding default rules to start first
 		String bottomAgendaGroup = getProperties().getValue(Core.GROUP_ID_BOTTOM);
 		if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
-			log.debug("Set focus on agenda "+bottomAgendaGroup);
 			ksession.getAgenda().getAgendaGroup(bottomAgendaGroup).setFocus();
 		}
 
 		//Adding domain agenda group
 		if(domainAgendaGroup!=null){
 			ksession.getAgenda().getAgendaGroup(domainAgendaGroup).setFocus();
-			log.debug("Set focus on agenda "+domainAgendaGroup);
 		}
 		
 		//Adding default rules to start first
 		String startAgendaGroup = getProperties().getValue(Core.GROUP_ID_TOP);
 		if (startAgendaGroup!=null && !startAgendaGroup.isEmpty()){
-			log.debug("Set focus on agenda "+startAgendaGroup);
 			ksession.getAgenda().getAgendaGroup(startAgendaGroup).setFocus();
 		}
 
+		if(log.isDebugEnabled()){
+			log.debug("firing rules for top:"+startAgendaGroup+" domain:"+domainAgendaGroup+" bottom:"+bottomAgendaGroup);
+		}
+		
 		ksession.fireAllRules();
-		log.debug("rules fired");
 		} finally {
 			ksession.dispose();
 		}
