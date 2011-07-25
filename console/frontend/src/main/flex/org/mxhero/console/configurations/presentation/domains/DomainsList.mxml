@@ -150,10 +150,12 @@
 				 mouseChildren="true">
 		<mx:columns>
 			<mx:DataGridColumn headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_DOMAIN_LABEL)}" 
-							   minWidth="100">
+							   minWidth="140">
 				<mx:itemRenderer>
 					<fx:Component>
-						<mx:HBox minHeight="0" minWidth="0">
+						<mx:HBox minHeight="0" minWidth="0" 
+								 horizontalScrollPolicy="off"
+								 width="100%">
 							<fx:Declarations>
 								<mx:Glow id="glowOn"
 										 alphaFrom="{minAlpha}"

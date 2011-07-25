@@ -144,7 +144,7 @@ package org.mxhero.console.home.presentation
 			}
 		}
 		
-		private function refreshActivity(event:*=null):void{
+		public function refreshActivity(event:*=null):void{
 			this.hourSince=new Date();
 			this.hourSince.time = this.hourSince.time - 1*60*60*1000 + 30*60*1000;
 			this.hourSince.time = this.hourSince.setSeconds(0,0);

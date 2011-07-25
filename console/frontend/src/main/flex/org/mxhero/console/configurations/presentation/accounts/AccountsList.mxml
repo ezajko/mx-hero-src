@@ -41,6 +41,32 @@
 				return creationDateFormatter.format(item.updatedDate);
 			}
 			
+			protected function dataSourceLabelFunction(item:Object,column:DataGridColumn):String{
+				var label:String="";
+				if(item!=null){
+					var ea:EmailAccount = item as EmailAccount;
+					if(ea.dataSource!=EmailAccount.MANUAL 
+						&& model.context.selectedDomain!=null
+						&& model.context.selectedDomain.adLdap!=null){
+						label=typeDdl_labelFunc(model.context.selectedDomain.adLdap.directoryType);
+					}else{
+						label=ea.dataSource;
+					}
+				}
+				return label;
+			}
+			
+			private function typeDdl_labelFunc(item:Object):String {
+				var label:String="";
+				if( item!=null && item is String){
+					label=this.resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_RESOURCE+item as String);
+					if(label==null || label.length<1){
+						label=item as String;
+					}
+				}
+				return label;
+			}
+			
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.createdDate);
 			}
@@ -106,6 +132,12 @@
 			protected function ldapLink_clickHandler(event:MouseEvent):void
 			{
 				model.configureAdLdap(this)
+			}
+
+
+			protected function refreshBtt_clickHandler(event:MouseEvent):void
+			{
+				model.refreshAdLdap();
 			}
 
 		]]>
@@ -203,14 +235,19 @@
 	<s:VGroup width="100%" 
 			  height="100%">
 		<s:HGroup includeIn="sync">
-			<s:Label text="Scheduled Update:" fontWeight="bold"/>
+			<component1:GlowButton
+				id="refreshBtt"
+				source="{ImageResources.REFRESH_ICON}"
+				click="refreshBtt_clickHandler(event)"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SCHEDULED_LABEL)}" fontWeight="bold"/>
 			<s:Label text="{creationDateFormatter.format(model.context.selectedDomain.adLdap.nextUpdate)}"/>
 			<mx:Spacer width="5"/>
-			<s:Label text="Last Update:" fontWeight="bold"/>
+			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_LAST_LABEL)}" fontWeight="bold"/>
 			<s:Label text="{creationDateFormatter.format(model.context.selectedDomain.adLdap.lastUpdate)}"/>
 			<mx:Spacer width="5"/>
-			<s:Label text="Error:" visible="{model.context.selectedDomain.adLdap.error!=null}"/>
-			<s:Label text="{model.context.selectedDomain.adLdap.error}" visible="{model.context.selectedDomain.adLdap.error!=null}"/>
+			<mx:Image source="{ImageResources.ALERT_ICON}" 
+					  visible="{model.context.selectedDomain.adLdap.error!=null}"
+					  toolTip="{model.context.selectedDomain.adLdap.error}"/>
 		</s:HGroup>
 		<s:Panel width="100%" 
 				 height="100%"
@@ -239,6 +276,7 @@
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
 									   minWidth="100"/>
 					<mx:DataGridColumn dataField="dataSource"
+									   labelFunction="dataSourceLabelFunction"
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_DATASOURCE_LABEL)}" 
 									   minWidth="100"/>
 					<mx:DataGridColumn dataField="aliases"

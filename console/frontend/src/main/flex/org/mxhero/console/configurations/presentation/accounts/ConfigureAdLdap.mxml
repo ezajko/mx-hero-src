@@ -184,7 +184,14 @@
 				<s:TextArea id="baseTi" width="100%" heightInLines="3" text="@{adLdap.base}"/>
 			</mx:FormItem>
 			<mx:FormItem width="100%" excludeFrom="none">
-				<s:CheckBox label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_OVERRIDE)}" selected="@{adLdap.overrideFlag}"/>
+				<s:HGroup verticalAlign="top">
+					<s:CheckBox selected="@{adLdap.overrideFlag}"/>
+					<component1:LabelExpanded 
+						labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_OVERRIDE)}"
+						explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
+						hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}"
+						expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_OVERRIDE_EXPLAIN)}"/>
+				</s:HGroup>
 			</mx:FormItem>
 
 		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">

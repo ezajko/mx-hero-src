@@ -78,7 +78,13 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const ADLDAP_SEARCH:String="adldap.search";
 		
+		public static const ADLDAP_OVERRIDE_EXPLAIN:String="adldap.override.explain";
+
 		public static const ADLDAP_OVERRIDE:String="adldap.override";
+		
+		public static const ADLDAP_SCHEDULED_LABEL:String="adldap.scheduled.label";
+		
+		public static const ADLDAP_LAST_LABEL:String="adldap.last.label";
 
 	}
 }

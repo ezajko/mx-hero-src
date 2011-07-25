@@ -4,10 +4,10 @@ package org.mxhero.console.configurations.application.command
 	import mx.rpc.Fault;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.configurations.application.event.InsertDomainEvent;
+	import org.mxhero.console.configurations.application.event.RefreshAdLdapEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
-
-	public class InsertDomainCommand
+	
+	public class RefreshAdLdapCommand
 	{
 		[Inject(id="domainService")]
 		public var service:RemoteObject;
@@ -15,10 +15,14 @@ package org.mxhero.console.configurations.application.command
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
-		public function execute(event:InsertDomainEvent):AsyncToken
+		public function execute(event:RefreshAdLdapEvent):AsyncToken
 		{
-			return service.insert(event.domain,event.hasOwner,event.password,event.email);
+			return service.refreshAdLdap(event.domainId);
 		}
-
+		
+		public function error (fault:Fault) : void {
+			dispatcher(new ApplicationErrorMessage(fault.faultCode));
+		}
 	}
+
 }
