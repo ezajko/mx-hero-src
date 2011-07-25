@@ -78,7 +78,6 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.HOUR_OF_DAY, -hours);
 		Timestamp time = new Timestamp(calendar.getTimeInMillis());
-		log.debug("UserId:"+userId+",Time:"+time.toString());
 		try{
 			Long mailsAmount = getRecordDao().amountOfUserEmailsSince(time, userId);
 			if(mailsAmount==null){
@@ -88,7 +87,6 @@ public class JpaUserMailsPerHour implements UserMailsPerHour {
 			result.setDoubleField(mailsAmount.doubleValue());
 			result.setText(mailsAmount.toString()+" emails");
 			result.setResult(true);
-			log.debug(result.toString());
 		} catch (Exception e){
 			log.warn("error:",e);
 			return result;

@@ -81,7 +81,6 @@ public class JpaUserBytesPerHour implements UserBytesPerHour {
 		calendar.add(Calendar.HOUR_OF_DAY, -hours);
 		Timestamp time = new Timestamp(calendar.getTimeInMillis());
 
-		log.debug("UserId:"+userId+",Time:"+time.toString());
 		try {
 			Long bytes = getRecordDao().bytesOfUserEmailsSince(time, userId);
 			if(bytes==null){
@@ -91,7 +90,6 @@ public class JpaUserBytesPerHour implements UserBytesPerHour {
 			result.setDoubleField(bytes.doubleValue());
 			result.setText(bytes.toString() + " bytes");
 			result.setResult(true);
-			log.debug(result.toString());
 		} catch (Exception e) {
 			log.warn("error:", e);
 			return result;
