@@ -79,28 +79,11 @@
 		</property>
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
-		<property name="targetDataSource">
-			<ref local="mainDataSource" />
-		</property>
-	</bean>
-
-	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
-		destroy-method="close">
-		<property name="poolName" value="mxhero-featuresfp" />
-		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/mxhero" />
-		<property name="username" value="mxhero" />
-		<property name="password" value="mxhero" />
-		<property name="idleConnectionTestPeriod" value="60" />
-		<property name="idleMaxAge" value="240" />
-		<property name="maxConnectionsPerPartition" value="10" />
-		<property name="minConnectionsPerPartition" value="10" />
-		<property name="partitionCount" value="1" />
-		<property name="acquireIncrement" value="1" />
-		<property name="statementsCacheSize" value="100" />
-		<property name="releaseHelperThreads" value="1" />
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://127.0.0.1/mxhero"/>
+		<property name="username" value="mxhero"/>
+		<property name="password" value="mxhero"/>
 	</bean>
 
 </beans>

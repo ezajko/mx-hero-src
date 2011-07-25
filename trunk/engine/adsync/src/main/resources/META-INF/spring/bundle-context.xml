@@ -24,10 +24,11 @@
 		<prop key="initial.idleConnectionTestPeriod">1</prop>
 		<prop key="initial.idleMaxAge">5</prop>
 		<prop key="initial.maxConnectionsPerPartition">10</prop>
-		<prop key="initial.minConnectionsPerPartition">10</prop>
+		<prop key="initial.minConnectionsPerPartition">2</prop>
 		<prop key="initial.partitionCount">1</prop>
 		<prop key="initial.acquireIncrement">2</prop>
 		<prop key="initial.statementsCacheSize">100</prop>
+		<prop key="initial.releaseHelperThreads">1</prop>
 		<prop key="initial.zimbra.filter">(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList))</prop>
 		<prop key="initial.exchange.filter">(objectclass=user)</prop>
 		<prop key="initial.sender.mail">adsync@mxhero.com</prop>
@@ -129,7 +130,7 @@
 
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
-		<property name="poolName" value="mxhero-featuresfp" />
+		<property name="poolName" value="mxhero-adsync" />
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
 		<property name="jdbcUrl" value="${initial.jdbcUrl}" />
 		<property name="username" value="${initial.username}" />

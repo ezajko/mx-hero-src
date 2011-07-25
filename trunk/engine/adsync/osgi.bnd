@@ -57,8 +57,8 @@ org.slf4j.*;resolution:=optional;version="[1.4.0, 1.9.0)";provider=paxlogging, \
 antlr;resolution:=optional,*
 
 Embed-Dependency: \
-bonecp;groupId=com.jolbox;inline=false,\
 org.springframework.ldap;groupId=org.springframework.ldap;inline=false,\
-google-collections;groupId=com.google.collections;inline=false
+bonecp;groupId=com.jolbox;inline=false,\
+guava;groupId=com.google.guava;inline=false
 
-Export-Package: com.googlecode.jtype,com.jolbox*,com.google*,org.mxhero.engine.plugin.adsync*
+Export-Package: com.googlecode.jtype,com.jolbox*;version="0.7",com.google*,org.mxhero.engine.plugin.adsync*
