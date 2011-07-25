@@ -78,7 +78,6 @@ public class SpamdScanner {
         Socket socket = null;
         OutputStream out = null;
         BufferedReader in = null;
-        log.debug("scanning message"+message.getMessageID());
         try {
             socket = new Socket(spamdHost, spamdPort);
 
@@ -110,7 +109,6 @@ public class SpamdScanner {
 
                     if (spam) {
                         // message was spam
-                    	log.debug("message is spam"+message.getMessageID());
                     	headers.put(FLAG_MAIL_ATTRIBUTE_NAME,"Yes");
                     	headers.put(STATUS_MAIL_ATTRIBUTE_NAME,
                                 new StringBuffer("Yes, hits=").append(hits)
@@ -121,7 +119,6 @@ public class SpamdScanner {
                         return true;
                     } else {
                         // add headers
-                    	log.debug("message is NOT spam"+message.getMessageID());
                     	headers.put(FLAG_MAIL_ATTRIBUTE_NAME,"No");
                     	headers.put(STATUS_MAIL_ATTRIBUTE_NAME,
                                 new StringBuffer("No, hits=").append(hits)
