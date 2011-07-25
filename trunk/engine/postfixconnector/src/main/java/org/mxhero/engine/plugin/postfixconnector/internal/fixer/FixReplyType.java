@@ -11,7 +11,7 @@ public class FixReplyType implements Fixer {
 	private static Logger log = LoggerFactory.getLogger(FixReplyType.class);
 	
 	public FixReplyType() {
-		log.debug("Fixer created");
+		log.info("Fixer created");
 	}
 
 	@Override
@@ -22,7 +22,6 @@ public class FixReplyType implements Fixer {
 		    String replayType = contentType.substring(contentType.lastIndexOf("reply-type"),contentType.length()).trim();
 		    contentType = contentType.substring(0,contentType.lastIndexOf("reply-type")).trim();
 		    if(!contentType.substring(contentType.length()-1).equals(";")){
-		    	log.debug("fixing reply-to");
 		    	contentType=contentType+";";
 		    }
 		    contentType=contentType+replayType;
