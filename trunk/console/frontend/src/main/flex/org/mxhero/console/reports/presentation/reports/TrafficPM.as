@@ -54,6 +54,8 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var untilDate:Date=new Date();;
 		
+		private var since24Hs:Date = new Date();
+		
 		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
 		private static const PLUSDAY:Number = 24*60*60*1000; 
 		
@@ -79,17 +81,20 @@ package org.mxhero.console.reports.presentation.reports
 			untilDate.setTime(untilDate.getTime()+PLUSDAY);
 			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
 			sinceDate.setHours(0,0,0,0);
+			since24Hs.setTime(new Date());
+			since24Hs.setTime(since24Hs.getTime()-PLUSDAY);
 			getIncomming();
 			getOutgoing();
 		}
 		
 		public function getIncomming():void{
+			
 			if(context.selectedDomain!=null){
 				dispatcher(new GetIncommingEvent(context.selectedDomain.domain,sinceDate));
-				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain,sinceDate,this.onlyDomain));
+				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
 			}else{
 				dispatcher(new GetIncommingEvent(null,sinceDate));
-				dispatcher(new GetTopTenIncommingSendersEvent(null,sinceDate,this.onlyDomain));
+				dispatcher(new GetTopTenIncommingSendersEvent(null,since24Hs,this.onlyDomain));
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;

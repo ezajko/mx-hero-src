@@ -5,7 +5,6 @@ package org.mxhero.console.configurations.application.command
 	import mx.rpc.remoting.RemoteObject;
 	
 	import org.mxhero.console.configurations.application.event.InsertAdLdapEvent;
-	import org.mxhero.console.configurations.application.event.LoadAllDomainsEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	
 	public class InsertAdLdapCommand

@@ -23,6 +23,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.configurations.application.event.InsertEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllEmailAccountsEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllGroupsEvent;
+	import org.mxhero.console.configurations.application.event.RefreshAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.RemoveAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
 	import org.mxhero.console.configurations.application.event.UploadAccountsEvent;
@@ -251,10 +252,11 @@ package org.mxhero.console.configurations.presentation.accounts
 			context.selectedDomain.adLdap=result;
 			this.accountsState=SYNC_STATE;
 			PopUpManager.removePopUp(accountsAdLdap);
+			loadEmailAccounts();
 		}
 		
 		[CommandError]
-		public function insertAdLdapError (faultEvent:FaultEvent, event:InsertEmailAccountEvent) : void {
+		public function insertAdLdapError (faultEvent:FaultEvent, event:InsertAdLdapEvent) : void {
 			accountsAdLdap.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
 			accountsAdLdap.enabled=true;
 		}
@@ -264,14 +266,24 @@ package org.mxhero.console.configurations.presentation.accounts
 			context.selectedDomain.adLdap=null;
 			this.accountsState=DEFAULT_STATE;
 			PopUpManager.removePopUp(accountsAdLdap);
+			loadEmailAccounts();
 		}
 		
 		[CommandError]
-		public function removeAdLdapError (faultEvent:FaultEvent, event:InsertEmailAccountEvent) : void {
+		public function removeAdLdapError (faultEvent:FaultEvent, event:RemoveAdLdapEvent) : void {
 			accountsAdLdap.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
 			accountsAdLdap.enabled=true;
 		}
 		
+		public function refreshAdLdap():void{
+			dispatcher(new RefreshAdLdapEvent(context.selectedDomain.domain));
+		}
+		
+		[CommandResult]
+		public function refreshAdLdapResult (result:*, event:RefreshAdLdapEvent) : void {
+			context.selectedDomain.adLdap=result;
+			loadEmailAccounts();
+		}
 		
 		public function uploadAllAccounts(uploadAccounts:ArrayCollection,failOnError:Boolean):void{
 			dispatcher(new UploadAccountsEvent(uploadAccounts,context.selectedDomain.domain,failOnError));

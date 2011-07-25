@@ -222,10 +222,9 @@
 										  expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ALIASES_EXPLAIN)}" 
 										  width="100%"/>
 				<mx:Form defaultButton="{addAliasBtt}" 
-						 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0"
-						 enabled="{account.dataSource==EmailAccount.MANUAL}">
+						 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
 					<s:HGroup verticalAlign="middle">
-						<s:TextInput id="aliasTi" width="150"/>
+						<s:TextInput id="aliasTi" width="150" enabled="{account.dataSource==EmailAccount.MANUAL}"/>
 						<s:Label text="@" fontWeight="bold"/>
 						<s:DropDownList
 							id="domainAliasDdl"
@@ -235,7 +234,8 @@
 						<s:Button id="addAliasBtt" 
 								  label="Add" 
 								  click="addAliasBtt_clickHandler(event)" 
-								  buttonMode="true"/>							
+								  buttonMode="true"
+								  enabled="{account.dataSource==EmailAccount.MANUAL}"/>							
 					</s:HGroup>
 				</mx:Form>
 				<s:List id="aliasList"

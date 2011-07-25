@@ -30,6 +30,7 @@
 			import org.mxhero.console.configurations.application.command.LoadConfigurationCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsByGroupCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsWithNoGroupCommand;
+			import org.mxhero.console.configurations.application.command.RefreshAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.RemoveAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
@@ -70,6 +71,7 @@
 		<parsley:DynamicCommand type="{EditAdLdapCommand}"/>
 		<parsley:DynamicCommand type="{InsertAdLdapCommand}"/>
 		<parsley:DynamicCommand type="{RemoveAdLdapCommand}"/>
+		<parsley:DynamicCommand type="{RefreshAdLdapCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>

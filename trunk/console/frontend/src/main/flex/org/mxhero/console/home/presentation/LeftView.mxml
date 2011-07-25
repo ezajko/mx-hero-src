@@ -42,6 +42,7 @@
 				if(model.domainFilter!=null){
 					model.domainFilter=null;
 					model.getCompleteData();
+					model.refreshActivity();
 				}
 			}
 
@@ -52,6 +53,7 @@
 					&& model.domainFilter!=ipeComboBox.selectedLabel){
 					model.domainFilter=ipeComboBox.selectedLabel;
 					model.getCompleteData();
+					model.refreshActivity();
 				}
 			}
 
