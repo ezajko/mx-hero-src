@@ -47,7 +47,6 @@ public class JpaLogStat implements LogStat{
 		try{
 			getDao().save(stat);
 			result.setResult(true);
-			log.debug("saved with success");
 		} catch(Exception e) {
 			log.warn("Error while persisting "+stat,e);
 		}
