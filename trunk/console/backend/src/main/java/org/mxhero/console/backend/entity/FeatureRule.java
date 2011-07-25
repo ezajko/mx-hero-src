@@ -24,7 +24,7 @@ public class FeatureRule {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="label",  length=100)
+	@Column(name="label")
 	private String label;
 	
 	@ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH})

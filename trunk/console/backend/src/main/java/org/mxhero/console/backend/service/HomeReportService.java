@@ -4,7 +4,6 @@ import org.mxhero.console.backend.vo.ActivityDataVO;
 import org.mxhero.console.backend.vo.MessagesCompositionVO;
 import org.mxhero.console.backend.vo.MxHeroDataVO;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 
 
 public interface HomeReportService {

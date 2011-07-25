@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class DomainAlias {
 	
 	@Id
-	@Column(name="alias", nullable=false, length=100)
+	@Column(name="alias", nullable=false)
 	private String alias;
 	
 	@ManyToOne(cascade = {CascadeType.MERGE})

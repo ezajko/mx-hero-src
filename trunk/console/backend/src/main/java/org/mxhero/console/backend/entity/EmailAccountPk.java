@@ -11,11 +11,11 @@ public class EmailAccountPk implements Serializable{
 
 	private static final long serialVersionUID = -8728729629908134311L;
 
-	@Column(name="account", length=100, nullable=false)
+	@Column(name="account", nullable=false)
 	@Size(min=1)
 	private String account;
 	
-	@Column(name="domain_id", length=100, nullable=false)
+	@Column(name="domain_id", nullable=false)
 	private String domainId;
 
 	public String getAccount() {

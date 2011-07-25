@@ -21,16 +21,16 @@ public class FeatureRuleDirection {
 	@Column(name="directiom_type",length=100, nullable=false)
 	private String directionType;
 	
-	@Column(name="free_value",length=100, nullable=false)
+	@Column(name="free_value", nullable=false)
 	private String freeValue;
 	
-	@Column(name="domain",length=100)
+	@Column(name="domain")
 	private String domain;
 	
-	@Column(name="group_name", length=100)
+	@Column(name="group_name")
 	private String group;
 	
-	@Column(name="account", length=100)
+	@Column(name="account")
 	private String account;
 	
 	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.MERGE})

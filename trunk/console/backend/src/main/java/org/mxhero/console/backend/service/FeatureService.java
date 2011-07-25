@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.mxhero.console.backend.vo.CategoryVO;
 import org.mxhero.console.backend.vo.FeatureRuleVO;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface FeatureService {
 

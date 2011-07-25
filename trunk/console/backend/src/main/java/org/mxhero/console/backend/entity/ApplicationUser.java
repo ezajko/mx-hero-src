@@ -24,19 +24,19 @@ public class ApplicationUser {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	
-	@Column(name="name", length=30)
+	@Column(name="name")
 	private String name;
 	
-	@Column(name="last_name", length=30)
+	@Column(name="last_name")
 	private String lastName;
 	
-	@Column(name="notify_email", length=50)
+	@Column(name="notify_email")
 	private String notifyEmail;
 	
 	@Column(name="password",  nullable=false, length=100)
 	private String password;
 	
-	@Column(name="userName", unique=true, nullable=false, length=20)
+	@Column(name="userName", unique=true, nullable=false)
 	private String userName;
 
 	@Column(name="last_password_update")

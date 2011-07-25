@@ -22,7 +22,7 @@ public class Group {
 	@EmbeddedId
 	private GroupPk id;
 	
-	@Column(name="description", length=200)
+	@Column(name="description")
 	private String description;
 	
 	@OneToMany(mappedBy="group", cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
