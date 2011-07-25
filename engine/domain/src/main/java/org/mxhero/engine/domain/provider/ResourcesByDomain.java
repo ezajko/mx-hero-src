@@ -42,8 +42,7 @@ public abstract class ResourcesByDomain implements ResourcesProvider{
 			log.warn("feature was not found for component "+component+" and version "+version);
 			return null;
 		}
-		log.debug("feature:"+feature.getComponent()+" version:"+feature.getVersion());
-		log.debug("processing "+feature.getRules().size()+" rules");
+
 		for (Rule rule : feature.getRules()){
 			if(rule.getEnabled()==true){
 				if(!domainRules.containsKey(rule.getDomain())){
@@ -51,16 +50,20 @@ public abstract class ResourcesByDomain implements ResourcesProvider{
 					
 				}	
 				domainRules.get(rule.getDomain()).add(rule);
-				log.debug("added rule for domain "+rule.getDomain());
 			}
 		}
 		
 		for (String domain : domainRules.keySet()){
 			Resource resource = processByDomain(domain,domainRules.get(domain));
-			log.debug("processed resource for domain "+domain);
 			if(resource!=null){
 				resources.add(resource);
-				log.debug("resourced added "+resource.getName());
+			}
+		}
+		if(log.isDebugEnabled()){
+			log.debug("feature:"+feature.getComponent()+" version:"+feature.getVersion());
+			log.debug("processing "+feature.getRules().size()+" rules");
+			if(resources!=null){
+				log.debug("resources:"+resources.size());
 			}
 		}
 		return resources;

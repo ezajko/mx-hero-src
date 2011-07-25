@@ -33,7 +33,7 @@ public abstract class LogMail {
 
 				fos = new FileOutputStream(outFile);
 				message.writeTo(fos);
-				log.debug("error mail saved: "+outFile.getAbsolutePath());
+				log.info("error mail saved: "+outFile.getAbsolutePath());
 			} catch (IOException e) {
 				log.error("error creating mail error file",e);
 			}catch (MessagingException e) {
