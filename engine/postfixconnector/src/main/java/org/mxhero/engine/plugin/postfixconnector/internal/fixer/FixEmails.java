@@ -20,7 +20,7 @@ public class FixEmails implements Fixer {
 	private static Logger log = LoggerFactory.getLogger(FixEmails.class);
 	
 	public FixEmails() {
-		log.debug("Fixer created");
+		log.info("Fixer created");
 	}
 
 	@Override
@@ -48,10 +48,11 @@ public class FixEmails implements Fixer {
 					wrongAddress = true;
 				}
 				if (wrongAddress) {
-					log.debug("Fix wrong address for header "+key);
 					value = parse(value);
 					if(value!=null && value.length()>0){
-						log.debug("Fixed header "+key);
+						if(log.isDebugEnabled()){
+							log.debug("Fixed header "+key);
+						}
 						message.setHeader(key, value);
 					}
 					else{

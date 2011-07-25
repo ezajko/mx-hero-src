@@ -89,7 +89,9 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 		    }
 		    t.sendMessage(msg, new InternetAddress[] { recipient });
 		    t.close();
-		    log.debug("Message sent:"+mail);
+		    if(log.isDebugEnabled()){
+		    	log.debug("Message sent:"+mail);
+		    }
 
 		} catch (Exception e) {
 			log.error("Couldnt send the mail:"+mail,e);
