@@ -93,9 +93,7 @@ public class SpamAssassimScan implements SpamScan {
 		SpamdScanner scanner = new SpamdScanner(hostName, port);
 		double hits = -1;
 		try {
-			log.debug("ready for scann:" + scanner.toString());
 			result.setResult(scanner.scan(mail.getMessage()));
-			log.debug("scanned for spam:" + scanner.toString());
 			try {
 				hits = Double.parseDouble(scanner.getHits());
 			} catch (NumberFormatException e) {
@@ -106,7 +104,6 @@ public class SpamAssassimScan implements SpamScan {
 			result.setText(scanner.getHeadersAsAttribute().get(
 					SpamdScanner.STATUS_MAIL_ATTRIBUTE_NAME));
 			if (addHeaders) {
-				log.debug("adding headers:" + scanner.getHeadersAsAttribute());
 				mail.getMessage().setHeader(
 						statusHeaderName,
 						scanner.getHeadersAsAttribute().get(
