@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
@@ -163,6 +164,11 @@ public class H2MimeMailQueueService implements MimeMailQueueService{
 			}catch (Exception e){
 				log.error("error while doing backup",e);
 			}
+		}
+		try {
+			pool.getConnection().createStatement().execute("SHUTDOWN");
+		} catch (SQLException e) {
+			log.error("error while shuting",e);
 		}
 	}
 	

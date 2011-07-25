@@ -1,12 +1,16 @@
 package org.mxhero.engine.mqueues.internal.queue.blocking;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.mqueues.internal.queue.QueueId;
 import org.mxhero.engine.mqueues.internal.queue.entity.Record;
@@ -125,7 +129,8 @@ public class H2MimeMailBlockingQueue extends AbstractMimeMailBlockingQueue<MimeM
 		MimeMail mail=null;
 		if(record!=null){
 			try {
-				mail = MimeMail.createCustom(record.getSender(), record.getRecipient(), record.getContent(), record.getOutputService(), record.getId().getSequence(), record.getId().getInsertDate());
+				MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()), new ByteArrayInputStream(record.getContent()));
+				mail = MimeMail.createCustom(record.getSender(), record.getRecipient(), message, record.getOutputService(), record.getId().getSequence(), record.getId().getInsertDate());
 				mail.setFlow(record.getFlow());
 				mail.setPhase(record.getRecordPhase());
 				for(RecordProperty property : record.getProperties()){
