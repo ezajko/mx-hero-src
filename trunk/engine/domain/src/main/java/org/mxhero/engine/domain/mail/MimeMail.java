@@ -1,14 +1,11 @@
 package org.mxhero.engine.domain.mail;
 
-import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.domain.mail.business.MailFlow;
@@ -55,14 +52,14 @@ public final class MimeMail {
 
 	private String statusReason;
 
-	public static MimeMail createCustom(String from, String recipient, byte[] data,
+	public static MimeMail createCustom(String from, String recipient, MimeMessage data,
 			String responseServiceId,Long sequence, Timestamp time) throws MessagingException{
 		return new MimeMail(from, recipient, data, responseServiceId, sequence, time);
 	}
 	
-	private MimeMail(String from, String recipient, byte[] data,
+	private MimeMail(String from, String recipient, MimeMessage data,
 			String responseServiceId, Long sequence, Timestamp time) throws MessagingException{
-		this.initialSize = data.length;
+		this.initialSize = data.getSize();
 		this.sequence = sequence;
 		this.time = time;
 		this.responseServiceId = responseServiceId;
@@ -72,9 +69,7 @@ public final class MimeMail {
 		this.initialSender = from;
 		this.senderId = from;
 		this.senderDomainId = getDomain(from);
-		this.message = new MimeMessage(Session
-				.getDefaultInstance(new Properties()),
-				new ByteArrayInputStream(data));
+		this.message = data;
 	}
 	
 
@@ -303,26 +298,18 @@ public final class MimeMail {
 			return "";
 		}
 	}
-	
-	/**
-	 * @see java.lang.Object#toString()
-	 */
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("MimeMail [time=").append(time).append(", sequence=")
-				.append(sequence).append(", phase=").append(phase).append(
-						", status=").append(status).append(", statusReason=")
-				.append(statusReason).append(", initialSender=").append(
-						initialSender).append(", recipient=").append(recipient)
-				.append(", initialSize=").append(initialSize).append(
-						", responseServiceId=").append(responseServiceId)
-				.append(", senderId=").append(senderId).append(
-						", senderDomainId=").append(senderDomainId).append(
-						", recipientId=").append(recipientId).append(
-						", recipientDomainId=").append(recipientDomainId)
-				.append("]");
+		builder.append("MimeMail [sequence=").append(sequence)
+				.append(", time=").append(time).append(", initialSender=")
+				.append(initialSender).append(", recipient=").append(recipient)
+				.append(", initialSize=").append(initialSize)
+				.append(", phase=").append(phase).append(", status=")
+				.append(status).append(", flow=").append(flow).append("]");
 		return builder.toString();
 	}
+	
 
 }
