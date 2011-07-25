@@ -58,6 +58,6 @@ antlr;resolution:=optional,*
 
 Embed-Dependency: \
 bonecp;groupId=com.jolbox;inline=false,\
-google-collections;groupId=com.google.collections;inline=false
+guava;groupId=com.google.guava;inline=false
 
-Export-Package: com.googlecode.jtype,com.jolbox*,com.google*,org.mxhero.engine.plugin.dbfinder*
+Export-Package: com.googlecode.jtype,com.jolbox*;version="0.7",com.google*,org.mxhero.engine.plugin.dbfinder*
