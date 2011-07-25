@@ -142,10 +142,8 @@ public class SingleClamavScan implements ClamavScan {
 	 */
 	private void scanAndremove(Part part, Multipart parent,
 			Collection<String> results) throws MessagingException, IOException, ScannerException {
-		log.debug("scanning part");
 		if (part.isMimeType(MULTIPART_TYPE)) {
 			Multipart mp = (Multipart) part.getContent();
-			log.debug("scanning multipart");
 			Collection<BodyPart> childs = new ArrayList<BodyPart>();
 			for (int i = 0; i < mp.getCount(); i++) {
 				childs.add(mp.getBodyPart(i));
@@ -161,7 +159,6 @@ public class SingleClamavScan implements ClamavScan {
 				((Message) part).saveChanges();
 			}
 		} else if (part.isMimeType(MESSAGE_TYPE)) {
-			log.debug("scanning message " + part.getContent());
 			scanAndremove((Part) part.getContent(), null, results);
 		} else if ((part.getFileName() != null && !part.getFileName().trim()
 				.isEmpty())
