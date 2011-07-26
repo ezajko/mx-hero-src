@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mailster.smtp.api.RejectException;
+import org.mailster.smtp.api.TooMuchDataException;
 import org.mailster.smtp.api.handler.AbstractDeliveryHandler;
 import org.mailster.smtp.api.handler.Delivery;
 import org.mailster.smtp.api.handler.DeliveryContext;
@@ -37,6 +38,8 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 	private List<Delivery> deliveries = new ArrayList<Delivery>();
 	private String from;
 
+	private long maxSizeInBytes=-1;
+	
 	/**
 	 * Basic constructor.
 	 * @param ctx
@@ -88,7 +91,7 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 	 * MessageHandler interface yourself.
 	 */
 	@Override
-	public void data(InputStream data) throws IOException {
+	public void data(InputStream data) throws TooMuchDataException, IOException {
 		boolean useCopy = false;
 
 		if (log.isTraceEnabled()) {
@@ -111,6 +114,21 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 			useCopy = true;
 		}
 
+		//check for max size allowed for emails
+		if(maxSizeInBytes>1042){
+			InputStream in = SharedStreamUtils.getPrivateInputStream(useCopy,
+					data);
+			byte[] buf = new byte[BUFF_SIZE];
+			int len = 0;
+			long total=0;
+			while ((len = in.read(buf)) >= 0) {
+				total=total+len;
+			}
+			if(total>=maxSizeInBytes){
+				throw new TooMuchDataException();
+			}
+		}
+		
 		// Prevent concurrent modifications
 		List<Delivery> list = new ArrayList<Delivery>(this.deliveries);
 
@@ -124,4 +142,13 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 		}
 
 	}
+
+	public long getMaxSizeInBytes() {
+		return maxSizeInBytes;
+	}
+
+	public void setMaxSizeInBytes(long maxSizeInBytes) {
+		this.maxSizeInBytes = maxSizeInBytes;
+	}
+
 }
