@@ -94,7 +94,14 @@ public class JpaConfigurationService implements ConfigurationService{
 		configuration.setSsl(Boolean.parseBoolean(systemPropertyDao.findByKey(SystemProperty.MAIL_SMTP_SSL_ENABLE).getPropertyValue()));
 		configuration.setUser(systemPropertyDao.findByKey(SystemProperty.MAIL_SMTP_USER).getPropertyValue());
 		configuration.setAdminMail(systemPropertyDao.findByKey(SystemProperty.MAIL_ADMIN).getPropertyValue());
-		
+		SystemProperty property = systemPropertyDao.findByKey(SystemProperty.EXTERNAL_LOGO_PATH);
+		if(property!=null){
+			configuration.setLogoPath(property.getPropertyValue());
+		}
+		property=systemPropertyDao.findByKey(SystemProperty.NEWS_FEED_ENABLED);
+		if(property!=null){
+			configuration.setNewsFeedEnabled(property.getPropertyValue().toLowerCase());
+		}
 		return configuration;
 	}
 

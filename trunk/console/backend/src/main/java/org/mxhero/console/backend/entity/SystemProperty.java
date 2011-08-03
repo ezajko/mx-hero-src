@@ -19,6 +19,8 @@ public class SystemProperty {
 	public final static String MAIL_SMTP_USER="mail.smtp.user";
 	public final static String MAIL_SMTP_PASSWORD="mail.smtp.password";
 	public final static String DEFAULT_USER_LANGUAGE="default.user.language";
+	public final static String EXTERNAL_LOGO_PATH="external.logo.path";
+	public final static String NEWS_FEED_ENABLED="news.feed.enabled";
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

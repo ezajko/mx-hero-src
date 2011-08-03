@@ -17,6 +17,10 @@ public class ConfigurationVO {
 	private String defaultLanguage;
 	
 	private String adminMail;
+	
+	private String logoPath;
+	
+	private String newsFeedEnabled;
 
 	public String getHost() {
 		return host;
@@ -80,6 +84,22 @@ public class ConfigurationVO {
 
 	public void setAdminMail(String adminMail) {
 		this.adminMail = adminMail;
+	}
+
+	public String getLogoPath() {
+		return logoPath;
+	}
+
+	public void setLogoPath(String logoPath) {
+		this.logoPath = logoPath;
+	}
+
+	public String getNewsFeedEnabled() {
+		return newsFeedEnabled;
+	}
+
+	public void setNewsFeedEnabled(String newsFeedEnabled) {
+		this.newsFeedEnabled = newsFeedEnabled;
 	}
 
 }
