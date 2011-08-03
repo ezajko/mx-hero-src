@@ -95,6 +95,7 @@
 						</fx:Declarations>
 						<fx:Script>
 							<![CDATA[
+								import mx.core.FlexGlobals;
 								import mx.managers.PopUpManager;
 								import mx.resources.IResourceManager;
 								import mx.resources.ResourceManager;
@@ -128,7 +129,7 @@
 								private function showEmail():void{
 									var emailWindow:ShowEmail = new ShowEmail();
 									emailWindow.email=data;
-									PopUpManager.addPopUp(emailWindow,outerDocument.parentDocument as DisplayObject,true);
+									PopUpManager.addPopUp(emailWindow,FlexGlobals.topLevelApplication as DisplayObject,true);
 									PopUpManager.centerPopUp(emailWindow);
 								}
 								

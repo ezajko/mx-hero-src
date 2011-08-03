@@ -166,7 +166,32 @@
 			{
 				effectDrop.play();
 			}
+			
+			public function dataSourceLabelFunction(item:Object):String{
+				var label:String="";
+				if(item!=null){
+					var ea:EmailAccount = item as EmailAccount;
+					if(ea.dataSource!=EmailAccount.MANUAL 
+						&& model.context.selectedDomain!=null
+						&& model.context.selectedDomain.adLdap!=null){
+						label=typeDdl_labelFunc(model.context.selectedDomain.adLdap.directoryType);
+					}else{
+						label=ea.dataSource;
+					}
+				}
+				return label;
+			}
 
+			private function typeDdl_labelFunc(item:Object):String {
+				var label:String="";
+				if( item!=null && item is String){
+					label=this.resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_RESOURCE+item as String);
+					if(label==null || label.length<1){
+						label=item as String;
+					}
+				}
+				return label;
+			}
 		]]>
 	</fx:Script>
 	
@@ -196,6 +221,7 @@
 	<s:states> 
 		<s:State name="new"/>    
 		<s:State name="edit"/>
+		<s:State name="managed"/>
 	</s:states> 
 	
 	<s:layout>
@@ -205,7 +231,7 @@
 	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
 		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ACCOUNT_LABEL)}" width="100%">
 			<s:HGroup verticalAlign="middle">
-				<s:TextInput id="emailTi" width="200" enabled.edit="false" enabled.new="true" 
+				<s:TextInput id="emailTi" width="200" enabled="false" enabled.new="true" 
 							 text="@{account.account}"/>
 				<s:Label fontWeight="bold" text="{'@'+model.context.selectedDomain.domain}"/>
 			</s:HGroup>
@@ -214,6 +240,7 @@
 			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="200"/>
 		</mx:FormItem>
 		<mx:Spacer height="15"/>
+		<s:Label includeIn="managed" text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_MANAGED_BY_LABEL) +' '+ dataSourceLabelFunction(account) }"/>
 		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
 			<s:VGroup height="100%">
 				<component1:LabelExpanded labelText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ALIASES_LABEL)}" 

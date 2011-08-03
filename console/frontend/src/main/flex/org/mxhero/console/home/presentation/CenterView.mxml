@@ -4,7 +4,9 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 gap="0" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley"
-		 creationComplete="vgroup1_creationCompleteHandler(event)" xmlns:newslist="org.mxhero.console.home.presentation.newslist.*">
+		 creationComplete="vgroup1_creationCompleteHandler(event)" 
+		 xmlns:newslist="org.mxhero.console.home.presentation.newslist.*"
+		 currentState="{model.centralState}">
 	<fx:Declarations>
 		<parsley:Configure/>
 
@@ -58,9 +60,15 @@
 		]]>
 	</fx:Script>
 	
+	<s:states>
+		<s:State name="default"/>    
+		<s:State name="nonews"/>
+	</s:states>
+	
 	<s:Panel title="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_PANEL_TITLE)}"  
 			 width="100%"
-			 height="60%"
+			 height.default="60%"
+			 height.nonews="100%"
 			 styleName="Home"
 			 skinClass="org.mxhero.console.commons.skin.BlueLinePanel">
 		<s:VGroup width="100%" height="100%">
@@ -169,7 +177,8 @@
 			 width="100%"
 			 height="40%"
 			 styleName="Home"
-			 skinClass="org.mxhero.console.commons.skin.BlueLinePanel">
+			 skinClass="org.mxhero.console.commons.skin.BlueLinePanel"
+			 excludeFrom="nonews">
 		<s:Scroller width="100%" 
 					height="100%"
 					horizontalScrollPolicy="off" 

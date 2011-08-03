@@ -87,7 +87,11 @@
 			import org.mxhero.console.frontend.domain.MxHeroData;
 			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
+			
+			import spark.components.TitleWindow;
 
+			
+			private var titleWindows:TitleWindow;
 			
 			private function init():void{
 				modifyTooltips();
