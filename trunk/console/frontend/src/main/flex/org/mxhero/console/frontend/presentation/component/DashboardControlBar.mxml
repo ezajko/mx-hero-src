@@ -49,6 +49,7 @@
 			import org.mxhero.console.frontend.application.MainDestination;
 			import org.mxhero.console.frontend.application.resources.DashboardProperties;
 			import org.mxhero.console.frontend.domain.ApplicationContext;
+			import org.mxhero.console.frontend.domain.Configuration;
 			import org.mxhero.console.frontend.presentation.DashboardPM;
 			import org.mxhero.console.reports.application.ReportsDestinations;
 			
@@ -99,13 +100,23 @@
 				prevIndex=event.index;
 			}
 			
+			protected function getLogoImage(configuration:Configuration):Object{
+				if(configuration!=null
+				&& configuration.logoPath!=null
+				&& configuration.logoPath.length>1){
+					return applicationContext.configuration.logoPath;
+				}else{
+					return ImageResources.LOGO_IMG;
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	<s:backgroundFill>
 		<s:SolidColor color="#70B2EE" alpha="0.6"/>
 	</s:backgroundFill>
 	<s:HGroup width="100%" height="100%" verticalAlign="middle" paddingLeft="5" paddingRight="5">
-		<mx:Image source="{ImageResources.LOGO_IMG}"/>
+		<mx:Image source="{getLogoImage(applicationContext.configuration)}" height="32" width="130"/>
 		<mx:Spacer width="20"/>
 		<component1:NoDisabledLinkBar id="linkBar" 
 									  dataProvider="{dataProvider}" 

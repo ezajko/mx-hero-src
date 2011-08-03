@@ -70,6 +70,8 @@ package org.mxhero.console.home.presentation
 		public var totals:ArrayCollection=null;
 		private var timer:Timer = new Timer(15000,1);
 		private var completeTimer:Timer = new Timer(60000,1);
+		[Bindable]
+		public var centralState:String = 'default';
 		
 		private var hasToRefresh:Boolean = false;
 		
@@ -98,6 +100,13 @@ package org.mxhero.console.home.presentation
 			refreshActivity();
 			if(refreshFeed!=null){
 				refreshFeed();
+			}
+			if(context.configuration!=null
+			&& context.configuration.newsFeedEnabled!=null
+			&& context.configuration.newsFeedEnabled=="true"){
+				centralState='default'
+			}else{
+				centralState='nonews';
 			}
 		}
 		

@@ -169,7 +169,11 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountShow = new AccountShow();
 			accountShow.account=(selectedEmailAccount as EmailAccount).clone();
 			accountShow.model=this;
-			accountShow.currentState="edit";
+			if(accountShow.account.dataSource==EmailAccount.MANUAL){
+				accountShow.currentState="edit";
+			}else{
+				accountShow.currentState="managed";
+			}
 			accountShow.domains=new ArrayCollection();
 			if(context.selectedDomain.aliases!=null){
 				accountShow.domains.addAll(context.selectedDomain.aliases);

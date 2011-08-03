@@ -9,6 +9,8 @@ package org.mxhero.console.frontend.domain
 	{
 		public var applicationUser:ApplicationUser;
 		
+		public var configuration:Configuration;
+		
 		public var selectedDomain:Domain;
 		
 		public var groups:ArrayCollection;

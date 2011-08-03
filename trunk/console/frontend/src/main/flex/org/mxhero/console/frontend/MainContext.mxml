@@ -55,6 +55,7 @@
 		
 		<fx:Array id="initialTasks">
 			<task1:LoadUserDataTask id="loadUserDataTask"/>
+			<task1:LoadConfigurationTask id="loadConfigurationTask"/>
 			<task1:LoadModuleTask moduleData="{home}"/>
 			<task1:LoadModuleTask moduleData="{features}"/>
 			<task1:LoadModuleTask moduleData="{reports}"/>
@@ -96,6 +97,13 @@
 			showBusyCursor="true"
 			channelSet="{channelSet}"
 			/>
+
+		<s:RemoteObject
+			id="loadConfigurationService" 
+			destination="configurationService" 
+			showBusyCursor="true"
+			channelSet="{channelSet}"
+			/>
 		
 		<parsley:Object type="{RemoteObject}" id="domainService">
 			<parsley:Property name="destination" value="domainService"/>
@@ -124,7 +132,7 @@
 		<s:ChannelSet id="channelSet">
 			<s:channels>
 				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
-				<!--<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>-->
+				<!--<s:AMFChannel uri="{'http://test.mxhero.com:8080/mxhero/messagebroker/flex-amf'}"/>-->
 			</s:channels>
 		</s:ChannelSet>
 

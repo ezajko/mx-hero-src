@@ -41,7 +41,7 @@
 				return creationDateFormatter.format(item.updatedDate);
 			}
 			
-			protected function dataSourceLabelFunction(item:Object,column:DataGridColumn):String{
+			public function dataSourceLabelFunction(item:Object,column:DataGridColumn):String{
 				var label:String="";
 				if(item!=null){
 					var ea:EmailAccount = item as EmailAccount;
@@ -276,7 +276,7 @@
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
 									   minWidth="100"/>
 					<mx:DataGridColumn dataField="dataSource"
-									   labelFunction="dataSourceLabelFunction"
+									   labelFunction="{dataSourceLabelFunction}"
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_DATASOURCE_LABEL)}" 
 									   minWidth="100"/>
 					<mx:DataGridColumn dataField="aliases"
@@ -299,19 +299,28 @@
 									<fx:Script>
 										<![CDATA[
 											import org.mxhero.console.commons.resources.ImageResources;
-											import org.mxhero.console.frontend.domain.EmailAccount;
 											import org.mxhero.console.configurations.application.resources.AccountsProperties;
+											import org.mxhero.console.frontend.domain.EmailAccount;
+											
+											protected function getTooltipText(enabled:Boolean):String{
+												if(enabled){
+													return resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL);
+												}else{
+													return resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_MANAGED_BY_LABEL) +" "+ outerDocument.dataSourceLabelFunction(data,null); 
+												}
+											}
 											
 										]]>
 									</fx:Script>
 									<component1:GlowButton maxGlow="10.0" 
 														   click="{outerDocument.model.editEmailAccount(outerDocument)}"
 														   source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
-									<component1:GlowButton maxGlow="10.0" 
+									<component1:GlowButton id="deleteAccountBtt"
+														   maxGlow="10.0" 
 														   click="{outerDocument.model.removeEmailAccount()}"
 														   source="{ImageResources.DELETE_ICO}" 
-														   enabled="{data.DataSource==EmailAccount.MANUAL}"
-														   toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+														   enabled="{data.dataSource==EmailAccount.MANUAL}"
+														   toolTip="{getTooltipText(deleteAccountBtt.enabled)}"/>						
 								</mx:HBox>
 							</fx:Component>
 						</mx:itemRenderer>

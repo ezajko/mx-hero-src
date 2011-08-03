@@ -42,7 +42,8 @@ package org.mxhero.console.configurations.presentation.system
 				configuration.ssl!=originalConfiguration.ssl ||
 				configuration.user!=originalConfiguration.user ||
 				configuration.password!=originalConfiguration.password ||
-				configuration.adminMail!=originalConfiguration.adminMail  ){
+				configuration.adminMail!=originalConfiguration.adminMail ||
+				configuration.logoPath!=originalConfiguration.logoPath){
 				Alert.show(rm.getString(SystemProperties.NAME,SystemProperties.CANCEL_CHANGES_TEXT),"",Alert.OK|Alert.CANCEL,null,cancelHandler);
 			} else {
 				parentModel.navigateTo(ConfigurationsDestinations.LIST);
