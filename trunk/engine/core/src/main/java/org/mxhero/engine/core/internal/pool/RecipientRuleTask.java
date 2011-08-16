@@ -72,6 +72,7 @@ public final class RecipientRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
+			log.debug("processing RECEIVE with base:"+ksession.getKnowledgeBase()+", packages in base:" + ksession.getKnowledgeBase().getKnowledgePackages().size());
 			this.processor.process(ksession, filler, userFinderService, mail);
 		} catch (Exception e) {
 			if (getLogStatService() != null) {

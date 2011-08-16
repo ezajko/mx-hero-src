@@ -56,7 +56,6 @@ public class PhaseSessionFiller implements SessionFiller {
 		String domainAgendaGroup = null;
 		InitialDataVO initialData = null;
 
-		
 		initialData = getInitialData(userFinder, mail);
 		
 		if(mail.getPhase().equals(RulePhase.SEND)){
@@ -76,13 +75,6 @@ public class PhaseSessionFiller implements SessionFiller {
 		ksession.insert(new RecipientsVO(mail));
 		ksession.insert(new BodyVO(mail));
 		ksession.insert(new AttachmentsVO(mail));
-
-		if (log.isDebugEnabled()) {
-			log.debug("All facts are:");
-			for (Object obj : ksession.getObjects()) {
-				log.debug(obj.toString());
-			}
-		}
 		
 		return domainAgendaGroup;
 	}

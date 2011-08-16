@@ -71,8 +71,8 @@ public class KnowledgeBaseBuilder {
 		KnowledgeBuilder kbuilder = knowledgeBuilderFactoryService
 				.newKnowledgeBuilder(kbConf);
 		
-		kbuilder.add(resourceFactoryService.newFileSystemResource(filePath),
-				ResourceType.CHANGE_SET);
+/*		kbuilder.add(resourceFactoryService.newFileSystemResource(filePath),
+				ResourceType.CHANGE_SET);*/
 
 		log.debug("total resourceProviders:"+resourceProviders.size());
 		for(Object provider : resourceProviders){
@@ -105,6 +105,7 @@ public class KnowledgeBaseBuilder {
 						try{
 						kbuilder.add(resourceFactoryService.newInputStreamResource(is),
 								ResourceType.getResourceType(resource.getType()));
+						log.debug("resource loaded:"+resource.getName());
 						}catch (Exception e){
 							log.error("error while compiling resource "+resource.getName(),e);
 						}	
@@ -132,6 +133,7 @@ public class KnowledgeBaseBuilder {
 				.newKnowledgeBase(kbaseConf);
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		knowledgeBase = kbase;
+		log.info("base:"+knowledgeBase+", packages in base:" + knowledgeBase.getKnowledgePackages().size());
 	}
 
 	/**
