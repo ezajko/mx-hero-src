@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.service;
 
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -32,8 +31,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 	private PropertiesService properties;
 	
 	private LogStat logStat;
-	
-	private SimpleDateFormat format;
 	
 	/**
 	 * Implementation that adds mails to the OutputQueue.
@@ -117,23 +114,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 
 	public void setProperties(PropertiesService properties) {
 		this.properties = properties;
-	}
-	
-	/**
-	 * @return the format
-	 */
-	public SimpleDateFormat getFormat() {
-		if(format==null){
-			format = new SimpleDateFormat(getProperties().getValue(PostfixConnector.STATS_TIME_FORMAT));
-		}
-		return format;
-	}
-	
-	/**
-	 * @param format the format to set
-	 */
-	public void setFormat(SimpleDateFormat format) {
-		this.format = format;
 	}
 	
 	/**

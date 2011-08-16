@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.postfixconnector.internal.snmp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -48,8 +47,6 @@ public final class SMTPMessageListener implements MessageListener {
 	private PropertiesService properties;
 
 	private UserFinder userFinderService;
-
-	private SimpleDateFormat format;
 
 	private Collection<Fixer> fixers;
 
@@ -229,25 +226,6 @@ public final class SMTPMessageListener implements MessageListener {
 	 */
 	public void setProperties(PropertiesService properties) {
 		this.properties = properties;
-	}
-
-	/**
-	 * @return the format
-	 */
-	public SimpleDateFormat getFormat() {
-		if (format == null) {
-			format = new SimpleDateFormat(getProperties().getValue(
-					PostfixConnector.STATS_TIME_FORMAT));
-		}
-		return format;
-	}
-
-	/**
-	 * @param format
-	 *            the format to set
-	 */
-	public void setFormat(SimpleDateFormat format) {
-		this.format = format;
 	}
 
 	public UserFinder getUserFinderService() {

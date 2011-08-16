@@ -16,6 +16,7 @@ import org.mailster.smtp.api.handler.DeliveryContext;
 import org.mailster.smtp.api.listener.MessageListener;
 import org.mailster.smtp.auth.AuthenticationHandler;
 import org.mailster.smtp.util.SharedStreamUtils;
+import org.mxhero.engine.plugin.postfixconnector.internal.service.PostfixConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,9 +115,16 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 			useCopy = true;
 		}
 
+		if(PostfixConnector.getCurrentInstanceValue(PostfixConnector.MESSAGE_MAX_SIZE)!=null){
+			try{
+				maxSizeInBytes=Long.parseLong(PostfixConnector.getCurrentInstanceValue(PostfixConnector.MESSAGE_MAX_SIZE));
+			}catch(Exception e){
+				log.warn("wrong param "+PostfixConnector.MESSAGE_MAX_SIZE);
+			}
+		}
 		//check for max size allowed for emails
 		if(maxSizeInBytes>1042){
-			InputStream in = SharedStreamUtils.getPrivateInputStream(useCopy,
+			InputStream in = SharedStreamUtils.getPrivateInputStream(true,
 					data);
 			byte[] buf = new byte[BUFF_SIZE];
 			int len = 0;
