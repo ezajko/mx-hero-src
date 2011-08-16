@@ -72,6 +72,7 @@ public final class SenderRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
+			log.debug("processing SEND with base:"+ksession.getKnowledgeBase()+", packages in base:" + ksession.getKnowledgeBase().getKnowledgePackages().size());
 			processor.process(ksession, filler, userFinderService, mail);
 			}catch (Exception e) {
 				if (getLogStatService() != null) {

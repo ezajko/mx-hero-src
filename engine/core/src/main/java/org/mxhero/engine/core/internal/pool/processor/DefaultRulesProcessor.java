@@ -37,21 +37,27 @@ public class DefaultRulesProcessor implements RulesProcessor{
 		String bottomAgendaGroup = getProperties().getValue(Core.GROUP_ID_BOTTOM);
 		if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
 			ksession.getAgenda().getAgendaGroup(bottomAgendaGroup).setFocus();
+			log.debug("firing rules for bottom:"+bottomAgendaGroup);
 		}
 
 		//Adding domain agenda group
 		if(domainAgendaGroup!=null){
 			ksession.getAgenda().getAgendaGroup(domainAgendaGroup).setFocus();
+			log.debug("firing rules for domain:"+domainAgendaGroup);
 		}
 		
 		//Adding default rules to start first
 		String startAgendaGroup = getProperties().getValue(Core.GROUP_ID_TOP);
 		if (startAgendaGroup!=null && !startAgendaGroup.isEmpty()){
 			ksession.getAgenda().getAgendaGroup(startAgendaGroup).setFocus();
+			log.debug("firing rules for top:"+startAgendaGroup);
 		}
-
-		if(log.isDebugEnabled()){
-			log.debug("firing rules for top:"+startAgendaGroup+" domain:"+domainAgendaGroup+" bottom:"+bottomAgendaGroup);
+		
+		if (log.isDebugEnabled()) {
+			log.debug("All facts are:");
+			for (Object obj : ksession.getObjects()) {
+				log.debug(obj.toString());
+			}
 		}
 		
 		ksession.fireAllRules();
