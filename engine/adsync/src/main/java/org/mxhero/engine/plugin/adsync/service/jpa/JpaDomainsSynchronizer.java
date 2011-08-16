@@ -41,8 +41,8 @@ public class JpaDomainsSynchronizer implements DomainsSynchronizer{
 	
 	public static final String ZIMBRA_TYPE="zimbra";
 	public static final String EXCHANGE_TYPE="exchange";
-	public static final String ZIMBRA_FILTER="(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList))";
-	public static final String EXCHANGE_FILTER="(objectclass=user)";
+	public static final String ZIMBRA_FILTER="(&(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList))(mail=*))";
+	public static final String EXCHANGE_FILTER="(&(objectclass=user)(mail=*))";
 	public static final String SENDER_MAIL = "adsync@mxhero.com";
 	public static final String OUTPUT_SERVICE = "org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService";
 	
