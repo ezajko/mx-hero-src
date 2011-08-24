@@ -175,13 +175,16 @@
 				<s:TextInput id="userTi" width="100%" text="@{adLdap.user}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none">
-				<s:TextInput id="passwordTi" width="100%" text="@{adLdap.password}"/>
+				<s:TextInput id="passwordTi" width="100%" text="@{adLdap.password}" displayAsPassword="true"/>
 			</mx:FormItem>
 			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra">
 				<s:TextArea id="filterTi" width="100%" heightInLines="3" text="@{adLdap.filter}"/>
 			</mx:FormItem>
 			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none">
 				<s:TextArea id="baseTi" width="100%" heightInLines="3" text="@{adLdap.base}"/>
+			</mx:FormItem>
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none">
+				<s:TextArea id="dnAuthenticate" width="100%" heightInLines="3" text="@{adLdap.dnAuthenticate}"/>
 			</mx:FormItem>
 			<mx:FormItem width="100%" excludeFrom="none">
 				<s:HGroup verticalAlign="top" width="100%">

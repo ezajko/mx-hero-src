@@ -73,6 +73,8 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function getVirus():void{
+			var sinceMails:Date=new Date();
+			sinceMails.setHours(0,0,0,0);
 			this.virusHists=null;
 			this.virusMails=null;
 			var domain:String = null;
@@ -81,12 +83,14 @@ package org.mxhero.console.reports.presentation.reports
 				domain = context.selectedDomain.domain;
 			}
 			dispatcher( new GetVirusHitsEvent(domain,sinceDate) );
-			dispatcher( new GetVirusEmailsEvent(domain,sinceDate,untilDate));
+			dispatcher( new GetVirusEmailsEvent(domain,sinceMails,untilDate));
 			stateVirus = "zoom_out";
 			this.virusUpdating=true;
 		}
 		
 		public function getSpam():void{
+			var sinceMails:Date=new Date();
+			sinceMails.setHours(0,0,0,0);
 			spamHists=null;
 			spamMails=null;
 			var domain:String = null;
@@ -95,7 +99,7 @@ package org.mxhero.console.reports.presentation.reports
 				domain = context.selectedDomain.domain;
 			}
 			dispatcher( new GetSpamHitsEvent(domain,sinceDate) );
-			dispatcher( new GetSpamEmailsEvent(domain,sinceDate,untilDate));
+			dispatcher( new GetSpamEmailsEvent(domain,sinceMails,untilDate));
 			stateSpam = "zoom_out";
 			this.spamUpdating=true;
 		}
