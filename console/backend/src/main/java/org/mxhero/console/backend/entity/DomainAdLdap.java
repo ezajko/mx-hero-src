@@ -47,6 +47,9 @@ public class DomainAdLdap {
 	@Column(name="base")
 	private String base;
 	
+	@Column(name="dn_authenticate")
+	private String dnAuthenticate;
+	
 	@Column(name="next_update")
 	private Calendar nextUpdate;
 	
@@ -169,6 +172,14 @@ public class DomainAdLdap {
 
 	public void setDomainId(String domainId) {
 		this.domainId = domainId;
+	}
+
+	public String getDnAuthenticate() {
+		return dnAuthenticate;
+	}
+
+	public void setDnAuthenticate(String dnAuthenticate) {
+		this.dnAuthenticate = dnAuthenticate;
 	}
 
 	@Override

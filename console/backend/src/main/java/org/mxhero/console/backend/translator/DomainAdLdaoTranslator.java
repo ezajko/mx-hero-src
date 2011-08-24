@@ -24,6 +24,7 @@ public class DomainAdLdaoTranslator extends AbstractTranslator<DomainAdLdapVO, D
 		adLdapVO.setPort(entity.getPort());
 		adLdapVO.setSslFlag(entity.getSslFlag());
 		adLdapVO.setUser(entity.getUser());
+		adLdapVO.setDnAuthenticate(entity.getDnAuthenticate());
 		
 		return adLdapVO;
 	}

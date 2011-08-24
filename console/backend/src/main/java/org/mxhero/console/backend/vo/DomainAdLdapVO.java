@@ -29,6 +29,8 @@ public class DomainAdLdapVO {
 	private String error;
 	
 	private Boolean overrideFlag;
+	
+	private String dnAuthenticate;
 
 	public String getDomainId() {
 		return domainId;
@@ -132,6 +134,14 @@ public class DomainAdLdapVO {
 
 	public void setOverrideFlag(Boolean overrideFlag) {
 		this.overrideFlag = overrideFlag;
+	}
+
+	public String getDnAuthenticate() {
+		return dnAuthenticate;
+	}
+
+	public void setDnAuthenticate(String dnAuthenticate) {
+		this.dnAuthenticate = dnAuthenticate;
 	}
 	
 }
