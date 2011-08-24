@@ -255,6 +255,7 @@ public class JpaDomainService implements DomainService {
 		entity.setPort(adLdapVO.getPort());
 		entity.setSslFlag(adLdapVO.getSslFlag());
 		entity.setUser(adLdapVO.getUser());
+		entity.setDnAuthenticate(adLdapVO.getDnAuthenticate());
 		domain.setAdLdap(entity);
 		domain = dao.save(domain);
 		return adLdapTranslator.translate(domain.getAdLdap());
@@ -273,6 +274,7 @@ public class JpaDomainService implements DomainService {
 		entity.setPort(adLdapVO.getPort());
 		entity.setSslFlag(adLdapVO.getSslFlag());
 		entity.setUser(adLdapVO.getUser());
+		entity.setDnAuthenticate(adLdapVO.getDnAuthenticate());
 	
 		return adLdapTranslator.translate(dao.save(entity.getDomain()).getAdLdap());
 	}

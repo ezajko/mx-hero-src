@@ -31,14 +31,11 @@ public class JpaThreatsReportService implements ThreatsReportService {
 	
 	private RecordDao recordDao;
 	
-	String hitsSqlQuery = "SELECT COUNT(*),date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
-		+" FROM mail_records r0 " 
+	String hitsSqlQuery = "SELECT SUM(r0.amount), date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
+		+" FROM mail_stats_grouped r0 " 
 		+" WHERE r0.insert_date > ? "
-		+" AND EXISTS( SELECT 1 FROM mail_stats s "
-								+" WHERE s.insert_date = r0.insert_date " 
-								+" AND s.record_sequence = r0.record_sequence " 
-								+" AND s.stat_key = ? " 
-								+" AND s.stat_value = ?) ";
+		+" AND r0.stat_key = ? " 
+		+" AND r0.stat_value = ? ";
 	
 	String dayHitsSqlQuery = "SELECT COUNT(*),date(r0.insert_date),hour(r0.insert_date)" 
 		+" FROM mail_records r0 " 
