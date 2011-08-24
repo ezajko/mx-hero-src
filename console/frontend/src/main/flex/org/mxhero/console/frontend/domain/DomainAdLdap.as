@@ -17,6 +17,7 @@ package org.mxhero.console.frontend.domain
 		public var lastUpdate:Date;
 		public var error:String;
 		public var overrideFlag:Boolean;
+		public var dnAuthenticate:String;
 		
 		public function clone():DomainAdLdap{
 			var clonedAdLdap:DomainAdLdap = new DomainAdLdap();
@@ -33,6 +34,7 @@ package org.mxhero.console.frontend.domain
 			clonedAdLdap.lastUpdate=this.lastUpdate;
 			clonedAdLdap.error=this.error;
 			clonedAdLdap.overrideFlag=this.overrideFlag;
+			clonedAdLdap.dnAuthenticate=this.dnAuthenticate;
 			return clonedAdLdap;
 		}
 	}

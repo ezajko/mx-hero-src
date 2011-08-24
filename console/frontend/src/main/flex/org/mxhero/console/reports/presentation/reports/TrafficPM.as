@@ -82,7 +82,7 @@ package org.mxhero.console.reports.presentation.reports
 			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
 			sinceDate.setHours(0,0,0,0);
 			since24Hs.setTime(new Date());
-			since24Hs.setTime(since24Hs.getTime()-PLUSDAY);
+			since24Hs.setHours(0,0,0,0);
 			getIncomming();
 			getOutgoing();
 		}
@@ -119,10 +119,10 @@ package org.mxhero.console.reports.presentation.reports
 		public function getOutgoing():void{
 			if(context.selectedDomain!=null){
 				dispatcher(new GetOutgoingEvent(context.selectedDomain.domain,sinceDate));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain,sinceDate,this.onlyDomain));
+				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
 			}else{
 				dispatcher(new GetOutgoingEvent(null,sinceDate));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(null,sinceDate,this.onlyDomain));
+				dispatcher(new GetTopTenOutgoingRecipientsEvent(null,since24Hs,this.onlyDomain));
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
