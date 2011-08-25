@@ -1,5 +1,7 @@
 package org.mxhero.engine.domain.mail.business;
 
+import java.util.Collection;
+
 /**
  * Represents the body of a mail so it can be used in rules.
  * @author mmarmol
@@ -70,19 +72,19 @@ public class Body {
 		this.deepHtmlText = deepHtmlText;
 	}
 	
-	public boolean textHasAny(String[] words){
+	public boolean textHasAny(Collection<String> words){
 		return false;
 	}
 	
-	public boolean textHasAll(String[] words){
+	public boolean textHasAll(Collection<String> words){
 		return false;
 	}
 	
-	public boolean htmlTextHasAny(String[] words){
+	public boolean htmlTextHasAny(Collection<String> words){
 		return false;
 	}
 	
-	public boolean htmlTextHasAll(String[] words){
+	public boolean htmlTextHasAll(Collection<String> words){
 
 		return false;
 	}

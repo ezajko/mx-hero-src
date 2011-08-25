@@ -43,6 +43,8 @@ public final class MimeMail {
 	private Map<String, String> properties = new HashMap<String, String>();
 	
 	private MimeMessage message;
+	
+	private String messageId;
 
 	private String phase = RulePhase.SEND;
 
@@ -69,7 +71,10 @@ public final class MimeMail {
 		this.initialSender = from;
 		this.senderId = from;
 		this.senderDomainId = getDomain(from);
-		this.message = data;
+		this.messageId = data.getMessageID();
+		this.message = new StaticIdMimeMessage(data);
+		this.message.saveChanges();
+		this.setMessageId(message.getMessageID());
 	}
 	
 
@@ -96,8 +101,10 @@ public final class MimeMail {
 			headerSize += ((String) e.nextElement()).length() + 2;
 		}
 		this.initialSize = data.getSize() + headerSize;
-
-		this.message = data;
+		this.messageId = data.getMessageID();
+		this.message = new StaticIdMimeMessage(data);
+		this.message.saveChanges();
+		this.setMessageId(message.getMessageID());
 
 	}
 	
@@ -291,6 +298,14 @@ public final class MimeMail {
 		this.flow = flow;
 	}
 
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
 	private static String getDomain(String email){
 		if(email!=null && email.contains("@")){
 			return email.split("@")[1];
@@ -312,4 +327,23 @@ public final class MimeMail {
 	}
 	
 
+	private class StaticIdMimeMessage extends MimeMessage{
+		
+		public StaticIdMimeMessage(MimeMessage message) throws MessagingException{
+			super(message);
+		}
+		
+		@Override
+		protected void updateMessageID() throws MessagingException {
+			//if this message do not have an ID them create one.
+			if(getMessageId()==null){
+				super.updateMessageID();
+			}else{
+				//if there it has an id and the message has other, them override it.
+				if(!this.getMessageID().equals(getMessageId())){
+					message.setHeader("Message-ID",getMessageId());
+				}
+			}
+		}
+	}
 }

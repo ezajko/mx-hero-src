@@ -1,8 +1,6 @@
 package org.mxhero.engine.domain.mail.business;
 
 import java.util.Collection;
-import java.util.List;
-
 /**
  * Represents the Domain of a mail so it can be used in rules.
  * @author mmarmol
@@ -99,11 +97,21 @@ public class Domain {
 		return false;
 	}
 	
-	public boolean hasAlias(List<String> aliases){
-		if(aliases==null){
-			return false;
+	public boolean hasAlias(Collection<String> aliases){
+		if(this.getAliases()==null){
+			for(String alias : aliases){
+				if(this.getId().equalsIgnoreCase(alias)){
+					return true;
+				}
+			}
+		}else{
+			for(String alias : aliases){
+				if(this.getAliases().contains(alias)){
+					return true;
+				}
+			}
 		}
-		return hasAlias((String[])aliases.toArray());
+		return false;
 	}
 	
 	
