@@ -187,7 +187,7 @@ public class AttachmentsVO extends Attachments {
 	@Override
 	public boolean hasMatchingType(String pattern){
 		for(String type :getTypes()){
-			if(type.matches(pattern)){
+			if(type.startsWith(pattern)){
 				return true;
 			}
 		}
@@ -196,14 +196,21 @@ public class AttachmentsVO extends Attachments {
 	
 	@Override
 	public boolean hasMatchingType(Collection<String> patterns){
-		return this.hasMatchingType((String[])patterns.toArray());
+		for(String type :getTypes()){
+			for(String pattern : patterns){
+				if(type.startsWith(pattern)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	@Override
 	public boolean hasMatchingType(String[] patterns){
 		for(String type :getTypes()){
 			for(String pattern : patterns){
-				if(type.matches(pattern)){
+				if(type.startsWith(pattern)){
 					return true;
 				}
 			}
@@ -223,7 +230,14 @@ public class AttachmentsVO extends Attachments {
 	
 	@Override
 	public boolean hasMatchingName(Collection<String> patterns){
-		return this.hasMatchingName((String[])patterns.toArray());
+		for(String name :getFileNames()){
+			for(String pattern : patterns){
+				if(name.matches(pattern)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -250,7 +264,14 @@ public class AttachmentsVO extends Attachments {
 	
 	@Override
 	public boolean hasMatchingExtension(Collection<String> patterns){
-		return this.hasMatchingExtension((String[])patterns.toArray());
+		for(String extension :getExtensions()){
+			for(String pattern : patterns){
+				if(extension.matches(pattern)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	@Override

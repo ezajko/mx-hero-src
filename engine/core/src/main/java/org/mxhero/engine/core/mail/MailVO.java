@@ -5,8 +5,10 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.core.mail.command.CommandResolver;
+
 import org.mxhero.engine.domain.mail.business.Mail;
 import org.mxhero.engine.domain.mail.business.MailState;
+
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.slf4j.Logger;
@@ -31,8 +33,14 @@ public final class MailVO extends Mail {
 	/**
 	 * @param mimeMail
 	 */
-	public MailVO(MimeMail mimeMail) {
+	public MailVO(MimeMail mimeMail, InitialDataVO initialData) {
 		this.mimeMail = mimeMail;
+		this.initialData=initialData;
+		this.headers=new HeadersVO(mimeMail);
+		this.subject=new SubjectVO(mimeMail);
+		this.recipients=new RecipientsVO(mimeMail);
+		this.body=new BodyVO(mimeMail);
+		this.attachments=new AttachmentsVO(mimeMail);
 	}
 
 	/**
