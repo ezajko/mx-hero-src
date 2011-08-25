@@ -93,6 +93,7 @@ public class H2MimeMailBlockingQueue extends AbstractMimeMailBlockingQueue<MimeM
 			pk.setInsertDate(new Timestamp(mail.getTime().getTime()));
 			pk.setSequence(mail.getSequence());
 			record.setId(pk);
+			record.setMessageId(mail.getMessageId());
 			record.setEnqueued(true);
 			record.setModule(getId().getModule());
 			record.setPhase(getId().getPhase());
@@ -133,6 +134,7 @@ public class H2MimeMailBlockingQueue extends AbstractMimeMailBlockingQueue<MimeM
 				mail = MimeMail.createCustom(record.getSender(), record.getRecipient(), message, record.getOutputService(), record.getId().getSequence(), record.getId().getInsertDate());
 				mail.setFlow(record.getFlow());
 				mail.setPhase(record.getRecordPhase());
+				mail.setMessageId(record.getMessageId());
 				for(RecordProperty property : record.getProperties()){
 					mail.getProperties().put(property.getId().getKey(),property.getValue());
 				}

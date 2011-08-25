@@ -42,6 +42,9 @@ public class Record implements Serializable{
 	@Column(name = "in_queue_since", nullable=false)
 	private Long inQueueSince;
 	
+	@Column(name = "message_id", length = 1024, nullable=false)
+	private String messageId;
+	
 	@Lob
 	@Column(name = "content", nullable=false)
 	private byte[] content; 
@@ -224,6 +227,14 @@ public class Record implements Serializable{
 
 	public void setInQueueSince(Long inQueueSince) {
 		this.inQueueSince = inQueueSince;
+	}
+	
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
 	}
 
 	@Override
