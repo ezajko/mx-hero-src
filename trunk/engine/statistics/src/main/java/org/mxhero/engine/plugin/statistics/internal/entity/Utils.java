@@ -81,12 +81,7 @@ public final class Utils {
 		}
 		record.setFlow(mail.getFlow());
 		
-		try {
-			record.setMessageId(mail.getMessage().getMessageID());
-		} catch (MessagingException e1) {
-			log.error("could not read message id from email");
-			record.setMessageId("");
-		}
+		record.setMessageId(mail.getMessageId());
 		
 		try {
 			Address[] froms = mail.getMessage().getFrom();
