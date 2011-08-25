@@ -103,9 +103,9 @@
 			<version>1.1.4.c</version>
 		</dependency>
 		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>org.drools.osgi.wrapper.mvel2</artifactId>
-			<version>2.0.16</version>
+		    <groupId>org.mvel</groupId>
+		    <artifactId>mvel2</artifactId>
+		    <version>2.1.0.drools2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jdt</groupId>
@@ -206,21 +206,6 @@
 			<artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt.springsource
 			</artifactId>
 			<version>6.0.20.S2-r5956</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-core</artifactId>
-			<version>5.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-compiler</artifactId>
-			<version>5.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-api</artifactId>
-			<version>5.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mxhero</groupId>
