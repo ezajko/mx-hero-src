@@ -120,7 +120,7 @@ public final class SMTPMessageListener implements MessageListener {
 		try {
 			message = new MimeMessage(
 					Session.getDefaultInstance(new Properties()), data);
-			
+
 			if(log.isTraceEnabled()){
 				LogMail.saveErrorMail(message,
 						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"received",
@@ -153,9 +153,11 @@ public final class SMTPMessageListener implements MessageListener {
 								PostfixConnector.DEFAULT_RECIPIENT_HEADER),
 						recipient);
 			}
-			message.saveChanges();
+			
 			mail = new MimeMail(from, recipient, message,
 					PostFixConnectorOutputService.class.getName());
+			message.saveChanges();
+
 		} catch (Exception e1) {
 			log.error("error while receiving email", e1);
 			LogMail.saveErrorMail(message,
