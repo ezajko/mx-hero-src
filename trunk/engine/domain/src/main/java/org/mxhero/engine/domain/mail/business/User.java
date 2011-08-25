@@ -1,7 +1,6 @@
 package org.mxhero.engine.domain.mail.business;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Represents a user inside the platform so it can be used inside rules.
@@ -130,11 +129,22 @@ public class User {
 		return false;
 	}
 	
-	public boolean hasAlias(List<String> emails){
-		if(emails==null){
+	public boolean hasAlias(Collection<String> emails){
+		if(this.getAliases()==null){
+			for(String email : emails){
+				if(this.getMail().equalsIgnoreCase(email)){
+					return true;
+				}
+			}
 			return false;
+		}else{
+			for(String email : emails){
+				if(this.getAliases().contains(email)){
+					return true;
+				}
+			}
 		}
-		return hasAlias((String[])emails.toArray());
+		return false;
 	}
 	
 	@Override

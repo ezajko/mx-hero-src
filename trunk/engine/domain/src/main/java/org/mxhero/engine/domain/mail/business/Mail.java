@@ -16,6 +16,18 @@ public class Mail {
 	
 	private String statusReason;
 	
+	protected InitialData initialData;
+	
+	protected Headers headers;
+	
+	protected Subject subject;
+	
+	protected Recipients recipients;
+	
+	protected Body body;
+	
+	protected Attachments attachments;
+	
 	private Map<String, String> properties;
 	
 	/**
@@ -84,6 +96,54 @@ public class Mail {
 
 	public boolean drop(String reason){
 		return false ;
+	}
+
+	public InitialData getInitialData() {
+		return initialData;
+	}
+
+	public void setInitialData(InitialData initialData) {
+		this.initialData = initialData;
+	}
+
+	public Headers getHeaders() {
+		return headers;
+	}
+
+	public void setHeaders(Headers headers) {
+		this.headers = headers;
+	}
+
+	public Subject getSubject() {
+		return subject;
+	}
+
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
+
+	public Recipients getRecipients() {
+		return recipients;
+	}
+
+	public void setRecipients(Recipients recipients) {
+		this.recipients = recipients;
+	}
+
+	public Body getBody() {
+		return body;
+	}
+
+	public void setBody(Body body) {
+		this.body = body;
+	}
+
+	public Attachments getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(Attachments attachments) {
+		this.attachments = attachments;
 	}
 	
 }
