@@ -17,16 +17,16 @@
 
 	<osgi:reference id="rulesFinderService" interface="org.mxhero.engine.domain.feature.RulesFinder"/>
 
-	<osgi:service ref="blResourcesProvider">
+	<osgi:service ref="provider">
 	  	<osgi:interfaces>
-	  		<value>org.mxhero.engine.domain.provider.ResourcesProvider</value>
+	  		<value>org.mxhero.engine.domain.rules.provider.RulesProvider</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.feature.blocklist.internal.BLResourcesProvider"/>
+     		<entry key="service.pid" value="org.mxhero.feature.blocklist.internal.Provider"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="blResourcesProvider" class="org.mxhero.feature.blocklist.internal.BLResourcesProvider">
+	<bean id="provider" class="org.mxhero.feature.blocklist.internal.Provider">
 		<property name="rulesFinder" ref="rulesFinderService"/>
 		<property name="component" value="org.mxhero.feature.blocklist"/>
 		<property name="version" value="1"/>
