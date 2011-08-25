@@ -29,8 +29,8 @@
 		<prop key="initial.acquireIncrement">2</prop>
 		<prop key="initial.statementsCacheSize">100</prop>
 		<prop key="initial.releaseHelperThreads">1</prop>
-		<prop key="initial.zimbra.filter">(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList))</prop>
-		<prop key="initial.exchange.filter">(objectclass=user)</prop>
+		<prop key="initial.zimbra.filter">(&amp;(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList))(mail=*)(uid=*))</prop>
+		<prop key="initial.exchange.filter">(&amp;(objectclass=user)(mail=*)(uid=*))</prop>
 		<prop key="initial.sender.mail">adsync@mxhero.com</prop>
 		<prop key="initial.output.service">org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService</prop>
 		
