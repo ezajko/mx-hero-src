@@ -59,6 +59,9 @@ public class SpamAssassimScan implements SpamScan {
 					&& args[CHANGE_SUBJECT_PARAM_NUMBER]!=null
 					&& !args[CHANGE_SUBJECT_PARAM_NUMBER].trim().isEmpty()){
 				prefix = args[CHANGE_SUBJECT_PARAM_NUMBER];
+				if(prefix!=null && prefix.length()>0){
+					prefix=prefix+" ";
+				}
 			}
 			if (args.length > ADD_HEADERS_PARAM_NUMBER
 					&& args[ADD_HEADERS_PARAM_NUMBER] != null
