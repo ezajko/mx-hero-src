@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 Export-Package: org.mxhero.engine.core*,!*
 
-Import-Package: sun.misc;resolution:=optional, org.drools.*; resolution:=optional, org.drools; resolution:=optional, org.slf4j.*; resolution:=optional; provider=paxlogging,*
+Import-Package: sun.misc;resolution:=optional, org.slf4j.*; resolution:=optional; provider=paxlogging,*
 
