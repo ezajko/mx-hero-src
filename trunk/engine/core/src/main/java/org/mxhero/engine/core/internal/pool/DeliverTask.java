@@ -1,6 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import org.mxhero.engine.core.internal.service.Core;
@@ -30,7 +29,6 @@ public final class DeliverTask implements Runnable {
 	private LogStat logStatService;
 	private PropertiesService properties;
 	private Collection<MailFilter> outFilters;
-	private SimpleDateFormat format;
 	private MimeMailQueueService queueService;
 
 	/**
@@ -158,17 +156,4 @@ public final class DeliverTask implements Runnable {
 		this.outFilters = outFilters;
 	}
 
-	/**
-	 * @return the format
-	 */
-	public SimpleDateFormat getFormat() {
-		return format;
-	}
-
-	/**
-	 * @param format the format to set
-	 */
-	public void setFormat(SimpleDateFormat format) {
-		this.format = format;
-	}
 }
