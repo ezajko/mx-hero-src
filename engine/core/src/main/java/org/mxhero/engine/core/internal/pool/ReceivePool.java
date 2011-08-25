@@ -1,8 +1,8 @@
 package org.mxhero.engine.core.internal.pool;
 
-import org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
+import org.mxhero.engine.core.internal.rules.BaseLoader;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.mail.log.LogMail;
@@ -35,7 +35,7 @@ public final class ReceivePool extends QueueTaskPool implements
 
 	private RulesProcessor processor;
 
-	private KnowledgeBaseLoader loader;
+	private BaseLoader loader;
 
 	private SessionFiller filler;
 
@@ -81,7 +81,10 @@ public final class ReceivePool extends QueueTaskPool implements
 	@Override
 	protected Runnable createTask(MimeMail object) {
 		try{
-			if(loader.getBuilder().getKnowledgeBase()==null){
+			if(log.isDebugEnabled()){
+				log.debug("Receive Phase task created for " + object);
+			}
+			if(loader.getBuilder().getBase()==null){
 				final MimeMail mail = object;
 				return new Runnable() {
 					@Override
@@ -108,8 +111,7 @@ public final class ReceivePool extends QueueTaskPool implements
 				};
 			}
 			else if (object.getPhase().equals(RulePhase.RECEIVE)) {
-				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder()
-						.getKnowledgeBase().newStatefulKnowledgeSession(), object,
+				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder().getBase(), object,
 						userFinderService, this.queueService);
 				task.setFiller(this.getFiller());
 				task.setProcessor(this.getProcessor());
@@ -236,7 +238,7 @@ public final class ReceivePool extends QueueTaskPool implements
 	/**
 	 * @return the loader
 	 */
-	public KnowledgeBaseLoader getLoader() {
+	public BaseLoader getLoader() {
 		return loader;
 	}
 
@@ -244,7 +246,7 @@ public final class ReceivePool extends QueueTaskPool implements
 	 * @param loader
 	 *            the loader to set
 	 */
-	public void setLoader(KnowledgeBaseLoader loader) {
+	public void setLoader(BaseLoader loader) {
 		this.loader = loader;
 	}
 

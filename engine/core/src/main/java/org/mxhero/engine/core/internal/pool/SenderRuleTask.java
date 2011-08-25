@@ -1,6 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.service.Core;
@@ -11,6 +10,7 @@ import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
+import org.mxhero.engine.domain.rules.RuleBase;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public final class SenderRuleTask implements Runnable {
 
 	private static Logger log = LoggerFactory.getLogger(SenderRuleTask.class);
 
-	private StatefulKnowledgeSession ksession;
+	private RuleBase base;
 
 	private MimeMail mail;
 
@@ -56,9 +56,9 @@ public final class SenderRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public SenderRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail, UserFinder userFinderService,MimeMailQueueService queueService) {
+	public SenderRuleTask(RuleBase base, MimeMail mail, UserFinder userFinderService,MimeMailQueueService queueService) {
 		this.mail = mail;
-		this.ksession = sKSession;
+		this.base = base;
 		this.userFinderService = userFinderService;
 		this.queueService = queueService;
 	}
@@ -72,8 +72,7 @@ public final class SenderRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			log.debug("processing SEND with base:"+ksession.getKnowledgeBase()+", packages in base:" + ksession.getKnowledgeBase().getKnowledgePackages().size());
-			processor.process(ksession, filler, userFinderService, mail);
+			processor.process(base, filler, userFinderService, mail);
 			}catch (Exception e) {
 				if (getLogStatService() != null) {
 					getLogStatService().log(mail,
@@ -92,6 +91,9 @@ public final class SenderRuleTask implements Runnable {
 
 				mail.getMessage().saveChanges();
 				mail.setPhase(RulePhase.RECEIVE);
+				if(getLogRecordService()!=null){
+					getLogRecordService().log(mail);
+				}
 				boolean removedAdded = false;
 				while(!removedAdded){
 					try{

@@ -1,6 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.service.Core;
@@ -10,6 +9,7 @@ import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
+import org.mxhero.engine.domain.rules.RuleBase;
 import org.mxhero.engine.domain.statistic.LogStat;
 import org.mxhero.engine.domain.statistic.LogRecord;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public final class RecipientRuleTask implements Runnable {
 	private static Logger log = LoggerFactory
 			.getLogger(RecipientRuleTask.class);
 
-	private StatefulKnowledgeSession ksession;
+	private RuleBase base;
 
 	private UserFinder userFinderService;
 
@@ -56,9 +56,9 @@ public final class RecipientRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public RecipientRuleTask(StatefulKnowledgeSession sKSession, MimeMail mail, UserFinder userFinderService, MimeMailQueueService queueService) {
+	public RecipientRuleTask(RuleBase base, MimeMail mail, UserFinder userFinderService, MimeMailQueueService queueService) {
 		this.mail = mail;
-		this.ksession = sKSession;
+		this.base = base;
 		this.userFinderService = userFinderService;
 		this.queueService = queueService;
 	}
@@ -72,8 +72,7 @@ public final class RecipientRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			log.debug("processing RECEIVE with base:"+ksession.getKnowledgeBase()+", packages in base:" + ksession.getKnowledgeBase().getKnowledgePackages().size());
-			this.processor.process(ksession, filler, userFinderService, mail);
+			this.processor.process(base, filler, userFinderService, mail);
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,
@@ -83,13 +82,13 @@ public final class RecipientRuleTask implements Runnable {
 			log.error("error while processing rules:",e);
 		}
 		try{
+			if(getLogRecordService()!=null){
+				getLogRecordService().log(mail);
+			}
 			if (!mail.getStatus().equals(MailState.DROP)) {
 				mail.getMessage().saveChanges();
 				this.queueService.removeAddTo(ReceivePool.MODULE, ReceivePool.PHASE, mail, mail, OutputPool.MODULE, OutputPool.PHASE);
 			} else {
-				if(getLogRecordService()!=null){
-					getLogRecordService().log(mail);
-				}
 				queueService.remove(ReceivePool.MODULE, ReceivePool.PHASE, mail);
 			}
 		} catch (Exception e) {
