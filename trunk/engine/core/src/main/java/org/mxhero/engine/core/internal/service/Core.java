@@ -14,10 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class Core extends PropertiesService{
 
-	public static final String DROOLS_CHANGESET_PATH = "updatable.drools.changeset.path";
-	public static final String DROOLS_SCAN_INTERVAL = "updatable.drools.resource.scanner.interval";
-	public static final String DROOLS_RESOURCES_BACKUP = "updatable.drools.resources.backup";
-	public static final String DROOLS_RESOURCES_BACKUPDIR_BASE = "updatable.drools.resources.backupdir.base";
+	public static final String SCAN_INTERVAL = "updatable.resource.scanner.interval";
 	public static final String ERROR_SUFFIX = "updatable.error.suffix";
 	public static final String ERROR_PREFIX = "updatable.error.prefix";
 	public static final String ERROR_DIRECTORY = "updatable.error.folder";
@@ -37,9 +34,6 @@ public final class Core extends PropertiesService{
 	public static final String GROUP_ID_BOTTOM = "updatable.group.id.bottom";
 	public static final String PROCESS_ERROR_STAT = "updatable.process.error.stat";
 	public static final String CONNECTOR_ERROR_STAT = "updatable.connector.error.stat";
-	public static final String IN_TIME_STAT = "updatable.in.time.stat";
-	public static final String OUT_TIME_STAT = "updatable.out.time.stat";
-	public static final String STATS_TIME_FORMAT = "initial.stats.time.format";
 	public static final String CONNECTOR_NOT_FAUND_VALUE = "updatable.connector.not.found.value";
 	
 	private static Logger log = LoggerFactory.getLogger(Core.class);

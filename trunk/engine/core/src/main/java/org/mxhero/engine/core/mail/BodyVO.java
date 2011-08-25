@@ -1,5 +1,6 @@
 package org.mxhero.engine.core.mail;
 
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 import org.mxhero.engine.domain.mail.MimeMail;
@@ -108,8 +109,8 @@ public class BodyVO extends Body{
 		log.warn(MailVO.CHANGE_ERROR+this);
 	}
 
-	
-	public boolean textHasAny(String[] words){
+	@Override
+	public boolean textHasAny(Collection<String> words){
 		String text = this.getText();
 		for (String word : words){
 			if(Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
@@ -119,7 +120,8 @@ public class BodyVO extends Body{
 		return false;
 	}
 	
-	public boolean textHasAll(String[] words){
+	@Override
+	public boolean textHasAll(Collection<String> words){
 		String text = this.getText();
 		for (String word : words){
 			if(!Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
@@ -129,7 +131,8 @@ public class BodyVO extends Body{
 		return true;
 	}
 	
-	public boolean htmlTextHasAny(String[] words){
+	@Override
+	public boolean htmlTextHasAny(Collection<String> words){
 		String text = this.getHtmlText();
 		for (String word : words){
 			if(Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
@@ -139,7 +142,8 @@ public class BodyVO extends Body{
 		return false;
 	}
 	
-	public boolean htmlTextHasAll(String[] words){
+	@Override
+	public boolean htmlTextHasAll(Collection<String> words){
 		String text = this.getHtmlText();
 		for (String word : words){
 			if(!Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(text).find()){
