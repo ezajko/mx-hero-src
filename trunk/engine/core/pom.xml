@@ -44,9 +44,6 @@
 	<packaging>bundle</packaging>
 
 	<dependencies>
-		<!-- | uncomment to add all imported (non-local) bundles to your compilation 
-			classpath <dependency> <type>pom</type> <groupId>${parent.groupId}</groupId> 
-			<artifactId>provision</artifactId> <optional>true</optional> </dependency> -->
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi_R4_core</artifactId>
@@ -79,24 +76,6 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>org.mxhero.javax.mail</artifactId>
 			<version>1.4.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-core</artifactId>
-			<version>5.1.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-compiler</artifactId>
-			<version>5.1.1</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.drools</groupId>
-			<artifactId>drools-api</artifactId>
-			<version>5.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
