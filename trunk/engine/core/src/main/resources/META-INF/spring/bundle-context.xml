@@ -23,8 +23,6 @@
 
 	<osgi:reference id="queuesService" interface="org.mxhero.engine.domain.queue.MimeMailQueueService" cardinality="1..1"/>
 
-	<osgi:reference id="serviceRegistry" interface="org.drools.util.ServiceRegistry"/>
-
 	<osgi:service interface="org.mxhero.engine.domain.connector.InputService" ref="coreInputService">
 		<osgi:service-properties>
 	     <entry key="service.pid" value="org.mxhero.engine.core.internal.service.CoreInputService"/>
@@ -42,24 +40,20 @@
 	   </osgi:service-properties>
 	</osgi:service>
 	
-	<osgi:list id="resourceProviders" interface="org.mxhero.engine.domain.provider.ResourcesProvider" cardinality="0..N"/>
+	<osgi:list id="rulesProviders" interface="org.mxhero.engine.domain.rules.provider.RulesProvider" cardinality="0..N"/>
 	
 	<bean id="corePropertyService" class="org.mxhero.engine.core.internal.service.Core"/>
 
-	<bean id="kbbuilder" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseBuilder">
-		<property name="registry" ref="serviceRegistry"/>
-		<property name="resourceProviders" ref="resourceProviders"/>
-		<property name="properties" ref="corePropertyService"/>
+	<bean id="bbuilder" class="org.mxhero.engine.core.internal.rules.BaseBuilder">
+		<property name="rulesProviders" ref="rulesProviders"/>
 	</bean>
 
-	<bean id="kbloader" class="org.mxhero.engine.core.internal.drools.KnowledgeBaseLoader" init-method="start" destroy-method="stop">
-		<property name="builder" ref="kbbuilder"/>
+	<bean id="bbloader" class="org.mxhero.engine.core.internal.rules.BaseLoader" init-method="start" destroy-method="stop">
+		<property name="builder" ref="bbuilder"/>
 		<property name="properties" ref="corePropertyService"/>
 	</bean>
 
 	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller">
-		<property name="logRecordService" ref="logRecordService"/>
-		<property name="logStatService" ref="logStatService"/>
 		<property name="properties" ref="corePropertyService"/>
 	</bean>
 	
@@ -76,7 +70,7 @@
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
 		<property name="processor" ref="drprocessor"/>
-		<property name="loader" ref="kbloader"/>
+		<property name="loader" ref="bbloader"/>
 		<property name="properties" ref="corePropertyService"/>
 		<property name="logRecordService" ref="logRecordService"/>
 		<property name="logStatService" ref="logStatService"/>
@@ -87,7 +81,7 @@
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
 		<property name="processor" ref="drprocessor"/>
-		<property name="loader" ref="kbloader"/>
+		<property name="loader" ref="bbloader"/>
 		<property name="properties" ref="corePropertyService"/>
 		<property name="logRecordService" ref="logRecordService"/>
 		<property name="logStatService" ref="logStatService"/>
