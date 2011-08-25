@@ -1,30 +1,17 @@
 package org.mxhero.engine.core.internal.pool.filler;
 
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 
 import javax.mail.internet.InternetAddress;
 
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.mxhero.engine.core.internal.service.Core;
-import org.mxhero.engine.core.mail.AttachmentsVO;
-import org.mxhero.engine.core.mail.BodyVO;
-import org.mxhero.engine.core.mail.HeadersVO;
 import org.mxhero.engine.core.mail.InitialDataVO;
 import org.mxhero.engine.core.mail.MailVO;
-import org.mxhero.engine.core.mail.RecipientsVO;
-import org.mxhero.engine.core.mail.SubjectVO;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.Domain;
 import org.mxhero.engine.domain.mail.business.MailFlow;
-import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.business.User;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
 import org.mxhero.engine.domain.properties.PropertiesService;
-import org.mxhero.engine.domain.statistic.LogRecord;
-import org.mxhero.engine.domain.statistic.LogStat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class add the business objects to the session.
@@ -33,50 +20,17 @@ import org.slf4j.LoggerFactory;
  */
 public class PhaseSessionFiller implements SessionFiller {
 
-	private static Logger log = LoggerFactory
-			.getLogger(PhaseSessionFiller.class);
-
 	private static final char DIV_CHAR = '@';
-	
-	private LogRecord logRecordService;
-	
-	private LogStat logStatService;
-	
+
 	private PropertiesService properties;
 
-	private SimpleDateFormat format;
 	
 	/**
 	 * @see org.mxhero.engine.core.internal.pool.filler.SessionFiller#fill(org.drools.runtime.StatefulKnowledgeSession, org.mxhero.engine.domain.mail.finders.UserFinder, org.mxhero.engine.domain.mail.finders.DomainFinder, org.mxhero.engine.domain.mail.MimeMail)
 	 */
 	@Override
-	public String fill(StatefulKnowledgeSession ksession,
-			UserFinder userFinder, MimeMail mail) {
-
-		String domainAgendaGroup = null;
-		InitialDataVO initialData = null;
-
-		initialData = getInitialData(userFinder, mail);
-		
-		if(mail.getPhase().equals(RulePhase.SEND)){
-			domainAgendaGroup = mail.getSenderDomainId();
-		} else if (mail.getPhase().equals(RulePhase.RECEIVE)){
-			domainAgendaGroup = mail.getRecipientDomainId();
-		}
-		
-		if(getLogRecordService()!=null){
-			getLogRecordService().log(mail);
-		}
-		
-		ksession.insert(new MailVO(mail));
-		ksession.insert(initialData);
-		ksession.insert(new HeadersVO(mail));
-		ksession.insert(new SubjectVO(mail));
-		ksession.insert(new RecipientsVO(mail));
-		ksession.insert(new BodyVO(mail));
-		ksession.insert(new AttachmentsVO(mail));
-		
-		return domainAgendaGroup;
+	public MailVO fill(UserFinder userFinder, MimeMail mail) {
+		return new MailVO(mail,getInitialData(userFinder, mail));
 	}
 
 	
@@ -213,34 +167,6 @@ public class PhaseSessionFiller implements SessionFiller {
 		return initialData;
 	}
 	
-	
-	/**
-	 * @return the logRecordService
-	 */
-	public LogRecord getLogRecordService() {
-		return logRecordService;
-	}
-
-	/**
-	 * @param logRecordService the logRecordService to set
-	 */
-	public void setLogRecordService(LogRecord logRecordService) {
-		this.logRecordService = logRecordService;
-	}
-
-	/**
-	 * @return the logStatService
-	 */
-	public LogStat getLogStatService() {
-		return logStatService;
-	}
-
-	/**
-	 * @param logStatService the logStatService to set
-	 */
-	public void setLogStatService(LogStat logStatService) {
-		this.logStatService = logStatService;
-	}
 
 	/**
 	 * @return the properties
@@ -254,23 +180,6 @@ public class PhaseSessionFiller implements SessionFiller {
 	 */
 	public void setProperties(PropertiesService properties) {
 		this.properties = properties;
-	}
-
-	/**
-	 * @return the format
-	 */
-	public SimpleDateFormat getFormat() {
-		if(format==null){
-			format = new SimpleDateFormat(getProperties().getValue(Core.STATS_TIME_FORMAT));
-		}
-		return format;
-	}
-
-	/**
-	 * @param format the format to set
-	 */
-	public void setFormat(SimpleDateFormat format) {
-		this.format = format;
 	}
 
 }
