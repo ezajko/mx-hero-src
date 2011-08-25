@@ -150,6 +150,7 @@ public class ReplayImpl implements Replay {
 					replayMessage.setFrom(sender);
 					replayMessage.setReplyTo(new InternetAddress[]{sender});
 					replayMessage.setText(sb.toString());
+					replayMessage.saveChanges();
 					replayMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							replayMessage, outputService);
 					replayMail.setPhase(RulePhase.SEND);
