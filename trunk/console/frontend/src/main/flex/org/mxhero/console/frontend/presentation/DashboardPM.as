@@ -1,9 +1,12 @@
 package org.mxhero.console.frontend.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
+	import com.adobe.cairngorm.navigation.state.ISelectedName;
 	
 	import flash.system.Security;
 	
+	import mx.collections.ArrayCollection;
+	import mx.containers.ViewStack;
 	import mx.controls.Alert;
 	import mx.core.Container;
 	import mx.core.FlexGlobals;
@@ -18,6 +21,7 @@ package org.mxhero.console.frontend.presentation
 	import org.mxhero.console.frontend.application.event.LogoutEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.ApplicationMessage;
+	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.application.resources.DashboardProperties;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Domain;
@@ -28,6 +32,10 @@ package org.mxhero.console.frontend.presentation
 	[Landmark(name="main.dashboard")]
 	public class DashboardPM
 	{
+
+		[Bindable]
+		public var menuDataProvider:ArrayCollection;
+		
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
 

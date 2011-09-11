@@ -82,11 +82,11 @@
 			public function refresh():void{
 
 				if(_language=="es_ES"){
-					feedUrl="http://mxhero.com/wp/?cat=6&feed=rss&lang=es";
+					feedUrl="http://www.mxhero.com/es/category/dashboard/feed/rss";
 				}else if(_language=="pt_BR"){
-					feedUrl="http://mxhero.com/wp/?cat=6&feed=rss&lang=pt-br";
+					feedUrl="http://www.mxhero.com/pt-br/category/dashboard/feed/rss";
 				}else{
-					feedUrl="http://mxhero.com/wp/?cat=6&feed=rss";
+					feedUrl="http://www.mxhero.com/category/dashboard/feed/rss";
 				}
 				rssService.send();
 			}

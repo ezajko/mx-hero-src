@@ -6,16 +6,20 @@
 		 title="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.LDAP_EMAILS_LABEL)}" 
 		 xmlns:component="org.mxhero.console.commons.component.*" 
 		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
-		 creationComplete="titlewindow1_creationCompleteHandler(event)">
+		 creationComplete="titlewindow1_creationCompleteHandler(event)"
+		 currentStateChange="titlewindow1_currentStateChangeHandler(event)">
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.validation.ValidatorGroup;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
 			import mx.managers.PopUpManager;
 			import mx.validators.Validator;
 			
+			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.CommonsProperties;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			import org.mxhero.console.frontend.domain.DomainAdLdap;
@@ -24,6 +28,8 @@
 
 			[Bindable]
 			public var model:AccountsViewPM;
+			
+			private var lastState:String;
 			
 			[Bindable]
 			public var adLdap:DomainAdLdap;
@@ -34,6 +40,12 @@
 			
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
+				if(checkValid()){
+					model.updateAdLdap(adLdap);
+				}
+			}
+
+			private function checkValid():Boolean{
 				var isValid:Boolean=false;
 				if(currentState=='zimbra' ||
 					currentState=='exchange'){
@@ -49,11 +61,9 @@
 				}else if(currentState=='none'){
 					isValid=true;
 				}
-				if(isValid){
-					model.updateAdLdap(adLdap);
-				}
+				return isValid;
 			}
-
+			
 
 			protected function cancelBtt_clickHandler(event:MouseEvent=null):void
 			{
@@ -93,6 +103,8 @@
 
 			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
 			{
+				lastState=currentState;
+				
 				customVG.addValidator(addressV);
 				customVG.addValidator(portV);
 				customVG.addValidator(userV);
@@ -122,6 +134,43 @@
 				typeDdl.selectedIndex=resources.getItemIndex(type);
 			}
 
+
+			protected function testBtt_clickHandler(event:MouseEvent):void
+			{
+				if(checkValid()){
+					currentState="result";
+					model.testAdLdap(adLdap);
+				}
+			}
+
+
+			protected function okBtt_clickHandler(event:MouseEvent):void
+			{
+				currentState=lastState;
+				model.testAccounts=null;
+				model.accountsAdLdap.errorText.hideError();
+			}
+
+
+			protected function titlewindow1_currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				lastState=event.oldState;
+				if(event.newState=="result"){
+					okBtt.label=Alert.okLabel;
+				}
+			}
+			
+			protected function emailslabelFunction(item:Object, column:DataGridColumn):String{
+				var label:String="";
+				if(item.emails!=null){
+					for each (var alias:Object in item.emails){
+						label=label+alias.toString()+'\n';
+					}
+					label=StringUtils.trimRight(label);
+				}
+				return label;
+			}
+
 		]]>
 	</fx:Script>
 	
@@ -139,6 +188,7 @@
 		<s:State name="zimbra"/>
 		<s:State name="exchange"/>
 		<s:State name="ldap"/>
+		<s:State name="result"/>
 	</s:states> 
 	
 	<s:layout>
@@ -146,7 +196,7 @@
 	</s:layout>
 	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 
-	<mx:Form verticalGap="10">
+	<mx:Form verticalGap="10" excludeFrom="result">
 		<component1:LabelExpanded
 			width="100%"
 			labelExplainStyleName="labelexpanded_explain_right"
@@ -162,7 +212,7 @@
 								change="typeDdl_changeHandler(event)"
 								labelFunction="{typeDdl_labelFunc}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none,result">
 				<s:HGroup verticalAlign="middle">
 					<s:Label text="ldap://"/>
 					<s:TextInput id="addressTi" text="@{adLdap.addres}"/>
@@ -171,22 +221,22 @@
 					<s:CheckBox textAlign="left" label="ssl" selected="@{adLdap.sslFlag}"/>
 				</s:HGroup>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_USER)}" width="100%" excludeFrom="none">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_USER)}" width="100%" excludeFrom="none,result">
 				<s:TextInput id="userTi" width="100%" text="@{adLdap.user}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none,result">
 				<s:TextInput id="passwordTi" width="100%" text="@{adLdap.password}" displayAsPassword="true"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra,result">
 				<s:TextArea id="filterTi" width="100%" heightInLines="3" text="@{adLdap.filter}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none,result">
 				<s:TextArea id="baseTi" width="100%" heightInLines="3" text="@{adLdap.base}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none,result">
 				<s:TextArea id="dnAuthenticate" width="100%" heightInLines="3" text="@{adLdap.dnAuthenticate}"/>
 			</mx:FormItem>
-			<mx:FormItem width="100%" excludeFrom="none">
+			<mx:FormItem width="100%" excludeFrom="none,result">
 				<s:HGroup verticalAlign="top" width="100%">
 					<s:CheckBox selected="@{adLdap.overrideFlag}"/>
 					<component1:LabelExpanded 
@@ -199,6 +249,11 @@
 			</mx:FormItem>
 
 		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">
+			<s:Button id="testBtt" 
+					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.TEST_LABEL)}" 
+					  click="testBtt_clickHandler(event)"
+					  excludeFrom="none,result"
+					  buttonMode="true"/>
 			<s:Button id="saveBtt" 
 					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
 					  click="saveBtt_clickHandler(event)"
@@ -209,4 +264,29 @@
 					  buttonMode="true"/>
 		</s:HGroup>
 	</mx:Form>
+	<mx:Form includeIn="result">
+		<s:VGroup horizontalAlign="right">
+			<mx:DataGrid id="resultDG" 
+						 height="250" 
+						 variableRowHeight="true"
+						 dropShadowVisible="false"
+						 dataProvider="{model.testAccounts}">
+				<mx:columns>
+					<mx:DataGridColumn dataField="uid" 
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+									   width="150"/>
+					<mx:DataGridColumn dataField="emails"
+									   labelFunction="{emailslabelFunction}"
+									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+									   width="300"
+									   sortable="false"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<s:Button id="okBtt"
+					  buttonMode="true"
+					  enabled="{!model.isTestting}"
+					  click="okBtt_clickHandler(event)"/>
+		</s:VGroup>
+	</mx:Form>
+
 </s:TitleWindow>

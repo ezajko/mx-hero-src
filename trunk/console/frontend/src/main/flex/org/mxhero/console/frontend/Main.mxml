@@ -86,6 +86,7 @@
 			import org.mxhero.console.frontend.domain.MessagesComposition;
 			import org.mxhero.console.frontend.domain.MxHeroData;
 			import org.mxhero.console.frontend.domain.Owner;
+			import org.mxhero.console.frontend.domain.TestAccount;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
 			
 			import spark.components.TitleWindow;
@@ -123,6 +124,7 @@
 				registerClassAlias("org.mxhero.console.backend.vo.ActivityDataVO",ActivityData);
 				registerClassAlias("org.mxhero.console.backend.vo.EmailAccountAliasVO",EmailAccountAlias);
 				registerClassAlias("org.mxhero.console.backend.vo.DomainAdLdapVO",DomainAdLdap);
+				registerClassAlias("org.mxhero.console.backend.vo.LdapAccountVO",TestAccount);
 			}
 			
 			[Inject]

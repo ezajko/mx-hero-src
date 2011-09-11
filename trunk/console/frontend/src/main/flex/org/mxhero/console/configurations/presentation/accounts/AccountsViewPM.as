@@ -26,6 +26,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.configurations.application.event.RefreshAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.RemoveAdLdapEvent;
 	import org.mxhero.console.configurations.application.event.RemoveEmailAccountEvent;
+	import org.mxhero.console.configurations.application.event.TestAdldapEvent;
 	import org.mxhero.console.configurations.application.event.UploadAccountsEvent;
 	import org.mxhero.console.configurations.application.resources.AccountsProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
@@ -50,7 +51,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		private var accountUpload:AccountUpload;
 		
 		[Bindable]
-		private var accountsAdLdap:ConfigureAdLdap;
+		public var accountsAdLdap:ConfigureAdLdap;
 		
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
@@ -76,6 +77,12 @@ package org.mxhero.console.configurations.presentation.accounts
 		
 		private var _accountFilter:String=null;
 		private var _groupIdFilter:String=null;
+		
+		[Bindable]
+		public var isTestting:Boolean=false;
+		
+		[Bindable]
+		public var testAccounts:ArrayCollection=null;
 		
 		public function goBack():void{
 			parentModel.navigateTo(ConfigurationsDestinations.LIST);
@@ -237,6 +244,23 @@ package org.mxhero.console.configurations.presentation.accounts
 			}else{
 				PopUpManager.removePopUp(accountsAdLdap);
 			}
+		}
+		
+		public function testAdLdap(adLdap:DomainAdLdap):void{
+			dispatcher(new TestAdldapEvent(adLdap));
+			isTestting=true;
+		}
+		
+		[CommandResult]
+		public function testAdLdapResult (result:*, event:TestAdldapEvent) : void {
+			testAccounts=result;
+			isTestting=false;
+		}
+		
+		[CommandError]
+		public function testAdLdapError (faultEvent:FaultEvent, event:TestAdldapEvent) : void {
+			accountsAdLdap.errorText.showError(faultEvent.fault.message);
+			isTestting=false;
 		}
 		
 		[CommandResult]

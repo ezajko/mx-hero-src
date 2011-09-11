@@ -1,10 +1,12 @@
 package org.mxhero.console.configurations.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
+	import com.adobe.cairngorm.navigation.state.ISelectedName;
 	
 	import mx.core.Container;
 	
 	import org.mxhero.console.configurations.application.ConfigurationsDestinations;
+	import org.mxhero.console.frontend.domain.ApplicationContext;
 
 	[Landmark(name="main.dashboard.configurations")]
 	public class ConfigurationsViewPM
@@ -25,5 +27,6 @@ package org.mxhero.console.configurations.presentation
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}
+
 	}
 }

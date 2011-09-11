@@ -10,6 +10,8 @@ package org.mxhero.console.commons.resources
 		
 		public static const CANCEL_LABEL:String="cancel.label";
 		
+		public static const TEST_LABEL:String="test.label";
+		
 		public static const SAVE_LABEL:String="save.label";
 		
 		public static const EXPLAIN_LABEL:String="explain.label";

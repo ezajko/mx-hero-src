@@ -39,6 +39,8 @@
 		<![CDATA[
 			import com.adobe.cairngorm.navigation.NavigationEvent;
 			
+			import mx.containers.ViewStack;
+			import mx.events.FlexEvent;
 			import mx.events.ItemClickEvent;
 			import mx.resources.IResourceManager;
 			
@@ -53,12 +55,12 @@
 			import org.mxhero.console.frontend.presentation.DashboardPM;
 			import org.mxhero.console.reports.application.ReportsDestinations;
 			
-			[Bindable]
-			public var dataProvider:Object;
-			
 			[Inject]
 			[Bindable]
 			public var model:DashboardPM;
+			
+			[Bindable]
+			public var dataProvider:Object;
 			
 			[Inject]
 			[Bindable]
@@ -86,7 +88,7 @@
 			
 			protected function linkBar_itemClickHandler(event:ItemClickEvent):void
 			{
-				if(prevIndex==event.index){
+				if(prevIndex==event.index || event.index==0){
 					if(event.index==0){
 						model.dispatcher(NavigationEvent.createNavigateToEvent(MainDestination.HOME));
 					} else if (event.index==1){
@@ -109,7 +111,8 @@
 					return ImageResources.LOGO_IMG;
 				}
 			}
-			
+
+
 		]]>
 	</fx:Script>
 	<s:backgroundFill>
@@ -119,9 +122,10 @@
 		<mx:Image source="{getLogoImage(applicationContext.configuration)}" height="32" width="130"/>
 		<mx:Spacer width="20"/>
 		<component1:NoDisabledLinkBar id="linkBar" 
-									  dataProvider="{dataProvider}" 
 									  styleName="Dashboard" 
-									  itemClick="linkBar_itemClickHandler(event)"/>
+									  itemClick="linkBar_itemClickHandler(event)"
+									  dataProvider="{dataProvider}">
+		</component1:NoDisabledLinkBar>
 		<mx:Spacer width="100%"/>
 		
 		<s:Label text="{resourceManager.getString(DashboardProperties.NAME,DashboardProperties.DOMAIN_LABEL)}" 
