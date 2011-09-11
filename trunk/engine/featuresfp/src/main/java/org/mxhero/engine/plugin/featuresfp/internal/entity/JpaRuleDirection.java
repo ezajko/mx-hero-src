@@ -116,4 +116,14 @@ public class JpaRuleDirection implements RuleDirection {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("JpaRuleDirection [directionType=")
+				.append(directionType).append(", freeValue=").append(freeValue)
+				.append(", domain=").append(domain).append(", group=")
+				.append(group).append(", account=").append(account).append("]");
+		return builder.toString();
+	}
+
 }

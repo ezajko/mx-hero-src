@@ -10,9 +10,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.mxhero.engine.domain.mail.business.Mail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleBase {
 
+	private static Logger log = LoggerFactory.getLogger(RuleBase.class);
+	
 	private Map<String, Collection<CoreRule>> coreRules = new HashMap<String, Collection<CoreRule>>();
 	
 	private boolean isReady = false;
@@ -23,11 +27,21 @@ public class RuleBase {
 		}
 		Collection<CoreRule> groupRules = coreRules.get(group);
 		if(groupRules!=null){
+			log.debug("found "+groupRules.size()+" rules for group "+group);
 			for(CoreRule rule : groupRules){
 				if(rule!=null){
-					rule.process(mail);
+					try{
+						if(log.isDebugEnabled()){
+							log.debug("mail "+mail.getId()+"running rule "+rule.toString());
+						}
+						rule.process(mail);
+					}catch(Exception e){
+						log.error("Error while processing rule"+rule);
+					}
 				}
 			}
+		}else{
+			log.debug("found 0 rules for group "+group);
 		}
 	}
 	

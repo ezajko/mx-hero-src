@@ -2,10 +2,13 @@ package org.mxhero.engine.domain.rules;
 
 import org.mxhero.engine.domain.feature.RuleDirection;
 import org.mxhero.engine.domain.mail.business.Mail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FromToEval implements Evaluable{
 
-
+	private static Logger log = LoggerFactory.getLogger(FromToEval.class);
+			
 	public static final String DOMAIN = "domain";
 	public static final String GROUP = "group";
 	public static final String INDIVIDUAL = "individual";
@@ -25,11 +28,27 @@ public class FromToEval implements Evaluable{
 	
 	@Override
 	public boolean eval(Mail mail) {
+
+		boolean returnValue=false;
 		if(twoWays){
-			return evalFrom(from, mail) && evalTo(to, mail) || evalFrom(to, mail) && evalTo(from, mail);
+			returnValue= evalFrom(from, mail) && evalTo(to, mail) || evalFrom(to, mail) && evalTo(from, mail);
 		}else{
-			return evalFrom(from, mail) && evalTo(to, mail);
+			returnValue= evalFrom(from, mail) && evalTo(to, mail);
 		}
+		if(log.isTraceEnabled()){
+			log.trace(" sender:"+mail.getInitialData().getSender()
+					+" senderDomain:"
+					+mail.getInitialData().getSender().getDomain()
+					+" recipient:"
+					+mail.getInitialData().getRecipient()
+					+" recipientDomain:"
+					+mail.getInitialData().getRecipient().getDomain()
+					+" getMailFromRuleDirection(from):"
+					+getMailFromRuleDirection(from)
+					+"getMailFromRuleDirection(to):"
+					+getMailFromRuleDirection(to));
+		}
+		return returnValue;
 	}
 	
 	private boolean evalFrom(RuleDirection from, Mail mail){
@@ -43,7 +62,7 @@ public class FromToEval implements Evaluable{
 			return mail.getInitialData().getFromSender().getDomain().getManaged() || mail.getInitialData().getSender().getDomain().getManaged();
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			return mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(from.getDomain()) || mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(from.getDomain());
+			return mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(from)) || mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(from));
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group name and domain has to match*/
 			return (mail.getInitialData().getFromSender().getGroup()!=null && mail.getInitialData().getFromSender().getGroup().equalsIgnoreCase(from.getGroup()) && mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(from.getDomain())) || (mail.getInitialData().getSender().getGroup()!=null && mail.getInitialData().getSender().getGroup().equalsIgnoreCase(from.getGroup()) && mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(from.getDomain()));
@@ -66,7 +85,7 @@ public class FromToEval implements Evaluable{
 			return mail.getInitialData().getRecipient().getDomain().getManaged();
 		}else if(to.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			return mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
+			return mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(to));
 		}else if(to.getDirectionType().equals(GROUP)){
 			/*group id ? What the hell is group id !!!*/
 			return mail.getInitialData().getRecipient().getGroup().equalsIgnoreCase(to.getGroup()) && mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
@@ -75,6 +94,14 @@ public class FromToEval implements Evaluable{
 			return mail.getInitialData().getRecipient().getMail().equalsIgnoreCase(getMailFromRuleDirection(to));
 		}
 		return false;
+	}
+	
+	private String getDomainFromRuleDirection(RuleDirection direction){
+			if(direction.getDomain()==null){
+				return direction.getFreeValue();
+			}else{
+				return direction.getDomain();
+			}
 	}
 	
 	private String getMailFromRuleDirection(RuleDirection direction){
@@ -90,6 +117,14 @@ public class FromToEval implements Evaluable{
 			}
 		}
 		return mail;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("FromToEval [from=").append(from).append(", to=")
+				.append(to).append(", twoWays=").append(twoWays).append("]");
+		return builder.toString();
 	}
 
 }

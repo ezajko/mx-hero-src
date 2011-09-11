@@ -34,28 +34,31 @@ public class DefaultRulesProcessor implements RulesProcessor{
 		MailVO fact = filler.fill(userfinder, mail);
 		if(mail.getPhase().equals(RulePhase.SEND)){
 			domainAgendaGroup = mail.getSenderDomainId();
+			//Adding default rules to start first
+			String bottomAgendaGroup = getProperties().getValue(Core.GROUP_ID_BOTTOM);
+			if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
+				log.debug("firing rules for bottom:"+bottomAgendaGroup);
+				base.process(bottomAgendaGroup, fact);
+			}
+			//Adding domain agenda group
+			if(domainAgendaGroup!=null){
+				log.debug("firing rules for domain:"+domainAgendaGroup);
+				base.process(domainAgendaGroup, fact);
+			}
+			
 		} else if (mail.getPhase().equals(RulePhase.RECEIVE)){
 			domainAgendaGroup = mail.getRecipientDomainId();
-		}
-		
-		//Adding default rules to start first
-		String bottomAgendaGroup = getProperties().getValue(Core.GROUP_ID_BOTTOM);
-		if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
-			log.debug("firing rules for bottom:"+bottomAgendaGroup);
-			base.process(bottomAgendaGroup, fact);
-		}
-
-		//Adding domain agenda group
-		if(domainAgendaGroup!=null){
-			log.debug("firing rules for domain:"+domainAgendaGroup);
-			base.process(domainAgendaGroup, fact);
-		}
-		
-		//Adding default rules to start first
-		String startAgendaGroup = getProperties().getValue(Core.GROUP_ID_TOP);
-		if (startAgendaGroup!=null && !startAgendaGroup.isEmpty()){
-			log.debug("firing rules for top:"+startAgendaGroup);
-			base.process(startAgendaGroup, fact);
+			//Adding domain agenda group
+			if(domainAgendaGroup!=null){
+				log.debug("firing rules for domain:"+domainAgendaGroup);
+				base.process(domainAgendaGroup, fact);
+			}
+			//Adding default rules to start first
+			String startAgendaGroup = getProperties().getValue(Core.GROUP_ID_TOP);
+			if (startAgendaGroup!=null && !startAgendaGroup.isEmpty()){
+				log.debug("firing rules for top:"+startAgendaGroup);
+				base.process(startAgendaGroup, fact);
+			}
 		}
 	}
 

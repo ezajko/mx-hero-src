@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mxhero.engine.domain.mail.business.Mail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CoreRule implements Comparable<CoreRule>{
 
+	private static Logger log = LoggerFactory.getLogger(CoreRule.class);
+	
 	private Integer id;
 	
 	private Integer priority;
@@ -29,12 +33,22 @@ public class CoreRule implements Comparable<CoreRule>{
 			for(Evaluable eval : evals){
 				//if any evaluation is false, just return false and do not make any action
 				if(eval.eval(mail)==false){
+					if(log.isTraceEnabled()){
+						log.trace(eval.toString()+" is false");
+					}
 					return;
+				}
+				if(log.isTraceEnabled()){
+					log.trace(eval.getClass().getSimpleName()+" is true");
 				}
 			}
 			//just execute all actions
+			log.debug("rule fired "+this.toString());
 			for(Actionable action : actions){
 				action.exec(mail);
+				if(log.isTraceEnabled()){
+					log.trace(action.getClass().getSimpleName()+" executed");
+				}
 			}
 		}
 	}
@@ -90,4 +104,13 @@ public class CoreRule implements Comparable<CoreRule>{
 	public Integer getId(){
 		return id;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CoreRule [group=").append(group).append(", id=")
+				.append(id).append("]");
+		return builder.toString();
+	}
+	
 }

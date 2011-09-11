@@ -140,17 +140,13 @@ public class Domain {
 		return true;
 	}
 
-	/** 
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Domain [id=").append(id).append(", managed=")
 				.append(managed).append(", aliases=").append(aliases)
-				.append(", lists=").append(lists).append("]");
+				.append("]");
 		return builder.toString();
-	}	
+	}
 
 }
