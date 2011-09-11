@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
+import org.mxhero.console.backend.vo.LdapAccountVO;
 import org.springframework.security.access.annotation.Secured;
 
 public interface DomainService {
@@ -31,5 +32,8 @@ public interface DomainService {
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	public DomainAdLdapVO refreshAdLdap(String domainId);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	public Collection<LdapAccountVO> testAdLdap(DomainAdLdapVO adLdapVO);
 	
 }

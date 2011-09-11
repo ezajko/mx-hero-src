@@ -1,8 +1,10 @@
 package org.mxhero.console.backend.service.jpa;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.mxhero.console.backend.dao.AliasAccountDao;
 import org.mxhero.console.backend.dao.AuthorityDao;
@@ -26,6 +28,9 @@ import org.mxhero.console.backend.translator.DomainAdLdaoTranslator;
 import org.mxhero.console.backend.translator.DomainTranslator;
 import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
+import org.mxhero.console.backend.vo.LdapAccountVO;
+import org.mxhero.console.backend.infrastructure.ADSource;
+import org.mxhero.console.backend.infrastructure.ADSource.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -47,6 +52,8 @@ public class JpaDomainService implements DomainService {
 	public static final String ALIAS_ALREADY_EXISTS="alias.already.exists";
 	
 	private static final String DEFAULT_LANGUAGE="default.user.language";
+	
+	public static final String LDAP_ERROR="ldap.error";
 	
 	private DomainDao dao;
 	
@@ -311,5 +318,35 @@ public class JpaDomainService implements DomainService {
 			adLdap = this.dao.save(domain).getAdLdap();
 		}
 		return adLdapTranslator.translate(adLdap);
+	}
+
+	@Override
+	public Collection<LdapAccountVO> testAdLdap(DomainAdLdapVO adLdapVO) {
+		Collection<LdapAccountVO> returnAccounts = null;
+		try {
+			
+			String filter = adLdapVO.getFilter();
+			if(adLdapVO.getDirectoryType().equalsIgnoreCase(ADSource.ZIMBRA_TYPE)){
+				filter = ADSource.ZIMBRA_FILTER;
+			}else if(adLdapVO.getDirectoryType().equalsIgnoreCase(ADSource.EXCHANGE_TYPE)){
+				filter = ADSource.EXCHANGE_FILTER;
+			}
+			ADSource source = new ADSource(adLdapVO.getAddres(), adLdapVO.getPort(), adLdapVO.getUser(), adLdapVO.getPassword(), adLdapVO.getSslFlag(), adLdapVO.getBase());
+			
+			List<Account> accounts = source.getAllPersonNames(filter);
+			if(accounts!=null && accounts.size()>0){
+				returnAccounts = new ArrayList<LdapAccountVO>();
+				for(Account account : accounts){
+					LdapAccountVO newAccount = new LdapAccountVO();
+					newAccount.setUid(account.getUid());
+					newAccount.setEmails(account.getMails());
+					returnAccounts.add(newAccount);
+				}
+			}
+			
+		} catch (Exception e) {
+			throw new BusinessException(LDAP_ERROR,e.getMessage());
+		}
+		return returnAccounts;
 	}
 }
