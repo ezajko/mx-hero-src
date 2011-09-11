@@ -7,10 +7,13 @@
 		 xmlns:IPE="org.mxhero.console.commons.component.IPE.*"
 		 gap="0" 
 		 xmlns:toptenlist="org.mxhero.console.home.presentation.toptenlist.*"
-		 currentState="{model.currentState}">
+		 currentState="{model.currentState}"
+		 currentStateChange="vgroup1_currentStateChangeHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.StateChangeEvent;
+			
 			import org.mxhero.console.commons.resources.ErrorsProperties;
 			import org.mxhero.console.commons.skin.BlueLinePanel;
 			import org.mxhero.console.commons.utils.Regex;
@@ -25,35 +28,29 @@
 			[Inject]
 			[Bindable]
 			public var model:HomeViewPM;
-			
 
-			protected function clearBtt_clickHandler(event:MouseEvent):void
+
+			protected function ipeComboBox_currentStateChangeHandler(event:StateChangeEvent):void
 			{
-				if(currentState!="domain"){
-					if(ipeComboBox.currentState=="show"){
-						ipeComboBox.switchState();
-					}
-					ipeComboBox.selectedItem=null;
-					ipeComboBox.selectedLabel=null;
-					ipeComboBox.comboBox.selectedIndex=-1;
-					ipeComboBox.comboBox.errorString="";
-				}
-				
-				if(model.domainFilter!=null){
+				if(ipeComboBox.currentState=='show'){
+					model.domainFilter=ipeComboBox.selectedLabel;
+				}else{
 					model.domainFilter=null;
-					model.getCompleteData();
-					model.refreshActivity();
+					ipeComboBox.comboBox.textInput.text="";
 				}
+				model.getCompleteData();
+				model.refreshActivity();
 			}
 
-			protected function filterBtt_clickHandler(event:MouseEvent):void
+
+			protected function vgroup1_currentStateChangeHandler(event:StateChangeEvent):void
 			{
-				if(currentState!="domain" 
-					&& ipeComboBox.currentState=="show" 
-					&& model.domainFilter!=ipeComboBox.selectedLabel){
-					model.domainFilter=ipeComboBox.selectedLabel;
-					model.getCompleteData();
-					model.refreshActivity();
+				if(ipeComboBox!=null 
+					&& event.newState=="admin"
+					&& ipeComboBox.currentState=="show"
+					&& ipeComboBox.comboBox!=null
+					&& ipeComboBox.comboBox.textInput!=null){
+					ipeComboBox.switchState();
 				}
 			}
 
@@ -99,17 +96,14 @@
 											 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 											 width="100%"
 											 labelField="domain"
+											 currentStateChange="ipeComboBox_currentStateChangeHandler(event)"
 											 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_DOMAIN_NOT_VALID)}"/>				
 
 						</element:Item>
 					</s:HGroup>
 				</mx:FormItem>
-				<s:HGroup width="100%" horizontalAlign="right" paddingBottom="10" paddingTop="10">
-					<s:Button id="clearBtt" label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_FILTER_CLEAR_LABEL)}" click="clearBtt_clickHandler(event)" enabled="{model.domainFilter!=null}"/>
-					<s:Button id="filterBtt" label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_FILTER_FILTER_LABEL)}" click="filterBtt_clickHandler(event)" enabled="{ipeComboBox.currentState=='show'}"/>
-				</s:HGroup>
 			</mx:Form>
-			<mx:Form width="100%" paddingTop.admin="0" verticalGap="2" paddingBottom="0">
+			<mx:Form width="100%" paddingTop.admin="0" paddingTop.filter="0" verticalGap="2" paddingBottom="0">
 				<mx:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_REGISTERED_DOMAINS_LABEL)}" includeIn="admin" width="100%" >
 					<s:Label paddingLeft="10" text="{model.mxHeroData.domains}" color="#FFFFFF" fontWeight="bold"/>
 				</mx:FormItem>

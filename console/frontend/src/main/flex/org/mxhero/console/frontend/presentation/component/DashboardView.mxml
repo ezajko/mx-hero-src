@@ -5,7 +5,8 @@
 			  xmlns:parsley="http://www.spicefactory.org/parsley"
 			  xmlns:infrastructure="org.mxhero.console.frontend.infrastructure.*"
 			  width="100%" 
-			  height="100%" xmlns:modules="org.mxhero.console.commons.modules.*"
+			  height="100%" 
+			  xmlns:modules="org.mxhero.console.commons.modules.*"
 			  creationCompleteEffect="fadein"
 			  creationPolicy="none">
 	<fx:Script>
@@ -63,18 +64,22 @@
 	</fx:Metadata>
 	<modules:NavigatorModule id="homeModule"
 							 showEffect="{fadein}" hideEffect="{fadeout}" 
-							 width="100%" height="100%" moduleData="{homeData}" 
+							 width="100%" height="100%" 
+							 moduleData="{homeData}" 
 							 automationName="{MainDestination.HOME}"
 							 creationComplete="homeModule_creationCompleteHandler(event)"/>
 	<modules:NavigatorModule id="featuresModule"
 							 showEffect="{fadein}" hideEffect="{fadeout}" 
-							 width="100%" height="100%" moduleData="{featuresData}" 
+							 width="100%" height="100%" 
+							 moduleData="{featuresData}" 
 							 automationName="{MainDestination.FEATURES}"/>
 	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
-							 width="100%" height="100%" moduleData="{reportsData}" 
+							 width="100%" height="100%" 
+							 moduleData="{reportsData}" 
 							 automationName="{MainDestination.REPORTS}"/>
 	<modules:NavigatorModule showEffect="{fadein}" hideEffect="{fadeout}" 
-							 width="100%" height="100%" moduleData="{configurationsData}" 
+							 width="100%" height="100%" 
+							 moduleData="{configurationsData}" 
 							 automationName="{MainDestination.CONFIGURATIONS}"/>
 	
 </mx:ViewStack>

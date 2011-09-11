@@ -1,6 +1,7 @@
 package org.mxhero.console.features.presentation
 {
 	import com.adobe.cairngorm.navigation.NavigationEvent;
+	import com.adobe.cairngorm.navigation.state.ISelectedName;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.Container;
@@ -21,7 +22,6 @@ package org.mxhero.console.features.presentation
 		{
 			dispatcher(NavigationEvent.createNavigateToEvent(destination));
 		}
-		
-
+	
 	}
 }
