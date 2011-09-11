@@ -41,12 +41,20 @@ public class ADSource {
 				new AttributesMapper() {
 					public Account mapFromAttributes(Attributes attrs)
 							throws NamingException {
-						if(attrs.get("uid")==null ||
-								attrs.get("mail")==null){
-							throw new NamingException("no uid and/or mail fields found in this object");
+						
+						String id="uid";
+						if(attrs.get(id)==null){
+							if(attrs.get("sAMAccountName")==null){
+								throw new NamingException("no uid or sAMAccountName fields found in this object");
+							}else{
+								id="sAMAccountName";
+							}
+						}
+						if(attrs.get("mail")==null){
+							throw new NamingException("no mail field found in this object");
 						}
 						Account account = new Account();
-						account.setUid(attrs.get("uid").get().toString());
+						account.setUid(attrs.get(id).get().toString());
 						
 						if(attrs.get("mail")!=null && attrs.get("mail").size()>0){
 							account.setMails(new HashSet<String>());
