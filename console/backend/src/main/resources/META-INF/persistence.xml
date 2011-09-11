@@ -4,7 +4,25 @@
 		version="1.0">
 
 	<persistence-unit name="mxheroPer" transaction-type="RESOURCE_LOCAL">
-	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>org.mxhero.console.backend.entity.AliasAccount</class>
+		<class>org.mxhero.console.backend.entity.AliasAccountPk</class>
+		<class>org.mxhero.console.backend.entity.ApplicationUser</class>
+		<class>org.mxhero.console.backend.entity.Authority</class>
+		<class>org.mxhero.console.backend.entity.Category</class>
+		<class>org.mxhero.console.backend.entity.Domain</class>
+		<class>org.mxhero.console.backend.entity.DomainAdLdap</class>
+		<class>org.mxhero.console.backend.entity.DomainAlias</class>
+		<class>org.mxhero.console.backend.entity.EmailAccount</class>
+		<class>org.mxhero.console.backend.entity.EmailAccountPk</class>
+		<class>org.mxhero.console.backend.entity.Feature</class>
+		<class>org.mxhero.console.backend.entity.FeatureRule</class>
+		<class>org.mxhero.console.backend.entity.FeatureRuleDirection</class>
+		<class>org.mxhero.console.backend.entity.FeatureRuleProperty</class>
+		<class>org.mxhero.console.backend.entity.Group</class>
+		<class>org.mxhero.console.backend.entity.GroupPk</class>
+		<class>org.mxhero.console.backend.entity.SystemProperty</class>
+		<exclude-unlisted-classes/>
 	</persistence-unit>
 
 </persistence>
