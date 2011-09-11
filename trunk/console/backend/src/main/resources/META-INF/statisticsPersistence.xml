@@ -4,7 +4,12 @@
 		version="1.0">
 
 	<persistence-unit name="statisticsPer" transaction-type="RESOURCE_LOCAL">
-	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>org.mxhero.console.backend.statistics.entity.Record</class>
+		<class>org.mxhero.console.backend.statistics.entity.RecordPk</class>
+		<class>org.mxhero.console.backend.statistics.entity.Stat</class>
+		<class>org.mxhero.console.backend.statistics.entity.StatPk</class>
+		<exclude-unlisted-classes/>
 	</persistence-unit>
 
 </persistence>
