@@ -1,32 +1,22 @@
 package org.mxhero.engine.domain.queue;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 
+
 public interface MimeMailQueueService {
 
-	void put(String module, String phase, MimeMail e) throws InterruptedException;
-	
-	boolean offer(String module, String phase, MimeMail e, long timeout, TimeUnit unit)
+	public boolean store(String phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException;
 	
-	boolean offer(String module, String phase, MimeMail e);
+	public void unstore(MimeMail mail);
 	
-	MimeMail take(String module, String phase) throws InterruptedException;
+	public boolean offer(String phase, MimeMail mail, long timeout, TimeUnit unit)
+    throws InterruptedException;
 	
-	MimeMail poll(String module, String phase, long timeout, TimeUnit unit) throws InterruptedException;
+	public MimeMail poll(String phase, long timeout, TimeUnit unit) throws InterruptedException;
+
+	public void logState();
 	
-	MimeMail poll(String module, String phase);
-	
-	boolean remove(String module, String phase, MimeMail o) throws InterruptedException;
-	
-	void removeAddTo(String fromModule, String fromPhase, MimeMail o, MimeMail z, String toModule, String toPhase) throws InterruptedException;
-	
-	void reEnqueue(String module, String phase, MimeMail o) throws InterruptedException;
-	
-	Map<String, String>getQueuesCount();
-	
-	void logState();
 }

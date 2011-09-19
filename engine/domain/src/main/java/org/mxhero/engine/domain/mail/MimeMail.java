@@ -1,11 +1,14 @@
 package org.mxhero.engine.domain.mail;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Timestamp;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.domain.mail.business.MailFlow;
@@ -42,7 +45,7 @@ public final class MimeMail {
 
 	private Map<String, String> properties = new HashMap<String, String>();
 	
-	private MimeMessage message;
+	private StaticIdMimeMessage message;
 	
 	private String messageId;
 
@@ -54,14 +57,14 @@ public final class MimeMail {
 
 	private String statusReason;
 
-	public static MimeMail createCustom(String from, String recipient, MimeMessage data,
+	public static MimeMail createCustom(String from, String recipient, InputStream data,
 			String responseServiceId,Long sequence, Timestamp time) throws MessagingException{
 		return new MimeMail(from, recipient, data, responseServiceId, sequence, time);
 	}
 	
-	private MimeMail(String from, String recipient, MimeMessage data,
+	private MimeMail(String from, String recipient, InputStream data,
 			String responseServiceId, Long sequence, Timestamp time) throws MessagingException{
-		this.initialSize = data.getSize();
+		
 		this.sequence = sequence;
 		this.time = time;
 		this.responseServiceId = responseServiceId;
@@ -71,10 +74,18 @@ public final class MimeMail {
 		this.initialSender = from;
 		this.senderId = from;
 		this.senderDomainId = getDomain(from);
-		this.messageId = data.getMessageID();
-		this.message = new StaticIdMimeMessage(data);
-		this.message.saveChanges();
-		this.setMessageId(message.getMessageID());
+		try {
+			this.message = new StaticIdMimeMessage(data);
+			if(message.getMessageID()==null){
+				this.messageId = message.generateAndGetMessageID();
+			}else{
+				this.messageId = message.getMessageID();
+			}
+		} catch (IOException e) {
+			throw new MessagingException("error in inputstream",e);
+		}
+		this.messageId = message.getMessageID();
+		this.initialSize = message.getSize();
 	}
 	
 
@@ -87,25 +98,24 @@ public final class MimeMail {
 	 * @throws MessagingException
 	 */
 	public MimeMail(String from, String recipient,
-			MimeMessage data, String responseServiceId)
+			InputStream data, String responseServiceId)
 			throws MessagingException {
 		this(from, recipient, responseServiceId);
-		int headerSize = 0;
-		@SuppressWarnings("rawtypes")
-		Enumeration e = data.getAllHeaderLines();
-		if (e.hasMoreElements()) {
-			headerSize += 2;
-		}
-		while (e.hasMoreElements()) {
-			// add 2 bytes for the CRLF
-			headerSize += ((String) e.nextElement()).length() + 2;
-		}
-		this.initialSize = data.getSize() + headerSize;
-		this.messageId = data.getMessageID();
-		this.message = new StaticIdMimeMessage(data);
-		this.message.saveChanges();
-		this.setMessageId(message.getMessageID());
 
+		try {
+			this.message = new StaticIdMimeMessage(data);
+			if(message.getMessageID()==null){
+				this.messageId = message.generateAndGetMessageID();
+			}else{
+				this.messageId = message.getMessageID();
+			}
+		} catch (IOException e) {
+			throw new MessagingException("error in inputstream",e);
+		}
+
+			
+
+		this.initialSize = message.getSize();
 	}
 	
 	/**
@@ -314,6 +324,37 @@ public final class MimeMail {
 		}
 	}
 
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((messageId == null) ? 0 : messageId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MimeMail other = (MimeMail) obj;
+		if (sequence == null) {
+			if (other.sequence != null)
+				return false;
+		} else if (!sequence.equals(other.sequence))
+			return false;
+		if (time == null) {
+			if (other.time != null)
+				return false;
+		} else if (!time.equals(other.time))
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -329,8 +370,13 @@ public final class MimeMail {
 
 	private class StaticIdMimeMessage extends MimeMessage{
 		
-		public StaticIdMimeMessage(MimeMessage message) throws MessagingException{
-			super(message);
+		public StaticIdMimeMessage(InputStream inputStream) throws MessagingException, IOException{
+			super(Session.getDefaultInstance(new Properties()),inputStream);
+		}
+		
+		public String generateAndGetMessageID() throws MessagingException{
+			super.updateMessageID();
+			return this.getMessageID();
 		}
 		
 		@Override
@@ -340,10 +386,11 @@ public final class MimeMail {
 				super.updateMessageID();
 			}else{
 				//if there it has an id and the message has other, them override it.
-				if(!this.getMessageID().equals(getMessageId())){
+				if(this.getMessageID()==null || !this.getMessageID().equals(getMessageId())){
 					message.setHeader("Message-ID",getMessageId());
 				}
 			}
 		}
 	}
+	
 }

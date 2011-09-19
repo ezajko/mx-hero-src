@@ -10,6 +10,8 @@ public final class MailState {
 
 	public static final String DROP = "drop";
 	
+	public static final String REQUEUE = "requeue";
+	
 	/**
 	 * Just private, wont instantiate.
 	 */

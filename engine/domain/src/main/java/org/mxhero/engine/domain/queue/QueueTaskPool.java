@@ -15,17 +15,14 @@ public abstract class QueueTaskPool extends TaskPool{
 
 	private MimeMailQueueService queue;
 	
-	private String module;
-	
 	private String phase;
 	
 	/**
 	 * Constructor that receives the queue where object to be processed are.
 	 * @param queue
 	 */
-	public QueueTaskPool(String module, String phase, MimeMailQueueService queue){
+	public QueueTaskPool( String phase, MimeMailQueueService queue){
 		this.queue = queue;
-		this.module=module;
 		this.phase=phase;
 	}
 
@@ -40,13 +37,13 @@ public abstract class QueueTaskPool extends TaskPool{
 		MimeMail object = null;
 		Runnable task = null;
 		try{
-			object = queue.poll(module,phase,getWaitTime(), TimeUnit.MILLISECONDS);
+			object = queue.poll(phase,getWaitTime(), TimeUnit.MILLISECONDS);
 			if (object!=null){
 				task = createTask(object);
 				if (task != null){
 					getExecutor().execute(task);
 				} else {
-					queue.reEnqueue(module,phase,object);
+					queue.offer(phase, object, getWaitTime(), TimeUnit.MILLISECONDS);
 					Thread.sleep(getWaitTime());
 				}
 			}
