@@ -1,6 +1,9 @@
 package org.mxhero.engine.plugin.clamd.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Properties;
@@ -32,7 +35,7 @@ public class ClamavScanTest {
 	private static Logger log = LoggerFactory.getLogger(ClamavScanTest.class);
 	
 	@Test
-	public void testOk() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
+	public void testOk() throws AddressException, MessagingException, URISyntaxException, ConfigurationException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -55,8 +58,11 @@ public class ClamavScanTest {
 		message.setContent(mp);
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
@@ -71,7 +77,7 @@ public class ClamavScanTest {
 	}
 
 	@Test
-	public void testFound() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
+	public void testFound() throws AddressException, MessagingException, URISyntaxException, ConfigurationException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -103,8 +109,10 @@ public class ClamavScanTest {
 		message.setContent(mp);
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
@@ -120,7 +128,7 @@ public class ClamavScanTest {
 	}
 
 	@Test
-	public void testFoundAfterFound() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
+	public void testFoundAfterFound() throws AddressException, MessagingException, URISyntaxException, ConfigurationException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -152,8 +160,10 @@ public class ClamavScanTest {
 		message.setContent(mp);
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com","mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com","mmarmol@mxhero.com", is, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
@@ -174,7 +184,7 @@ public class ClamavScanTest {
 	}
 
 	@Test
-	public void testFoundNoRemove() throws AddressException, MessagingException, URISyntaxException, ConfigurationException{
+	public void testFoundNoRemove() throws AddressException, MessagingException, URISyntaxException, ConfigurationException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -206,8 +216,10 @@ public class ClamavScanTest {
 		message.setContent(mp);
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		SingleClamavScan scan = new SingleClamavScan();
 		Clamd clamd = new Clamd();
 		Properties clamdProperties = new Properties();
