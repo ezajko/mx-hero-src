@@ -1,6 +1,8 @@
 package org.mxhero.engine.plugin.adsync.service.jpa;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -225,8 +227,11 @@ public class JpaDomainsSynchronizer implements DomainsSynchronizer{
 				newMessage.setText(errorMessage);
 				newMessage.setSentDate(Calendar.getInstance().getTime());
 				newMessage.saveChanges();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				newMessage.writeTo(os);
+				ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 				MimeMail newMail = new MimeMail(sender.toString(), recipient.toString(),
-						newMessage, outputService);
+						is, outputService);
 				newMail.setPhase(RulePhase.SEND);
 				inputService.addMail(newMail);
 			}catch(Exception e){
