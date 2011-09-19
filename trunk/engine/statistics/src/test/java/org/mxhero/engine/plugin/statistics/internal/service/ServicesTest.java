@@ -1,5 +1,8 @@
 package org.mxhero.engine.plugin.statistics.internal.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -38,7 +41,7 @@ public class ServicesTest {
 	private MimeMail mail = null;
 	
 	@Before
-	public void before() throws AddressException, MessagingException{
+	public void before() throws AddressException, MessagingException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("e@w.c"));
 		message.setFrom(new InternetAddress("e@w.c"));
@@ -46,7 +49,10 @@ public class ServicesTest {
 		message.setText("some text");
 		message.setSubject("some subject");
 		message.saveChanges();
-		mail = new MimeMail("e@w.c","x@s.c", message, "");	
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		mail = new MimeMail("e@w.c","x@s.c", is, "");	
 		mail.setSenderDomainId("w.c");
 		mail.setSenderId("e@w.c");
 	}
