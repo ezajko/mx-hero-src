@@ -1,5 +1,8 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -19,7 +22,7 @@ import org.mxhero.engine.domain.mail.MimeMail;
 public class CreateTest {
 
 	@Test
-	public void invalidParams() throws AddressException, MessagingException{
+	public void invalidParams() throws AddressException, MessagingException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -29,7 +32,10 @@ public class CreateTest {
 		message.setText("\n\r TEXTO \n\r");
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		
 		Assert.assertFalse((new CreateImpl().exec(mail)).isTrue());
 		Assert.assertFalse((new CreateImpl().exec(mail,(String[])null)).isTrue());
@@ -44,7 +50,7 @@ public class CreateTest {
 	}
 	
 	@Test
-	public void testOk() throws AddressException, MessagingException{
+	public void testOk() throws AddressException, MessagingException, IOException{
 		CreateImpl create = new CreateImpl();
 		create.setService(new InputService() {
 			
@@ -64,7 +70,10 @@ public class CreateTest {
 		message.setText("\n\r TEXTO \n\r");
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		
 		Assert.assertTrue(create.exec(mail, "sender@mxhero.com","recipient@mxhero.com","subject","text","service").isTrue());
 	}

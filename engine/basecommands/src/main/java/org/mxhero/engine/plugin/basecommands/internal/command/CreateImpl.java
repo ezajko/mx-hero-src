@@ -1,10 +1,11 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
-import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -106,8 +107,11 @@ public class CreateImpl implements Create {
 					newMessage.setText(args[TEXT_PARAM_NUMBER]);
 					newMessage.setSentDate(Calendar.getInstance().getTime());
 					newMessage.saveChanges();
+					ByteArrayOutputStream os = new ByteArrayOutputStream();
+					newMessage.writeTo(os);
+					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 					newMail = new MimeMail(sender.toString(), recipient.toString(),
-							newMessage, args[OUTSERVICE_PARAM_NUMBER]);
+							is, args[OUTSERVICE_PARAM_NUMBER]);
 					newMail.setPhase(RulePhase.SEND);
 					
 					if (service == null) {
@@ -121,7 +125,7 @@ public class CreateImpl implements Create {
 						return result;
 					}
 
-				} catch (MessagingException e) {
+				} catch (Exception e) {
 					log.warn("error while creating new message", e);
 					return result;
 				}

@@ -1,6 +1,9 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Properties;
@@ -39,7 +42,7 @@ public class RemoveByTypeTest {
 	}
 	
 	@Test
-	public void removeFile() throws MessagingException, URISyntaxException{
+	public void removeFile() throws MessagingException, URISyntaxException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -79,7 +82,10 @@ public class RemoveByTypeTest {
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
 		log.debug(message.toString());
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		log.debug(mail.toString());
 		Result result = new RemoveByTypeImpl().exec(mail,"text/");
 		log.debug(result.toString());
@@ -89,7 +95,7 @@ public class RemoveByTypeTest {
 	}
 	
 	@Test
-	public void dontRemove() throws MessagingException, URISyntaxException{
+	public void dontRemove() throws MessagingException, URISyntaxException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("mmarmol@mxhero.com"));
 		message.setFrom(new InternetAddress("mmarmol@mxhero.com"));
@@ -112,8 +118,10 @@ public class RemoveByTypeTest {
 		message.setContent(mp);
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-
-		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("mmarmol@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		
 		Assert.assertFalse((new RemoveByTypeImpl().exec(mail,"text/html")).isTrue());
 	}

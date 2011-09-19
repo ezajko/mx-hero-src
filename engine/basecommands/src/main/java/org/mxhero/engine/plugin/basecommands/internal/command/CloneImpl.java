@@ -1,9 +1,15 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
-import javax.mail.MessagingException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.domain.connector.InputService;
 import org.mxhero.engine.domain.connector.QueueFullException;
@@ -34,6 +40,10 @@ public class CloneImpl implements Clone {
 	private static final int SENDER_PARAM_NUMBER = 1;
 	private static final int RECIPIENT_PARAM_NUMBER = 2;
 	private static final int OUTPUTSERVICE_PARAM_NUMBER = 3;
+	
+	private static final String TMP_FILE_SUFFIX = ".eml";
+	private static final String TMP_FILE_PREFIX = "clone";
+	private static final int DEFERRED_SIZE = 1*1024*1024;
 
 	private InputService service;
 
@@ -87,15 +97,36 @@ public class CloneImpl implements Clone {
 			}
 
 			if(!mail.getProperties().containsKey(Replay.class.getName())){
+				InputStream is = null;
+				OutputStream os = null;
 				try {
-					clonedMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
-							new MimeMessage(mail.getMessage()), outputService);
+					if(mail.getInitialSize()>DEFERRED_SIZE){
+						File tmpFile = File.createTempFile(TMP_FILE_PREFIX, TMP_FILE_SUFFIX);
+						os = new FileOutputStream(tmpFile);
+						mail.getMessage().writeTo(os);
+						is = new FileInputStream(tmpFile);
+						
+					}else{
+						os = new ByteArrayOutputStream();
+						mail.getMessage().writeTo(os);
+						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
+					}
+					
+					clonedMail = new MimeMail(sender.getAddress(), recipient.getAddress(),is, outputService);
+
 					clonedMail.setPhase(RulePhase.SEND);
 					clonedMail.getProperties().putAll(mail.getProperties());
 					clonedMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
-				} catch (MessagingException e) {
+				} catch (Exception e) {
 					log.warn("error while creating cloned message");
 					return result;
+				} finally{
+					if(os!=null){
+						try{os.flush();os.close();}catch(Exception e){}
+					}
+					if(is!=null){
+						try{is.close();}catch(Exception e){}
+					}
 				}
 	
 				if (service == null) {
