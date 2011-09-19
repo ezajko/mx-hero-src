@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class OutputPool extends QueueTaskPool implements PropertiesListener{
 
-	public static final String MODULE="core";
 	public static final String PHASE=RulePhase.OUT;
 	
 	private static Logger log = LoggerFactory.getLogger(OutputPool.class);
@@ -40,7 +39,7 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 	 * @param bc
 	 */
 	public OutputPool(BundleContext bc, MimeMailQueueService queueService){
-		super(MODULE,PHASE,queueService);
+		super(PHASE,queueService);
 		if (bc==null){
         	throw new IllegalArgumentException();
         }

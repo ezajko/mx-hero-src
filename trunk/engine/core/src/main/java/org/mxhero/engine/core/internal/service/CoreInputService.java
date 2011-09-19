@@ -3,7 +3,6 @@ package org.mxhero.engine.core.internal.service;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import org.mxhero.engine.core.internal.pool.SendPool;
 import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.InputService;
 import org.mxhero.engine.domain.connector.QueueFullException;
@@ -46,7 +45,7 @@ public final class CoreInputService implements InputService {
 		}
 		
 		try {
-			added = queueService.offer(SendPool.MODULE, mail.getPhase(), mail,WAIT_TIME, TimeUnit.MILLISECONDS );
+			added = queueService.store( mail.getPhase(), mail,WAIT_TIME, TimeUnit.MILLISECONDS );
 		} catch (InterruptedException e) {
 			log.error("interrupted while waiting:"+mail,e);
 		}
@@ -54,8 +53,7 @@ public final class CoreInputService implements InputService {
 			throw new QueueFullException();
 		}
 		log.info("Mail added to queue:"+mail);
-		log.info(queueService.getQueuesCount().toString());
-
+		queueService.logState();
 	}
 
 	public Collection<MailFilter> getInFilters() {

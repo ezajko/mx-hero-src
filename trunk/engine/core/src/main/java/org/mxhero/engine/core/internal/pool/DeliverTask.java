@@ -1,6 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.core.mail.filter.MailFilter;
@@ -62,15 +63,8 @@ public final class DeliverTask implements Runnable {
 					mail.getMessage().saveChanges();
 					service.addOutMail(mail);
 					log.info("Mail sent using outputservice:" + mail);
-					boolean removed = false;
-					while(!removed){
-						try {
-							removed = queueService.remove(OutputPool.MODULE, OutputPool.PHASE, mail);
-						} catch (InterruptedException e1) {
-							log.error("error while removing email:",e1);
-						}
-					}
-					log.info(queueService.getQueuesCount().toString());
+					queueService.unstore(mail);
+					queueService.logState();
 					if(log.isDebugEnabled()){
 						queueService.logState();
 						}
@@ -85,7 +79,7 @@ public final class DeliverTask implements Runnable {
 							properties.getValue(Core.CONNECTOR_ERROR_STAT),
 							properties.getValue(Core.CONNECTOR_NOT_FAUND_VALUE));
 				}
-				queueService.reEnqueue(OutputPool.MODULE, OutputPool.PHASE, mail);
+				queueService.offer(OutputPool.PHASE, mail,1000,TimeUnit.MILLISECONDS);
 			}
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
@@ -94,20 +88,12 @@ public final class DeliverTask implements Runnable {
 			}
 			log.debug("Error sending mail to connector:" + mail,e);
 			try {
-				queueService.reEnqueue(OutputPool.MODULE, OutputPool.PHASE, mail);
+				queueService.offer(OutputPool.PHASE, mail,1000,TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e2) {
 				LogMail.saveErrorMail(mail.getMessage(), 
 						getProperties().getValue(Core.ERROR_PREFIX),
 						getProperties().getValue(Core.ERROR_SUFFIX),
 						getProperties().getValue(Core.ERROR_DIRECTORY));
-				boolean removed = false;
-				while(!removed){
-					try {
-						removed = queueService.remove(OutputPool.MODULE, OutputPool.PHASE, mail);
-					} catch (InterruptedException e1) {
-						log.error("error while removing email:",e1);
-					}
-				}
 			}
 		}
 	}
