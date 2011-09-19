@@ -11,6 +11,7 @@
   <properties>
     <bundle.symbolicName>org.mxhero.engine.fsqueues</bundle.symbolicName>
     <bundle.namespace>org.mxhero.engine.fsqueues</bundle.namespace>
+    <org.springframework.version>3.0.3.RELEASE</org.springframework.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
@@ -22,26 +23,106 @@
 
   <packaging>bundle</packaging>
 
-  <dependencies>
-    <!--
-     | uncomment to add all imported (non-local) bundles to your compilation classpath
-    <dependency>
-      <type>pom</type>
-      <groupId>${parent.groupId}</groupId>
-      <artifactId>provision</artifactId>
-      <optional>true</optional>
-    </dependency>
-    -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_core</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>osgi_R4_compendium</artifactId>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
+ 	<build>
+		<finalName>${bundle.symbolicName}_${pom.version}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.mxhero.engine</groupId>
+			<artifactId>domain</artifactId>
+			<version>1.0.0.M1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>org.mxhero.javax.mail</artifactId>
+			<version>1.4.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ops4j.pax.logging</groupId>
+			<artifactId>pax-logging-api</artifactId>
+			<version>1.5.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.context</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.aop</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.asm</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.aopalliance</groupId>
+			<artifactId>com.springsource.org.aopalliance</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.expression</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.beans</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.core</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.test</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 </project>
