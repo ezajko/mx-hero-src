@@ -5,10 +5,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 
 import org.mailster.smtp.api.SessionContext;
 import org.mailster.smtp.api.listener.MessageListener;
@@ -115,52 +111,20 @@ public final class SMTPMessageListener implements MessageListener {
 	public void deliver(SessionContext ctx, String from, String recipient,
 			InputStream data) throws IOException {
 
-		MimeMail mail;
-		MimeMessage message = null;
+		MimeMail mail =null;
 		try {
-			message = new MimeMessage(
-					Session.getDefaultInstance(new Properties()), data);
-
-			if(log.isTraceEnabled()){
-				LogMail.saveErrorMail(message,
-						getProperties().getValue(PostfixConnector.ERROR_PREFIX)+"received",
-						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
-			}
+			mail = new MimeMail(from, recipient, data,
+					PostFixConnectorOutputService.class.getName());
 			/* fix content type */
 			if (fixers != null && fixers.size() > 0) {
 				for (Fixer fixer : fixers) {
-					fixer.fixit(message);
+					fixer.fixit(mail.getMessage());
 				}
 			}
-			message.removeHeader(getProperties().getValue(
-					PostfixConnector.SENDER_HEADER,
-					PostfixConnector.DEFAULT_SENDER_HEADER));
-			message.removeHeader(getProperties().getValue(
-					PostfixConnector.RECIPIENT_HEADER,
-					PostfixConnector.DEFAULT_RECIPIENT_HEADER));
-			if (getProperties() != null
-					&& getProperties().getValue(PostfixConnector.ADD_HEADERS) != null
-					&& Boolean.parseBoolean(getProperties().getValue(
-							PostfixConnector.ADD_HEADERS))) {
-				message.addHeader(
-						getProperties().getValue(
-								PostfixConnector.SENDER_HEADER,
-								PostfixConnector.DEFAULT_SENDER_HEADER), from);
-				message.addHeader(
-						getProperties().getValue(
-								PostfixConnector.RECIPIENT_HEADER,
-								PostfixConnector.DEFAULT_RECIPIENT_HEADER),
-						recipient);
-			}
-			
-			mail = new MimeMail(from, recipient, message,
-					PostFixConnectorOutputService.class.getName());
-			message.saveChanges();
-
+			mail.getMessage().saveChanges();
 		} catch (Exception e1) {
 			log.error("error while receiving email", e1);
-			LogMail.saveErrorMail(message,
+			LogMail.saveErrorMail(mail.getMessage(),
 					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
 					getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
 					getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));

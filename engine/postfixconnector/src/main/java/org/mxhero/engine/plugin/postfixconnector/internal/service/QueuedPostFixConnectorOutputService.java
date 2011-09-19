@@ -57,14 +57,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 			}else{
 				msg.removeHeader("Sender");
 			}
-			msg.removeHeader(getProperties().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER));
-			msg.removeHeader(getProperties().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER));
-			if(getProperties()!=null 
-					&& getProperties().getValue(PostfixConnector.ADD_HEADERS)!=null 
-					&& Boolean.parseBoolean(getProperties().getValue(PostfixConnector.ADD_HEADERS))){
-				msg.addHeader(getProperties().getValue(PostfixConnector.SENDER_HEADER, PostfixConnector.DEFAULT_SENDER_HEADER), from);
-				msg.addHeader(getProperties().getValue(PostfixConnector.RECIPIENT_HEADER, PostfixConnector.DEFAULT_RECIPIENT_HEADER), mail.getRecipient());
-			}
 			
 			try{
 				msg.saveChanges();

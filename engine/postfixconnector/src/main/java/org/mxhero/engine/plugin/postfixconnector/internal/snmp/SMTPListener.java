@@ -1,6 +1,9 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.snmp;
 
 import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 
 import org.apache.mina.transport.socket.SocketAcceptor;
 import org.mailster.smtp.SMTPServer;
@@ -29,6 +32,11 @@ public final class SMTPListener implements Runnable {
 	private Thread thread;
 
 	private static final long WAITTIME = 1000;
+	private int maxConnections = 100;
+	private int connectionTimeout = 1000 * 60;	
+	private Charset charset = Charset.forName("UTF-8");
+	private String hostName;
+	private int maxRecipients = 50;
 
 	/**
 	 * Creates the object with the Message listener as a parameter.
@@ -39,6 +47,16 @@ public final class SMTPListener implements Runnable {
 		server = new CustomSMTPServer(listener);
 		server.getDeliveryHandlerFactory().setDeliveryHandlerImplClass(
 				CustomDeliveryHandler.class);
+		
+		try
+		{
+			this.hostName = InetAddress.getLocalHost().getCanonicalHostName();
+		}
+		catch (UnknownHostException e)
+		{
+			this.hostName = "localhost";
+		}
+		
 	}
 
 	/**
@@ -85,6 +103,47 @@ public final class SMTPListener implements Runnable {
 	private void init() {
 		if (server != null && !server.isRunning()) {
 			log.info("INIT");
+			
+			String maxConnectionProperty = properties.getValue(PostfixConnector.MAX_CONNECTIONS);
+			if(maxConnectionProperty!=null && maxConnectionProperty.trim().length()>0){
+				try{
+					int maxConnectionValue = Integer.parseInt(maxConnectionProperty);
+					if(maxConnectionValue>0){
+						maxConnections=maxConnectionValue;
+					}
+				}catch(Exception e){}
+			}
+			
+			String maxRecipientsProperty = properties.getValue(PostfixConnector.MAX_RECIPIENTS);
+			if(maxRecipientsProperty!=null && maxRecipientsProperty.trim().length()>0){
+				try{
+					int maxRecipientsValue = Integer.parseInt(maxRecipientsProperty);
+					if(maxRecipientsValue>0){
+						maxRecipients=maxRecipientsValue;
+					}
+				}catch(Exception e){}
+			}
+			
+			String charsetProperty = properties.getValue(PostfixConnector.CHARSET);
+			try{
+				charset = Charset.forName(charsetProperty);
+			}catch(Exception e){}
+
+			String hostnameValue = properties.getValue(PostfixConnector.HOSTNAME);
+			if(hostnameValue!=null && hostnameValue.trim().length()>0){
+				hostName = hostnameValue.trim();
+			}
+
+			String connectionTimeOutProperty = properties.getValue(PostfixConnector.CONNECTION_TIMEOUT);
+			if(connectionTimeOutProperty!=null && connectionTimeOutProperty.trim().length()>0){
+				try{
+					int connectionTimeOutValue = Integer.parseInt(connectionTimeOutProperty);
+					if(connectionTimeOutValue>1000){
+						connectionTimeout=connectionTimeOutValue;
+					}
+				}catch(Exception e){}
+			}
+			
 			server.setPort(Integer.parseInt(properties
 					.getValue(PostfixConnector.SMTP_PORT)));
 			server.getConfig().setHostName(
@@ -93,6 +152,13 @@ public final class SMTPListener implements Runnable {
 					.getValue(PostfixConnector.RECEIVE_BUFFER_SIZE)));
 			server.getConfig().setDataDeferredSize(Integer.parseInt(properties
 					.getValue(PostfixConnector.DEFERRED_SIZE)));
+			
+			server.getConfig().setMaxConnections(maxConnections);
+			server.getConfig().setCharset(charset);
+			server.getConfig().setConnectionTimeout(connectionTimeout);
+			server.getConfig().setHostName(hostName);
+			server.getConfig().setMaxRecipients(maxRecipients);
+			
 			server.start();
 		}
 	}

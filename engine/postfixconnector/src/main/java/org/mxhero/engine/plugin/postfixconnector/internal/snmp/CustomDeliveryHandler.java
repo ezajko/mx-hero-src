@@ -39,7 +39,7 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 	private List<Delivery> deliveries = new ArrayList<Delivery>();
 	private String from;
 
-	private long maxSizeInBytes=-1;
+	private long maxSizeInBytes=1024*1024;
 	
 	/**
 	 * Basic constructor.
