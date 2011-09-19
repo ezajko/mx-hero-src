@@ -52,8 +52,8 @@
     <module>dbfinder</module>
     <module>featuresfp</module>
     <module>shutdownhook</module>
-    <module>mqueues</module>
     <module>adsync</module>
+    <module>org.mxhero.engine.fsqueues</module>
   </modules>
 
   <build>
