@@ -48,15 +48,11 @@ public class SMTPZuado {
 					InputStream arg3) throws TooMuchDataException, IOException {
 				MimeMail mail = null;
 				try {
-					
-					
-					MimeMessage message = new MimeMessage(
-							Session.getDefaultInstance(new Properties()), arg3);
-					LogMail.saveErrorMail(message, "pre", ".eml", null);
-					message.saveChanges();
-					mail = new MimeMail(arg1, arg2, message,
+					mail = new MimeMail(arg1, arg2, arg3,
 							PostFixConnectorOutputService.class.getName());
-				
+		
+					LogMail.saveErrorMail(mail.getMessage(), "pre", ".eml", null);
+					mail.getMessage().saveChanges();
 				} catch (MessagingException e) {
 					Assert.fail();
 					e.printStackTrace();

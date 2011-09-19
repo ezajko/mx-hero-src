@@ -14,8 +14,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class PostfixConnector extends PropertiesService{
 
-	public static final String DEFAULT_SENDER_HEADER = "X-mxHero-Sender";
-	public static final String DEFAULT_RECIPIENT_HEADER = "X-mxHero-Sender";
 	public static final String SMTP_HOST_NAME = "initial.mail.smtp.host";
 	public static final String SMTP_HOST_PORT = "initial.mail.smtp.port";
 	public static final String SMTP_HOST = "initial.smtp.host";
@@ -26,11 +24,13 @@ public final class PostfixConnector extends PropertiesService{
 	public static final String ERROR_SUFFIX = "updatable.error.suffix";
 	public static final String ERROR_PREFIX = "updatable.error.prefix";
 	public static final String ERROR_DIRECTORY = "updatable.error.folder";
-	public static final String ADD_HEADERS = "updatable.add.headers";
-	public static final String SENDER_HEADER = "updatable.sender.header";
-	public static final String RECIPIENT_HEADER = "updatable.recipient.header";
 	public static final String CORE_ERROR_STAT = "updatable.core.error.stat";
 	public static final String DELIVER_ERROR_STAT = "updatable.deliver.error.stat";
+	public static final String MAX_CONNECTIONS = "initial.max.connections";
+	public static final String CONNECTION_TIMEOUT = "initial.connection.timeout";
+	public static final String HOSTNAME = "initial.hostname";
+	public static final String CHARSET = "initial.charset";
+	public static final String MAX_RECIPIENTS = "initial.max.recipients";
 	
 	private static PostfixConnector lastInstance;
 	
