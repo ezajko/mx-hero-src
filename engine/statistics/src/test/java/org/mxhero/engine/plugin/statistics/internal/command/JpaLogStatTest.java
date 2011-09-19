@@ -1,5 +1,8 @@
 package org.mxhero.engine.plugin.statistics.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -50,7 +53,7 @@ public class JpaLogStatTest {
 	
 	@Test
 	@DirtiesContext
-	public void save() throws AddressException, MessagingException{
+	public void save() throws AddressException, MessagingException, IOException{
 			
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("e@w.c"));
@@ -59,8 +62,10 @@ public class JpaLogStatTest {
 		message.setText("some text");
 		message.setSubject("some subject");
 		message.saveChanges();
-
-		MimeMail mail = new MimeMail("e@w.c","x@s.c", message, "");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("e@w.c","x@s.c", is, "");
 
 		LogRecord recordService = ctx.getBean(LogRecord.class);
 		recordService.log(mail);
