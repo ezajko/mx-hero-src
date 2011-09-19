@@ -1,5 +1,7 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -151,8 +153,11 @@ public class ReplayImpl implements Replay {
 					replayMessage.setReplyTo(new InternetAddress[]{sender});
 					replayMessage.setText(sb.toString());
 					replayMessage.saveChanges();
+					ByteArrayOutputStream os = new ByteArrayOutputStream();
+					replayMessage.writeTo(os);
+					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 					replayMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
-							replayMessage, outputService);
+							is, outputService);
 					replayMail.setPhase(RulePhase.SEND);
 					replayMail.getProperties().put(Replay.class.getName(), recipient.getAddress());
 				} catch (MessagingException e) {

@@ -1,5 +1,8 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
@@ -17,14 +20,17 @@ import org.mxhero.engine.plugin.basecommands.internal.command.GetSizeImpl;
 public class GetSizeTest {
 
 	@Test
-	public void testSize() throws MessagingException{
+	public void testSize() throws MessagingException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("test@test.com"));
 		message.setRecipient(RecipientType.TO, new InternetAddress("dest@dest.com"));
 		message.setSubject("test");
 		message.setText("some text");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 		MimeMail mail = new MimeMail("test@test.com","dest@dest.com",
-						message,
+						is,
 						"service");
 		
 		Assert.assertTrue(new GetSizeImpl().exec(mail).isTrue());

@@ -1,5 +1,8 @@
 package org.mxhero.engine.plugin.basecommands.internal.command;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
 
@@ -19,7 +22,7 @@ import org.mxhero.engine.domain.mail.business.RulePhase;
 public class ReplyTest {
 
 	@Test
-	public void testMatch() throws AddressException, MessagingException{
+	public void testMatch() throws AddressException, MessagingException, IOException{
 		MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()));
 		message.setSender(new InternetAddress("admin@mxhero.com"));
 		message.setFrom(new InternetAddress("admin@mxhero.com"));
@@ -29,8 +32,10 @@ public class ReplyTest {
 		message.setText("\n\r TEXTO \n\r");
 		message.setSentDate(Calendar.getInstance().getTime());
 		message.saveChanges();
-		
-		MimeMail mail = new MimeMail("admin@mxhero.com", "mmarmol@mxhero.com", message, "service");
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		message.writeTo(os);
+		ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+		MimeMail mail = new MimeMail("admin@mxhero.com", "mmarmol@mxhero.com", is, "service");
 		Assert.assertFalse(new ReplayImpl().exec(mail,"noreply@mxhero.com", "This is the text ${mxsender} ${mxrecipient} \n ${From} \n ${To} \n ${Subject} \n ${Cc} \n ${Bcc}",RulePhase.SEND).isTrue());
 	}
 	
