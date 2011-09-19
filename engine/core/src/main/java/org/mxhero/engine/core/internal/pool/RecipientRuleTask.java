@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.concurrent.TimeUnit;
+
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.service.Core;
@@ -85,11 +87,15 @@ public final class RecipientRuleTask implements Runnable {
 			if(getLogRecordService()!=null){
 				getLogRecordService().log(mail);
 			}
-			if (!mail.getStatus().equals(MailState.DROP)) {
+			if (mail.getStatus().equals(MailState.DELIVER)) {
 				mail.getMessage().saveChanges();
-				this.queueService.removeAddTo(ReceivePool.MODULE, ReceivePool.PHASE, mail, mail, OutputPool.MODULE, OutputPool.PHASE);
-			} else {
-				queueService.remove(ReceivePool.MODULE, ReceivePool.PHASE, mail);
+				this.queueService.offer(OutputPool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+			} else if(mail.getStatus().equals(MailState.REQUEUE)){
+				mail.getMessage().saveChanges();
+				mail.setStatus(MailState.DELIVER);
+				this.queueService.offer(ReceivePool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+			} else if(mail.getStatus().equals(MailState.DROP)) {
+				queueService.unstore(mail);
 			}
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
@@ -101,14 +107,6 @@ public final class RecipientRuleTask implements Runnable {
 					getProperties().getValue(Core.ERROR_PREFIX),
 					getProperties().getValue(Core.ERROR_SUFFIX),
 					getProperties().getValue(Core.ERROR_DIRECTORY));
-			boolean removed = false;
-			while(!removed){
-				try {
-					removed = queueService.remove(ReceivePool.MODULE, ReceivePool.PHASE, mail);
-				} catch (InterruptedException e1) {
-					log.error("error while removing email:",e1);
-				}
-			}
 			log.error("error while sending email to next phase:",e);
 		}
 	}

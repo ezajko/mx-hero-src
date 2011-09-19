@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.concurrent.TimeUnit;
+
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.rules.BaseLoader;
@@ -25,8 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class SendPool extends QueueTaskPool implements
 		PropertiesListener {
-
-	public static final String MODULE="core";
+	
 	public static final String PHASE=RulePhase.SEND;
 	
 	private static Logger log = LoggerFactory.getLogger(SendPool.class);
@@ -51,7 +52,7 @@ public final class SendPool extends QueueTaskPool implements
 	 * Creates the object and pass to super the queue.
 	 */
 	public SendPool(MimeMailQueueService queueService) {
-		super(MODULE,PHASE,queueService);
+		super(PHASE,queueService);
 		this.queueService=queueService;
 	}
 
@@ -91,21 +92,13 @@ public final class SendPool extends QueueTaskPool implements
 					public void run() {
 						log.warn("Rule database is not ready " + mail);
 						try {
-							queueService.reEnqueue(MODULE, PHASE, mail);
+							queueService.offer( PHASE, mail, 1000 ,TimeUnit.MILLISECONDS);
 						} catch (InterruptedException e1) {
 							log.error("error while reEnqueue email:",e1);
 							LogMail.saveErrorMail(mail.getMessage(), 
 									getProperties().getValue(Core.ERROR_PREFIX),
 									getProperties().getValue(Core.ERROR_SUFFIX),
 									getProperties().getValue(Core.ERROR_DIRECTORY));
-							boolean removed = false;
-							while(!removed){
-								try {
-									removed = queueService.remove(MODULE, PHASE, mail);
-								} catch (InterruptedException e2) {
-									log.error("error while removing email:",e2);
-								}
-							}
 						}
 					}
 				};
@@ -129,14 +122,6 @@ public final class SendPool extends QueueTaskPool implements
 								getProperties().getValue(Core.ERROR_PREFIX),
 								getProperties().getValue(Core.ERROR_SUFFIX),
 								getProperties().getValue(Core.ERROR_DIRECTORY));
-						boolean removed = false;
-						while(!removed){
-							try {
-								removed = queueService.remove(MODULE, PHASE, mail);
-							} catch (InterruptedException e1) {
-								log.error("error while removing email:",e1);
-							}
-						}
 					}
 				};
 			}
@@ -146,17 +131,13 @@ public final class SendPool extends QueueTaskPool implements
 				@Override
 				public void run() {
 					log.error("Error while trying to do task for " + mail);
-					LogMail.saveErrorMail(mail.getMessage(), 
-							getProperties().getValue(Core.ERROR_PREFIX),
-							getProperties().getValue(Core.ERROR_SUFFIX),
-							getProperties().getValue(Core.ERROR_DIRECTORY));
-					boolean removed = false;
-					while(!removed){
-						try {
-							removed = queueService.remove(MODULE, PHASE, mail);
-						} catch (InterruptedException e1) {
-							log.error("error while removing email:",e1);
-						}
+					try {
+						queueService.offer(PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+					} catch (InterruptedException e) {
+						LogMail.saveErrorMail(mail.getMessage(), 
+								getProperties().getValue(Core.ERROR_PREFIX),
+								getProperties().getValue(Core.ERROR_SUFFIX),
+								getProperties().getValue(Core.ERROR_DIRECTORY));
 					}
 				}
 			};

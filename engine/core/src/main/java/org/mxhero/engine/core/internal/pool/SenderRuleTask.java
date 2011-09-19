@@ -1,5 +1,7 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.concurrent.TimeUnit;
+
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.service.Core;
@@ -87,27 +89,19 @@ public final class SenderRuleTask implements Runnable {
 			 * added again into input queue so it gets called for recipient
 			 * processing
 			 */
-			if (!mail.getStatus().equals(MailState.DROP)) {
-
+			if(getLogRecordService()!=null){
+				getLogRecordService().log(mail);
+			}
+			if (mail.getStatus().equals(MailState.DELIVER)) {
 				mail.getMessage().saveChanges();
 				mail.setPhase(RulePhase.RECEIVE);
-				if(getLogRecordService()!=null){
-					getLogRecordService().log(mail);
-				}
-				boolean removedAdded = false;
-				while(!removedAdded){
-					try{
-						this.queueService.removeAddTo(SendPool.MODULE, SendPool.PHASE, mail, mail, ReceivePool.MODULE, ReceivePool.PHASE);
-						removedAdded=true;
-					}catch(InterruptedException e){
-						log.error("interrupted while removingAdding mail");
-					}
-				}
-			} else {
-				if(getLogRecordService()!=null){
-					getLogRecordService().log(mail);
-				}
-				queueService.remove(SendPool.MODULE, SendPool.PHASE, mail);
+				this.queueService.offer(ReceivePool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+			} else if(mail.getStatus().equals(MailState.REQUEUE)){
+				mail.getMessage().saveChanges();
+				mail.setStatus(MailState.DELIVER);
+				this.queueService.offer(SendPool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+			} else if(mail.getStatus().equals(MailState.DROP)) {
+				queueService.unstore(mail);
 			}
 		} catch (Exception e) {
 			log.error("error, saving mail to disk:",e);
@@ -120,15 +114,6 @@ public final class SenderRuleTask implements Runnable {
 					getProperties().getValue(Core.ERROR_PREFIX),
 					getProperties().getValue(Core.ERROR_SUFFIX),
 					getProperties().getValue(Core.ERROR_DIRECTORY));
-			
-			boolean removed = false;
-			while(!removed){
-				try {
-					removed = queueService.remove(SendPool.MODULE, SendPool.PHASE, mail);
-				} catch (InterruptedException e1) {
-					log.error("error while removing email:",e);
-				}
-			}
 			log.error("error while sending email to next phase:",e);
 		}
 	}
