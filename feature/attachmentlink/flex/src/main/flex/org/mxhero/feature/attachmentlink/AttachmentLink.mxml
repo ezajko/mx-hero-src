@@ -107,7 +107,12 @@
 					property.propertyValue=returnTa.text;
 					properties.addItem(property);
 				} 
-
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey='locale';
+				property.propertyValue=ResourceManager.getInstance().localeChain[0];
+				properties.addItem(property);
+				
 				return properties;
 			}
 			
