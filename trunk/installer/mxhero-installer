@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use File::Basename;
+use lib dirname($0) . '/installer-lib';
+
+use mxHero::Config;
+use mxHero::Locale;
+use mxHero::App;
+use mxHero::ClamAV;
+use mxHero::JDK;
+use mxHero::MySQL;
+use mxHero::Postfix;
+use mxHero::SpamAssassin;
+use mxHero::Tomcat;
+
+print T('WELCOME'),"\n";
+
+if (!&mxHero::App::isUpgrade ())
+{
+	&mxHero::App::download ();
+	&mxHero::JDK::download ();
+	&mxHero::MySQL::install ();
+	&mxHero::Tomcat::install ();
+	&mxHero::Postfix::install ();
+	&mxHero::ClamAV::install ();
+	&mxHero::SpamAssassin::install ();
+	&mxHero::JDK::install ();
+	&mxHero::App::install ();
+}
+else
+{
+	&mxHero::App::download ();
+	&mxHero::MySQL::upgrade ();
+	&mxHero::Tomcat::upgrade ();
+	&mxHero::Postfix::upgrade ();
+	&mxHero::ClamAV::upgrade ();
+	&mxHero::SpamAssassin::upgrade ();
+	&mxHero::JDK::upgrade ();
+	&mxHero::App::upgrade ();
+}
+
+print T('INSTALLATION_COMPLETED'),"\n";
+
+exit (0);
