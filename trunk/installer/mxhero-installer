@@ -18,30 +18,44 @@ use mxHero::Tomcat;
 
 print T('WELCOME'),"\n";
 
+my $error;
+
 if (!&mxHero::App::isUpgrade ())
 {
-	&mxHero::App::download ();
-	&mxHero::JDK::download ();
-	&mxHero::MySQL::install ();
-	&mxHero::Tomcat::install ();
-	&mxHero::Postfix::install ();
-	&mxHero::ClamAV::install ();
-	&mxHero::SpamAssassin::install ();
-	&mxHero::JDK::install ();
-	&mxHero::App::install ();
+	if ( #  if one fails (exit 0) then condition fails immediately
+			&mxHero::App::download ( \$error ) &&
+			&mxHero::JDK::download ( \$error ) &&
+			&mxHero::MySQL::install ( \$error ) &&
+			&mxHero::Tomcat::install ( \$error ) &&
+			&mxHero::Postfix::install ( \$error ) &&
+			&mxHero::ClamAV::install ( \$error ) &&
+			&mxHero::SpamAssassin::install ( \$error ) &&
+			&mxHero::JDK::install ( \$error ) &&
+			&mxHero::App::install ( \$error ) )
+		{
+			print T('INSTALLED'),"\n"; # Success message
+		} else {
+			print T("INSTALL FAILED. ERROR:\n$error"),"\n"; # Fail message
+		}
 }
 else
 {
-	&mxHero::App::download ();
-	&mxHero::MySQL::upgrade ();
-	&mxHero::Tomcat::upgrade ();
-	&mxHero::Postfix::upgrade ();
-	&mxHero::ClamAV::upgrade ();
-	&mxHero::SpamAssassin::upgrade ();
-	&mxHero::JDK::upgrade ();
-	&mxHero::App::upgrade ();
+	if (
+			&mxHero::App::download ();
+			# no JDK download
+			&mxHero::MySQL::upgrade ( \$error ) &&
+			&mxHero::Tomcat::upgrade ( \$error ) &&
+			&mxHero::Postfix::upgrade ( \$error ) &&
+			&mxHero::ClamAV::upgrade ( \$error ) &&
+			&mxHero::SpamAssassin::upgrade ( \$error ) &&
+			&mxHero::JDK::upgrade ( \$error ) &&
+			&mxHero::App::upgrade ( \$error ) )
+		{
+			print T('UPGRADED'),"\n"; # Success message
+	
+		} else {
+			print T("UPGRADE FAILED. ERROR:\n$error"),"\n"; # Fail message
+		}
 }
-
-print T('INSTALLATION_COMPLETED'),"\n";
 
 exit (0);
