@@ -14,6 +14,8 @@ my $MXHERO_FILENAME = '1.0.0.RELEASE.zip';
 
 sub download
 {
+	my $error = ${$_[0]};
+
 	if (-f ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME"))
 	{
 		print "Using mxHero file $MXHERO_FILENAME.\n";
@@ -22,33 +24,38 @@ sub download
 	{
 		print "Downloading mxHero file $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME...\n";
 		mkdir ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH");
-		getstore "$MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME", "$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME";
+		my $http_response = getstore "$MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME", "$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME";
+		# Evaluate response
+		if ( $http_response !~ /^2\d\d/ ) {
+			$error = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response\n";
+			return 0;
+		}
 	}
 }
 
 sub isUpgrade
 {
-	return 0;
+	return 1;
 }
 
 sub install
 {
-	return;
+	return 1;
 }
 
 sub upgrade
 {
-	return;
+	return 1;
 }
 
 sub configureBE
 {
-	return;
+	return 1;
 }
 
 sub configureFE
 {
-	return;
+	return 1;
 }
 
 1;
