@@ -15,6 +15,12 @@ public interface MimeMailQueueService {
 	public boolean offer(String phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException;
 	
+	public void put(String phase, MimeMail mail)
+    throws InterruptedException;
+	
+	public void delayAndPut(String phase, MimeMail mail, long millisenconds)
+	throws InterruptedException;
+	
 	public MimeMail poll(String phase, long timeout, TimeUnit unit) throws InterruptedException;
 
 	public void logState();
