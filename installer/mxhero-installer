@@ -2,9 +2,12 @@
 
 use strict;
 use warnings;
+no warnings qw(uninitialized);
 
 use File::Basename;
 use lib dirname($0) . '/installer-lib';
+use Term::UI;
+use Term::ReadLine;
 
 use mxHero::Config;
 use mxHero::Locale;
@@ -15,8 +18,17 @@ use mxHero::MySQL;
 use mxHero::Postfix;
 use mxHero::SpamAssassin;
 use mxHero::Tomcat;
+use mxHero::config;
 
-print T('WELCOME'),"\n";
+print T('*************************************'),"\n";
+print T('WELCOME TO THE MXHERO LINUX INSTALLER'),"\n";
+print T('*************************************'),"\n\n";
+
+# Do basic checks here
+if ( $^O !~ /linux/i ) {
+	print T("This installer only supports Linux Operating Systems")."\n";
+	exit 1;
+}
 
 my $error;
 
@@ -31,14 +43,15 @@ if (!&mxHero::App::isUpgrade ())
 			&mxHero::ClamAV::install ( \$error ) &&
 			&mxHero::SpamAssassin::install ( \$error ) &&
 			&mxHero::JDK::install ( \$error ) &&
-			&mxHero::App::install ( \$error ) )
+			&mxHero::App::install ( \$error ) ) &&
+			&mxHero::Config::install ( \$error )
 		{
 			print T('INSTALLED'),"\n"; # Success message
 		} else {
 			print T("INSTALL FAILED. ERROR:\n$error"),"\n"; # Fail message
 		}
 }
-else
+else # upgrade
 {
 	if (
 			&mxHero::App::download ();
@@ -49,7 +62,9 @@ else
 			&mxHero::ClamAV::upgrade ( \$error ) &&
 			&mxHero::SpamAssassin::upgrade ( \$error ) &&
 			&mxHero::JDK::upgrade ( \$error ) &&
-			&mxHero::App::upgrade ( \$error ) )
+			&mxHero::App::upgrade ( \$error ) ) &&
+			&mxHero::config( \$error ) &&
+			&mxHero::Config::upgrade ( \$error )
 		{
 			print T('UPGRADED'),"\n"; # Success message
 	
