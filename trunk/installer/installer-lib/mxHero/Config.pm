@@ -168,7 +168,7 @@ END
 
 	my $line;
 	my $inSmtp;
-	my $foundSmtp;
+	my $wroteSmtp;
 
 	while ($line = <MASTER>) {
 		if ($line =~ /^\s*$/ or $line =~ /^\s*\#/) {
@@ -179,7 +179,6 @@ END
 
 		if ($line =~ /^\w/) {
 			if ($line =~ /^smtp\s+inet\s+/) { # begin smtp logical line
-				$foundSmtp = 1;
 				$inSmtp = 1;
 				# prepend line with '#'
 				print NEW "# MXHERO comment out ...\n";
@@ -188,6 +187,7 @@ END
 				$inSmtp = 0;
 				# place mxHero smtp logical line
 				print NEW $mxHero;
+				$wroteSmtp = 1;
 				print NEW $line;
 			} else {
 				print NEW $line;
@@ -202,7 +202,7 @@ END
 		}
 	}
 
-	if ( ! $foundSmtp ) { # did not find a valid SMTP line, so add to end of file
+	if ( ! $wroteSmtp ) { # did not find a valid SMTP line, so add to end of file
 		print NEW $mxHero;
 	}
 
