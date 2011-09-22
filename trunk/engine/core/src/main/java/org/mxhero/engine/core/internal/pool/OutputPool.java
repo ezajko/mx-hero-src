@@ -35,6 +35,8 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 	
 	private MimeMailQueueService queueService;
 	
+	private long delayTime = 10000;
+	
 	/**
 	 * @param bc
 	 */
@@ -75,6 +77,7 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 		task.setProperties(getProperties());
 		task.setLogStatService(getLogStatService());
 		task.setOutFilters(getOutFilters());
+		task.setDelayTime(delayTime);
 		if(log.isDebugEnabled()){
 			log.debug("Out Phase task created for " + mail);
 		}
@@ -82,11 +85,21 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 		
 	}
 
+	private void setDelayTime(String value){
+		try{
+			long parsedValue = Long.parseLong(value);
+			if(parsedValue>1000){
+				delayTime=parsedValue;
+			}
+		}catch (Exception e) {}
+	}
+	
 	/**
 	 * @see org.mxhero.engine.domain.properties.PropertiesListener#updated()
 	 */
 	@Override
 	public void updated() {
+		setDelayTime(getProperties().getValue(Core.QUEUE_DELAY_TIME));
 		setCorePoolsize(getProperties().getValue(Core.OUTPUTPOOL_COREPOOLSIZE));
 		setMaximumPoolSize(getProperties().getValue(Core.OUTPUTPOOL_MAXIMUMPOOLSIZE));
 		setKeepAliveTime(getProperties().getValue(Core.OUTPUTPOOL_KEEPALIVETIME));

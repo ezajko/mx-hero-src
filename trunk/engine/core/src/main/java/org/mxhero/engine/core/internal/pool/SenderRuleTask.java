@@ -1,7 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import java.util.concurrent.TimeUnit;
-
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.service.Core;
@@ -43,8 +41,10 @@ public final class SenderRuleTask implements Runnable {
 	private LogStat logStatService;
 
 	private PropertiesService properties;
-	
+
 	private MimeMailQueueService queueService;
+
+	private long delayTime = 10000;
 
 	/**
 	 * Creates the object.
@@ -58,7 +58,8 @@ public final class SenderRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public SenderRuleTask(RuleBase base, MimeMail mail, UserFinder userFinderService,MimeMailQueueService queueService) {
+	public SenderRuleTask(RuleBase base, MimeMail mail,
+			UserFinder userFinderService, MimeMailQueueService queueService) {
 		this.mail = mail;
 		this.base = base;
 		this.userFinderService = userFinderService;
@@ -75,49 +76,49 @@ public final class SenderRuleTask implements Runnable {
 	public void run() {
 		try {
 			processor.process(base, filler, userFinderService, mail);
-			}catch (Exception e) {
-				if (getLogStatService() != null) {
-					getLogStatService().log(mail,
-							getProperties().getValue(Core.PROCESS_ERROR_STAT),
-							e.getMessage());
-				}
-				log.error("error while processing rules:",e);
+		} catch (Exception e) {
+			if (getLogStatService() != null) {
+				getLogStatService().log(mail,
+						getProperties().getValue(Core.PROCESS_ERROR_STAT),e.getMessage());
 			}
-			
-		try{
+			log.error("error while processing rules:", e);
+		}
+
+		try {
 			/*
 			 * added again into input queue so it gets called for recipient
 			 * processing
 			 */
-			if(getLogRecordService()!=null){
-				getLogRecordService().log(mail);
+			try{
+				if (getLogRecordService() != null) {
+					getLogRecordService().log(mail);
+				}
+			}catch(Exception e){
+				log.error("error while saving stats",e);
 			}
+			
 			if (mail.getStatus().equals(MailState.DELIVER)) {
 				mail.getMessage().saveChanges();
 				mail.setPhase(RulePhase.RECEIVE);
-				this.queueService.offer(ReceivePool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
-			} else if(mail.getStatus().equals(MailState.REQUEUE)){
+				queueService.put(ReceivePool.PHASE, mail);
+			} else if (mail.getStatus().equals(MailState.REQUEUE)) {
 				mail.getMessage().saveChanges();
 				mail.setStatus(MailState.DELIVER);
-				this.queueService.offer(SendPool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
-			} else if(mail.getStatus().equals(MailState.DROP)) {
+				queueService.delayAndPut(SendPool.PHASE, mail, delayTime);
+			} else if (mail.getStatus().equals(MailState.DROP)) {
 				queueService.unstore(mail);
 			}
 		} catch (Exception e) {
-			log.error("error, saving mail to disk:",e);
-			if (getLogStatService() != null) {
-				getLogStatService().log(mail,
-						getProperties().getValue(Core.PROCESS_ERROR_STAT),
-						e.getMessage());
-			}
-			LogMail.saveErrorMail(mail.getMessage(), 
+			log.error("error while sending email to next phase:", e);
+			LogMail.saveErrorMail(mail.getMessage(),
 					getProperties().getValue(Core.ERROR_PREFIX),
 					getProperties().getValue(Core.ERROR_SUFFIX),
 					getProperties().getValue(Core.ERROR_DIRECTORY));
-			log.error("error while sending email to next phase:",e);
+			if (getLogStatService() != null) {
+				getLogStatService().log(mail,getProperties().getValue(Core.PROCESS_ERROR_STAT),e.getMessage());
+			}
 		}
 	}
-
 
 	/**
 	 * @param filler
@@ -176,6 +177,14 @@ public final class SenderRuleTask implements Runnable {
 	 */
 	public void setLogRecordService(LogRecord logRecordService) {
 		this.logRecordService = logRecordService;
+	}
+
+	public long getDelayTime() {
+		return delayTime;
+	}
+
+	public void setDelayTime(long delayTime) {
+		this.delayTime = delayTime;
 	}
 
 }

@@ -1,7 +1,6 @@
 package org.mxhero.engine.core.internal.pool;
 
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.core.mail.filter.MailFilter;
@@ -31,6 +30,7 @@ public final class DeliverTask implements Runnable {
 	private PropertiesService properties;
 	private Collection<MailFilter> outFilters;
 	private MimeMailQueueService queueService;
+	private long delayTime = 10000;
 
 	/**
 	 * @param mail
@@ -65,36 +65,30 @@ public final class DeliverTask implements Runnable {
 					log.info("Mail sent using outputservice:" + mail);
 					queueService.unstore(mail);
 					queueService.logState();
-					if(log.isDebugEnabled()){
-						queueService.logState();
-						}
 				}else{
 					throw new Exception("service is null");
 				}
 				bc.ungetService(serviceReference);
 			} else {
 				log.warn("Output Service was not found for mail:" + mail);
+				queueService.delayAndPut(OutputPool.PHASE, mail, delayTime);
 				if (getLogStatService() != null) {
 					getLogStatService().log(mail, 
 							properties.getValue(Core.CONNECTOR_ERROR_STAT),
 							properties.getValue(Core.CONNECTOR_NOT_FAUND_VALUE));
 				}
-				queueService.offer(OutputPool.PHASE, mail,1000,TimeUnit.MILLISECONDS);
 			}
 		} catch (Exception e) {
+			log.debug("Error sending mail to connector:" + mail,e);
+			LogMail.saveErrorMail(mail.getMessage(), 
+					getProperties().getValue(Core.ERROR_PREFIX),
+					getProperties().getValue(Core.ERROR_SUFFIX),
+					getProperties().getValue(Core.ERROR_DIRECTORY));
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail, properties.getValue(Core.CONNECTOR_ERROR_STAT),
 						e.getMessage());
 			}
-			log.debug("Error sending mail to connector:" + mail,e);
-			try {
-				queueService.offer(OutputPool.PHASE, mail,1000,TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e2) {
-				LogMail.saveErrorMail(mail.getMessage(), 
-						getProperties().getValue(Core.ERROR_PREFIX),
-						getProperties().getValue(Core.ERROR_SUFFIX),
-						getProperties().getValue(Core.ERROR_DIRECTORY));
-			}
+
 		}
 	}
 
@@ -140,6 +134,14 @@ public final class DeliverTask implements Runnable {
 	 */
 	public void setOutFilters(Collection<MailFilter> outFilters) {
 		this.outFilters = outFilters;
+	}
+
+	public long getDelayTime() {
+		return delayTime;
+	}
+
+	public void setDelayTime(long delayTime) {
+		this.delayTime = delayTime;
 	}
 
 }
