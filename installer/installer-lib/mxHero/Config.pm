@@ -14,7 +14,6 @@ use Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(%Config %myConfig);
 
-use mxHero::LinuxOS;
 use mxHero::Locale;
 
 our %myConfig;

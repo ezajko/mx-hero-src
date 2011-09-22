@@ -4,6 +4,11 @@ use strict;
 use warnings;
 no warnings qw(uninitialized);
 
+use File::Copy;
+use Term::UI;
+use Term::ReadLine;
+
+use mxHero::LinuxOS;
 use mxHero::Config;
 
 
