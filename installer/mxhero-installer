@@ -32,7 +32,7 @@ if ( $^O !~ /linux/i ) {
 }
 # Must be root
 if ( $> ) {
-	print T("This script requires root privledges")."\n";
+	print T("This script requires root privledges").".\n\n";
 	exit 1;
 }
 
