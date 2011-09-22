@@ -1,7 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import java.util.concurrent.TimeUnit;
-
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.rules.BaseLoader;
@@ -47,6 +45,8 @@ public final class ReceivePool extends QueueTaskPool implements
 	private LogStat logStatService;
 	
 	private MimeMailQueueService queueService;
+	
+	private long delayTime = 10000;
 
 	/**
 	 * Creates the object and pass to super the queue.
@@ -83,7 +83,7 @@ public final class ReceivePool extends QueueTaskPool implements
 	protected Runnable createTask(MimeMail object) {
 		try{
 			if(log.isDebugEnabled()){
-				log.debug("Receive Phase task created for " + object);
+				log.debug("Receive Phase for " + object);
 			}
 			if(loader.getBuilder().getBase()==null){
 				final MimeMail mail = object;
@@ -92,7 +92,7 @@ public final class ReceivePool extends QueueTaskPool implements
 					public void run() {
 						log.warn("Rule database is not ready " + mail);
 						try {
-							queueService.offer(PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+							queueService.delayAndPut(PHASE, mail, delayTime);
 						} catch (InterruptedException e1) {
 							log.error("error while reEnqueue email:",e1);
 							LogMail.saveErrorMail(mail.getMessage(), 
@@ -111,6 +111,7 @@ public final class ReceivePool extends QueueTaskPool implements
 				task.setLogRecordService(getLogRecordService());
 				task.setLogStatService(getLogStatService());
 				task.setProperties(properties);
+				task.setDelayTime(delayTime);
 				return task;
 			} else {
 				final MimeMail mail = object;
@@ -132,7 +133,7 @@ public final class ReceivePool extends QueueTaskPool implements
 				public void run() {
 					log.error("Error while trying to do task for " + mail);
 					try {
-						queueService.offer(PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+						queueService.put(PHASE, mail);
 					} catch (InterruptedException e) {
 						LogMail.saveErrorMail(mail.getMessage(), 
 								getProperties().getValue(Core.ERROR_PREFIX),
@@ -144,14 +145,23 @@ public final class ReceivePool extends QueueTaskPool implements
 		}
 	}
 
+	private void setDelayTime(String value){
+		try{
+			long parsedValue = Long.parseLong(value);
+			if(parsedValue>1000){
+				delayTime=parsedValue;
+			}
+		}catch (Exception e) {}
+	}
+	
 	/**
 	 * @see org.mxhero.engine.domain.properties.PropertiesListener#updated()
 	 */
 	@Override
 	public void updated() {
+		setDelayTime(getProperties().getValue(Core.QUEUE_DELAY_TIME));
 		setCorePoolsize(getProperties().getValue(Core.RECEIVEPOOL_COREPOOLSIZE));
-		setMaximumPoolSize(getProperties().getValue(
-				Core.RECEIVEPOOL_MAXIMUMPOOLSIZE));
+		setMaximumPoolSize(getProperties().getValue(Core.RECEIVEPOOL_MAXIMUMPOOLSIZE));
 		setKeepAliveTime(getProperties().getValue(Core.RECEIVEPOOL_KEEPALIVETIME));
 		setWaitTime(getProperties().getValue(Core.RECEIVEPOOL_QUEUE_WAIT_TIME));
 	}

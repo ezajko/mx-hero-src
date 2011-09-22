@@ -1,7 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import java.util.concurrent.TimeUnit;
-
 import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.service.Core;
@@ -45,6 +43,8 @@ public final class RecipientRuleTask implements Runnable {
 	private LogStat logStatService;
 	
 	private MimeMailQueueService queueService;
+	
+	private long delayTime = 10000;
 
 	/**
 	 * Creates the object
@@ -84,30 +84,35 @@ public final class RecipientRuleTask implements Runnable {
 			log.error("error while processing rules:",e);
 		}
 		try{
-			if(getLogRecordService()!=null){
-				getLogRecordService().log(mail);
+			try{
+				if (getLogRecordService() != null) {
+					getLogRecordService().log(mail);
+				}
+			}catch(Exception e){
+				log.error("error while saving stats",e);
 			}
+			
 			if (mail.getStatus().equals(MailState.DELIVER)) {
 				mail.getMessage().saveChanges();
-				this.queueService.offer(OutputPool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+				queueService.put(OutputPool.PHASE, mail);
 			} else if(mail.getStatus().equals(MailState.REQUEUE)){
 				mail.getMessage().saveChanges();
 				mail.setStatus(MailState.DELIVER);
-				this.queueService.offer(ReceivePool.PHASE, mail, 1000, TimeUnit.MILLISECONDS);
+				queueService.delayAndPut(ReceivePool.PHASE, mail, delayTime);
 			} else if(mail.getStatus().equals(MailState.DROP)) {
 				queueService.unstore(mail);
 			}
 		} catch (Exception e) {
+			log.error("error while sending email to next phase:",e);
+			LogMail.saveErrorMail(mail.getMessage(), 
+					getProperties().getValue(Core.ERROR_PREFIX),
+					getProperties().getValue(Core.ERROR_SUFFIX),
+					getProperties().getValue(Core.ERROR_DIRECTORY));
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),
 						e.getMessage());
 			}
-			LogMail.saveErrorMail(mail.getMessage(), 
-					getProperties().getValue(Core.ERROR_PREFIX),
-					getProperties().getValue(Core.ERROR_SUFFIX),
-					getProperties().getValue(Core.ERROR_DIRECTORY));
-			log.error("error while sending email to next phase:",e);
 		}
 	}
 
@@ -168,6 +173,14 @@ public final class RecipientRuleTask implements Runnable {
 	 */
 	public void setProperties(PropertiesService properties) {
 		this.properties = properties;
+	}
+
+	public long getDelayTime() {
+		return delayTime;
+	}
+
+	public void setDelayTime(long delayTime) {
+		this.delayTime = delayTime;
 	}
 
 }
