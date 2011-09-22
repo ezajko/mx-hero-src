@@ -9,8 +9,8 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.mail.Session;
@@ -19,6 +19,7 @@ import javax.mail.internet.MimeMessage;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
+import org.mxhero.engine.fsqueues.internal.entity.DelayedMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMailKey;
 import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
@@ -35,7 +36,7 @@ public class FSQueueService implements MimeMailQueueService {
 	
 	private static Map<FSMailKey,FSMail> store = new ConcurrentHashMap<FSMailKey,FSMail>();
 	
-	private static Map<String, ArrayBlockingQueue<MimeMail>> queues = new ConcurrentHashMap<String, ArrayBlockingQueue<MimeMail>>();
+	private static Map<String, DelayQueue<DelayedMail>> queues = new ConcurrentHashMap<String, DelayQueue<DelayedMail>>();
 	
 	private FSConfig config;
 	
@@ -67,7 +68,6 @@ public class FSQueueService implements MimeMailQueueService {
 			File tmpFile = null;
 			InputStream is = null;
 			OutputStream os = null;
-			boolean addedToQueue = false;
 			try{
 				data=new MimeMessage(Session.getDefaultInstance(new Properties()), new SharedTmpFileInputStream(storeFile));
 				sender=data.getHeader(SENDER_HEADER)[0];
@@ -97,10 +97,8 @@ public class FSQueueService implements MimeMailQueueService {
 				if(tmpFile!=null){
 					fsmail.setTmpFile(tmpFile.getAbsolutePath());
 				}
-				addedToQueue = getOrCreateQueue(RulePhase.SEND).offer(mail);
-				if(addedToQueue){
-					store.put(fsmail.getKey(), fsmail);
-				}
+				getOrCreateQueue(RulePhase.SEND).put(new DelayedMail(mail));
+				store.put(fsmail.getKey(), fsmail);
 			}catch(Exception e){
 				log.error("error loading email "+storeFile.getAbsolutePath(),e);
 				continue;
@@ -161,7 +159,7 @@ public class FSQueueService implements MimeMailQueueService {
 					newMail.setPhase(mail.getPhase());
 					mail=newMail;
 				}
-				addedToQueue = getOrCreateQueue(phase).offer(mail, timeout, unit);
+				addedToQueue = getOrCreateQueue(phase).offer(new DelayedMail(mail), timeout, unit);
 				if(addedToQueue){
 					store.put(fsmail.getKey(), fsmail);
 				}
@@ -225,13 +223,32 @@ public class FSQueueService implements MimeMailQueueService {
 	public boolean offer(String phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException{
 		if(store.containsKey(new FSMailKey(mail.getSequence(),mail.getTime()))){
-			return getOrCreateQueue(phase).offer(mail, timeout, unit);
+			return getOrCreateQueue(phase).offer(new DelayedMail(mail), timeout, unit);
 		}
 		return false;
 	}
 	
+	public void put(String phase, MimeMail mail)
+    throws InterruptedException{
+		if(store.containsKey(new FSMailKey(mail.getSequence(),mail.getTime()))){
+			getOrCreateQueue(phase).put(new DelayedMail(mail));
+		}
+	}
+	
+
+	public void delayAndPut(String phase, MimeMail mail, long millisenconds)
+			throws InterruptedException {
+		if(store.containsKey(new FSMailKey(mail.getSequence(),mail.getTime()))){
+			getOrCreateQueue(phase).put(new DelayedMail(mail,millisenconds));
+		}
+	}
+	
 	public MimeMail poll(String phase, long timeout, TimeUnit unit) throws InterruptedException{
-		return getOrCreateQueue(phase).poll(timeout, unit);
+		DelayedMail dmail = getOrCreateQueue(phase).poll(timeout, unit);
+		if(dmail!=null){
+			return dmail.getMail();
+		}
+		return null;
 	}
 
 	public void logState(){
@@ -241,19 +258,19 @@ public class FSQueueService implements MimeMailQueueService {
 	private String getQueuesCount() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[store="+store.size());
-		for(Entry<String, ArrayBlockingQueue<MimeMail>> entry : queues.entrySet()){
+		for(Entry<String, DelayQueue<DelayedMail>> entry : queues.entrySet()){
 			sb.append(", "+entry.getKey()+"="+entry.getValue().size());
 			}
 		sb.append("]");
 		return sb.toString();
 	}
 	
-	private ArrayBlockingQueue<MimeMail> getOrCreateQueue(String phase){
-		ArrayBlockingQueue<MimeMail> queue = null;
+	private DelayQueue<DelayedMail> getOrCreateQueue(String phase){
+		DelayQueue<DelayedMail> queue = null;
 		synchronized (queues) {
 			queue = queues.get(phase);
 			if(queue==null){
-				queue = new ArrayBlockingQueue<MimeMail>(config.getCapacity());
+				queue = new DelayQueue<DelayedMail>();
 				queues.put(phase, queue);
 			}
 		}
@@ -264,4 +281,5 @@ public class FSQueueService implements MimeMailQueueService {
 	public int size(){
 		return store.size();
 	}
+
 }
