@@ -24,11 +24,17 @@ print T('*************************************'),"\n";
 print T('WELCOME TO THE MXHERO LINUX INSTALLER'),"\n";
 print T('*************************************'),"\n\n";
 
-# Do basic checks here
+## Do basic checks here
+# Must be linux
 if ( $^O !~ /linux/i ) {
 	print T("This installer only supports Linux Operating Systems")."\n";
 	exit 1;
 }
+# Must be root
+if ( $> ) {
+	print T("This script requires root privledges")."\n";
+}
+
 
 my $error;
 
