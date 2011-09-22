@@ -1,0 +1,55 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          mxhero_va
+# Required-Start:    $remote_fs $syslog $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Run mxHero VA Config
+### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+        
+. /lib/init/vars.sh
+. /lib/lsb/init-functions
+
+LSBNAME='/etc/init.d/mxhero_va'
+SYSNAME='mxHero Virtual Appliance ...'
+MXHERO_PATH='/opt/mxhero'
+MXHERO_PID_PATH='/var/run/mxhero.pid'
+
+MXHERO_HEAPSIZE="1000M"
+MXHERO_NEWSIZE="450M"
+MXHERO_PERMSIZE="100M"
+MXHERO_GC="-XX:+UseParallelOldGC"
+
+#MXHERO_JMX="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=192.168.3.41" 
+MXHERO_JMX=""
+
+case "$1" in
+	start)
+		echo 'Starting' $SYSNAME
+#		su - mxhero -c "cd $MXHERO_PATH ; valgrind --trace-children=yes --leak-check=full --log-file=/tmp/valgrind.out java $MXHERO_JMX \
+		su - mxhero -c "cd $MXHERO_PATH ; nohup java $MXHERO_JMX \
+			-server -Xmx$MXHERO_HEAPSIZE \
+			-XX:SurvivorRatio=8 \
+			-XX:MaxNewSize=$MXHERO_NEWSIZE \
+			-XX:PermSize=$MXHERO_PERMSIZE \
+			-XX:MaxPermSize=$MXHERO_PERMSIZE $MXHERO_GC \
+			-jar org.eclipse.osgi_3.6.2.R36x_v20110210.jar > ./logs/start.log 2>&1 &"
+		PID=`ps aux | grep osgi | grep -v grep | awk '{print $2}'`
+		echo -n $PID > $MXHERO_PID_PATH
+		# XXX: Should not be here but is ok for now
+		mysql statistics -e "ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE;"
+		;;
+	stop)
+		echo 'Stopping' $SYSNAME
+		kill -15 `cat $MXHERO_PID_PATH`
+		;;
+	*)
+		echo "Usage: $LSBNAME {start|stop}"
+		exit 1
+		;;
+esac
+
+exit 0
