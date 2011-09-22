@@ -10,7 +10,7 @@ use Term::ReadLine;
 
 use mxHero::LinuxOS;
 use mxHero::Config;
-
+use mxHero::Locale;
 
 sub download
 {
