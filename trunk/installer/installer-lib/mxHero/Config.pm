@@ -97,7 +97,7 @@ sub _addUpdateStartupScript
 	if ( $distri eq "Ubuntu" || $distri eq "Debian" ) {
 		# TODO
 		# copy init and do update-rc.d
-		if ( ! copy ( "mxHero-init", "/etc/init.d/mxhero" ) ) {
+		if ( ! copy ( "$myConfig{INSTALLER_PATH}/scripts/mxhero-init-debian_ubuntu", "/etc/init.d/mxhero" ) ) {
 			warn $!;
 			return 0;
 		}
