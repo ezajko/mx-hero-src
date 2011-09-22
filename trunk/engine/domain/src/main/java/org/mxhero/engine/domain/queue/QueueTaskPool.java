@@ -43,7 +43,7 @@ public abstract class QueueTaskPool extends TaskPool{
 				if (task != null){
 					getExecutor().execute(task);
 				} else {
-					queue.offer(phase, object, getWaitTime(), TimeUnit.MILLISECONDS);
+					queue.put(phase, object);
 					Thread.sleep(getWaitTime());
 				}
 			}
