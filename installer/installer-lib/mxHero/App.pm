@@ -17,7 +17,7 @@ my $MXHERO_FILENAME = '1.0.0.RELEASE.zip';
 
 sub download
 {
-	my $error = ${$_[0]};
+	my $error = $_[0];
 
 	if (-f ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME"))
 	{
@@ -30,7 +30,7 @@ sub download
 		my $http_response = getstore "$MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME", "$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME";
 		# Evaluate response
 		if ( $http_response !~ /^2\d\d/ ) {
-			$error = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response";
+			$$error = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response";
 			return 0;
 		}
 	}
@@ -43,6 +43,8 @@ sub install
 
 sub upgrade
 {
+	my $error = $_[0];
+	
 	return 1;
 }
 
