@@ -18,7 +18,7 @@ use mxHero::MySQL;
 use mxHero::Postfix;
 use mxHero::SpamAssassin;
 use mxHero::Tomcat;
-use mxHero::config;
+
 
 print T('*************************************'),"\n";
 print T('WELCOME TO THE MXHERO LINUX INSTALLER'),"\n";
