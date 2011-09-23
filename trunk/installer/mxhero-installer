@@ -40,7 +40,7 @@ if ( $> ) {
 
 my $error;
 
-if ( ! &mxHero::Tools::mxHeroCheck() )
+if ( ! &mxHero::Tools::mxHeroVersion() )
 {
 	if ( #  if one fails (exit 0) then condition fails immediately
 			&mxHero::App::download ( \$error ) &&
