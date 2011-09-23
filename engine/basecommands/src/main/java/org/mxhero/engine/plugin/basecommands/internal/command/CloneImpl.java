@@ -3,7 +3,6 @@ package org.mxhero.engine.plugin.basecommands.internal.command;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -18,6 +17,7 @@ import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.command.Result;
 import org.mxhero.engine.plugin.basecommands.command.Clone;
 import org.mxhero.engine.plugin.basecommands.command.Replay;
+import org.mxhero.engine.plugin.basecommands.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +104,7 @@ public class CloneImpl implements Clone {
 						File tmpFile = File.createTempFile(TMP_FILE_PREFIX, TMP_FILE_SUFFIX);
 						os = new FileOutputStream(tmpFile);
 						mail.getMessage().writeTo(os);
-						is = new FileInputStream(tmpFile);
+						is = new SharedTmpFileInputStream(tmpFile);
 						
 					}else{
 						os = new ByteArrayOutputStream();
