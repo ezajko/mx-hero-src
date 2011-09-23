@@ -8,7 +8,7 @@ use File::Copy;
 use Term::UI;
 use Term::ReadLine;
 
-use mxHero::LinuxOS;
+use mxHero::Tools;
 use mxHero::Config;
 use mxHero::Locale;
 

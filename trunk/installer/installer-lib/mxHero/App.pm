@@ -9,7 +9,7 @@ use File::Copy;
 use LWP::Simple;
 
 use mxHero::Config;
-use mxHero::LinuxOS;
+use mxHero::Tools;
 
 my $MXHERO_PATH = 'app';
 my $MXHERO_DOWNLOAD_PATH = 'http://www.mxhero.com/deploy';
@@ -34,18 +34,6 @@ sub download
 			return 0;
 		}
 	}
-}
-
-sub isUpgrade
-{
-	# Test Operating System - look for mxHero
-	if ( ! -d "/opt/mxhero" ) {
-		print T("mxHero was not found at location /opt/mxhero, assuming new installation."),"\n";
-		# maybe a sleep here
-		return 0;
-	}
-	
-	return 1;
 }
 
 sub install
@@ -80,7 +68,7 @@ sub configureFE
 # Discover what the init.d mecanism is and copy associated init file and do update-rc.d or whatever appropriate.
 sub _addUpdateStartupScript
 {
-	my $distri = &mxHero::LinuxOS::getDistri();
+	my $distri = &mxHero::Tools::getDistri();
 	
 	if ( $distri eq "Ubuntu" || $distri eq "Debian" ) {
 		# TODO
