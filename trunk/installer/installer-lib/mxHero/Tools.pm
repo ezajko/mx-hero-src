@@ -31,39 +31,13 @@ sub zimbraCheck
 # Returns mxHero version number or undef if no mxHero installed.
 sub mxHeroVersion
 {
-	my $version;
-	my $versionFilePath = "/opt/mxhero/VERSION";
-	
-	if ( -f $versionFilePath ) {
-		if ( ! open(F,$versionFilePath) ) {
-			warn $!;
-			return 0;
-		}
-		$version = <F>;
-		close F;
-		chomp($version);
-	}
-
-	return $version;
+	return &_getVersion("/opt/mxhero/VERSION");
 }
 
 
 sub mxHeroInstallerVersion
 {
-	my $version;
-	my $versionFilePath = "$myConfig{INSTALLER_PATH}/VERSION";
-	
-	if ( -f $versionFilePath ) {
-		if ( ! open(F,$versionFilePath) ) {
-			warn $!;
-			return 0;
-		}
-		$version = <F>;
-		close F;
-		chomp($version);
-	}
-
-	return $version;
+	return &_getVersion("$myConfig{INSTALLER_PATH}/VERSION");
 }
 
 # Check installed package, optionally against a minimum required version
@@ -92,7 +66,28 @@ sub packageCheck
 }
 
 
-# PRIVATE
+## PRIVATE
+
+sub _getVersion
+{
+	my $version;
+	my $versionFilePath = $_[0];
+	
+	if ( -f $versionFilePath ) {
+		if ( ! open(F,$versionFilePath) ) {
+			warn $!;
+			return 0;
+		}
+		while ( $version = <F> ) {
+			next if $version =~ /^\s*\#/ || $version =~ /^\s*$/;
+			last;
+		}
+		close F;
+		chomp($version);
+	}
+
+	return $version;
+}
 
 # Check debian package version numbers
 # return 1 if $installedVersion is equal to or greater than minimumVersion
