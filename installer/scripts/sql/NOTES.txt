@@ -1,0 +1,16 @@
+NOTES sql DIRECTORY
+
+sql files in this directory should have the following name format:
+
+VERSION.sql
+
+Where VERSION is the version numeration substituting '.' with '-'.
+
+Ex.
+1-0-0.sql
+
+Note: appended characters of the version are ignored.
+Ex.
+Version 1-0-0RELEASE
+
+RELEASE will be ignored.
