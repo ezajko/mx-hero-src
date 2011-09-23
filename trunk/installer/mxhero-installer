@@ -18,6 +18,7 @@ use mxHero::MySQL;
 use mxHero::Postfix;
 use mxHero::SpamAssassin;
 use mxHero::Tomcat;
+use mxHero::Tools;
 
 
 print T('*************************************'),"\n";
@@ -39,7 +40,7 @@ if ( $> ) {
 
 my $error;
 
-if (!&mxHero::App::isUpgrade ())
+if ( ! &mxHero::Tools::mxHeroCheck() )
 {
 	if ( #  if one fails (exit 0) then condition fails immediately
 			&mxHero::App::download ( \$error ) &&
