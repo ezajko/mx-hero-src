@@ -70,7 +70,6 @@ else # upgrade
 			&mxHero::SpamAssassin::upgrade ( \$error ) &&
 			&mxHero::JDK::upgrade ( \$error ) &&
 			&mxHero::App::upgrade ( \$error ) ) &&
-			&mxHero::config( \$error ) &&
 			&mxHero::Config::upgrade ( \$error )
 		{
 			print T('UPGRADED'),"\n"; # Success message
