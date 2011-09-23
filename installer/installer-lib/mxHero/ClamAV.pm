@@ -27,6 +27,7 @@ sub install
 			# TODO - set mxHero to use Zimbra's ClamAV
 		} else {
 			# TODO - call standard installation
+			# may need to put ClamAV on another port not to conflict with Zimbra ClamAV ?
 		}
 	} else {
 		# TODO - call standard installation
