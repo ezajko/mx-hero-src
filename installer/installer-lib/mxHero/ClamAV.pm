@@ -7,6 +7,8 @@ no warnings qw(uninitialized);
 use Term::UI;
 use Term::ReadLine;
 
+use mxHero::Tools;
+
 sub download
 {
 	return 1;
@@ -16,7 +18,7 @@ sub install
 {
 	# Note: if machine already has ClamAV use existing instance.
 	
-	if ( &_zimbraCheck ) {
+	if ( &mxHero::Tools::zimbraCheck() ) {
 		# If has Zimbra - ask to use Zimbra ClamAV instance
 		print "*** NOTE FOR ZIMBRA INSTALLATIONS ***\n\n";
 		print "mxHero can use the ClamAV (antivirus) service provided by your Zimbra installation.\n";
@@ -49,12 +51,6 @@ sub configure
 
 ## PRIVATE
 
-sub _zimbraCheck
-{
-	return 0 if ! -d "/opt/zimbra";
-
-	return 1;
-}
 
 
 

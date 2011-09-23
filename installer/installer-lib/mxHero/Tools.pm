@@ -19,6 +19,22 @@ sub getDistri
 	return $distri;
 }
 
+sub zimbraCheck
+{
+	return 0 if ! -d "/opt/zimbra";
+
+	return 1;
+}
+
+sub mxHeroCheck
+{
+	return 0 if ! -d "/opt/mxhero";
+
+	return 1;
+}
+
+# PRIVATE
+
 sub _processLsbRelease
 {
 	if ( ! open(F,"/etc/lsb-release") ) {
