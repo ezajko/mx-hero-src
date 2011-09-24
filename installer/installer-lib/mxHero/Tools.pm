@@ -65,6 +65,31 @@ sub packageCheck
 	return 1;
 }
 
+# Returns 1 if a > b, 0 if the same, -1 if b > a
+sub mxheroVersionCompare
+{
+	my $a = $_[0];
+	my $b = $_[1];
+	my @a;
+	my @b;
+
+	$a =~ /(\d+)\D(\d+)\D(\d+)\D*.*/; # ex. 1.0.0RELEASE or 1.0.1-beta
+	@a = ( $1, $2, $3 );
+
+	$b =~ /(\d+)\D(\d+)\D(\d+)\D*.*/;
+	@b = ( $1, $2, $3 );
+
+	for my $i ( qw(0 1 2) ) {
+		my $val;
+		$val = $a[$i] <=> $b[$i];
+		if ( $val ) {
+				return $val;
+		}
+	}
+
+	return 0;
+}
+
 
 ## PRIVATE
 
