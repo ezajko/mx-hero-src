@@ -2,12 +2,12 @@ NOTES sql DIRECTORY
 
 sql files in this directory should have the following name format:
 
-VERSION.sql
+$VERSION.sql
 
-Where VERSION is the version numeration substituting '.' with '-'.
+Where $VERSION is the version numeration.
 
 Ex.
-1-0-0.sql
+1-0-0.sql or 1.0.0.sql
 
 Note: appended characters of the version are ignored.
 Ex.
