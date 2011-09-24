@@ -14,6 +14,17 @@ sub download
 
 sub install
 {
+	my $error = $_[0];
+
+	# Process all sql files - from first version to last
+	my @sqlFiles;
+	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
+		# TODO: execute SQL
+	} else {
+		$$error = "Failed to find SQL files.";
+		return 0;
+	}
+
 	return 1;
 }
 
@@ -23,17 +34,17 @@ sub upgrade
 
 	# TODO
 	# Determine Version of mxHero installed
-	my $mxheroVersion = &mxHero::Tools::mxHeroVersion();
-	# Determine Version of mxHero of this installation script
+	my $mxHeroVersion = &mxHero::Tools::mxHeroVersion();
+	# Determine Version mxHero for this installation script
 	my $installerVersion = &mxHero::Tools::mxHeroInstallerVersion();
 	# Sanity check
-	if ( ! $mxheroVersion || ! $installerVersion ) {
+	if ( ! $mxHeroVersion || ! $installerVersion ) {
 		$$error = "mxHero Version information incomplete.";
 		return 0;
 	}
 	# list sql files and order by version precedence
 	my @sqlFiles;
-	if ( @sqlFiles = &_versionOrderedSqlFiles( $mxheroVersion ) ) {
+	if ( @sqlFiles = &_versionOrderedSqlFiles( $mxHeroVersion ) ) {
 		# TODO: execute SQL
 	} else {
 		$$error = "Failed to find SQL files.";
@@ -51,11 +62,11 @@ sub configure
 
 ## PRIVATE
 
+# optional parameter 'version' that files need to be greater than.
 # returns ordered array of sql files - oldest first.
-# NOTE: IMPORTANT THAT VERSION NOT EXCEDE TWO DIGITS PER POINT LOCATION - EX. 99.99.99
 sub _versionOrderedSqlFiles
 {
-	my $mxheroVersion = $_[0];
+	my $mxHeroVersion = $_[0]; # if no parameter, will process all files in version order.
 	
 	my %files;
 	
@@ -64,35 +75,25 @@ sub _versionOrderedSqlFiles
 		return undef;
 	}
 	
-	my @files = grep ( /\d+\-\d+\-\d+\D*.*\.sql/, readdir( DIR ) );
+	my @files = grep ( /\d+\D+\d+\D+\d+\D*.*\.sql/, readdir( DIR ) );
+	my @sqlFiles;
 	
-	# Score installed version
-	my $mxHeroVersionScore;
-	if ( $mxheroVersion ) {
-		if ( $mxheroVersion =~ /^(\d+)\.(\d+)\.(\d+)\D*.*/ ) {
-			$score = ($1 * 10000) + ($2 * 100) + $3;
-		} else {
-			warn "mxHero version incorrect format: $mxheroVersion";
-			return 0;
-		}
-	}
-	
-	# Score file versions
+	# Only version files above current installed version
 	while my $file ( @files ) {
-		my $score;
-		if ( $file =~ /(\d+)\-(\d+)\-(\d+)\D*.*\.sql/ ) {
-			$score = ($1 * 10000) + ($2 * 100) + $3;
-			# Only SQL after the current installed version
-			if ( $score > $mxHeroVersionScore ) {
-				${$file} = $score;
+		if ( $file =~ /(\d+\D+\d+\D+\d+)\D*.*\.sql/ ) {
+			my $fileVersion = $1;
+			# Only use SQL for versions newer than current installed version
+			if ( ! $mxHeroVersion || &mxHero::Tools::mxheroVersionCompare($fileVersion, $mxHeroVersion) > 0 ) {
+				push( @sqlFiles, $fileVersion );
 			}
 		}
 	}
 	
-	my @sqlFiles = sort { $files{$a} <=> $files{$b} } keys %files;
+	my @sqlFilesSorted = sort { &mxHero::Tools::mxheroVersionCompare($a,$b) } @sqlFiles;
 	
-	return @sqlFiles;
+	return @sqlFilesSorted;
 }
+
 
 
 
