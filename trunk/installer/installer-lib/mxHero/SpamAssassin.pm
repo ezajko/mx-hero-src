@@ -20,7 +20,7 @@ sub install
 	
 	# Zimbra note
 	if ( &mxHero::Tools::zimbraCheck() ) {
-		print "*** NOTE FOR ZIMBRA INSTALLATIONS ***\n\n";
+		print "\n*** NOTE FOR ZIMBRA INSTALLATIONS ***\n";
 		print "Disable Zimbra's SpamAssassin once mxHero is up and running.\n";
 		print "This can be accomplished by running the command: <zimbra command>\n"; # TODO - get <zimbra command>
 		print "Hit <enter> to continue...\n";
