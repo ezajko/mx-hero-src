@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+use IO::Handle; STDOUT->autoflush(1);
+
 use strict;
 use warnings;
 no warnings qw(uninitialized);
@@ -57,7 +59,14 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			&mxHero::Config::install ( \$error )
 			)
 		{
-			print T('INSTALLED'),"\n"; # Success message
+			print T("\n!! MXHERO INSTALLED !!"),"\n"; # Success message
+			&_startMxHero();
+			print "\n** Admin Panel **\n";
+			print "You can access the mxHero admin panel at http://your_ip:8080/mxhero.\n";
+			print "The default admin login credentials (login / password) are: admin / password. REMEMBER TO CHANGE!\n";
+			print "\n** Important Notes **\n";
+			print "You will need to restart your Postfix/Zimbra installation for configuration changes to take effect.\n\n";
+			print "Visit http://www.mxhero.com for support and updates.\n\n";
 		} else {
 			print T("INSTALL FAILED. ERROR:\n$error"),"\n"; # Fail message
 		}
@@ -77,11 +86,36 @@ else # upgrade
 			&mxHero::Config::upgrade ( \$error )
 			)
 		{
-			print T('UPGRADED'),"\n"; # Success message
+			print T("\n!! MXHERO UPGRADED !!"),"\n"; # Success message
 	
 		} else {
 			print T("UPGRADE FAILED. ERROR:\n$error"),"\n"; # Fail message
 		}
+}
+
+
+sub _startMxHero
+{
+	print "mxHero will now be started.\n";
+	print "Hit <enter> to start...\n";
+	while ( <STDIN> ) { # wait for enter
+		last;
+	}
+	
+	my $distri = &mxHero::Tools::getDistri();
+	
+	if ( $distri eq "Ubuntu" || $distri eq "Debian" ) {
+###		system("/etc/init.d/mxhero start");
+		warn "TEST: doing /etc/init.d/mxhero start\n"; ### TESTING
+	} elsif ( $distri eq "Redhat" ) {
+		# TODO
+	} elsif ( $distri eq "Suse" ) {
+		# TODO
+	} else {
+		# could not identify Distribution
+		warn "Unknown Linux Distribution.";
+		return 0;
+	}
 }
 
 exit (0);
