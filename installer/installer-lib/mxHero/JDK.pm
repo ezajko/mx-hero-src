@@ -37,7 +37,9 @@ sub download
 	{
 		print "Downloading JDK file $JDK_DOWNLOAD_PATH/$downloadFile...\n";
 		mkdir ("$myConfig{INSTALLER_PATH}/$JDK_PATH");
-		my $http_response = getstore "$JDK_DOWNLOAD_PATH/$downloadFile", "$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile";
+		my $http_response;
+###		$http_response = getstore "$JDK_DOWNLOAD_PATH/$downloadFile", "$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile";
+		$http_response = 200; ### TESTING
 		if ( $http_response !~ /^2\d\d/ ) {
 			$$error = "Failed to download $JDK_DOWNLOAD_PATH/$downloadFile\nHTTP Response: $http_response";
 			return 0;

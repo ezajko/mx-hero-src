@@ -28,7 +28,9 @@ sub download
 	{
 		print "Downloading mxHero file $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME...\n";
 		mkdir ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH");
-		my $http_response = getstore "$MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME", "$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME";
+		my $http_response;
+###		$http_response = getstore "$MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME", "$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME";
+		$http_response = 200; ### TESTING
 		# Evaluate response
 		if ( $http_response !~ /^2\d\d/ ) {
 			$$error = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response";
@@ -107,7 +109,8 @@ sub _addUpdateStartupScript
 			return 0;
 		}
 		
-		system("/usr/sbin/update-rc.d mxhero defaults");
+###		system("/usr/sbin/update-rc.d mxhero defaults");
+		warn "TESTING: doing update-rc.d\n"; ### TESTING
 		
 	} elsif ( $distri eq "Redhat" ) {
 		# TODO

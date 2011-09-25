@@ -11,13 +11,8 @@ use mxHero::Tools;
 my %PKG_NAME = (
 	"debian" => "mysql-server",
 	"ubuntu" => "mysql-server"
-	# TODO: redhad, suse
+	# TODO: redhat, suse
 );
-
-sub download
-{
-	return 1;
-}
 
 sub install
 {
@@ -36,7 +31,10 @@ sub install
 	# Process all sql files - from first version to last
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
-		# TODO: execute SQL
+		for my $file ( @sqlFiles ) {
+			# BRUNO: execute SQL
+			warn "TEST: sql file - $file\n"; ### TESTING
+		}
 	} else {
 		$$error = "Failed to find SQL files.";
 		return 0;
@@ -59,9 +57,13 @@ sub upgrade
 		return 0;
 	}
 	# list sql files and order by version precedence
+	# ONLY sql files GREATER THAN current installed mxHero version!
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles( $mxHeroVersion ) ) {
-		# TODO: execute SQL
+		for my $file ( @sqlFiles ) {
+			# BRUNO: execute SQL
+			warn "TEST: sql file - $file\n"; ### TESTING
+		}
 	} else {
 		$$error = "Failed to find SQL files.";
 		return 0;
@@ -74,6 +76,8 @@ sub configure
 {
 	my $error = $_[0];
 
+	# BRUNO
+	
 	return 1;
 }
 

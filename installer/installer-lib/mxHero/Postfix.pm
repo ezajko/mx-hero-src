@@ -16,10 +16,10 @@ use mxHero::Locale;
 my %PKG_NAME = (
 	"debian" => "postfix",
 	"ubuntu" => "postfix"
-	# TODO: redhad, suse
+	# TODO: redhat, suse
 );
 
-sub download
+sub install
 {
 	my $error = $_[0];
 	
@@ -38,21 +38,6 @@ sub download
 		}
 	}
 
-	return 1;
-}
-
-sub install
-{
-	my $error = $_[0];
-	
-	# Don't install if postfix / Zimbra already exists.
-	if ( &mxHero::Tools::zimbraCheck() ) {
-		print "Zimbra found - not configuring postfix\n".
-		return 1;
-	}
-	
-	# BRUNO
-	
 	return 1;
 }
 
@@ -122,6 +107,9 @@ sub _alterPostfixMasterCf {
 	my $port1 = $_[2];
 	my $port2 = $_[3];
 
+	warn "TEST: Altering master.cf [$file, $ip, $port1, $port2]\n"; ### TESTING
+	return 1; ### TESTING
+	
 	# Copy original file to .old or .old.1, .old.2 etc...
 	my $oldFile = $file.".old";
 	if ( -f $oldFile ) {
