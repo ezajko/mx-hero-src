@@ -3,6 +3,8 @@ package mxHero::Tools;
 use strict;
 use warnings;
 
+use Debian::Dpkg::Version;
+
 use mxHero::Config;
 
 # Super simple distri check
@@ -41,7 +43,7 @@ sub mxHeroInstallerVersion
 }
 
 # Check installed package, optionally against a minimum required version
-# return 1 if package OK, 0 if not
+# return 1 if package meets minimum, 0 if below minimum
 sub packageCheck
 {
 	my $package = $_[0];
@@ -53,7 +55,8 @@ sub packageCheck
 		my $installedVersion = `/usr/bin/dpkg-query -W -f='\${Version}' $package 2>/dev/null`;
 		if ( $installedVersion ) {
 			if ( $minimumVersion ) {
-				return &_checkDebianPackageVersion( $installedVersion, $minimumVersion );
+				my $cmp = &_checkDebianPackageVersion( $installedVersion, $minimumVersion );
+				return $cmp == -1 ? 0 : 1;
 			}
 			return 1;
 		} else {
@@ -115,16 +118,13 @@ sub _getVersion
 }
 
 # Check debian package version numbers
-# return 1 if $installedVersion is equal to or greater than minimumVersion
+# return -1 if $installedVersion less, 0 the same, or 1 if greater than $minimumVersion
 sub _checkDebianPackageVersion
 {
 	my $installedVersion = $_[0];
 	my $minimumVersion = $_[1];
 	
-	# TODO
-	# use Debian::Dpkg::Version (will need to include in local lib)
-	
-	return 1;
+	return version_compare( $installedVersion, $minimumVersion );
 }
 
 sub _processLsbRelease
