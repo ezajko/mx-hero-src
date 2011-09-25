@@ -53,7 +53,7 @@ sub packageCheck
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-		warn "TEST: installing $package [$minimumVersion]\n"; ### TESTING
+		warn "TEST: installing package $package [$minimumVersion]\n"; ### TESTING
 		return 1; ### TESTING
 		my $installedVersion = `/usr/bin/dpkg-query -W -f='\${Version}' $package 2>/dev/null`;
 		if ( $installedVersion ) {
