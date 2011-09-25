@@ -31,6 +31,8 @@ if ( $^O !~ /linux/i ) {
 	print T("This installer only supports Linux Operating Systems")."\n";
 	exit 1;
 }
+# TODO: check distribution & versions
+
 # Must be root
 if ( $> ) {
 	print T("This script requires root privledges").".\n\n";
@@ -51,8 +53,9 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			&mxHero::ClamAV::install ( \$error ) &&
 			&mxHero::SpamAssassin::install ( \$error ) &&
 			&mxHero::JDK::install ( \$error ) &&
-			&mxHero::App::install ( \$error ) ) &&
+			&mxHero::App::install ( \$error ) &&
 			&mxHero::Config::install ( \$error )
+			)
 		{
 			print T('INSTALLED'),"\n"; # Success message
 		} else {
@@ -62,7 +65,7 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 else # upgrade
 {
 	if (
-			&mxHero::App::download ();
+			&mxHero::App::download () &&
 			# no JDK download
 			&mxHero::MySQL::upgrade ( \$error ) &&
 			&mxHero::Tomcat::upgrade ( \$error ) &&
@@ -70,8 +73,9 @@ else # upgrade
 			&mxHero::ClamAV::upgrade ( \$error ) &&
 			&mxHero::SpamAssassin::upgrade ( \$error ) &&
 			&mxHero::JDK::upgrade ( \$error ) &&
-			&mxHero::App::upgrade ( \$error ) ) &&
+			&mxHero::App::upgrade ( \$error ) &&
 			&mxHero::Config::upgrade ( \$error )
+			)
 		{
 			print T('UPGRADED'),"\n"; # Success message
 	
