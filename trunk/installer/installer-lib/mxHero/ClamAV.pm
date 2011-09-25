@@ -13,10 +13,10 @@ use mxHero::Tools;
 my %PKG_NAME = (
 	"debian" => "clamav",
 	"ubuntu" => "clamav"
-	# TODO: redhad, suse
+	# TODO: redhat, suse
 );
 
-sub download
+sub install
 {
 	my $error = $_[0];
 	
@@ -30,15 +30,6 @@ sub download
 		}
 	}
 
-	return 1;
-}
-
-sub install
-{
-	my $error = $_[0];
-	
-	# BRUNO
-	
 	return 1;
 }
 

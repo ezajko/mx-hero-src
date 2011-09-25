@@ -9,30 +9,16 @@ use mxHero::Tools;
 my %PKG_NAME = (
 	"debian" => "spamassassin",
 	"ubuntu" => "spamassassin"
-	# TODO: redhad, suse
+	# TODO: redhat, suse
 );
-
-sub download
-{
-	my $error = $_[0];
-	
-	my $distri = lc( &mxHero::Tools::getDistri() );
-	
-	# Install binary if needed
-	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
-		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
-			$$error = "Failed to intall $PKG_NAME{$distri} package";
-			return 0;
-		}
-	}
-
-	return 1;
-}
 
 sub install
 {
 	my $error = $_[0];
 	
+	my $distri = lc( &mxHero::Tools::getDistri() );
+	
+	# Zimbra note
 	if ( &mxHero::Tools::zimbraCheck() ) {
 		print "*** NOTE FOR ZIMBRA INSTALLATIONS ***\n\n";
 		print "Disable Zimbra's SpamAssassin once mxHero is up and running.\n";
@@ -43,10 +29,15 @@ sub install
 		}
 	}
 	
-	if ( ! &download() ) {
-		return 0;
-	}
 	# in future add dialogue for external SpamAssassin (ex. get IP and Port)
+
+	# Install binary if needed
+	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
+		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
+			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			return 0;
+		}
+	}
 	
 	return 1;
 }

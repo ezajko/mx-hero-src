@@ -11,7 +11,7 @@ use mxHero::Tools;
 my %PKG_NAME = (
 	"debian" => "tomcat6",
 	"ubuntu" => "tomcat6"
-	# TODO: redhad, suse
+	# TODO: redhat, suse
 );
 
 sub download
