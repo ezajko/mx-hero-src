@@ -92,11 +92,8 @@ sub packageInstall
 	# TODO - other distributions ...
 	
 	return 0;
-}s
-
-
-
 }
+
 
 # Returns 1 if a > b, 0 if the same, -1 if b > a
 sub mxheroVersionCompare
