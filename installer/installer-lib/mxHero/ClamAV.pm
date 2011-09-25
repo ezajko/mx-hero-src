@@ -9,43 +9,54 @@ use Term::ReadLine;
 
 use mxHero::Tools;
 
+# distribution => mysql package name
+my %PKG_NAME = (
+	"debian" => "clamav",
+	"ubuntu" => "clamav"
+	# TODO: redhad, suse
+);
+
 sub download
 {
+	my $error = $_[0];
+	
+	my $distri = lc( &mxHero::Tools::getDistri() );
+	
+	# Install binary if needed
+	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
+		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
+			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			return 0;
+		}
+	}
+
 	return 1;
 }
 
 sub install
 {
-	# Note: if machine already has ClamAV use existing instance.
+	my $error = $_[0];
 	
-	if ( &mxHero::Tools::zimbraCheck() ) {
-		# If has Zimbra - ask to use Zimbra ClamAV instance
-		print "*** NOTE FOR ZIMBRA INSTALLATIONS ***\n\n";
-		print "mxHero can use the ClamAV (antivirus) service provided by your Zimbra installation.\n";
-		my $term = Term::ReadLine->new( 'mxHero' );
-		my $bool = $term->ask_yn( prompt   => "Have mxHero use Zimbra's ClamAV service:",
-							   default  => 'y' );
-		if ( $bool ) {
-			# TODO - set mxHero to use Zimbra's ClamAV
-		} else {
-			# TODO - call standard installation
-			# may need to put ClamAV on another port not to conflict with Zimbra ClamAV ?
-		}
-	} else {
-		# TODO - call standard installation
-	}
-
+	# BRUNO
 	
 	return 1;
 }
 
 sub upgrade
 {
+	my $error = $_[0];
+
+	# BRUNO
+	
 	return 1;
 }
 
 sub configure
 {
+	my $error = $_[0];
+
+	# BRUNO
+	
 	return 1;
 }
 

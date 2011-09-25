@@ -12,26 +12,61 @@ use mxHero::Tools;
 use mxHero::Config;
 use mxHero::Locale;
 
+# distribution => mysql package name
+my %PKG_NAME = (
+	"debian" => "postfix",
+	"ubuntu" => "postfix"
+	# TODO: redhad, suse
+);
+
 sub download
 {
-	return;
+	my $error = $_[0];
+	
+	if ( &mxHero::Tools::zimbraCheck() ) {
+		print "Zimbra found - not installing postfix\n".
+		return 1;
+	}
+	
+	my $distri = lc( &mxHero::Tools::getDistri() );
+	
+	# Install binary if needed
+	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
+		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
+			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			return 0;
+		}
+	}
+
+	return 1;
 }
 
 sub install
 {
-	# Don't install if postfix / Zimbra already exists.
+	my $error = $_[0];
 	
-	return;
+	# Don't install if postfix / Zimbra already exists.
+	if ( &mxHero::Tools::zimbraCheck() ) {
+		print "Zimbra found - not configuring postfix\n".
+		return 1;
+	}
+	
+	# BRUNO
+	
+	return 1;
 }
 
 sub upgrade
 {
-	return;
+	my $error = $_[0];
+	
+	# BRUNO - maybe nothing to do here
+
+	return 1;
 }
 
 sub configure
 {
-
 	my $error = $_[0];
 
 	# MASTER.CF

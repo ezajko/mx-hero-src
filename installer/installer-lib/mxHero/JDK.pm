@@ -4,6 +4,7 @@ package mxHero::JDK;
 
 use strict;
 use warnings;
+no warnings qw(uninitialized);
 
 use mxHero::Config;
 use LWP::Simple;
@@ -15,7 +16,10 @@ my $JDK_X64_FILENAME = 'jdk-6u27-linux-x64.bin';
 
 sub download
 {
+	my $error = $_[0];
+
 	my $downloadFile;
+
 	if ($Config{archname} =~ m/x86_64/)
 	{
 		$downloadFile = $JDK_X64_FILENAME;
@@ -33,23 +37,45 @@ sub download
 	{
 		print "Downloading JDK file $JDK_DOWNLOAD_PATH/$downloadFile...\n";
 		mkdir ("$myConfig{INSTALLER_PATH}/$JDK_PATH");
-		getstore "$JDK_DOWNLOAD_PATH/$downloadFile", "$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile";
+		my $http_response = getstore "$JDK_DOWNLOAD_PATH/$downloadFile", "$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile";
+		if ( $http_response !~ /^2\d\d/ ) {
+			$$error = "Failed to download $JDK_DOWNLOAD_PATH/$downloadFile\nHTTP Response: $http_response";
+			return 0;
+		}
 	}
+	
+	return 1;
 }
 
 sub install
 {
-	return;
+	my $error = $_[0];
+	
+	# BRUNO
+	
+	return 1;
 }
 
 sub upgrade
 {
-	return;
+	my $error = $_[0];
+	
+	# BRUNO
+	
+	return 1;
 }
 
 sub configure
 {
-	return;
+	my $error = $_[0];
+	
+	# BRUNO
+	
+	return 1;
 }
+
+
+
+
 
 1;

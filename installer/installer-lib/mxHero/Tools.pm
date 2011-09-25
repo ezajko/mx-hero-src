@@ -2,6 +2,7 @@ package mxHero::Tools;
 
 use strict;
 use warnings;
+no warnings qw(uninitialized);
 
 use Debian::Dpkg::Version;
 
@@ -66,6 +67,32 @@ sub packageCheck
 	# TODO - other distributions ...
 	
 	return 1;
+}
+
+# Install package: 1 on success, 0 on failure.
+sub packageInstall
+{
+	my $package = $_[0];
+	my $minimumVersion = $_[1];
+
+	my $distri = &getDistri();
+	
+	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
+		# apt-get return 0 on success, 100 on error
+		my $ret = `/usr/bin/apt-get install $package 2>/dev/null`;
+		if ( $ret == 0 ) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	# TODO - other distributions ...
+	
+	return 0;
+}s
+
+
+
 }
 
 # Returns 1 if a > b, 0 if the same, -1 if b > a

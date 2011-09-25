@@ -7,6 +7,13 @@ no warnings qw(uninitialized);
 use mxHero::Config;
 use mxHero::Tools;
 
+# distribution => mysql package name
+my %PKG_NAME = (
+	"debian" => "mysql-server",
+	"ubuntu" => "mysql-server"
+	# TODO: redhad, suse
+);
+
 sub download
 {
 	return 1;
@@ -15,7 +22,17 @@ sub download
 sub install
 {
 	my $error = $_[0];
-
+	
+	my $distri = lc( &mxHero::Tools::getDistri() );
+	
+	# Install binary if needed
+	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
+		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
+			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			return 0;
+		}
+	}
+	
 	# Process all sql files - from first version to last
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
@@ -33,12 +50,11 @@ sub upgrade
 	my $error = $_[0];
 
 	# TODO
-	# Determine Version of mxHero installed
+	# Determine Version of installed mxHero
 	my $mxHeroVersion = &mxHero::Tools::mxHeroVersion();
-	# Determine Version mxHero for this installation script
-	my $installerVersion = &mxHero::Tools::mxHeroInstallerVersion();
+
 	# Sanity check
-	if ( ! $mxHeroVersion || ! $installerVersion ) {
+	if ( ! $mxHeroVersion ) {
 		$$error = "mxHero Version information incomplete.";
 		return 0;
 	}
@@ -56,6 +72,8 @@ sub upgrade
 
 sub configure
 {
+	my $error = $_[0];
+
 	return 1;
 }
 

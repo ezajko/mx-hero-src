@@ -4,6 +4,7 @@ package mxHero::App;
 
 use strict;
 use warnings;
+no warnings qw(uninitialized);
 
 use File::Copy;
 use LWP::Simple;
@@ -34,10 +35,16 @@ sub download
 			return 0;
 		}
 	}
+	
+	return 1;
 }
 
 sub install
 {
+	my $error = $_[0];
+	
+	# BRUNO
+
 	return 1;
 }
 
@@ -45,11 +52,25 @@ sub upgrade
 {
 	my $error = $_[0];
 	
+	# BRUNO
+	
 	return 1;
+}
+
+# BRUNO: seria bom manter o "API" e ter um configure() aqui tb.
+sub configure
+{	
+	my $error = $_[0];
+
+	#  chamando os dois (por enquanto)
+	
+	return &configureBE && &configureFE;
 }
 
 sub configureBE
 {	
+	my $error = $_[0];
+
 	# INIT SCRIPT
 	if ( ! &_addUpdateStartupScript() ) {
 		$$error = T("Failed to install startup script");
@@ -61,6 +82,8 @@ sub configureBE
 
 sub configureFE
 {
+	my $error = $_[0];
+
 	return 1;
 }
 
@@ -73,7 +96,6 @@ sub _addUpdateStartupScript
 	my $distri = &mxHero::Tools::getDistri();
 	
 	if ( $distri eq "Ubuntu" || $distri eq "Debian" ) {
-		# TODO
 		# copy init and do update-rc.d
 		if ( ! copy ( "$myConfig{INSTALLER_PATH}/scripts/mxhero-init-debian_ubuntu", "/etc/init.d/mxhero" ) ) {
 			warn $!;
