@@ -29,6 +29,7 @@ sub install
 	}
 	
 	# Process all sql files - from first version to last
+	print "Updating database ...\n";
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
 		for my $file ( @sqlFiles ) {
@@ -56,8 +57,10 @@ sub upgrade
 		$$error = "mxHero Version information incomplete.";
 		return 0;
 	}
+
 	# list sql files and order by version precedence
 	# ONLY sql files GREATER THAN current installed mxHero version!
+	print "Updating database ...\n";
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles( $mxHeroVersion ) ) {
 		for my $file ( @sqlFiles ) {

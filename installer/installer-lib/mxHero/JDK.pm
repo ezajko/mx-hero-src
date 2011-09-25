@@ -62,7 +62,7 @@ sub upgrade
 {
 	my $error = $_[0];
 	
-	# BRUNO
+	# BRUNO - verify that JDK of the correct version is already installed 
 	
 	return 1;
 }
