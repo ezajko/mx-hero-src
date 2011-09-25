@@ -53,7 +53,7 @@ sub packageCheck
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-		warn "TEST: installing package $package [$minimumVersion]\n"; ### TESTING
+		warn "TEST: checking package '$package' $minimumVersion\n"; ### TESTING
 		return 1; ### TESTING
 		my $installedVersion = `/usr/bin/dpkg-query -W -f='\${Version}' $package 2>/dev/null`;
 		if ( $installedVersion ) {
@@ -79,11 +79,12 @@ sub packageInstall
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-		warn "TEST: installing $package\n"; ### TESTING
+		warn "TEST: installing '$package'\n"; ### TESTING
 		return 1; ### TESTING
 		# apt-get return 0 on success, 100 on error
 		my $ret = `/usr/bin/apt-get install $package 2>/dev/null`;
 		if ( $ret == 0 ) {
+			print "'$package' ... INSTALLED\n";
 			return 1;
 		} else {
 			return 0;

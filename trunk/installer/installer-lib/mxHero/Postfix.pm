@@ -22,12 +22,12 @@ my %PKG_NAME = (
 sub install
 {
 	my $error = $_[0];
-	
+
 	if ( &mxHero::Tools::zimbraCheck() ) {
-		print "Zimbra found - not installing postfix\n".
+		print "Zimbra found, not installing postfix\n";
 		return 1;
 	}
-	
+
 	my $distri = lc( &mxHero::Tools::getDistri() );
 	
 	# Install binary if needed
