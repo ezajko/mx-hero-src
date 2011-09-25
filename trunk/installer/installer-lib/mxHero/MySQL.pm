@@ -101,7 +101,7 @@ sub _versionOrderedSqlFiles
 	my @sqlFiles;
 	
 	# Only version files above current installed version
-	while my $file ( @files ) {
+	for my $file ( @files ) {
 		if ( $file =~ /(\d+\D+\d+\D+\d+)\D*.*\.sql/ ) {
 			my $fileVersion = $1;
 			# Only use SQL for versions newer than current installed version
