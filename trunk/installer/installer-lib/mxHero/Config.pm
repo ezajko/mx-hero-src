@@ -23,19 +23,25 @@ $myConfig{INSTALLER_PATH} = dirname($0);
 
 sub install
 {
+	my $error = $_[0];
+	
+	# BRUNO
 	
 	return 1;
 }
 
 sub upgrade
 {
-	# Nothing to do here at the moment.
+	my $error = $_[0];
+	
+	# BRUNO
 
 	return 1;
 }
 
 sub uninstall
 {
+	my $error = $_[0];
 
 	return 1;
 }
