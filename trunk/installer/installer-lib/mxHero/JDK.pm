@@ -55,7 +55,7 @@ sub install
 	
 	# BRUNO
 	
-	return 1;
+	return &configure( \$error );
 }
 
 sub upgrade
@@ -64,7 +64,7 @@ sub upgrade
 	
 	# BRUNO - verify that JDK of the correct version is already installed 
 	
-	return 1;
+	return &configure( \$error );
 }
 
 sub configure

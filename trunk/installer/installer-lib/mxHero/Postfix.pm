@@ -25,7 +25,7 @@ sub install
 
 	if ( &mxHero::Tools::zimbraCheck() ) {
 		print "Zimbra found, not installing postfix\n";
-		return 1;
+		return &configure( \$error );
 	}
 
 	my $distri = lc( &mxHero::Tools::getDistri() );
@@ -38,7 +38,7 @@ sub install
 		}
 	}
 
-	return 1;
+	return &configure( \$error );
 }
 
 sub upgrade
@@ -47,7 +47,7 @@ sub upgrade
 	
 	# BRUNO - maybe nothing to do here
 
-	return 1;
+	return &configure( \$error );
 }
 
 sub configure

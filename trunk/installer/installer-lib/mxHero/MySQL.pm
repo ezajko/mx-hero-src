@@ -41,7 +41,7 @@ sub install
 		return 0;
 	}
 
-	return 1;
+	return &configure( \$error );
 }
 
 sub upgrade
@@ -72,7 +72,7 @@ sub upgrade
 		return 0;
 	}
 	
-	return 1;
+	return &configure( \$error );
 }
 
 sub configure
