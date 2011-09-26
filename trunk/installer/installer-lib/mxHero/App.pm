@@ -18,7 +18,7 @@ my $MXHERO_FILENAME = '1.0.0.RELEASE.zip';
 
 sub download
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	if (-f ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME"))
 	{
@@ -33,7 +33,7 @@ sub download
 		$http_response = 200; ### TESTING
 		# Evaluate response
 		if ( $http_response !~ /^2\d\d/ ) {
-			$$error = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response";
+			$$errorRef = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response";
 			return 0;
 		}
 	}
@@ -43,26 +43,26 @@ sub download
 
 sub install
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	# BRUNO
 	
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub upgrade
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	# BRUNO
 	
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 # BRUNO: seria bom manter o "API" e ter um configure() aqui tb.
 sub configure
 {	
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	#  chamando os dois (por enquanto)
 	
@@ -71,11 +71,11 @@ sub configure
 
 sub configureBE
 {	
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	# INIT SCRIPT
 	if ( ! &_addUpdateStartupScript() ) {
-		$$error = T("Failed to install startup script");
+		$$errorRef = T("Failed to install startup script");
 		return 0;
 	}
 
@@ -84,7 +84,7 @@ sub configureBE
 
 sub configureFE
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	return 1;
 }

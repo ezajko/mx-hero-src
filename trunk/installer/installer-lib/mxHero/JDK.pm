@@ -16,7 +16,7 @@ my $JDK_X64_FILENAME = 'jdk-6u27-linux-x64.bin';
 
 sub download
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	my $downloadFile;
 
@@ -41,7 +41,7 @@ sub download
 ###		$http_response = getstore "$JDK_DOWNLOAD_PATH/$downloadFile", "$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile";
 		$http_response = 200; ### TESTING
 		if ( $http_response !~ /^2\d\d/ ) {
-			$$error = "Failed to download $JDK_DOWNLOAD_PATH/$downloadFile\nHTTP Response: $http_response";
+			$$errorRef = "Failed to download $JDK_DOWNLOAD_PATH/$downloadFile\nHTTP Response: $http_response";
 			return 0;
 		}
 	}
@@ -51,25 +51,25 @@ sub download
 
 sub install
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	# BRUNO
 	
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub upgrade
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	# BRUNO - verify that JDK of the correct version is already installed 
 	
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub configure
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	# BRUNO
 	

@@ -18,33 +18,33 @@ my %PKG_NAME = (
 
 sub install
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	my $distri = lc( &mxHero::Tools::getDistri() );
 	
 	# Install binary if needed
 	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
-			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
 			return 0;
 		}
 	}
 
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub upgrade
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	# BRUNO
 	
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub configure
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	# BRUNO
 	
