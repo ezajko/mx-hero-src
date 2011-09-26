@@ -14,7 +14,7 @@ my %PKG_NAME = (
 	# TODO: redhat, suse
 );
 
-sub download
+sub install
 {
 	my $error = $_[0];
 	
@@ -28,16 +28,7 @@ sub download
 		}
 	}
 
-	return 1;
-}
-
-sub install
-{
-	my $error = $_[0];
-
-	# BRUNO
-	
-	return 1;
+	return &configure( \$error );
 }
 
 sub upgrade
@@ -46,7 +37,7 @@ sub upgrade
 
 	# BRUNO
 	
-	return 1;
+	return &configure( \$error );
 }
 
 sub configure
