@@ -7,7 +7,7 @@ no warnings qw(uninitialized);
 use mxHero::Config;
 use mxHero::Tools;
 
-# distribution => mysql package name
+# distribution => package name
 my %PKG_NAME = (
 	"debian" => "mysql-server",
 	"ubuntu" => "mysql-server"
