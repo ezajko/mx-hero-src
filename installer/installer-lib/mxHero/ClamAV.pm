@@ -30,7 +30,7 @@ sub install
 		}
 	}
 
-	return 1;
+	return &configure( \$error );
 }
 
 sub upgrade
@@ -39,7 +39,7 @@ sub upgrade
 
 	# BRUNO
 	
-	return 1;
+	return &configure( \$error );
 }
 
 sub configure

@@ -46,8 +46,8 @@ sub install
 	my $error = $_[0];
 	
 	# BRUNO
-
-	return 1;
+	
+	return &configure( \$error );
 }
 
 sub upgrade
@@ -56,7 +56,7 @@ sub upgrade
 	
 	# BRUNO
 	
-	return 1;
+	return &configure( \$error );
 }
 
 # BRUNO: seria bom manter o "API" e ter um configure() aqui tb.
