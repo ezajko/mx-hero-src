@@ -8,7 +8,7 @@ Where $VERSION is the version numeration. Version should be a maximum of 3 numbe
 devided by a non-number character. Ex. '.', '-'.
 
 Ex.
-1-0-0.sql or 1.0.0.sql
+1-0-12.sql or 1.0.12.sql
 
 Note: only the first 3 numbers are used. Appended characters of the version are ignored.
 Ex.
