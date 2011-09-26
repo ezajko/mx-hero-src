@@ -9,7 +9,7 @@ use Term::ReadLine;
 
 use mxHero::Tools;
 
-# distribution => mysql package name
+# distribution => package name
 my %PKG_NAME = (
 	"debian" => "clamav",
 	"ubuntu" => "clamav"

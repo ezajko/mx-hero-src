@@ -5,7 +5,7 @@ use warnings;
 
 use mxHero::Tools;
 
-# distribution => mysql package name
+# distribution => package name
 my %PKG_NAME = (
 	"debian" => "spamassassin",
 	"ubuntu" => "spamassassin"
