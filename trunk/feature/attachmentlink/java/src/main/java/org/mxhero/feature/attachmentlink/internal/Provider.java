@@ -99,6 +99,7 @@ public class Provider extends RulesByFeature{
 			if(!mail.getState().equalsIgnoreCase(MailState.REQUEUE)){
 				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
+				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmentlink",Boolean.toString(result.isResult()) );
 			}
 		}
 		
