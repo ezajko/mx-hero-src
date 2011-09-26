@@ -56,6 +56,7 @@ sub packageCheck
 		warn "TEST: checking package '$package' $minimumVersion\n"; ### TESTING
 		return 1; ### TESTING
 		my $installedVersion = `/usr/bin/dpkg-query -W -f='\${Version}' $package 2>/dev/null`;
+		chomp ( $installedVersion );
 		if ( $installedVersion ) {
 			if ( $minimumVersion ) {
 				my $cmp = &_checkDebianPackageVersion( $installedVersion, $minimumVersion );
