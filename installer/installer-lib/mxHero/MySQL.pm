@@ -16,14 +16,14 @@ my %PKG_NAME = (
 
 sub install
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	my $distri = lc( &mxHero::Tools::getDistri() );
 	
 	# Install binary if needed
 	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
-			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
 			return 0;
 		}
 	}
@@ -37,16 +37,16 @@ sub install
 			warn "TEST: sql file - $file\n"; ### TESTING
 		}
 	} else {
-		$$error = "Failed to find SQL files.";
+		$$errorRef = "Failed to find SQL files.";
 		return 0;
 	}
 
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub upgrade
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	# TODO
 	# Determine Version of installed mxHero
@@ -54,7 +54,7 @@ sub upgrade
 
 	# Sanity check
 	if ( ! $mxHeroVersion ) {
-		$$error = "mxHero Version information incomplete.";
+		$$errorRef = "mxHero Version information incomplete.";
 		return 0;
 	}
 
@@ -68,16 +68,16 @@ sub upgrade
 			warn "TEST: sql file - $file\n"; ### TESTING
 		}
 	} else {
-		$$error = "Failed to find SQL files.";
+		$$errorRef = "Failed to find SQL files.";
 		return 0;
 	}
 	
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub configure
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	# BRUNO
 	

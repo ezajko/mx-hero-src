@@ -21,11 +21,11 @@ my %PKG_NAME = (
 
 sub install
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	if ( &mxHero::Tools::zimbraCheck() ) {
 		print "Zimbra found, not installing postfix\n";
-		return &configure( \$error );
+		return &configure( $errorRef );
 	}
 
 	my $distri = lc( &mxHero::Tools::getDistri() );
@@ -33,26 +33,26 @@ sub install
 	# Install binary if needed
 	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
-			$$error = "Failed to intall $PKG_NAME{$distri} package";
+			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
 			return 0;
 		}
 	}
 
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub upgrade
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 	
 	# BRUNO - maybe nothing to do here
 
-	return &configure( \$error );
+	return &configure( $errorRef );
 }
 
 sub configure
 {
-	my $error = $_[0];
+	my $errorRef = $_[0];
 
 	# MASTER.CF
 	# List of possible master.cf file locations - good for Ubuntu, Debian, Redhat.
@@ -69,7 +69,7 @@ sub configure
 			if ( $bool ) {
 				# set master.cf path for alteration routine
 				if ( ! &_alterPostfixMasterCf( $file, "127.0.0.1",5555,5556) ) {
-					$$error = T("Failed to alter ")."'$file'";
+					$$errorRef = T("Failed to alter ")."'$file'";
 					return 0;
 				}
 				last;
@@ -83,13 +83,13 @@ sub configure
 		if ( $reply && -f $reply ) {
 			# set master.cf path for alteration routine
 			if ( ! &_alterPostfixMasterCf( $reply, "127.0.0.1",5555,5556) ) {
-				$$error = T("Failed to alter ")."'$reply'";
+				$$errorRef = T("Failed to alter ")."'$reply'";
 				return 0;
 			}
 		} else {
 			print T("Failed to find file")." '$reply' \n";
 			print T("Stopping installation")."\n";
-			$$error = T("Failed to find configuration file");
+			$$errorRef = T("Failed to find configuration file");
 			return 0;
 		}
 	}
