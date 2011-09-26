@@ -4,13 +4,16 @@ sql files in this directory should have the following name format:
 
 $VERSION.sql
 
-Where $VERSION is the version numeration.
+Where $VERSION is the version numeration. Version should be a maximum of 3 numbers
+devided by a non-number character. Ex. '.', '-'.
 
 Ex.
 1-0-0.sql or 1.0.0.sql
 
-Note: appended characters of the version are ignored.
+Note: only the first 3 numbers are used. Appended characters of the version are ignored.
 Ex.
-Version 1-0-0RELEASE
+Version 1-0-0-RELEASE
+
+Is the same as 1-0-0
 
 RELEASE will be ignored.
