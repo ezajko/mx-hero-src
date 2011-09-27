@@ -55,8 +55,16 @@ sub packageCheck
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
 		warn "TEST: checking package '$package' $minimumVersion\n"; ### TESTING
 		return 1; ### TESTING
-		my $installedVersion = `/usr/bin/dpkg-query -W -f='\${Version}' $package 2>/dev/null`;
-		chomp ( $installedVersion );
+		# Should return something like: "3.0-2::install ok installed"
+		my $dpkgQuery = `/usr/bin/dpkg-query -W -f='\${Version}::\${Status}' $package 2>/dev/null`;
+		chomp ( $dpkgQuery );
+		my $installedVersion;
+		my $status;
+		($installedVersion, $status ) = split (/::/, $dpkgQuery, 2);
+		if ( $status !~ /installed$/ ) {
+			warn "Package $package not installed\n";
+			return 0;
+		}
 		if ( $installedVersion ) {
 			if ( $minimumVersion ) {
 				my $cmp = &_checkDebianPackageVersion( $installedVersion, $minimumVersion );
