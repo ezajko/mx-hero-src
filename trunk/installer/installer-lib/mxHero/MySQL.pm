@@ -4,8 +4,12 @@ use strict;
 use warnings;
 no warnings qw(uninitialized);
 
+use Term::UI;
+use Term::ReadLine;
+
 use mxHero::Config;
 use mxHero::Tools;
+use mxHero::Locale;
 
 # distribution => package name
 my %PKG_NAME = (
@@ -25,6 +29,18 @@ sub install
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
 			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
 			return 0;
+		}
+	}
+	
+	# TODO - check for existence of mxhero database. Query to remove.
+	if ( &_mxheroDatabaseExists ) {
+		my $term = Term::ReadLine->new( 'mxHero' );
+		my $bool;
+		$bool = $term->ask_yn( prompt => T("Continue?"),
+							   default  => 'y',
+							   print_me => T("\nFound database 'mxhero'. Maybe from a broken installation. Will now delete database.") );
+		if ( $bool ) {
+			system( "/usr/bin/mysql -e 'drop database mxhero'" );
 		}
 	}
 	
@@ -125,7 +141,19 @@ sub _versionOrderedSqlFiles
 	return @sqlFilesSorted;
 }
 
+sub _mxheroDatabaseExists
+{
+	my $query = "\"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'mxhero'\"";
 
+	my $out = `/usr/bin/mysql -e $query`;
+	chomp($out);
+
+	if ( ! $out ) {
+		return 0;
+	}
+	
+	return 1;
+}
 
 
 
