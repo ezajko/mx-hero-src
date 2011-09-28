@@ -14,7 +14,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 . /lib/lsb/init-functions
 
 LSBNAME='/etc/init.d/mxhero_va'
-SYSNAME='mxHero Virtual Appliance ...'
+SYSNAME='mxHero service ...'
 MXHERO_PATH='/opt/mxhero'
 MXHERO_PID_PATH='/var/run/mxhero.pid'
 
