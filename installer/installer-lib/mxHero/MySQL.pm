@@ -33,6 +33,7 @@ sub install
 	}
 	
 	# TODO - check for existence of mxhero database. Query to remove.
+	# Note: this should be part of the uninstall subroutine.
 	if ( &_mxheroDatabaseExists ) {
 		my $term = Term::ReadLine->new( 'mxHero' );
 		my $bool;
@@ -41,6 +42,7 @@ sub install
 							   print_me => T("\nFound database 'mxhero'. Maybe from a broken installation. Will now delete database.") );
 		if ( $bool ) {
 			system( "/usr/bin/mysql -e 'drop database mxhero'" );
+			system( "/usr/bin/mysql -e 'drop database statistics'" );
 		}
 	}
 	
