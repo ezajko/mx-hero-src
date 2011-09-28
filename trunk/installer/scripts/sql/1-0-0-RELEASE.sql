@@ -469,6 +469,8 @@ UNLOCK TABLES;
 -- Current Database: `mysql`
 --
 
+USE `mysql`;
+
 --
 -- Table structure for table `event`
 --
