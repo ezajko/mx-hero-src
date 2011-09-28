@@ -59,6 +59,8 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			&mxHero::Config::install ( \$error )
 			)
 		{
+			# TODO - ADD VERSION FILE TO /opt/mxhero
+			# here forward when install run, will be 'upgrade'.
 			print T("\n!! MXHERO INSTALLED !!"),"\n"; # Success message
 			&_startMxHero();
 			print "\n** Admin Panel **\n";
@@ -105,8 +107,8 @@ sub _startMxHero
 	my $distri = &mxHero::Tools::getDistri();
 	
 	if ( $distri eq "Ubuntu" || $distri eq "Debian" ) {
-###		system("/etc/init.d/mxhero start");
-		warn "TEST: doing /etc/init.d/mxhero start\n"; ### TESTING
+		system("/etc/init.d/mxhero start");
+###		warn "TEST: doing /etc/init.d/mxhero start\n"; ### TESTING
 	} elsif ( $distri eq "Redhat" ) {
 		# TODO
 	} elsif ( $distri eq "Suse" ) {
