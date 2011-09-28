@@ -7,54 +7,41 @@ use warnings;
 no warnings qw(uninitialized);
 
 use mxHero::Config;
-use LWP::Simple;
-
-my $JDK_PATH = 'jdk';
-my $JDK_DOWNLOAD_PATH = 'http://download.oracle.com/otn-pub/java/jdk/6u27-b07';
-my $JDK_X86_FILENAME = 'jdk-6u27-linux-i586.bin';
-my $JDK_X64_FILENAME = 'jdk-6u27-linux-x64.bin';
-
-sub download
-{
-	my $errorRef = $_[0];
-
-	my $downloadFile;
-
-	if ($Config{archname} =~ m/x86_64/)
-	{
-		$downloadFile = $JDK_X64_FILENAME;
-	}
-	else
-	{
-		$downloadFile = $JDK_X86_FILENAME;
-	}
-
-	if (-f ("$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile"))
-	{
-		print "Using JDK file $downloadFile.\n";
-	}
-	else
-	{
-		print "Downloading JDK file $JDK_DOWNLOAD_PATH/$downloadFile...\n";
-		mkdir ("$myConfig{INSTALLER_PATH}/$JDK_PATH");
-		my $http_response;
-###		$http_response = getstore "$JDK_DOWNLOAD_PATH/$downloadFile", "$myConfig{INSTALLER_PATH}/$JDK_PATH/$downloadFile";
-		$http_response = 200; ### TESTING
-		if ( $http_response !~ /^2\d\d/ ) {
-			$$errorRef = "Failed to download $JDK_DOWNLOAD_PATH/$downloadFile\nHTTP Response: $http_response";
-			return 0;
-		}
-	}
-	
-	return 1;
-}
+use mxhero::Locale;
 
 sub install
 {
 	my $errorRef = $_[0];
-	
-	# BRUNO
-	
+
+	my $dirName;
+
+	if ($Config{archname} =~ m/x86_64/)
+	{
+		$dirName = $myConfig{JDK_X64_DIRNAME};
+	}
+	else
+	{
+		$dirName = $myConfig{JDK_X86_DIRNAME};
+	}
+
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$dirName $myConfig{MXHERO_PATH}/$dirName")) != 0)
+	{
+		$$errorRef = T("Failed to copy java files");
+                return 0;
+	}
+
+	if (! symlink ("$myConfig{MXHERO_PATH}/$dirName", "$myConfig{MXHERO_PATH}/java"))
+	{
+		$$errorRef = T("Failed to symlink java dir");
+                return 0;
+	}
+
+	if ((system ("chown -R root: $myConfig{MXHERO_PATH}/$dirName")) != 0)
+	{
+		$$errorRef = T("Failed to chown java");
+		return 0;
+	}
+
 	return &configure( $errorRef );
 }
 
@@ -62,7 +49,7 @@ sub upgrade
 {
 	my $errorRef = $_[0];
 	
-	# BRUNO - verify that JDK of the correct version is already installed 
+	# TODO:  verify that JDK of the correct version is already installed 
 	
 	return &configure( $errorRef );
 }
@@ -71,13 +58,7 @@ sub configure
 {
 	my $errorRef = $_[0];
 	
-	# BRUNO
-	
 	return 1;
 }
-
-
-
-
 
 1;
