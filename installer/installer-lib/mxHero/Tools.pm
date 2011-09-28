@@ -9,6 +9,7 @@ use Term::ReadLine;
 use Debian::Dpkg::Version;
 
 use mxHero::Config;
+use mxHero::Locale;
 
 # Super simple distri check
 sub getDistri
@@ -91,7 +92,7 @@ sub packageInstall
 	my $bool;
 	$bool = $term->ask_yn( prompt => T("Continue?"),
 							   default  => 'y',
-							   print_me => T("Installing binary package:")." '$package'." );
+							   print_me => T("\nInstalling binary package:")." '$package'" );
 	if ( ! $bool ) {
 		print "INSTALL CANCELLED.\n";
 		return 0;
