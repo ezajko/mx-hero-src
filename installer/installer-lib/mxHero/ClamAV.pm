@@ -11,8 +11,8 @@ use mxHero::Tools;
 
 # distribution => package name
 my %PKG_NAME = (
-	"debian" => "clamav",
-	"ubuntu" => "clamav"
+	"debian" => "clamav clamav-daemon",
+	"ubuntu" => "clamav clamav-daemon"
 	# TODO: redhat, suse
 );
 
