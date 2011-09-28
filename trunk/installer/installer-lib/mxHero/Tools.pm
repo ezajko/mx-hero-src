@@ -37,7 +37,7 @@ sub zimbraCheck
 # Returns mxHero version number or undef if no mxHero installed.
 sub mxHeroVersion
 {
-	return &_getVersion("/opt/mxhero/VERSION");
+	return &_getVersion("$myConfig{MXHERO_PATH}/VERSION");
 }
 
 

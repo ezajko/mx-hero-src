@@ -7,46 +7,60 @@ use warnings;
 no warnings qw(uninitialized);
 
 use File::Copy;
-use LWP::Simple;
 
 use mxHero::Config;
 use mxHero::Tools;
-
-my $MXHERO_PATH = 'app';
-my $MXHERO_DOWNLOAD_PATH = 'http://www.mxhero.com/deploy';
-my $MXHERO_FILENAME = '1.0.0.RELEASE.zip';
-
-sub download
-{
-	my $errorRef = $_[0];
-
-	if (-f ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME"))
-	{
-		print "Using mxHero file $MXHERO_FILENAME.\n";
-	}
-	else
-	{
-		print "Downloading mxHero file $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME...\n";
-		mkdir ("$myConfig{INSTALLER_PATH}/$MXHERO_PATH");
-		my $http_response;
-###		$http_response = getstore "$MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME", "$myConfig{INSTALLER_PATH}/$MXHERO_PATH/$MXHERO_FILENAME";
-		$http_response = 200; ### TESTING
-		# Evaluate response
-		if ( $http_response !~ /^2\d\d/ ) {
-			$$errorRef = "Failed to download $MXHERO_DOWNLOAD_PATH/$MXHERO_FILENAME\nHTTP Response: $http_response";
-			return 0;
-		}
-	}
-	
-	return 1;
-}
+use mxHero::Locale;
 
 sub install
 {
 	my $errorRef = $_[0];
+
+	## BACKEND
+
+	# Creating system directory
+	if (! mkdir ($myConfig{MXHERO_PATH}))
+	{
+		$$errorRef = T("Failed to create mxhero directory");
+		return 0;
+	}
+
+	# Copying all mxhero backend files (cp, dirty way?)
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/* $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero files");
+		return 0;
+	}
+
+	# Creating system user
+	if ((system ("useradd -d $myConfig{MXHERO_PATH} mxhero")) != 0)
+	{
+		$$errorRef = T("Failed to create mxhero user");
+		return 0;
+	}
+
+	# Copying default bashrc (loads PATHs and mxhero env)
+	if (! copy ("$myConfig{INSTALLER_PATH}/scripts/mxhero-bashrc", "$myConfig{MXHERO_PATH}/.bashrc"))
+	{
+		$$errorRef = T("Failed to copy bashrc file");
+		return 0;
+	}
+
+	# Change owner of everything to mxhero (is there a beauty way to do it in perl, recursively and easily? :)
+	if ((system ("chown -R mxhero: $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to chown mxhero files");
+		return 0;
+	}
 	
-	# BRUNO
-	
+	## FRONTEND
+
+	if (! copy ("$myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/web/mxhero.war", "$myConfig{TOMCAT_WEBAPPS_PATH}"))
+	{
+		$$errorRef = T("Failed to install web interface");
+		return 0;
+	}
+
 	return &configure( $errorRef );
 }
 
@@ -54,18 +68,15 @@ sub upgrade
 {
 	my $errorRef = $_[0];
 	
-	# BRUNO
+	# TODO
 	
 	return &configure( $errorRef );
 }
 
-# BRUNO: seria bom manter o "API" e ter um configure() aqui tb.
 sub configure
 {	
 	my $errorRef = $_[0];
 
-	#  chamando os dois (por enquanto)
-	
 	return &configureBE && &configureFE;
 }
 
@@ -124,7 +135,5 @@ sub _addUpdateStartupScript
 
 	return 1;
 }
-
-
 
 1;
