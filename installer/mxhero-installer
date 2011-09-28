@@ -47,16 +47,13 @@ my $error;
 if ( ! &mxHero::Tools::mxHeroVersion() )
 {
 	if ( #  if one fails (exit 0) then condition fails immediately
-			&mxHero::App::download ( \$error ) &&
-			&mxHero::JDK::download ( \$error ) &&
 			&mxHero::MySQL::install ( \$error ) &&
 			&mxHero::Tomcat::install ( \$error ) &&
 			&mxHero::Postfix::install ( \$error ) &&
 			&mxHero::ClamAV::install ( \$error ) &&
 			&mxHero::SpamAssassin::install ( \$error ) &&
-			&mxHero::JDK::install ( \$error ) &&
 			&mxHero::App::install ( \$error ) &&
-			&mxHero::Config::install ( \$error )
+			&mxHero::JDK::install ( \$error )
 			)
 		{
 			# TODO - ADD VERSION FILE TO /opt/mxhero
@@ -76,16 +73,13 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 else # upgrade
 {
 	if (
-			&mxHero::App::download () &&
-			# no JDK download
 			&mxHero::MySQL::upgrade ( \$error ) &&
 			&mxHero::Tomcat::upgrade ( \$error ) &&
 			&mxHero::Postfix::upgrade ( \$error ) &&
 			&mxHero::ClamAV::upgrade ( \$error ) &&
 			&mxHero::SpamAssassin::upgrade ( \$error ) &&
-			&mxHero::JDK::upgrade ( \$error ) &&
 			&mxHero::App::upgrade ( \$error ) &&
-			&mxHero::Config::upgrade ( \$error )
+			&mxHero::JDK::upgrade ( \$error )
 			)
 		{
 			print T("\n!! MXHERO UPGRADED !!"),"\n"; # Success message
