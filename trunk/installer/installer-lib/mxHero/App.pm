@@ -109,7 +109,7 @@ sub _addUpdateStartupScript
 			return 0;
 		}
 		
-###		system("/usr/sbin/update-rc.d mxhero defaults");
+		system("/usr/sbin/update-rc.d mxhero defaults");
 		warn "TEST: doing update-rc.d\n"; ### TESTING
 		
 	} elsif ( $distri eq "Redhat" ) {
