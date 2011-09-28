@@ -99,43 +99,46 @@ sub configure
 					   default  => 'n',
 					   print_me => T("Do you plan to use this mxHero installation as a relay for another email server?") );
 	
+	my $entry;
 	if ( $bool ) {
-		# MAIN.CF
-		# List of possible main.cf file locations - good for Ubuntu, Debian, Redhat.
-		# TODO: suse the same?
-		@postfixCfFiles = qw(/etc/postfix/main.cf /opt/zimbra/postfix/conf/main.cf);
-		
-		for my $file ( @postfixCfFiles ) {
-			if ( -f $file ) {
-				$bool = $term->ask_yn( prompt => T("Alter this main.cf for mxHero?"),
-								   default  => 'y',
-								   print_me => T("Found postfix master.cf at")." [$file]." );
-				if ( $bool ) {
-					# set master.cf path for alteration routine
-					if ( ! &_alterPostfixMainCf( $file ) ) {
-						$$errorRef = T("Failed to alter ")."'$file'";
-						return 0;
-					}
-					last;
-				}
-			}
-		}
-		
-		if ( ! $bool ) {
-			print "\n".T("Did not find a postfix 'main.cf' file.")."\n";
-			my $reply = $term->get_reply( prompt => T("Please enter full path to your main.cf".":"));
-			if ( $reply && -f $reply ) {
+		$entry = "relay_domains = mysql:/etc/postfix/mxhero/domains.sql\ntransport_maps = mysql:/etc/postfix/mxhero/transports.sql\n";
+	}
+	
+	# MAIN.CF
+	# List of possible main.cf file locations - good for Ubuntu, Debian, Redhat.
+	# TODO: suse the same?
+	@postfixCfFiles = qw(/etc/postfix/main.cf /opt/zimbra/postfix/conf/main.cf);
+	
+	for my $file ( @postfixCfFiles ) {
+		if ( -f $file ) {
+			$bool = $term->ask_yn( prompt => T("Alter this main.cf for mxHero?"),
+							   default  => 'y',
+							   print_me => T("Found postfix master.cf at")." [$file]." );
+			if ( $bool ) {
 				# set master.cf path for alteration routine
-				if ( ! &_alterPostfixMainCf( $reply ) ) {
-					$$errorRef = T("Failed to alter ")."'$reply'";
+				if ( ! &_alterPostfixMainCf( $file, $entry ) ) {
+					$$errorRef = T("Failed to alter ")."'$file'";
 					return 0;
 				}
-			} else {
-				print T("Failed to find file")." '$reply' \n";
-				print T("Stopping installation")."\n";
-				$$errorRef = T("Failed to find configuration file");
+				last;
+			}
+		}
+	}
+	
+	if ( ! $bool ) {
+		print "\n".T("Did not find a postfix 'main.cf' file.")."\n";
+		my $reply = $term->get_reply( prompt => T("Please enter full path to your main.cf".":"));
+		if ( $reply && -f $reply ) {
+			# set master.cf path for alteration routine
+			if ( ! &_alterPostfixMainCf( $reply, $entry ) ) {
+				$$errorRef = T("Failed to alter ")."'$reply'";
 				return 0;
 			}
+		} else {
+			print T("Failed to find file")." '$reply' \n";
+			print T("Stopping installation")."\n";
+			$$errorRef = T("Failed to find configuration file");
+			return 0;
 		}
 	}
 
@@ -181,19 +184,15 @@ END
 
 
 # Adding (if user selected relay appliance)
-# relay_domains = mysql:/etc/postfix/mxhero/domains.sql
-# transport_maps = mysql:/etc/postfix/mxhero/transports.sql
 sub _alterPostfixMainCf
 {
 	my $file = $_[0]; # main.cf path
+	my $entry = $_[1];
 	
 	my $backup = &_backupFile( $file );
 	return 0 if ! $backup;
 
-	my $relayDomains = "relay_domains = mysql:/etc/postfix/mxhero/domains.sql";
-	my $transports = "transport_maps = mysql:/etc/postfix/mxhero/transports.sql";
-	
-	if ( ! &_alterPostfixCf( $file, $backup, '(^relay_domains\s*=.+|^transport_maps\s*=.+)', "$relayDomains\n$transports\n" ) )
+	if ( ! &_alterPostfixCf( $file, $backup, '(^relay_domains\s*=.+|^transport_maps\s*=.+)', $entry ) )
 	{
 		return 0;
 	}
@@ -258,7 +257,7 @@ sub _alterPostfixCf
 			} elsif ($inLine) { # exiting logical line
 				$inLine = 0;
 				# place mxHero logical line
-				print NEW $entry;
+				print NEW $entry if $entry;
 				$wroteLine = 1;
 				print NEW $line;
 			} else {
@@ -274,7 +273,7 @@ sub _alterPostfixCf
 		}
 	}
 
-	if ( ! $wroteLine ) { # did not find a valid line, so add to end of file
+	if ( ! $wroteLine && $entry ) { # did not find a valid line, so add to end of file
 		print NEW $entry;
 	}
 
