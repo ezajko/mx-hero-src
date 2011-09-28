@@ -109,7 +109,7 @@ sub _alterPostfixMasterCf {
 	my $port2 = $_[3];
 
 	warn "TEST: Altering master.cf [$file, $ip, $port1, $port2]\n"; ### TESTING
-	return 1; ### TESTING
+###	return 1; ### TESTING
 	
 	# Copy original file to .old or .old.1, .old.2 etc...
 	my $oldFile = $file.".old";
