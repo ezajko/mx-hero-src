@@ -91,8 +91,8 @@ sub packageInstall
 	my $term = Term::ReadLine->new( 'mxHero' );
 	my $bool;
 	$bool = $term->ask_yn( prompt => T("Continue?"),
-							   default  => 'y',
-							   print_me => T("\nInstalling binary package:")." '$package'" );
+						   default  => 'y',
+						   print_me => T("\nInstalling binary package:")." '$package'" );
 	if ( ! $bool ) {
 		print "INSTALL CANCELLED.\n";
 		return 0;
