@@ -1,0 +1,13 @@
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+MXHERO_HOME=/opt/mxhero
+export MXHERO_HOME
+
+JAVA_HOME=${MXHERO_HOME}/java
+export JAVA_HOME
+
+PATH=${MXHERO_HOME}/bin:${JAVA_HOME}/bin:${PATH}
+export PATH
