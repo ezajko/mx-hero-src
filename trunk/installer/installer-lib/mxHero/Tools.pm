@@ -4,6 +4,8 @@ use strict;
 use warnings;
 no warnings qw(uninitialized);
 
+use Term::UI;
+use Term::ReadLine;
 use Debian::Dpkg::Version;
 
 use mxHero::Config;
@@ -53,8 +55,8 @@ sub packageCheck
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-		warn "TEST: checking package '$package' $minimumVersion\n"; ### TESTING
-		return 1; ### TESTING
+###		warn "TEST: checking package '$package' $minimumVersion\n"; ### TESTING
+###		return 1; ### TESTING
 		# Should return something like: "3.0-2::install ok installed"
 		my $dpkgQuery = `/usr/bin/dpkg-query -W -f='\${Version}::\${Status}' $package 2>/dev/null`;
 		chomp ( $dpkgQuery );
@@ -84,12 +86,21 @@ sub packageCheck
 sub packageInstall
 {
 	my $package = $_[0];
-
+	
+	my $term = Term::ReadLine->new( 'mxHero' );
+	my $bool;
+	$bool = $term->ask_yn( prompt => T("Continue?"),
+							   default  => 'y',
+							   print_me => T("Installing binary package:")." '$package'." );
+	if ( ! $bool ) {
+		print "INSTALL CANCELLED.\n";
+		return 0;
+	}
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-		warn "TEST: installing '$package'\n"; ### TESTING
-		return 1; ### TESTING
+###		warn "TEST: installing '$package'\n"; ### TESTING
+###		return 1; ### TESTING
 		# apt-get return 0 on success, 100 on error
 		my $ret = system("/usr/bin/apt-get install $package 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
