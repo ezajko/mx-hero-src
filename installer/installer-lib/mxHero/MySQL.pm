@@ -45,7 +45,7 @@ sub install
 	}
 	
 	# Process all sql files - from first version to last
-	print "Updating database ...\n";
+	print "Creating database ...\n";
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
 		for my $file ( @sqlFiles ) {
