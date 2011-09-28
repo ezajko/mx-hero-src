@@ -33,8 +33,9 @@ sub install
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
 		for my $file ( @sqlFiles ) {
-			# BRUNO: execute SQL
-			warn "TEST: sql file - $file\n"; ### TESTING
+			# NOTE: should get exit code to check for errors or use API
+			system( "/usr/bin/mysql < $file" );
+###			warn "TEST: /usr/bin/mysql < $file\n"; ### TEST
 		}
 	} else {
 		$$errorRef = "Failed to find SQL files.";
@@ -64,8 +65,9 @@ sub upgrade
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles( $mxHeroVersion ) ) {
 		for my $file ( @sqlFiles ) {
-			# BRUNO: execute SQL
-			warn "TEST: sql file - $file\n"; ### TESTING
+			# NOTE: should get exit code to check for errors or use API
+			system( "/usr/bin/mysql < $file" );
+###			warn "TEST: /usr/bin/mysql < $file\n"; ### TEST
 		}
 	} else {
 		$$errorRef = "Failed to find SQL files.";
@@ -109,12 +111,16 @@ sub _versionOrderedSqlFiles
 			my $fileVersion = $1;
 			# Only use SQL for versions newer than current installed version
 			if ( ! $mxHeroVersion || &mxHero::Tools::mxheroVersionCompare($fileVersion, $mxHeroVersion) > 0 ) {
-				push( @sqlFiles, $fileVersion );
+				push( @sqlFiles, $file );
 			}
 		}
 	}
 	
 	my @sqlFilesSorted = sort { &mxHero::Tools::mxheroVersionCompare($a,$b) } @sqlFiles;
+	# prepend file path
+	for my $f (@sqlFilesSorted) {
+		$f = "$myConfig{INSTALLER_PATH}/scripts/sql/$f";
+	}
 	
 	return @sqlFilesSorted;
 }
