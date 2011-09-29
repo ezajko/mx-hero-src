@@ -61,6 +61,7 @@ public final class DeliverTask implements Runnable {
 				service = (OutputService) bc.getService(serviceReference);
 				if (service != null) {
 					mail.getMessage().saveChanges();
+					//CREATE SOMETHING TO HANDLE SERVICE TROWS AN EXCEPTION
 					service.addOutMail(mail);
 					log.info("Mail sent using outputservice:" + mail);
 					queueService.unstore(mail);
