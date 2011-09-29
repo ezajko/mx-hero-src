@@ -1,5 +1,6 @@
 package org.mxhero.console.backend.service.jpa;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 
@@ -48,36 +49,41 @@ public class JpaHomeReportService implements HomeReportService{
 	public MessagesCompositionVO getMessagesCompositionData(long since, String domainId) {
 		MessagesCompositionVO messages = new MessagesCompositionVO();
 		
-		String basicQuery = "SELECT COUNT(*) FROM mail_records r0 " 
+		String hitsSqlQuery = "SELECT COALESCE(SUM(r0.amount),0)" 
+			+" FROM mail_stats_grouped r0 " 
 			+" WHERE r0.insert_date > ? "
-			+" AND EXISTS( SELECT 1 FROM mail_stats s "
-									+" WHERE s.insert_date = r0.insert_date " 
-									+" AND s.record_sequence = r0.record_sequence " 
-									+" AND ${CONDITION}) ";
+			+" AND r0.stat_key = ? " 
+			+" AND r0.stat_value = ? ";
 		
-		String cleanQuery = "SELECT COUNT(*) FROM mail_records r0 " 
-		+" WHERE r0.insert_date > ? "
-		+" AND NOT EXISTS( SELECT 1 FROM mail_stats s "
-								+" WHERE s.insert_date = r0.insert_date " 
-								+" AND s.record_sequence = r0.record_sequence " 
-								+" AND ((s.stat_key='spam.detected' AND s.stat_value='true') OR (s.stat_key='virus.detected' AND s.stat_value='true') OR s.stat_key='email.blocked')) ";
+		String hitsSqlQueryNoValue = "SELECT COALESCE(SUM(r0.amount),0)" 
+			+" FROM mail_stats_grouped r0 " 
+			+" WHERE r0.insert_date > ? "
+			+" AND r0.stat_key = ? ";
 		
 		if(domainId==null){
-			messages.setSpam(((BigInteger)stem.createNativeQuery(basicQuery.replaceAll("\\$\\{CONDITION\\}", "s.stat_key='spam.detected' AND s.stat_value='true'"))
-					.setParameter(1, new Timestamp(since)).getSingleResult()).longValue());
-			messages.setVirus(((BigInteger)stem.createNativeQuery(basicQuery.replaceAll("\\$\\{CONDITION\\}", "s.stat_key='virus.detected' AND s.stat_value='true'"))
-					.setParameter(1, new Timestamp(since)).getSingleResult()).longValue());
-			messages.setBlocked(((BigInteger)stem.createNativeQuery(basicQuery.replaceAll("\\$\\{CONDITION\\}", "s.stat_key='email.blocked'"))
-					.setParameter(1, new Timestamp(since)).getSingleResult()).longValue());
-			messages.setClean(((BigInteger)stem.createNativeQuery(cleanQuery).setParameter(1, new Timestamp(since)).getSingleResult()).longValue());
+			long total = ((BigInteger)stem.createNativeQuery("SELECT COUNT(*) FROM mail_records r0 WHERE r0.insert_date > ?").setParameter(1, new Timestamp(since)).getSingleResult()).longValue();
+			long spam = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery).setParameter(1, new Timestamp(since))
+					.setParameter(2, "spam.detected").setParameter(3, "true").getSingleResult()).longValue();
+			long virus = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery).setParameter(1, new Timestamp(since))
+					.setParameter(2, "virus.detected").setParameter(3, "true").getSingleResult()).longValue();
+			long blocked = ((BigDecimal)stem.createNativeQuery(hitsSqlQueryNoValue).setParameter(1, new Timestamp(since))
+					.setParameter(2, "email.blocked").getSingleResult()).longValue();
+			messages.setSpam(spam);
+			messages.setVirus(virus);
+			messages.setBlocked(blocked);
+			messages.setClean(total-spam-virus-blocked);
 		}else{
-			messages.setSpam(((BigInteger)stem.createNativeQuery(basicQuery.replaceAll("\\$\\{CONDITION\\}", "s.stat_key='spam.detected' AND s.stat_value='true'").concat(" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) "))
-					.setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue());
-			messages.setVirus(((BigInteger)stem.createNativeQuery(basicQuery.replaceAll("\\$\\{CONDITION\\}", "s.stat_key='virus.detected' AND s.stat_value='true'").concat(" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) "))
-					.setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue());
-			messages.setBlocked(((BigInteger)stem.createNativeQuery(basicQuery.replaceAll("\\$\\{CONDITION\\}", "s.stat_key='email.blocked'").concat(" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) "))
-					.setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue());
-			messages.setClean(((BigInteger)stem.createNativeQuery(cleanQuery.concat(" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ")).setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue());			
+			long total = ((BigInteger)stem.createNativeQuery("SELECT COUNT(*) FROM mail_records r0 WHERE r0.insert_date > ? AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue();
+			long spam = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery+" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since))
+					.setParameter(2, "spam.detected").setParameter(3, "true").setParameter(4, domainId).setParameter(5, domainId).getSingleResult()).longValue();
+			long virus = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery+" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since))
+					.setParameter(2, "virus.detected").setParameter(3, "true").setParameter(4, domainId).setParameter(5, domainId).getSingleResult()).longValue();
+			long blocked = ((BigDecimal)stem.createNativeQuery(hitsSqlQueryNoValue+" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since))
+					.setParameter(2, "email.blocked").setParameter(3, domainId).setParameter(4, domainId).getSingleResult()).longValue();
+			messages.setSpam(spam);
+			messages.setVirus(virus);
+			messages.setBlocked(blocked);
+			messages.setClean(total-spam-virus-blocked);
 		}
 		
 		return messages;
