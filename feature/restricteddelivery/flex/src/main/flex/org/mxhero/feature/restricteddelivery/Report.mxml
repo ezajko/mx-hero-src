@@ -82,16 +82,24 @@
 			import org.mxhero.console.commons.feature.IReportService;
 			import org.mxhero.console.commons.feature.TimeUtils;
 			
+			import spark.events.IndexChangeEvent;
 			
+			private static const WEEK:String = "week";
+			private static const TODAY:String = "today";
 			private static const DATA_QUERY:String = "data.query";
 			private static const EMAIL_QUERY:String = "email.query";
+			
+			private var selectedPeriod:String = TODAY;
+			
+			[Bindable]
+			private var options:ArrayCollection;
 			
 			private var _reportService:IReportService;
 			
 			[Bindable]
 			private var _data:ArrayCollection;
 			
-			private static const DAYSBEFORE:Number = 7*24*60*60*1000; 
+			private static const DAYSBEFORE:Number = 24*60*60*1000; 
 			
 			[Bindable]
 			private static var sinceDate:Date;
@@ -145,14 +153,22 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				options = 
+					new ArrayCollection([{label:resourceManager.getString('limituserdestinations_report','last.week'),value:'week'}, 
+						{label:resourceManager.getString('limituserdestinations_report','today'),value:'today'}]);
+				periodBar.selectedIndex=1;
 			}
 			
 			
 			public function refresh():void
 			{
 				sinceDate=new Date();
-				sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
-				sinceDate.setTime(sinceDate.setHours(0,0,0,0));
+				if(selectedPeriod==TODAY){
+					sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+				}else if(selectedPeriod==WEEK){
+					sinceDate.setTime(sinceDate.getTime()-7*DAYSBEFORE);
+				}
+				sinceDate.setHours(0,0,0,0);
 				queryForData();
 				queryForEmails();
 			}
@@ -184,11 +200,16 @@
 					params.push(domain,domain);
 					dataQuery = dataQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				dataQuery = dataQuery + " group by r0.from_recipeints ORDER BY 1 DESC ";
+				dataQuery = dataQuery + " group by r0.from_recipeints ORDER BY 1 DESC limit 10";
 				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
 				
 			}
 			
+			protected function buttonbar1_changeHandler(event:IndexChangeEvent):void
+			{
+				selectedPeriod=ButtonBar(event.target).selectedItem.value;
+				refresh();
+			}
 		]]>
 	</fx:Script>
 	
@@ -205,6 +226,12 @@
 			fontSize="18" fontWeight="bold" 
 			text="{resourceManager.getString('restricteddelivery_report','title')}" />
 		<mx:Spacer width="100%"/>
+		<s:ButtonBar id="periodBar"
+					 buttonMode="true" 
+					 change="buttonbar1_changeHandler(event)"
+					 dataProvider="{options}"
+					 requireSelection="true"
+					 selectedIndex="1"/>
 	</s:HGroup>
 	
 	<s:VGroup width="100%" height="100%">
