@@ -405,7 +405,11 @@ package org.mxhero.console.commons.infrastructure.parser
 		{
 			var count  : uint = 0
 			var result : Array = new Array ()		 
-			data = data.toString().split( recordsetDelimiter );
+			var stringData:String = data.toString();
+			stringData=stringData.replace("\r\n",recordsetDelimiter);
+			stringData=stringData.replace("\r",recordsetDelimiter);
+			stringData=stringData.replace("\n",recordsetDelimiter);
+			data = stringData.split( recordsetDelimiter );
 			for(  var i : uint = 0; i < data.length; i++ )
 			{
 				if( !Boolean( count % 2 ) )
