@@ -51,17 +51,17 @@ public class JpaHomeReportService implements HomeReportService{
 		
 		String hitsSqlQuery = "SELECT COALESCE(SUM(r0.amount),0)" 
 			+" FROM mail_stats_grouped r0 " 
-			+" WHERE r0.insert_date > ? "
+			+" WHERE r0.insert_date >= ? "
 			+" AND r0.stat_key = ? " 
 			+" AND r0.stat_value = ? ";
 		
 		String hitsSqlQueryNoValue = "SELECT COALESCE(SUM(r0.amount),0)" 
 			+" FROM mail_stats_grouped r0 " 
-			+" WHERE r0.insert_date > ? "
+			+" WHERE r0.insert_date >= ? "
 			+" AND r0.stat_key = ? ";
 		
 		if(domainId==null){
-			long total = ((BigInteger)stem.createNativeQuery("SELECT COUNT(*) FROM mail_records r0 WHERE r0.insert_date > ?").setParameter(1, new Timestamp(since)).getSingleResult()).longValue();
+			long total = ((BigInteger)stem.createNativeQuery("SELECT COUNT(*) FROM mail_records r0 WHERE r0.insert_date >= ?").setParameter(1, new Timestamp(since)).getSingleResult()).longValue();
 			long spam = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery).setParameter(1, new Timestamp(since))
 					.setParameter(2, "spam.detected").setParameter(3, "true").getSingleResult()).longValue();
 			long virus = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery).setParameter(1, new Timestamp(since))
@@ -73,7 +73,7 @@ public class JpaHomeReportService implements HomeReportService{
 			messages.setBlocked(blocked);
 			messages.setClean(total-spam-virus-blocked);
 		}else{
-			long total = ((BigInteger)stem.createNativeQuery("SELECT COUNT(*) FROM mail_records r0 WHERE r0.insert_date > ? AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue();
+			long total = ((BigInteger)stem.createNativeQuery("SELECT COUNT(*) FROM mail_records r0 WHERE r0.insert_date >= ? AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since)).setParameter(2, domainId).setParameter(3, domainId).getSingleResult()).longValue();
 			long spam = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery+" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since))
 					.setParameter(2, "spam.detected").setParameter(3, "true").setParameter(4, domainId).setParameter(5, domainId).getSingleResult()).longValue();
 			long virus = ((BigDecimal)stem.createNativeQuery(hitsSqlQuery+" AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ").setParameter(1, new Timestamp(since))
