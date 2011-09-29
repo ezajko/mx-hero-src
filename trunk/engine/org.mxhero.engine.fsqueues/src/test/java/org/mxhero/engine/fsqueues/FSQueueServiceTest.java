@@ -70,6 +70,42 @@ public class FSQueueServiceTest {
 		srv.unstore(mail);
 		srv.stop();
 	}
+	
+	@Test
+	public void testRequeue() throws InterruptedException, AddressException, MessagingException, URISyntaxException, IOException{
+		FSConfig config = new FSConfig("C:\\temp\\store", "C:\\temp\\tmp");
+		FSQueueService srv = new FSQueueService(config);
+		for(File tmpFile : config.getTmpPath().listFiles()){
+			tmpFile.delete();
+		}
+		for(File storeFile : config.getStorePath().listFiles()){
+			storeFile.delete();
+		}
+		
+		srv.init();
+		MimeMail mail = new MimeMail("sender@example.com", "recipient@example.com", createMessage(), "service");
+		//first store it
+		
+		//SAVE EMAIL INTO PLATFORM
+		Assert.assertTrue(srv.store("send",mail, 1000, TimeUnit.MILLISECONDS));
+		
+		//TAKE EMAIL IN SEND PAHSE AND PROCESS IT
+		mail=srv.poll("send", 1000, TimeUnit.MILLISECONDS);
+		
+		srv.delayAndPut("send", mail, 1000);
+		
+		mail=srv.poll("send", 100, TimeUnit.MILLISECONDS);
+		Assert.assertNull(mail);
+		
+		Thread.sleep(1500);
+		
+		mail=srv.poll("send", 1000, TimeUnit.MILLISECONDS);
+		Assert.assertNotNull(mail);
+		
+		//TAKE EMAIL OUT FROM PLATFORM
+		srv.unstore(mail);
+		srv.stop();
+	}
 
 	private InputStream createMessage() throws AddressException,
 			MessagingException, URISyntaxException, IOException {

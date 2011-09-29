@@ -9,7 +9,7 @@ public class DelayedMail implements Delayed{
 
 	private MimeMail mail;
 	
-	private Long delay = 0l;
+	private Long delay = System.currentTimeMillis();
 	
 	public DelayedMail(MimeMail mail) {
 		this.mail = mail;
@@ -17,7 +17,7 @@ public class DelayedMail implements Delayed{
 	
 	public DelayedMail(MimeMail mail, Long delay) {
 		this.mail = mail;
-		this.delay = delay;
+		this.delay = System.currentTimeMillis()+delay;
 	}
 
 	public int compareTo(Delayed o) {
@@ -25,7 +25,7 @@ public class DelayedMail implements Delayed{
 	}
 
 	public long getDelay(TimeUnit unit) {
-		return unit.convert(delay, TimeUnit.MILLISECONDS);
+		return unit.convert(delay-System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 	}
 
 	public MimeMail getMail() {
