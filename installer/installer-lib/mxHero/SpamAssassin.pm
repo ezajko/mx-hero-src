@@ -46,9 +46,7 @@ sub upgrade
 {
 	my $errorRef = $_[0];
 	
-	# BRUNO
-	
-	return &configure( $errorRef );
+	return 1;
 }
 
 sub configure
@@ -68,9 +66,9 @@ sub configure
 	
 	my %entry = ( "ENABLED" => 1, "CRON" =>  1);
 	
-	my %wrote;
+	my %found;
 	for my $k ( keys %entry ) {
-		$wrote{ $k } = 0;
+		$found{ $k } = 0;
 	}
 	
 	while ( $line = <F> ) {
@@ -82,30 +80,36 @@ sub configure
 		my ($key, $value) = split ( /\s*=\s*/, $line, 2);
 		chomp( $value );
 		
-		my $foundEntry;
+		my $setContent;
 		for my $k ( keys %entry ) {
 			if ( $key eq $k ) {
-				$foundEntry = 1;
+				$setContent = 1;
 				if ( $value eq $entry{ $k } ) { # same value
 					$content .= $line; # keep original
 				} else { # different value
 					# could comment out original line here
 					$content .= "$k=$entry{$k}\n"; # set new
+					$changed = 1;
 				}
-				$wrote{$k} = 1;
+				$found{$k} = 1;
 				last;
 			}
 		}
 		
-		$content .= $line if ! $foundEntry;
+		$content .= $line if ! $setContent;
 	}
 	
-	for my $k ( keys %wrote ) {
-		if ( ! $wrote{$k} ) {
+	for my $k ( keys %found ) {
+		if ( ! $found{$k} ) {
 			$content .= "$k=$entry{$k}\n";
+			$changed = 1;
 		}
 	}
 	close F;
+	
+	if ( ! $changed ) {
+		return 1;
+	}
 
 	my $backup = &mxHero::Tools::backupFile( $file );
 	return 0 if ! $backup;
