@@ -42,6 +42,8 @@ public final class MimeMail {
 	private String responseServiceId;
 
 	private int initialSize;
+	
+	private int deliverTries;
 
 	private Map<String, String> properties = new HashMap<String, String>();
 	
@@ -324,6 +326,13 @@ public final class MimeMail {
 		}
 	}
 
+	public int getDeliverTries() {
+		return deliverTries;
+	}
+
+	public void setDeliverTries(int deliverTries) {
+		this.deliverTries = deliverTries;
+	}
 
 	@Override
 	public int hashCode() {
