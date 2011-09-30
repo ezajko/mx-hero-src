@@ -57,7 +57,7 @@ sub configure
 	my $content = "";
 	my $changed;
 	
-	my %entry = ( "TCPSocket" => 6664, "TCPAddr" =>  '127.0.0.1', "MaxConnectionQueueLength" => 80,
+	my %entry = ( "TCPSocket" => 6665, "TCPAddr" =>  '127.0.0.1', "MaxConnectionQueueLength" => 80,
 		"MaxFileSize" => "500M", "StreamMaxLength" => "500M"
 	);
 	
