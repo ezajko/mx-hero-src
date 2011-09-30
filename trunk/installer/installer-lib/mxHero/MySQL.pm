@@ -43,6 +43,7 @@ sub install
 		if ( $bool ) {
 			system( "/usr/bin/mysql -e 'drop database mxhero'" );
 			system( "/usr/bin/mysql -e 'drop database statistics'" );
+			system( "/usr/bin/mysql -D mysql -e \"delete from event where db = \'statistics\'\"" );
 		}
 	}
 	
@@ -95,11 +96,76 @@ sub upgrade
 	return &configure( $errorRef );
 }
 
+# [mysqld]
+# event_scheduler = ON
 sub configure
 {
 	my $errorRef = $_[0];
+	my $cnf = "/etc/mysql/my.cnf";
 
-	# BRUNO
+	# Open /etc/mysql/my.cnf
+	
+	if ( ! open(F, $cnf) ) {
+		$$errorRef = "Failed to open '$cnf'.";
+		return 0;
+	}
+	
+	my $line;
+	my $content = "";
+	my $inBlock = 0;
+	my $paramSet = 0;
+	
+	while ( $line = <F> ) {
+		if ( $line =~ /^#/ or $line =~ /^\s*$/ ) {
+			$content .= $line;
+			next;
+		}
+		
+		if ( $inBlock && ! $paramSet ) {
+			if ( $line =~ /^event_scheduler\s*=\s*(\w+)/ ) {
+				if ( $1 eq "ON" ) {
+					close F;
+					return 1; # already set so discard operation
+				} else {
+					$content .= "event_scheduler = ON\n"; # replace line
+					$paramSet = 1;
+					next;
+				}
+			} elsif ( $line =~ /^\[\w+\]/ && ! $paramSet ) { # leaving block
+				$content .= "event_scheduler = ON\n".$line; # append line to section block
+				$paramSet = 1;
+				next;
+			}
+		}
+	
+		if ( $line =~ /^\[(\w+)\]/ ) { # section
+			if ( $1 eq "mysqld" ) {
+				$inBlock = 1;
+			} else {
+				$inBlock = 0;
+			}
+			$content .= $line;
+			next;
+		}
+	
+		$content .= $line;
+	}
+
+	close F;
+	
+	my $backup = &mxHero::Tools::backupFile( $cnf );
+	if ( ! $backup ) {
+		return 0;
+	}
+	
+	# Open for write
+	if ( ! open(F, ">$cnf") ) {
+		$$errorRef = "Failed to open '$cnf'.";
+		return 0;
+	}
+	
+	print F $content;
+	close F;
 	
 	return 1;
 }

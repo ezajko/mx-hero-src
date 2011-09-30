@@ -99,9 +99,11 @@ sub configure
 					   default  => 'n',
 					   print_me => T("Do you plan to use this mxHero installation as a relay for another email server?") );
 	
-	my $entry;
+	my $entry1;
+	my $entry2;
 	if ( $bool ) {
-		$entry = "relay_domains = mysql:/etc/postfix/mxhero/domains.sql\ntransport_maps = mysql:/etc/postfix/mxhero/transports.sql\n";
+		$entry1 = "relay_domains = mysql:/etc/postfix/mxhero/domains.sql\n";
+		$entry2 = "transport_maps = mysql:/etc/postfix/mxhero/transports.sql\n";
 	}
 	
 	# MAIN.CF
@@ -113,10 +115,10 @@ sub configure
 		if ( -f $file ) {
 			$bool = $term->ask_yn( prompt => T("Alter this main.cf for mxHero?"),
 							   default  => 'y',
-							   print_me => T("Found postfix master.cf at")." [$file]." );
+							   print_me => T("Found postfix main.cf at")." [$file]." );
 			if ( $bool ) {
 				# set master.cf path for alteration routine
-				if ( ! &_alterPostfixMainCf( $file, $entry ) ) {
+				if ( ! &_alterPostfixMainCf( $file, $entry1, $entry2 ) ) {
 					$$errorRef = T("Failed to alter ")."'$file'";
 					return 0;
 				}
@@ -127,15 +129,15 @@ sub configure
 	
 	if ( ! $bool ) {
 		print "\n".T("Did not find a postfix 'main.cf' file.")."\n";
-		my $reply = $term->get_reply( prompt => T("Please enter full path to your main.cf".":"));
-		if ( $reply && -f $reply ) {
+		my $file = $term->get_reply( prompt => T("Please enter full path to your main.cf".":"));
+		if ( $file && -f $file ) {
 			# set master.cf path for alteration routine
-			if ( ! &_alterPostfixMainCf( $reply, $entry ) ) {
-				$$errorRef = T("Failed to alter ")."'$reply'";
+			if ( ! &_alterPostfixMainCf( $file, $entry1, $entry2 ) ) {
+				$$errorRef = T("Failed to alter ")."'$file'";
 				return 0;
 			}
 		} else {
-			print T("Failed to find file")." '$reply' \n";
+			print T("Failed to find file")." '$file' \n";
 			print T("Stopping installation")."\n";
 			$$errorRef = T("Failed to find configuration file");
 			return 0;
@@ -159,7 +161,6 @@ sub _alterPostfixMasterCf {
 ###	return 1; ### TESTING
 	
 	my $mxHero = <<END;
-# MXHERO ENTRY - START
 smtp      inet  n       -       -       -       -       smtpd
 	-o smtpd_proxy_filter=$ip:$port1
 	$ip:$port2 inet     n       -       n       -       -       smtpd
@@ -171,28 +172,35 @@ smtp      inet  n       -       -       -       -       smtpd
 	-o smtpd_data_restrictions=
 	-o mynetworks=$ip/24
 	-o receive_override_options=no_unknown_recipient_checks
-# MXHERO ENTRY - END
 END
 	
-	my $backup = &_backupFile( $file );
+	my $backup = &mxHero::Tools::backupFile( $file );
 	if ( ! $backup ) {
 		return 0;
 	}
 	
-	return &_alterPostfixCf( $file, $backup, '^smtp\s+inet\s+', $mxHero );
+	return &_alterPostfixCf( $file, '^smtp\s+inet\s+', $mxHero );
 }
 
 
 # Adding (if user selected relay appliance)
+#  relay_domains = mysql:/etc/postfix/mxhero/domains.sql
+#  transport_maps = mysql:/etc/postfix/mxhero/transports.sql
 sub _alterPostfixMainCf
 {
 	my $file = $_[0]; # main.cf path
-	my $entry = $_[1];
+	my $entry1 = $_[1];
+	my $entry2 = $_[2];
 	
-	my $backup = &_backupFile( $file );
+	my $backup = &mxHero::Tools::backupFile( $file );
 	return 0 if ! $backup;
 
-	if ( ! &_alterPostfixCf( $file, $backup, '(^relay_domains\s*=.+|^transport_maps\s*=.+)', $entry ) )
+	if ( ! &_alterPostfixCf( $file, '(^relay_domains\s*=.+)', $entry1 ) )
+	{
+		return 0;
+	}
+	
+	if ( ! &_alterPostfixCf( $file, '(^transport_maps\s*=.+)', $entry2 ) )
 	{
 		return 0;
 	}
@@ -200,89 +208,124 @@ sub _alterPostfixMainCf
 	return 1;
 }
 
-# returns backupFile on success
-sub _backupFile
-{
-	my $file = $_[0];
-	
-	# Copy original file to .old or .old.1, .old.2 etc...
-	my $oldFile = $file.".old";
-	if ( -f $oldFile ) {
-		my $count = 1;
-		while ( -f $oldFile.".".$count ) {
-			$count++;
-		}
-
-		$oldFile = $oldFile.".".$count;
-	}
-
-	if ( ! copy($file,$oldFile) ) {
-		warn $!;
-		return undef;
-	}
-	
-	return $oldFile;
-}
-
 # Base routine for altering postfix cf files
 sub _alterPostfixCf
 {
 	my $file  = $_[0];
-	my $oldFile = $_[1];
-	my $regex = $_[2];
-	my $entry = $_[3];
+	my $regex = $_[1];
+	my $entry = $_[2];
 	
-	if ( ! open (MASTER, $oldFile) || ! open (NEW, ">$file") ) {
+	if ( ! open(F, $file) ) {
 		warn $!;
 		return 0;
 	}
 
 	my $line;
-	my $inLine;
-	my $wroteLine;
+	my $paramLine = "";
+	my $content = "";
+	my $inLine = 0;
+	my $wroteEntry = 0;
 
-	while ($line = <MASTER>) {
-		if ($line =~ /^\s*$/ or $line =~ /^\s*\#/) {
-			# comment line or white space, write out
-			print NEW $line;
+	while ($line = <F>) {
+		if ($line =~ /^\s*$/ or $line =~ /^\s*\#/) { # comment line or white space, write out
+			$content .= $line;
 			next;
 		}
 
-		if ($line =~ /^\w/) {
-			if ($line =~ /$regex/) { # begin logical line
+		if ( $line =~ /^\w/ ) { # begin logical line
+			if ($line =~ /$regex/) { # begin entry logical line
 				$inLine = 1;
-				# prepend line with '#'
-				print NEW "# MXHERO comment out ...\n";
-				print NEW '# '.$line;
-			} elsif ($inLine) { # exiting logical line
+				$paramLine .= $line;
+				next;
+			} elsif ( $inLine ) { # exiting entry logical line
 				$inLine = 0;
 				# place mxHero logical line
-				print NEW $entry if $entry;
-				$wroteLine = 1;
-				print NEW $line;
+				if ( $wroteEntry ) { # must be another $entry line
+					$content .= &_commentOut( $paramLine );
+					$content .= $line;
+					next;
+				} elsif ( &_compareParamLineWithEntry( $paramLine, $entry ) == 0 ) { # the same
+					close F;
+					return 1; # already configured
+				} else { # are different
+					$content .= &_commentOut( $paramLine );
+					$content .= $entry;
+					$content .= $line;
+					$wroteEntry = 1;
+					next;
+				}
 			} else {
-				print NEW $line;
+				$content .= $line;
+				next;
 			}
 		} elsif ($line =~ /^\s+/) { # logical line continuation
 			if ($inLine) {
-				# prepend line with '#'
-				print NEW '# '.$line;
+				$paramLine .= $line;
 			} else {
-				print NEW $line;
+				$content .= $line;
 			}
 		}
 	}
 
-	if ( ! $wroteLine && $entry ) { # did not find a valid line, so add to end of file
-		print NEW $entry;
+	if ( ! $wroteEntry ) { # did not find a valid line, so add to end of file
+		if ( $paramLine ) {
+			if ( &_compareParamLineWithEntry( $paramLine, $entry ) == 0 ) {
+				close F;
+				return 1;
+			} else {
+				$content .= &_commentOut( $paramLine );
+				$content .= $entry;
+				$wroteEntry = 1;			
+			}
+		} else {
+			$content .= $entry;
+		}
 	}
 
-	close MASTER;
-	close NEW;
+	close F;
+	
+	if ( ! open(F, ">$file") ) {
+		warn $!;
+		return 0;
+	} else {
+		print F $content;
+	}
+	
+	close F;
 
 	return 1;
 }
 
+sub _compareParamLineWithEntry
+{
+	my $paramLine = $_[0]; # compare this with ...
+	my $entry = $_[1]; # what it should be
+	
+	# need to normalize all \n and spaces
+	# trim trailing returns
+	$paramLine =~ s/\s*$//s;
+	$entry =~ s/\s*$//s;
+	
+	$paramLine =~ s/\s+/ /sg;
+	$entry =~ s/\s+/ /sg;
+	
+	if ( $paramLine eq $entry ) { # the same
+		return 0;
+	}
+	
+	return 1; # otherwise different
+}
+
+sub _commentOut
+{
+	my $line = shift;
+	
+	$line =~ s/\n+$//; # remove trailing \n
+	
+	$line =~ s/\n/\n\#/g;
+	
+	return "#$line\n";
+}
 
 
 

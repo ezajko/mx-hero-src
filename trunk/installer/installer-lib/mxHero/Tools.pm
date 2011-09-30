@@ -7,6 +7,7 @@ no warnings qw(uninitialized);
 use Term::UI;
 use Term::ReadLine;
 use Debian::Dpkg::Version;
+use File::Copy;
 
 use mxHero::Config;
 use mxHero::Locale;
@@ -142,6 +143,29 @@ sub mxheroVersionCompare
 	return 0;
 }
 
+# returns backupFile on success
+sub backupFile
+{
+	my $file = $_[0];
+	
+	# Copy original file to .old or .old.1, .old.2 etc...
+	my $oldFile = $file.".old";
+	if ( -f $oldFile ) {
+		my $count = 1;
+		while ( -f $oldFile.".".$count ) {
+			$count++;
+		}
+
+		$oldFile = $oldFile.".".$count;
+	}
+
+	if ( ! copy($file,$oldFile) ) {
+		warn $!;
+		return undef;
+	}
+	
+	return $oldFile;
+}
 
 ## PRIVATE
 

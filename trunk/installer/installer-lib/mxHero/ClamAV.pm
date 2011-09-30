@@ -46,7 +46,71 @@ sub configure
 {
 	my $errorRef = $_[0];
 
-	# BRUNO
+	my $file = "/etc/clamav/clamd.conf";
+	
+	if ( ! open(F, $file) ) {
+		warn $!;
+		return 0;
+	}
+	
+	my $line;
+	my $content = "";
+	my $changed;
+	
+	my %entry = ( "TCPSocket" => 6664, "TCPAddr" =>  '127.0.0.1', "MaxConnectionQueueLength" => 80,
+		"MaxFileSize" => "500M", "StreamMaxLength" => "500M"
+	);
+	
+	my %wrote;
+	for my $k ( keys %entry ) {
+		$wrote{ $k } = 0;
+	}
+	
+	while ( $line = <F> ) {
+		if ($line =~ /^\s*$/ or $line =~ /^\s*\#/) { # comment line or white space, write out
+			$content .= $line;
+			next;
+		}
+		
+		my ($key, $value) = split ( /\s+/, $line, 2);
+		chomp( $value );
+		
+		my $foundEntry;
+		for my $k ( keys %entry ) {
+			if ( $key eq $k ) {
+				$foundEntry = 1;
+				if ( $value eq $entry{ $k } ) { # same value
+					$content .= $line; # keep original
+				} else { # different value
+					# could comment out original line here
+					$content .= "$k $entry{$k}\n"; # set new
+				}
+				$wrote{$k} = 1;
+				last;
+			}
+		}
+		
+		$content .= $line if ! $foundEntry;
+	}
+	
+	for my $k ( keys %wrote ) {
+		if ( ! $wrote{$k} ) {
+			$content .= "$k $entry{$k}\n";
+		}
+	}
+	close F;
+
+	my $backup = &mxHero::Tools::backupFile( $file );
+	return 0 if ! $backup;
+	
+	if ( ! open(F, ">$file") ) {
+		warn $!;
+		return 0;
+	} else {
+		print F $content;
+	}
+	
+	close F;
 	
 	return 1;
 }
