@@ -22,6 +22,7 @@ import org.mxhero.engine.domain.queue.MimeMailQueueService;
 import org.mxhero.engine.fsqueues.internal.entity.DelayedMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMailKey;
+import org.mxhero.engine.fsqueues.internal.util.Files;
 import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,6 +219,43 @@ public class FSQueueService implements MimeMailQueueService {
 			}
 		}
 		fsmail=store.remove(fsmailKey);
+	}
+	
+	public void saveToAndUnstore(MimeMail mail, String path, boolean useTmp){
+		FSMailKey fsmailKey = new FSMailKey(mail.getSequence(),mail.getTime());
+		FSMail fsmail = store.get(fsmailKey);
+		if(fsmail!=null){
+			try{
+				if(useTmp){
+					File storeFile=null;
+					storeFile = new File(fsmail.getFile());
+					File pathTo = new File(path);
+					File storeFileTo = new File(pathTo,storeFile.getName());
+					Files.copy(storeFile, storeFileTo);
+				}else{
+					mail.getMessage().removeHeader(SENDER_HEADER);
+					mail.getMessage().removeHeader(RECIPIENT_HEADER);
+					mail.getMessage().removeHeader(OUTPUT_SERVICE_HEADER);
+					mail.getMessage().addHeader(SENDER_HEADER, mail.getInitialSender());
+					mail.getMessage().addHeader(RECIPIENT_HEADER, mail.getRecipient());
+					mail.getMessage().addHeader(OUTPUT_SERVICE_HEADER, mail.getResponseServiceId());
+					mail.getMessage().saveChanges();
+					File tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
+					FileOutputStream tfos = null;
+					try{
+						tfos = new FileOutputStream(tmpFile);
+						mail.getMessage().writeTo(tfos);
+					}finally{
+						if(tfos!=null){
+							tfos.close();
+						}
+					}
+				}
+				unstore(mail);
+			}catch(Exception e){
+				log.error("error while saving and unstoring email",e);
+			}
+		}
 	}
 	
 	public boolean offer(String phase, MimeMail mail, long timeout, TimeUnit unit)
