@@ -96,6 +96,8 @@
 			
 			[Bindable]
 			private var _emails:ArrayCollection;
+			[Bindable]
+			public var selectedDateLabel:String;
 			
 			private var _dataQuery:String =	"SELECT COALESCE(SUM(r0.amount),0),date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
 				+" FROM mail_stats_grouped r0 " 
@@ -165,7 +167,7 @@
 				untilDate.setTime(date.getTime()+24*60*60*1000);
 				params.push(dateFormatter.format(date),TimeUtils.offsetToTZ(date.getTimezoneOffset()));
 				params.push(dateFormatter.format(untilDate),TimeUtils.offsetToTZ(untilDate.getTimezoneOffset()));
-				
+				selectedDateLabel=dateFormatter.format(date);
 				if(domain!=null){
 					params.push(domain,domain);
 					emailsQuery = emailsQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
@@ -313,7 +315,7 @@
 				</mx:series>
 				
 			</mx:ColumnChart>
-			<s:Label text="{resourceManager.getString('attachmentlink_report','emails.title')}" 
+			<s:Label text="{resourceManager.getString('attachmentlink_report','emails.title')+' ('+selectedDateLabel+')'}" 
 					 fontWeight="bold" fontSize="16"
 					 paddingLeft="50"/>
 			<s:HGroup width="100%" paddingLeft="50" height="100%">
