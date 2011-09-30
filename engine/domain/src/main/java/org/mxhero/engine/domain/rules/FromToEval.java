@@ -65,7 +65,12 @@ public class FromToEval implements Evaluable{
 			return mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(from)) || mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(from));
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group name and domain has to match*/
-			return (mail.getInitialData().getFromSender().getGroup()!=null && mail.getInitialData().getFromSender().getGroup().equalsIgnoreCase(from.getGroup()) && mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(from.getDomain())) || (mail.getInitialData().getSender().getGroup()!=null && mail.getInitialData().getSender().getGroup().equalsIgnoreCase(from.getGroup()) && mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(from.getDomain()));
+			return (mail.getInitialData().getFromSender().getGroup()!=null 
+						&& mail.getInitialData().getFromSender().getGroup().equalsIgnoreCase(from.getGroup()) 
+						&& mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(from.getDomain())) 
+					|| (mail.getInitialData().getSender().getGroup()!=null 
+							&& mail.getInitialData().getSender().getGroup().equalsIgnoreCase(from.getGroup()) 
+							&& mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(from.getDomain()));
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
 			return mail.getInitialData().getFromSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from)) || mail.getInitialData().getSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from));
@@ -87,8 +92,10 @@ public class FromToEval implements Evaluable{
 			/*domain id is equal to*/
 			return mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(to));
 		}else if(to.getDirectionType().equals(GROUP)){
-			/*group id ? What the hell is group id !!!*/
-			return mail.getInitialData().getRecipient().getGroup().equalsIgnoreCase(to.getGroup()) && mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
+			/*group */
+			return mail.getInitialData().getRecipient().getGroup()!=null 
+			&& mail.getInitialData().getRecipient().getGroup().equalsIgnoreCase(to.getGroup()) 
+			&& mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
 			return mail.getInitialData().getRecipient().getMail().equalsIgnoreCase(getMailFromRuleDirection(to));
