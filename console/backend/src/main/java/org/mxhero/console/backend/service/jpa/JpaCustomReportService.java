@@ -104,7 +104,7 @@ public class JpaCustomReportService implements CustomReportService{
 			CriteriaBuilder builder) {
 		
 		Collection<EmailAccount> groupFrom = (from.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(new GroupPk(from.getGroup(),from.getDomain())).getMembers():new ArrayList<EmailAccount>();
-		Collection<EmailAccount> groupTo = (from.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(new GroupPk(to.getGroup(),to.getDomain())).getMembers():new ArrayList<EmailAccount>();
+		Collection<EmailAccount> groupTo = (to.getDirectionType().equals(GROUP))?groupDao.readByPrimaryKey(new GroupPk(to.getGroup(),to.getDomain())).getMembers():new ArrayList<EmailAccount>();
 		
 		final Collection<String> groupFromEmails = new ArrayList<String>();
 		final Collection<String> groupToEmails = new ArrayList<String>();
@@ -116,7 +116,7 @@ public class JpaCustomReportService implements CustomReportService{
 		}
 		for(EmailAccount email : groupTo){
 			for(AliasAccount aliasAccount : email.getAliases()){
-				groupFromEmails.add(aliasAccount.getId().getAccountAlias()+"@"+aliasAccount.getId().getDomainAlias());
+				groupToEmails.add(aliasAccount.getId().getAccountAlias()+"@"+aliasAccount.getId().getDomainAlias());
 			}
 		}
 
@@ -131,7 +131,9 @@ public class JpaCustomReportService implements CustomReportService{
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			predicate = builder.and(predicate,builder.equal(root.get(Record_.senderDomainId), from.getFreeValue()));
 		}else if(from.getDirectionType().equals(GROUP)){
-			predicate = builder.and(predicate,root.get(Record_.senderId).in(groupFromEmails));
+			if(groupFromEmails.size()>0){
+				predicate = builder.and(predicate,root.get(Record_.senderId).in(groupFromEmails));
+			}
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){	
 			predicate = builder.and(predicate,builder.or(builder.equal(root.get(Record_.senderId),from.getFreeValue()),builder.equal(root.get(Record_.from),from.getFreeValue())));
 		}
@@ -144,7 +146,9 @@ public class JpaCustomReportService implements CustomReportService{
 		} else if(to.getDirectionType().equals(DOMAIN)){
 			predicate = builder.and(predicate,builder.equal(root.get(Record_.recipientDomainId), to.getFreeValue()));
 		}else if(to.getDirectionType().equals(GROUP)){
-			predicate = builder.and(predicate,root.get(Record_.recipientId).in(groupToEmails));
+			if(groupToEmails.size()>0){
+				predicate = builder.and(predicate,root.get(Record_.recipientId).in(groupToEmails));
+			}
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			predicate = builder.and(predicate,builder.equal(root.get(Record_.recipientId),to.getFreeValue()));
 		}
