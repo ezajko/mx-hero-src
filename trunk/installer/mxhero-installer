@@ -6,6 +6,7 @@ use strict;
 use warnings;
 no warnings qw(uninitialized);
 
+use File::Copy;
 use File::Basename;
 use lib dirname($0) . '/installer-lib';
 use Term::UI;
@@ -57,14 +58,27 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			)
 		{
 			# TODO - ADD VERSION FILE TO /opt/mxhero
+			if ( ! copy( "$myConfig{MXHERO_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
+				warn $!;
+				print "\n\n!! MXHERO INSTALL FAILED !!\n\n";
+				exit 1;
+			}
 			# here forward when install run, will be 'upgrade'.
 			print T("\n!! MXHERO INSTALLED !!"),"\n"; # Success message
-			&_startMxHero();
+			#&_startMxHero();
+			# Consider a reload dialogue to reload all mxHero services for immediate usage
 			print "\n** Admin Panel **\n";
-			print "You can access the mxHero admin panel at http://your_ip:8080/mxhero.\n";
+			print "Once mxHero is started, you can access the mxHero admin panel at http://your_ip:8080/mxhero.\n";
 			print "The default admin login credentials (login / password) are: admin / password. REMEMBER TO CHANGE!\n";
 			print "\n** Important Notes **\n";
-			print "You will need to restart your Postfix/Zimbra installation for configuration changes to take effect.\n\n";
+			print "You probably need to restart/reload:\n";
+			print "  Tomcat;\n";
+			print "  Postfix/Zimbra;\n";
+			print "  ClamAV;\n\n";
+			print "  Spamassassin;\n";
+			print "  mxHero;\n";
+			print "Or just reboot your machine for all systems to start up.\n\n";
+
 			print "Visit http://www.mxhero.com for support and updates.\n\n";
 		} else {
 			print T("INSTALL FAILED. ERROR:\n$error"),"\n"; # Fail message
