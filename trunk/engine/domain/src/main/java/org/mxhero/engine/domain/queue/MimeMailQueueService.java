@@ -23,6 +23,8 @@ public interface MimeMailQueueService {
 	
 	public MimeMail poll(String phase, long timeout, TimeUnit unit) throws InterruptedException;
 
+	public void saveToAndUnstore(MimeMail mail, String path, boolean useTmp);
+	
 	public void logState();
 	
 }
