@@ -37,6 +37,10 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 	
 	private long delayTime = 10000;
 	
+	private int retries = 10;
+	
+	private String deliveredPath;
+	
 	/**
 	 * @param bc
 	 */
@@ -78,6 +82,8 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 		task.setLogStatService(getLogStatService());
 		task.setOutFilters(getOutFilters());
 		task.setDelayTime(delayTime);
+		task.setRetries(retries);
+		task.setPath(deliveredPath);
 		if(log.isDebugEnabled()){
 			log.debug("Out Phase task created for " + mail);
 		}
@@ -94,11 +100,20 @@ public final class OutputPool extends QueueTaskPool implements PropertiesListene
 		}catch (Exception e) {}
 	}
 	
+	private void setRetries(String value){
+		try{
+			int parsedValue = Integer.parseInt(value);
+			retries=parsedValue;
+		}catch (Exception e) {}
+	}
+	
 	/**
 	 * @see org.mxhero.engine.domain.properties.PropertiesListener#updated()
 	 */
 	@Override
 	public void updated() {
+		deliveredPath=getProperties().getValue(Core.QUEUE_DELIVERED_ERROR_PATH);
+		setRetries(getProperties().getValue(Core.QUEUE_RETRIES));
 		setDelayTime(getProperties().getValue(Core.QUEUE_DELAY_TIME));
 		setCorePoolsize(getProperties().getValue(Core.OUTPUTPOOL_COREPOOLSIZE));
 		setMaximumPoolSize(getProperties().getValue(Core.OUTPUTPOOL_MAXIMUMPOOLSIZE));
