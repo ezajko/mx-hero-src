@@ -34,10 +34,8 @@ sub install
 sub upgrade
 {
 	my $errorRef = $_[0];
-
-	# BRUNO
 	
-	return &configure( $errorRef );
+	return 1;
 }
 
 sub configure

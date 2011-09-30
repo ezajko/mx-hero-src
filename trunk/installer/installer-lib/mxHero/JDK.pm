@@ -49,9 +49,9 @@ sub upgrade
 {
 	my $errorRef = $_[0];
 	
-	# TODO:  verify that JDK of the correct version is already installed 
+	# TODO:  BRUNO - verify that JDK of the correct version is already installed 
 	
-	return &configure( $errorRef );
+	return 1;
 }
 
 sub configure
