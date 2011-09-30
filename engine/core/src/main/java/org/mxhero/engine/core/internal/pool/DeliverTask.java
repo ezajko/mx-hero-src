@@ -6,6 +6,7 @@ import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.OutputService;
 import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
@@ -31,6 +32,8 @@ public final class DeliverTask implements Runnable {
 	private Collection<MailFilter> outFilters;
 	private MimeMailQueueService queueService;
 	private long delayTime = 10000;
+	private int retries = 10;
+	private String path;
 
 	/**
 	 * @param mail
@@ -49,6 +52,7 @@ public final class DeliverTask implements Runnable {
 	public void run() {
 		ServiceReference serviceReference;
 		OutputService service;
+		boolean delivered = false;
 		try {
 			if(getOutFilters()!=null){
 				for(MailFilter filter : getOutFilters()){
@@ -61,26 +65,34 @@ public final class DeliverTask implements Runnable {
 				service = (OutputService) bc.getService(serviceReference);
 				if (service != null) {
 					mail.getMessage().saveChanges();
-					//CREATE SOMETHING TO HANDLE SERVICE TROWS AN EXCEPTION
-					service.addOutMail(mail);
-					log.info("Mail sent using outputservice:" + mail);
-					queueService.unstore(mail);
-					queueService.logState();
+					try{
+						service.addOutMail(mail);
+						delivered=true;
+					}catch (Exception e){
+						log.error("Error delivering email:" + mail,e);
+					}
 				}else{
 					throw new Exception("service is null");
 				}
 				bc.ungetService(serviceReference);
-			} else {
-				log.warn("Output Service was not found for mail:" + mail);
-				queueService.delayAndPut(OutputPool.PHASE, mail, delayTime);
-				if (getLogStatService() != null) {
-					getLogStatService().log(mail, 
-							properties.getValue(Core.CONNECTOR_ERROR_STAT),
-							properties.getValue(Core.CONNECTOR_NOT_FAUND_VALUE));
+			} 
+			
+			if(!delivered){
+				log.info("Mail sent using outputservice:" + mail);
+				queueService.unstore(mail);
+				queueService.logState();
+			}else{
+				//try X times
+				if(retries<0 || mail.getDeliverTries()<retries){
+					mail.setDeliverTries(mail.getDeliverTries()+1);
+					queueService.delayAndPut(RulePhase.OUT, mail, mail.getDeliverTries()*delayTime);
+				}else{
+					//take out from core
+					queueService.saveToAndUnstore(mail, path, true);
 				}
 			}
 		} catch (Exception e) {
-			log.debug("Error sending mail to connector:" + mail,e);
+			log.error("Error sending mail to connector:" + mail,e);
 			LogMail.saveErrorMail(mail.getMessage(), 
 					getProperties().getValue(Core.ERROR_PREFIX),
 					getProperties().getValue(Core.ERROR_SUFFIX),
@@ -89,7 +101,6 @@ public final class DeliverTask implements Runnable {
 				getLogStatService().log(mail, properties.getValue(Core.CONNECTOR_ERROR_STAT),
 						e.getMessage());
 			}
-
 		}
 	}
 
@@ -143,6 +154,22 @@ public final class DeliverTask implements Runnable {
 
 	public void setDelayTime(long delayTime) {
 		this.delayTime = delayTime;
+	}
+
+	public int getRetries() {
+		return retries;
+	}
+
+	public void setRetries(int retries) {
+		this.retries = retries;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 }

@@ -36,6 +36,8 @@ public final class Core extends PropertiesService{
 	public static final String CONNECTOR_ERROR_STAT = "updatable.connector.error.stat";
 	public static final String CONNECTOR_NOT_FAUND_VALUE = "updatable.connector.not.found.value";
 	public static final String QUEUE_DELAY_TIME = "updatable.queue.delay.time";
+	public static final String QUEUE_RETRIES = "updatable.queue.retries";
+	public static final String QUEUE_DELIVERED_ERROR_PATH = "updatable.queue.delivered.error.path";
 	private static Logger log = LoggerFactory.getLogger(Core.class);
 	
 	private static final String PROPERTIES_FILE = "core.properties";
