@@ -93,7 +93,7 @@ sub upgrade
 		return 0;
 	}
 	
-	return &configure( $errorRef );
+	return 1;
 }
 
 # [mysqld]
