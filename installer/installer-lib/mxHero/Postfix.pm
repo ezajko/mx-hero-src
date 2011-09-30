@@ -45,9 +45,7 @@ sub upgrade
 {
 	my $errorRef = $_[0];
 	
-	# BRUNO - maybe nothing to do here
-
-	return &configure( $errorRef );
+	return 1;
 }
 
 sub configure
@@ -242,13 +240,15 @@ sub _alterPostfixCf
 				# place mxHero logical line
 				if ( $wroteEntry ) { # must be another $entry line
 					$content .= &_commentOut( $paramLine );
+					$paramLine = "";
 					$content .= $line;
 					next;
 				} elsif ( &_compareParamLineWithEntry( $paramLine, $entry ) == 0 ) { # the same
 					close F;
-					return 1; # already configured
+					return 1; # already configured (TODO - but might have overriding further on)
 				} else { # are different
 					$content .= &_commentOut( $paramLine );
+					$paramLine = "";
 					$content .= $entry;
 					$content .= $line;
 					$wroteEntry = 1;
@@ -268,7 +268,7 @@ sub _alterPostfixCf
 	}
 
 	if ( ! $wroteEntry ) { # did not find a valid line, so add to end of file
-		if ( $paramLine ) {
+		if ( $paramLine ) { # might have had a paramLine at end of file
 			if ( &_compareParamLineWithEntry( $paramLine, $entry ) == 0 ) {
 				close F;
 				return 1;
@@ -279,10 +279,15 @@ sub _alterPostfixCf
 			}
 		} else {
 			$content .= $entry;
+			$wroteEntry = 1;
 		}
 	}
 
 	close F;
+	
+	if ( ! $wroteEntry ) { # nothing written
+		return 1;
+	}
 	
 	if ( ! open(F, ">$file") ) {
 		warn $!;
