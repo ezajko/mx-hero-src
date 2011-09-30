@@ -7,7 +7,7 @@ use warnings;
 no warnings qw(uninitialized);
 
 use mxHero::Config;
-use mxhero::Locale;
+use mxHero::Locale;
 
 sub install
 {
