@@ -52,31 +52,36 @@ sub mxHeroInstallerVersion
 sub packageCheck
 {
 	my $package = $_[0];
-	my $minimumVersion = $_[1];
+	#my $minimumVersion = $_[1]; # not supported now with multipackage
 
 	my $distri = &getDistri();
 	
+	my @packages = split( /\s+/, $package );
+	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-###		warn "TEST: checking package '$package' $minimumVersion\n"; ### TESTING
-###		return 1; ### TESTING
-		# Should return something like: "3.0-2::install ok installed"
-		my $dpkgQuery = `/usr/bin/dpkg-query -W -f='\${Version}::\${Status}' $package 2>/dev/null`;
+		# Should return something like: "clamav::3.0-2::install ok installed"
+		my $dpkgQuery = `/usr/bin/dpkg-query -W -f='\${Package}::\${Version}::\${Status}\\\n' $package 2>&1`;
 		chomp ( $dpkgQuery );
+		my $pkg;
 		my $installedVersion;
 		my $status;
-		($installedVersion, $status ) = split (/::/, $dpkgQuery, 2);
-		if ( $status !~ /installed$/ ) {
-			warn "Package $package not installed\n";
-			return 0;
-		}
-		if ( $installedVersion ) {
-			if ( $minimumVersion ) {
-				my $cmp = &_checkDebianPackageVersion( $installedVersion, $minimumVersion );
-				return $cmp == -1 ? 0 : 1;
+		my @queryLines = split( /\n/, $dpkgQuery );
+
+		for my $qLine ( @queryLines ) {
+			($pkg, $installedVersion, $status ) = split (/::/, $qLine, 3);
+			if ( ! $status || $status !~ /\s+installed$/ ) {
+				warn "$pkg\n";
+				return 0;
 			}
-			return 1;
-		} else {
-			return 0;
+			#if ( $installedVersion ) {
+			#	if ( $minimumVersion ) {
+			#		my $cmp = &_checkDebianPackageVersion( $installedVersion, $minimumVersion );
+			#		return $cmp == -1 ? 0 : 1;
+			#	}
+			#	return 1;
+			#} else {
+			#	return 0;
+			#}
 		}
 	}
 	# TODO - other distributions ...
