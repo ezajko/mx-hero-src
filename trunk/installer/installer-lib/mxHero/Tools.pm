@@ -38,7 +38,13 @@ sub zimbraCheck
 # Returns mxHero version number or undef if no mxHero installed.
 sub mxHeroVersion
 {
-	return &_getVersion("$myConfig{MXHERO_PATH}/VERSION");
+	my $version = &_getVersion("$myConfig{MXHERO_PATH}/VERSION");
+	
+	if ( ! $version && -d "/opt/mxhero" ) { # means first version (pre-installer)
+		$version = "1.0.0";
+	}
+
+	return $version;
 }
 
 
