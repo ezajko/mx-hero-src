@@ -77,17 +77,18 @@ public final class DeliverTask implements Runnable {
 				bc.ungetService(serviceReference);
 			} 
 			
-			if(!delivered){
+			if(delivered){
 				log.info("Mail sent using outputservice:" + mail);
 				queueService.unstore(mail);
 				queueService.logState();
 			}else{
-				//try X times
+				log.info("Mail fail to deliver:" + mail);
 				if(retries<0 || mail.getDeliverTries()<retries){
 					mail.setDeliverTries(mail.getDeliverTries()+1);
 					queueService.delayAndPut(RulePhase.OUT, mail, mail.getDeliverTries()*delayTime);
+					log.info("Mail added to queue again:" + mail);
 				}else{
-					//take out from core
+					log.info("Mail take out to later deliver:" + mail);
 					queueService.saveToAndUnstore(mail, path, true);
 				}
 			}
