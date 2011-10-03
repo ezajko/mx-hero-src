@@ -12,7 +12,7 @@
 	<fx:Declarations>
 		
 		<parsley:Configure/>
-		
+		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
 		<mx:SeriesZoom id="zoomOut" 
 					   duration="800"
 					   verticalFocus="top" 
@@ -139,6 +139,10 @@
 				}
 			}
 			
+			protected function getTopTenTitle(date:Date):String{
+				return resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.VIRUS_EMAIL_TITLE)+' ('+dateFormatter.format(model.since24Hs)+')';
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -258,7 +262,7 @@
 				
 			</mx:ColumnChart>
 		</s:VGroup>
-		<s:Label text="{resourceManager.getString(ThreatsProperties.NAME,ThreatsProperties.VIRUS_EMAIL_TITLE)}" 
+		<s:Label text="{getTopTenTitle(model.since24Hs)}" 
 				 fontWeight="bold" fontSize="16"
 				 color="#FFFFFF"
 				 textDecoration="underline"

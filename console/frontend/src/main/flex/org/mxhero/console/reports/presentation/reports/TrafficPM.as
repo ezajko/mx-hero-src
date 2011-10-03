@@ -9,9 +9,7 @@ package org.mxhero.console.reports.presentation.reports
 	import org.mxhero.console.reports.application.event.GetOutgoingByDayEvent;
 	import org.mxhero.console.reports.application.event.GetOutgoingEvent;
 	import org.mxhero.console.reports.application.event.GetTopTenIncommingSendersByDayEvent;
-	import org.mxhero.console.reports.application.event.GetTopTenIncommingSendersEvent;
 	import org.mxhero.console.reports.application.event.GetTopTenOutgoingRecipientsByDayEvent;
-	import org.mxhero.console.reports.application.event.GetTopTenOutgoingRecipientsEvent;
 	import org.mxhero.console.reports.presentation.ReportsViewPM;
 
 	[Landmark(name="main.dashboard.reports.traffic")]
@@ -54,7 +52,8 @@ package org.mxhero.console.reports.presentation.reports
 		[Bindable]
 		public var untilDate:Date=new Date();;
 		
-		private var since24Hs:Date = new Date();
+		[Bindable]
+		public var since24Hs:Date = new Date();
 		
 		private static const DAYSBEFORE:Number = 14*24*60*60*1000; 
 		private static const PLUSDAY:Number = 24*60*60*1000; 
@@ -81,8 +80,7 @@ package org.mxhero.console.reports.presentation.reports
 			untilDate.setTime(untilDate.getTime()+PLUSDAY);
 			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
 			sinceDate.setHours(0,0,0,0);
-			since24Hs.setTime(new Date());
-			since24Hs.setHours(0,0,0,0);
+			since24Hs=new Date();
 			getIncomming();
 			getOutgoing();
 		}
@@ -91,10 +89,10 @@ package org.mxhero.console.reports.presentation.reports
 			
 			if(context.selectedDomain!=null){
 				dispatcher(new GetIncommingEvent(context.selectedDomain.domain,sinceDate));
-				dispatcher(new GetTopTenIncommingSendersEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
+				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
 			}else{
 				dispatcher(new GetIncommingEvent(null,sinceDate));
-				dispatcher(new GetTopTenIncommingSendersEvent(null,since24Hs,this.onlyDomain));
+				dispatcher(new GetTopTenIncommingSendersByDayEvent(null,since24Hs,this.onlyDomain));
 			}
 			updatingIncoming=true;
 			updatingIncomingSenders=true;
@@ -104,7 +102,7 @@ package org.mxhero.console.reports.presentation.reports
 			var sinceDay:Date = new Date();
 			sinceDay.setTime(day.getTime());
 			sinceDay.setHours(0,0,0,0);
-			
+			since24Hs=day;
 			if(context.selectedDomain!=null){
 				dispatcher(new GetIncommingByDayEvent(context.selectedDomain.domain,sinceDay));
 				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,sinceDay,this.onlyDomain));
@@ -119,10 +117,10 @@ package org.mxhero.console.reports.presentation.reports
 		public function getOutgoing():void{
 			if(context.selectedDomain!=null){
 				dispatcher(new GetOutgoingEvent(context.selectedDomain.domain,sinceDate));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
 			}else{
 				dispatcher(new GetOutgoingEvent(null,sinceDate));
-				dispatcher(new GetTopTenOutgoingRecipientsEvent(null,since24Hs,this.onlyDomain));
+				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(null,since24Hs,this.onlyDomain));
 			}
 			updatingOutgoing=true;
 			updatingOutgoingRecipients=true;
@@ -132,7 +130,7 @@ package org.mxhero.console.reports.presentation.reports
 			var sinceDay:Date = new Date();
 			sinceDay.setTime(day.getTime());
 			sinceDay.setHours(0,0,0,0);
-			
+			since24Hs=day;
 			if(context.selectedDomain!=null){
 				dispatcher(new GetOutgoingByDayEvent(context.selectedDomain.domain,sinceDay));
 				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,sinceDay,this.onlyDomain));
@@ -174,17 +172,6 @@ package org.mxhero.console.reports.presentation.reports
 			updatingIncoming=false;
 		}
 		
-		[CommandResult]
-		public function getIncommingSendersResult(result:*,event:GetTopTenIncommingSendersEvent):void{
-			this.incommingSendersData=translateMail(result);
-			updatingIncomingSenders=false;
-		}
-		
-		[CommandError]
-		public function getIncommingSendersError(fault:*,event:GetTopTenIncommingSendersEvent):void{
-			this.incommingSendersData=new ArrayCollection();
-			updatingIncomingSenders=false;
-		}
 		
 		[CommandResult]
 		public function getIncommingSendersByDayResult(result:*,event:GetTopTenIncommingSendersByDayEvent):void{
@@ -212,18 +199,6 @@ package org.mxhero.console.reports.presentation.reports
 			this.outgoingData=new ArrayCollection();
 			stateOutgoing = OUT_DEFAULT;
 			updatingOutgoing=false;
-		}
-		
-		[CommandResult]
-		public function getOutgoingRecipientsResult(result:*,event:GetTopTenOutgoingRecipientsEvent):void{
-			this.outgoingRecipientsData=translateMail(result);
-			updatingOutgoingRecipients=false;
-		}
-		
-		[CommandError]
-		public function getOutgoingRecipientsError(fault:*,event:GetTopTenOutgoingRecipientsEvent):void{
-			this.outgoingRecipientsData=new ArrayCollection();
-			updatingOutgoingRecipients=false;
 		}
 		
 		[CommandResult]
