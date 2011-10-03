@@ -10,7 +10,7 @@
 	
 	<fx:Declarations>
 		<parsley:Configure/>
-		
+		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
 		<mx:SeriesZoom id="zoomOut" 
 					   duration="800"
 					   verticalFocus="top" 
@@ -341,7 +341,7 @@
 			
 			<s:VGroup width="100%" minWidth="200" height="100%" gap="20" enabled="{!model.updatingIncomingSenders}">
 				<s:HGroup>
-					<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_SENDERS_TITLE)}" 
+					<s:Label text="{resourceManager.getString(TrafficProperties.NAME,TrafficProperties.TOP_TEN_SENDERS_TITLE)+' ('+dateFormatter.format(model.since24Hs)+')'}" 
 							 fontWeight="bold" fontSize="16"
 							 color="#FFFFFF"
 							 textDecoration="underline"/>

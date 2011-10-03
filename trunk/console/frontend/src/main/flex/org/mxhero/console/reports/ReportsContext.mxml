@@ -21,9 +21,7 @@
 			import org.mxhero.console.reports.application.command.GetSpamHitsCommand;
 			import org.mxhero.console.reports.application.command.GetSpamHitsDayCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersByDayCommand;
-			import org.mxhero.console.reports.application.command.GetTopTenIncommingSendersCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsByDayCommand;
-			import org.mxhero.console.reports.application.command.GetTopTenOutgoingRecipientsCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenRecipientsCommand;
 			import org.mxhero.console.reports.application.command.GetTopTenSendersCommand;
 			import org.mxhero.console.reports.application.command.GetVirusEmailsCommand;
@@ -44,11 +42,9 @@
 	<fx:Declarations>
 		<parsley:DynamicCommand type="{GetIncommingCommand}"/>
 		<parsley:DynamicCommand type="{GetIncommingByDayCommand}"/>
-		<parsley:DynamicCommand type="{GetTopTenIncommingSendersCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenIncommingSendersByDayCommand}"/>
 		<parsley:DynamicCommand type="{GetOutgoingCommand}"/>
 		<parsley:DynamicCommand type="{GetOutgoingByDayCommand}"/>
-		<parsley:DynamicCommand type="{GetTopTenOutgoingRecipientsCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenOutgoingRecipientsByDayCommand}"/>
 		<parsley:DynamicCommand type="{GetEmailsCommand}"/>
 		<parsley:DynamicCommand type="{GetTopTenSendersCommand}"/>

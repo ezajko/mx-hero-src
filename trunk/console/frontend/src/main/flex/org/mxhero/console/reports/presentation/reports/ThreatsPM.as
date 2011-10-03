@@ -52,6 +52,8 @@ package org.mxhero.console.reports.presentation.reports
 		public var sinceDate:Date=new Date();
 		[Bindable]
 		public var untilDate:Date=new Date();
+		[Bindable]
+		public var since24Hs:Date = new Date();
 		
 		public function goBack():void{
 			parentModel.navigateTo(ReportsDestinations.LIST);
@@ -68,6 +70,7 @@ package org.mxhero.console.reports.presentation.reports
 			untilDate.setTime(untilDate.getTime()+PLUSDAY);
 			sinceDate.setTime(new Date().getTime()-DAYSBEFORE);
 			sinceDate.setHours(0,0,0,0);
+			since24Hs = new Date();
 			getVirus();
 			getSpam();
 		}
@@ -108,7 +111,7 @@ package org.mxhero.console.reports.presentation.reports
 			var sinceDay:Date = new Date();
 			var untilDay:Date = new Date();
 			var domain:String = null;
-			
+			since24Hs=day;
 			sinceDay.setTime(day.getTime());
 			sinceDay.setHours(0,0,0,0);
 			untilDay.setTime(day.getTime()+PLUSDAY);
@@ -129,7 +132,7 @@ package org.mxhero.console.reports.presentation.reports
 			var sinceDay:Date = new Date();
 			var untilDay:Date = new Date();
 			var domain:String = null;
-			
+			since24Hs=day;
 			sinceDay.setTime(day.getTime());
 			sinceDay.setHours(0,0,0,0);
 			untilDay.setTime(day.getTime()+PLUSDAY);
