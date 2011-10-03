@@ -19,6 +19,7 @@
 		<prop key="initial.tmp.prefix">tmp</prop>
 		<prop key="initial.suffix">.eml</prop>
 		<prop key="initial.store.path">/opt/mxhero/fsqueue</prop>
+		<prop key="initial.load.path">/opt/mxhero/fsloader</prop>
 		<prop key="initial.tmp.path">/tmp</prop>
 	</osgix:cm-properties>
 
@@ -54,4 +55,11 @@
 		<property name="suffix" value="${initial.suffix}"/>
 	</bean>
 	
+	<bean id="loader" class="org.mxhero.engine.fsqueues.internal.loader.FSLoader"
+		init-method="init"
+		destroy-method="stop">
+		<constructor-arg  value="${initial.load.path}"/>
+		<constructor-arg  value="${initial.tmp.path}"/>
+		<property name="queueService" ref="queueService"/>
+	</bean>
 </beans>
