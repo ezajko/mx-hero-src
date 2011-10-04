@@ -76,6 +76,7 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function getVirus():void{
+			since24Hs=new Date();
 			var sinceMails:Date=new Date();
 			sinceMails.setHours(0,0,0,0);
 			this.virusHists=null;
@@ -92,6 +93,7 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function getSpam():void{
+			since24Hs=new Date();
 			var sinceMails:Date=new Date();
 			sinceMails.setHours(0,0,0,0);
 			spamHists=null;

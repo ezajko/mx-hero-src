@@ -86,7 +86,7 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function getIncomming():void{
-			
+			since24Hs=new Date();
 			if(context.selectedDomain!=null){
 				dispatcher(new GetIncommingEvent(context.selectedDomain.domain,sinceDate));
 				dispatcher(new GetTopTenIncommingSendersByDayEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
@@ -115,6 +115,7 @@ package org.mxhero.console.reports.presentation.reports
 		}
 		
 		public function getOutgoing():void{
+			since24Hs=new Date();
 			if(context.selectedDomain!=null){
 				dispatcher(new GetOutgoingEvent(context.selectedDomain.domain,sinceDate));
 				dispatcher(new GetTopTenOutgoingRecipientsByDayEvent(context.selectedDomain.domain,since24Hs,this.onlyDomain));
