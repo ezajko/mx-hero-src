@@ -41,7 +41,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 				+ " on tsize.ddate = tcount.ddate";
 
 		if (domain != null && !domain.isEmpty()) {
-			query = query.replaceAll("$REPLACE_DOMAIN$",
+			query = query.replace("$REPLACE_DOMAIN$",
 					" AND recipient_domain_id = ? ");
 		} else {
 			query = query.replace("$REPLACE_DOMAIN$", "");
@@ -190,7 +190,7 @@ public class JpaTrafficReportService implements TrafficReportService {
 				+ " on tsize.ddate = tcount.ddate";
 
 		if (domain != null && !domain.isEmpty()) {
-			query = query.replaceAll("$REPLACE_DOMAIN$",
+			query = query.replace("$REPLACE_DOMAIN$",
 					" AND sender_domain_id = ? ");
 		} else {
 			query = query.replace("$REPLACE_DOMAIN$", "");
