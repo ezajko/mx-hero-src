@@ -33,16 +33,16 @@ sub install
 	}
 
 	# Creating system user
-	if ((system ("useradd -d $myConfig{MXHERO_PATH} mxhero")) != 0)
+	if ((system ("useradd -d $myConfig{MXHERO_PATH} -s /bin/bash mxhero")) != 0)
 	{
 		$$errorRef = T("Failed to create mxhero user");
 		return 0;
 	}
 
-	# Copying default bashrc (loads PATHs and mxhero env)
-	if (! copy ("$myConfig{INSTALLER_PATH}/scripts/mxhero-bashrc", "$myConfig{MXHERO_PATH}/.bashrc"))
+	# Copying default .profile (loads PATHs and mxhero env)
+	if (! copy ("$myConfig{INSTALLER_PATH}/scripts/mxhero-profile", "$myConfig{MXHERO_PATH}/.profile"))
 	{
-		$$errorRef = T("Failed to copy bashrc file");
+		$$errorRef = T("Failed to copy profile file");
 		return 0;
 	}
 
