@@ -19,7 +19,7 @@ sub install
 	## BACKEND
 
 	# Creating system directory
-	if (-d $myConfig{MXHERO_PATH} || !mkdir ($myConfig{MXHERO_PATH}))
+	if (!-d $myConfig{MXHERO_PATH} || !mkdir ($myConfig{MXHERO_PATH}))
 	{
 		$$errorRef = T("Failed to create mxhero directory");
 		return 0;
