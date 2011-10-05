@@ -945,3 +945,6 @@ DELIMITER ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2011-08-15 11:04:38
+
+/* STATISTICS: GRANT PRIVILEGES */
+GRANT ALL PRIVILEGES ON statistics.* TO mxhero@localhost IDENTIFIED BY 'mxhero';
