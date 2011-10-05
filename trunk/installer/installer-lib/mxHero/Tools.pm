@@ -109,8 +109,11 @@ sub mxHeroInstallerVersion
 sub packageCheck
 {
 	my $package = $_[0];
-	#my $minimumVersion = $_[1]; # not supported now with multipackage
+	#my $minimumVersion = $_[1]; # not yet supported with multipackage
 
+	print "\n\n---------------------------\n";
+	print "Checking packages: $package\n";
+	
 	my $distri = &getDistri();
 	
 	my @packages = split( /\s+/, $package );
@@ -127,7 +130,6 @@ sub packageCheck
 		for my $qLine ( @queryLines ) {
 			($pkg, $installedVersion, $status ) = split (/::/, $qLine, 3);
 			if ( ! $status || $status !~ /\s+installed$/ ) {
-				warn "$pkg\n";
 				return 0;
 			}
 			#if ( $installedVersion ) {
@@ -151,21 +153,24 @@ sub packageInstall
 {
 	my $package = $_[0];
 	
-	my $term = Term::ReadLine->new( 'mxHero' );
-	my $bool;
-	$bool = $term->ask_yn( prompt => T("Continue?"),
-						   default  => 'y',
-						   print_me => T("\nInstalling binary package:")." '$package'" );
-	if ( ! $bool ) {
-		print "INSTALL CANCELLED.\n";
-		return 0;
-	}
+	print "\n\n** INSTALLING package '$package' **\n\n";
+
+	#my $term = Term::ReadLine->new( 'mxHero' );
+	#my $bool;
+	#$bool = $term->ask_yn( prompt => T("Continue?"),
+	#					   default  => 'y',
+	#					   print_me => T("\nInstalling binary package:")." '$package'" );
+	#if ( ! $bool ) {
+	#	print "INSTALL CANCELLED.\n";
+	#	return 0;
+	#}
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
 ###		warn "TEST: installing '$package'\n"; ### TESTING
 ###		return 1; ### TESTING
 		# apt-get return 0 on success, 100 on error
+		sleep( 1 );
 		my $ret = system("/usr/bin/apt-get -y install $package 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
 			print "'$package' ... INSTALLED\n";
