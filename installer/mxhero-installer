@@ -26,7 +26,7 @@ use mxHero::Tools;
 
 print T('*************************************'),"\n";
 print T('WELCOME TO THE MXHERO LINUX INSTALLER'),"\n";
-print T('*************************************'),"\n\n";
+print T('*************************************'),"\n";
 
 ## Do basic checks here
 # Must be linux
@@ -34,8 +34,8 @@ if ( $^O !~ /linux/i ) {
 	print T("This installer only supports Linux Operating Systems")."\n";
 	exit 1;
 }
-# TODO: check distribution & versions
-
+# Check distribution & versions
+&mxHero::Tools::getDistri();
 # Must be root
 if ( $> ) {
 	print T("This script requires root privledges").".\n\n";
@@ -57,8 +57,7 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			&mxHero::JDK::install ( \$error )
 			)
 		{
-			# TODO - ADD VERSION FILE TO /opt/mxhero
-			if ( ! copy( "$myConfig{MXHERO_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
+			if ( ! copy( "$myConfig{INSTALLER_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
 				warn $!;
 				print "\n\n!! MXHERO INSTALL FAILED !!\n\n";
 				exit 1;
