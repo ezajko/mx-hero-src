@@ -24,6 +24,7 @@ sub install
 		$dirName = $myConfig{JDK_X86_DIRNAME};
 	}
 
+	print T("Installing JDK..."), "\n";
 	if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$dirName $myConfig{MXHERO_PATH}/$dirName")) != 0)
 	{
 		$$errorRef = T("Failed to copy java files");
