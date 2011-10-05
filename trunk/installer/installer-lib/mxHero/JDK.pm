@@ -36,7 +36,7 @@ sub install
                 return 0;
 	}
 
-	if ((system ("chown -R root: $myConfig{MXHERO_PATH}/$dirName")) != 0)
+	if ((system ("chown -R mxhero: $myConfig{MXHERO_PATH}/$dirName")) != 0)
 	{
 		$$errorRef = T("Failed to chown java");
 		return 0;
