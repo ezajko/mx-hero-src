@@ -101,6 +101,7 @@ else # upgrade
 			)
 		{
 			print T("\n!! MXHERO UPGRADED !!"),"\n"; # Success message
+			print T("Remember to restart services.")."\n\n";
 	
 		} else {
 			print T("UPGRADE FAILED. ERROR:\n$error"),"\n"; # Fail message
