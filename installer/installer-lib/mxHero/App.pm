@@ -19,7 +19,7 @@ sub install
 	## BACKEND
 
 	# Creating system directory
-	if (! mkdir ($myConfig{MXHERO_PATH}))
+	if (-d $myConfig{MXHERO_PATH} || !mkdir ($myConfig{MXHERO_PATH}))
 	{
 		$$errorRef = T("Failed to create mxhero directory");
 		return 0;
@@ -35,7 +35,8 @@ sub install
 
 	# Creating system user
 	print T("Creating mxHero user..."), "\n";
-	if ((system ("useradd -d $myConfig{MXHERO_PATH} -s /bin/bash mxhero")) != 0)
+	my $result = system ("useradd -d $myConfig{MXHERO_PATH} -s /bin/bash mxhero");
+	if ($result != 0 || $result != 9) # 0 = OK, 9 = Username exists
 	{
 		$$errorRef = T("Failed to create mxhero user");
 		return 0;
@@ -77,9 +78,7 @@ sub upgrade
 {
 	my $errorRef = $_[0];
 	
-	# TODO - BRUNO
-	
-	return 1;
+	return &install ($errorRef);
 }
 
 sub configure
