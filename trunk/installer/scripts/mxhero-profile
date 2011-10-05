@@ -1,8 +1,3 @@
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
-
 MXHERO_HOME=/opt/mxhero
 export MXHERO_HOME
 
