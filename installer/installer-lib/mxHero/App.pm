@@ -64,6 +64,12 @@ sub install
 		return 0;
 	}
 
+	if ((system ("chmod 644 $myConfig{TOMCAT_WEBAPPS_PATH}/*.war")) != 0)
+	{
+		$$errorRef = T("Failed to chmod mxhero frontend files");
+		return 0;
+	}
+
 	return &configure( $errorRef );
 }
 
