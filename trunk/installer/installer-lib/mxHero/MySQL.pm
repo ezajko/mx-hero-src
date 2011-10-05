@@ -14,7 +14,8 @@ use mxHero::Locale;
 # distribution => package name
 my %PKG_NAME = (
 	"debian" => "mysql-server",
-	"ubuntu" => "mysql-server"
+	"ubuntu" => "mysql-server",
+	"redhat" => "mysql-server"
 	# TODO: redhat, suse
 );
 
@@ -30,6 +31,11 @@ sub install
 			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
 			return 0;
 		}
+	}
+	
+	# Ensure that mysql is started in Redhat
+	if ( $distri eq "redhat" ) {
+		system( "/etc/init.d/mysqld start" );
 	}
 	
 	# TODO - check for existence of mxhero database. Query to remove.
@@ -87,7 +93,14 @@ sub upgrade
 sub configure
 {
 	my $errorRef = $_[0];
-	my $cnf = "/etc/mysql/my.cnf";
+	my $cnf;
+	
+	my $distri = &mxHero::Tools::getDistri();
+	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
+		$cnf = "/etc/mysql/my.cnf";
+	} elsif ( $distri =~ /Redhat/ ) {
+		$cnf = "/etc/my.cnf";
+	}
 
 	# Open /etc/mysql/my.cnf
 	

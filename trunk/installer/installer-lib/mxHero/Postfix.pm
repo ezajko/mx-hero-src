@@ -15,7 +15,8 @@ use mxHero::Locale;
 # distribution => mysql package name
 my %PKG_NAME = (
 	"debian" => "postfix",
-	"ubuntu" => "postfix"
+	"ubuntu" => "postfix",
+	"redhat" => "postfix"
 	# TODO: redhat, suse
 );
 

@@ -10,7 +10,8 @@ use mxHero::Tools;
 # distribution => package name
 my %PKG_NAME = (
 	"debian" => "tomcat6",
-	"ubuntu" => "tomcat6"
+	"ubuntu" => "tomcat6",
+	"redhat" => "tomcat6"
 	# TODO: redhat, suse
 );
 
