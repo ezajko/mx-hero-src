@@ -54,7 +54,8 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			&mxHero::ClamAV::install ( \$error ) &&
 			&mxHero::SpamAssassin::install ( \$error ) &&
 			&mxHero::App::install ( \$error ) &&
-			&mxHero::JDK::install ( \$error )
+			&mxHero::JDK::install ( \$error ) &&
+			&mxHero::MySQL::createDatabase ( \$error )
 			)
 		{
 			if ( ! copy( "$myConfig{INSTALLER_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
@@ -67,13 +68,17 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			#&_startMxHero();
 			# Consider a reload dialogue to reload all mxHero services for immediate usage
 			print "\n** Admin Panel **\n";
-			print "Once mxHero is started, you can access the mxHero admin panel at http://your_ip:8080/mxhero.\n";
-			print "The default admin login credentials (login / password) are: admin / password. REMEMBER TO CHANGE!\n";
+			print "Once mxHero is started, you can access the mxHero admin panel at:\n";
+			print "\thttp://your_ip:8080/mxhero.\n\n";
+			print "The default admin login credentials are:\n";
+			print "\tLogin: admin\n";
+			print "\tPass:  password\n";
+			print "REMEMBER TO CHANGE!\n\n";
 			print "\n** Important Notes **\n";
 			print "You probably need to restart/reload:\n";
 			print "  Tomcat;\n";
 			print "  Postfix/Zimbra;\n";
-			print "  ClamAV;\n\n";
+			print "  ClamAV;\n";
 			print "  Spamassassin;\n";
 			print "  mxHero;\n";
 			print "Or just reboot your machine for all systems to start up.\n\n";
