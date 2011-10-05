@@ -14,7 +14,7 @@ use mxHero::Locale;
 
 my $LINUX_DISTRIBUTION; # package variable
 
-# Super simple distri check
+# Super simple distri check. Return (Ubuntu, Debian, Redhat, [Suse])
 sub getDistri
 {
 	if ( $LINUX_DISTRIBUTION ) {
@@ -142,8 +142,12 @@ sub packageCheck
 			#	return 0;
 			#}
 		}
+	} elsif ( $distri =~ /Redhat/i ) {
+		my $rpmQuery = system( "/bin/rpm -q $package" );
+		if ( ( $rpmQuery >> 8 ) != 0 ) {
+			return 0;
+		}
 	}
-	# TODO - other distributions ...
 	
 	return 1;
 }
@@ -178,8 +182,16 @@ sub packageInstall
 		} else {
 			return 0;
 		}
+	} elsif ( $distri =~ /Redhat/ ) {
+		sleep( 1 );
+		my $ret = system("/usr/bin/yum -y install $package 2>/dev/null");
+		if ( ($ret >> 8) == 0 ) {
+			print "'$package' ... INSTALLED\n";
+			return 1;
+		} else {
+			return 0;
+		}
 	}
-	# TODO - other distributions ...
 	
 	return 0;
 }

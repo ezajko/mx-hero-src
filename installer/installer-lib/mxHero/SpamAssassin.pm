@@ -8,7 +8,8 @@ use mxHero::Tools;
 # distribution => package name
 my %PKG_NAME = (
 	"debian" => "spamassassin",
-	"ubuntu" => "spamassassin"
+	"ubuntu" => "spamassassin",
+	"redhat" => "spamassassin"
 	# TODO: redhat, suse
 );
 
@@ -52,6 +53,11 @@ sub upgrade
 sub configure
 {
 	my $errorRef = $_[0];
+	
+	my $distri = &mxHero::Tools::getDistri();
+	if ( $distri =~ /Redhat/ ) { # TODO: check if anything to do in the case of Redhat?
+		return 1;
+	}
 
 	my $file = "/etc/default/spamassassin";
 	
