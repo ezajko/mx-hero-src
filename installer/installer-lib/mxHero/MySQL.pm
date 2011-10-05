@@ -47,20 +47,6 @@ sub install
 		}
 	}
 	
-	# Process all sql files - from first version to last
-	print "Creating database ...\n";
-	my @sqlFiles;
-	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
-		for my $file ( @sqlFiles ) {
-			# NOTE: should get exit code to check for errors or use API
-			system( "/usr/bin/mysql < $file" );
-###			warn "TEST: /usr/bin/mysql < $file\n"; ### TEST
-		}
-	} else {
-		$$errorRef = "Failed to find SQL files.";
-		return 0;
-	}
-
 	return &configure( $errorRef );
 }
 
@@ -170,6 +156,25 @@ sub configure
 	return 1;
 }
 
+sub createDatabase
+{
+	my $errorRef = $_[0];
+	
+	# Process all sql files - from first version to last
+	print "Creating database ...\n";
+	my @sqlFiles;
+	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
+		for my $file ( @sqlFiles ) {
+			system( "/usr/bin/mysql < $file" );
+###			warn "TEST: /usr/bin/mysql < $file\n"; ### TEST
+		}
+	} else {
+		$$errorRef = "Failed to find SQL files.";
+		return 0;
+	}
+	
+	return 1;
+}
 
 ## PRIVATE
 
