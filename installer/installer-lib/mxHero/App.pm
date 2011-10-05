@@ -35,7 +35,10 @@ sub install
 
 	# Creating system user
 	print T("Creating mxHero user..."), "\n";
+
 	my $result = system ("useradd -d $myConfig{MXHERO_PATH} -s /bin/bash mxhero");
+	$result = ($result >> 8);
+
 	if ($result != 0 && $result != 9) # 0 = OK, 9 = Username exists
 	{
 		$$errorRef = T("Failed to create mxhero user");
