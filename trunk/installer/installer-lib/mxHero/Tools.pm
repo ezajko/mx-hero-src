@@ -166,7 +166,7 @@ sub packageInstall
 ###		warn "TEST: installing '$package'\n"; ### TESTING
 ###		return 1; ### TESTING
 		# apt-get return 0 on success, 100 on error
-		my $ret = system("/usr/bin/apt-get install $package 2>/dev/null");
+		my $ret = system("/usr/bin/apt-get -y install $package 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
 			print "'$package' ... INSTALLED\n";
 			return 1;
