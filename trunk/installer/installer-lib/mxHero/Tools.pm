@@ -12,20 +12,71 @@ use File::Copy;
 use mxHero::Config;
 use mxHero::Locale;
 
+my $LINUX_DISTRIBUTION; # package variable
+
 # Super simple distri check
 sub getDistri
 {
+	if ( $LINUX_DISTRIBUTION ) {
+		return $LINUX_DISTRIBUTION;
+	}
+
 	# Detect: Ubuntu, Debian, Redhat, Suse
-	my $distri;
-	if ( -f "/etc/lsb-release" ) {
-		$distri = &_processLsbRelease();
-	} elsif ( -f "/etc/redhat-release" ) {
-		$distri = "Redhat";
-	} elsif ( -f "/etc/SuSE-release" ) {
-		$distri = "Suse";
+	if ( ! $LINUX_DISTRIBUTION && -f "/etc/lsb-release" ) {
+		$LINUX_DISTRIBUTION = &_processLsbRelease();
 	}
 	
-	return $distri;
+	# id Debian w/ issue file. Not best since easily change. Look for better.
+	if ( ! $LINUX_DISTRIBUTION && -f "/etc/issue" ) {
+		if ( ! open( F, "/etc/issue" ) ) {
+			warn "$!\n";
+		} else {
+			my $issue = <F>;
+			if ( $issue =~ /^Debian/ ) {
+				$LINUX_DISTRIBUTION = "Debian";
+			}
+			close F;
+		}
+	}	
+	
+	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/redhat-release" ) {
+		$LINUX_DISTRIBUTION = "Redhat";
+	}
+	
+	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/SuSE-release" ) {
+		$LINUX_DISTRIBUTION = "Suse";
+	}
+
+	my $term = Term::ReadLine->new( 'mxHero' );
+
+	# Add question confirming distribution (?)
+	if ( $LINUX_DISTRIBUTION ) {
+		my $bool = $term->ask_yn( prompt => T("Correct?"),
+							   default  => 'y',
+							   print_me => T("\nThis Operating System distribution is:")." '$LINUX_DISTRIBUTION'" );
+		if ( ! $bool ) {
+			$LINUX_DISTRIBUTION = "";
+		}
+	}
+	
+	# Add question if can't find distribution
+	if ( ! $LINUX_DISTRIBUTION ) {
+		my $reply = $term->get_reply( prompt => T("Selection? "),
+							   choices  => [ ('Ubuntu', 'Debian', 'Redhat/Centos/Fedora', 'None of the above') ],
+							   print_me => T("\nWhat Operating System distribution is installed?") );
+		if ( $reply =~ /^Redhat/ ) {
+			$LINUX_DISTRIBUTION = "Redhat";
+		} elsif ( $reply =~ /^None/ ) {
+			warn "Installation cancelled.\n";
+			exit;
+		} else {
+			$LINUX_DISTRIBUTION = $reply;
+		}
+	}
+	#warn "DISTRI: $LINUX_DISTRIBUTION\n";
+	#exit;
+	
+	return $LINUX_DISTRIBUTION;
 }
 
 sub zimbraCheck
