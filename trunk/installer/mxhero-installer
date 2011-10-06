@@ -75,7 +75,25 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			print T("\n!! MXHERO INSTALLED !!"),"\n"; # Success message
 			#&_startMxHero();
 			# Consider a reload dialogue to reload all mxHero services for immediate usage
-			print "\n** Admin Panel **\n";
+			
+			# Zimbra note
+			if ( &mxHero::Tools::zimbraCheck() ) {
+				print "\n*** NOTE FOR ZIMBRA INSTALLATIONS ***\n";
+				print "mxHero is providing SpamAssassin and ClamAV.\n";
+				print "You can disable Zimbra's SpamAssassin and ClamAV by running the command:\n";
+				print "\t# su - zimbra\n";
+				print "\t\$ zmprov ms `zmhostname` -zimbraServiceEnabled antivirus -zimbraServiceEnabled antispam\n\n";
+
+				my $term = Term::ReadLine->new( 'mxHero' );
+				my $bool = $term->ask_yn( prompt => T("Disable Zimbra antivirus and antispam? "),
+							   default  => 'y',
+							   print_me => T("The installer can submit this command now?") );
+				if ( $bool ) {
+					system( "su - zimbra -c 'zmprov ms `zmhostname` -zimbraServiceEnabled antivirus -zimbraServiceEnabled antispam'" );
+				}
+			}
+
+			print "\n\n** Admin Panel **\n";
 			print "Once mxHero is started, you can access the mxHero admin panel at:\n";
 			print "\thttp://your_ip:8080/mxhero.\n\n";
 			print "The default admin login credentials are:\n";
