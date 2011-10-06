@@ -13,6 +13,7 @@ use mxHero::Config;
 use mxHero::Locale;
 
 my $LINUX_DISTRIBUTION; # package variable
+my $DISTRIBUTION_VERSION;
 
 # Super simple distri check. Return (Ubuntu, Debian, Redhat, [Suse])
 sub getDistri
@@ -21,63 +22,23 @@ sub getDistri
 		return $LINUX_DISTRIBUTION;
 	}
 
-	# Detect: Ubuntu, Debian, Redhat, Suse
-	if ( ! $LINUX_DISTRIBUTION && -f "/etc/lsb-release" ) {
-		$LINUX_DISTRIBUTION = &_processLsbRelease();
-	}
-	
-	# id Debian w/ issue file. Not best since easily change. Look for better.
-	if ( ! $LINUX_DISTRIBUTION && -f "/etc/issue" ) {
-		if ( ! open( F, "/etc/issue" ) ) {
-			warn "$!\n";
-		} else {
-			my $issue = <F>;
-			if ( $issue =~ /^Debian/ ) {
-				$LINUX_DISTRIBUTION = "Debian";
-			}
-			close F;
-		}
-	}	
-	
-	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/redhat-release" ) {
-		$LINUX_DISTRIBUTION = "Redhat";
-	}
-	
-	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/SuSE-release" ) {
-		$LINUX_DISTRIBUTION = "Suse";
-	}
-
-	my $term = Term::ReadLine->new( 'mxHero' );
-
-	# Add question confirming distribution (?)
-	if ( $LINUX_DISTRIBUTION ) {
-		my $bool = $term->ask_yn( prompt => T("Correct?"),
-							   default  => 'y',
-							   print_me => T("\nThis Operating System distribution is:")." '$LINUX_DISTRIBUTION'" );
-		if ( ! $bool ) {
-			$LINUX_DISTRIBUTION = "";
-		}
-	}
-	
-	# Add question if can't find distribution
-	if ( ! $LINUX_DISTRIBUTION ) {
-		my $reply = $term->get_reply( prompt => T("Selection? "),
-							   choices  => [ ('Ubuntu', 'Debian', 'Redhat/Centos/Fedora', 'None of the above') ],
-							   print_me => T("\nWhat Operating System distribution is installed?") );
-		if ( $reply =~ /^Redhat/ ) {
-			$LINUX_DISTRIBUTION = "Redhat";
-		} elsif ( $reply =~ /^None/ ) {
-			warn "Installation cancelled.\n";
-			exit;
-		} else {
-			$LINUX_DISTRIBUTION = $reply;
-		}
-	}
-	#warn "DISTRI: $LINUX_DISTRIBUTION\n";
-	#exit;
+	&_setOSInfo();
 	
 	return $LINUX_DISTRIBUTION;
 }
+
+
+sub getDistriVersion
+{
+	if ( $DISTRIBUTION_VERSION ) {
+		return $DISTRIBUTION_VERSION;
+	}
+
+	&_setOSInfo();
+	
+	return $DISTRIBUTION_VERSION;
+}
+
 
 sub zimbraCheck
 {
@@ -187,6 +148,13 @@ sub packageInstall
 		my $ret = system("/usr/bin/yum -y install $package 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
 			print "'$package' ... INSTALLED\n";
+			my $service;
+			if ( $package eq "mysql-server") {
+				$service = "mysqld";
+			} else {
+				$service = $package;
+			}
+			system( "/sbin/chkconfig $service on" );
 			return 1;
 		} else {
 			return 0;
@@ -279,20 +247,87 @@ sub _checkDebianPackageVersion
 	return version_compare( $installedVersion, $minimumVersion );
 }
 
-sub _processLsbRelease
+
+# TODO: set Distri & Version for all distris
+# Discover Operating System information
+sub _setOSInfo
 {
-	if ( ! open(F,"/etc/lsb-release") ) {
-		warn $!;
+
+	# Detect: Ubuntu
+	if ( ! ($LINUX_DISTRIBUTION && $DISTRIBUTION_VERSION) && -f "/etc/lsb-release" ) {
+		($LINUX_DISTRIBUTION, $DISTRIBUTION_VERSION) = &_processLsbRelease();
+	}
+	
+	# id Debian w/ issue file. Not best since easily change. Look for better.
+	if ( ! $LINUX_DISTRIBUTION && -f "/etc/issue" ) {
+		if ( ! open( F, "/etc/issue" ) ) {
+			warn "$!\n";
+		} else {
+			my $issue = <F>;
+			if ( $issue =~ /^Debian/ ) {
+				$LINUX_DISTRIBUTION = "Debian";
+			}
+			close F;
+		}
+	}	
+	
+	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/redhat-release" ) {
+		$LINUX_DISTRIBUTION = "Redhat";
+	}
+	
+	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/SuSE-release" ) {
+		$LINUX_DISTRIBUTION = "Suse";
 	}
 
-	while (<F>) {
-		if ( $_ =~ /DISTRIB_ID=(\w+)/ ) {
-			return $1;
+	my $term = Term::ReadLine->new( 'mxHero' );
+
+	# Add question confirming distribution (?)
+	if ( $LINUX_DISTRIBUTION ) {
+		my $bool = $term->ask_yn( prompt => T("Correct?"),
+							   default  => 'y',
+							   print_me => T("\nThis Operating System distribution is:")." '$LINUX_DISTRIBUTION'" );
+		if ( ! $bool ) {
+			$LINUX_DISTRIBUTION = "";
+		}
+	}
+	
+	# Add question if can't find distribution
+	if ( ! $LINUX_DISTRIBUTION ) {
+		my $reply = $term->get_reply( prompt => T("Selection? "),
+							   choices  => [ ('Ubuntu', 'Debian', 'Redhat/Centos/Fedora', 'None of the above') ],
+							   print_me => T("\nWhat Operating System distribution is installed?") );
+		if ( $reply =~ /^Redhat/ ) {
+			$LINUX_DISTRIBUTION = "Redhat";
+		} elsif ( $reply =~ /^None/ ) {
+			warn "Installation cancelled.\n";
+			exit;
+		} else {
+			$LINUX_DISTRIBUTION = $reply;
 		}
 	}
 
 }
 
+
+sub _processLsbRelease
+{
+	my $distri;
+	my $version;
+
+	if ( ! open(F,"/etc/lsb-release") ) {
+		warn $!;
+	}
+
+	while (<F>) {
+		if ( $_ =~ /DISTRIB_ID\s*=\s*(\w+)/ ) {
+			$distri = $1;
+		} elsif ( $_ =~ /DISTRIB_RELEASE\s*=\s*(\w+)/ ) {
+			$version = $1;
+		}
+	}
+
+	return ($distri, $version);
+}
 
 
 1;
