@@ -21,6 +21,13 @@ sub install
 	
 	my $distri = lc( &mxHero::Tools::getDistri() );
 	
+	#if ( $distri eq 'ubuntu' ) {
+	#	my $version = &mxHero::Tools::getDistriVersion();
+	#	if ( $version =~ /^8\./ ) {
+	#		$PKG_NAME{$distri} = "tomcat5.5";
+	#	}
+	#}
+	
 	# Install binary if needed
 	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
