@@ -33,11 +33,6 @@ sub install
 		}
 	}
 	
-	# Ensure that mysql is started in Redhat
-	if ( $distri eq "redhat" ) {
-		system( "/etc/init.d/mysqld start" );
-	}
-	
 	# TODO - check for existence of mxhero database. Query to remove.
 	# Note: this should be part of the uninstall subroutine.
 	if ( &_mxheroDatabaseExists ) {
