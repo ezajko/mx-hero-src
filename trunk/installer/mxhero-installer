@@ -98,8 +98,7 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			print "\thttp://your_ip:8080/mxhero.\n\n";
 			print "The default admin login credentials are:\n";
 			print "\tLogin: admin\n";
-			print "\tPass:  password\n";
-			print "REMEMBER TO CHANGE!\n\n";
+			print "\tPass:  password (REMEMBER TO CHANGE!)\n\n";
 			print "\n** Important Notes **\n";
 			print "You probably need to restart/reload:\n";
 			print "  Tomcat;\n";
