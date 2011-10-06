@@ -19,19 +19,6 @@ sub install
 	
 	my $distri = lc( &mxHero::Tools::getDistri() );
 	
-	# Zimbra note
-	if ( &mxHero::Tools::zimbraCheck() ) {
-		print "\n*** NOTE FOR ZIMBRA INSTALLATIONS ***\n";
-		print "Disable Zimbra's SpamAssassin once mxHero is up and running.\n";
-		print "This can be accomplished by running the command:\n";
-		print "\t# su - zimbra\n";
-		print "\t\$ zmprov ms `zmhostname` -zimbraServiceEnabled antivirus -zimbraServiceEnabled antispam\n";
-		print "Hit <enter> to continue...\n";
-		while ( <STDIN> ) { # wait for enter
-			last;
-		}
-	}
-	
 	# in future add dialogue for external SpamAssassin (ex. get IP and Port)
 
 	# Install binary if needed
