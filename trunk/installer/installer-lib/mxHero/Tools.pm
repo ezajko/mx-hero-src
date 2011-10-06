@@ -91,9 +91,9 @@ sub mxHeroVersion
 {
 	my $version = &_getVersion("$myConfig{MXHERO_PATH}/VERSION");
 	
-	if ( ! $version && -d "/opt/mxhero" ) { # means first version (pre-installer)
-		$version = "1.0.0";
-	}
+	#if ( ! $version && -d "/opt/mxhero" ) { # means first version (pre-installer)
+	#	$version = "1.0.0";
+	#}
 
 	return $version;
 }
