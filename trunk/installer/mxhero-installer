@@ -35,7 +35,15 @@ if ( $^O !~ /linux/i ) {
 	exit 1;
 }
 # Check distribution & versions
-&mxHero::Tools::getDistri();
+my $distri  = &mxHero::Tools::getDistri();
+my $version = &mxHero::Tools::getDistriVersion();
+if ( $distri eq 'Ubuntu' && ($version =~ /^8\./ || $version =~ /^9\./) ) { # 
+	print "Linux $distri $version not supported or tested. Cancelling install.\n\n";
+	exit;
+} elsif ( $distri eq 'Redhat' ) {
+	print "Linux $distri not yet supported or tested. Cancelling install.\n\n";
+	exit;
+}
 # Must be root
 if ( $> ) {
 	print T("This script requires root privledges").".\n\n";
