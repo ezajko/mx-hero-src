@@ -9,7 +9,6 @@ public class FSMailKey {
 	private Timestamp time;
 	
 	public FSMailKey(Long sequence, Timestamp time) {
-		super();
 		this.sequence = sequence;
 		this.time = time;
 	}

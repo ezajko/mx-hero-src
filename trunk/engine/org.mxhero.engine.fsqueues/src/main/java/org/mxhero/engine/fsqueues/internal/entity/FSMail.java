@@ -7,10 +7,15 @@ public class FSMail {
 	private String tmpFile;
 	
 	private FSMailKey key;
+	
+	private int readded=0;
+	
+	private long lastCheck;
 
 	public FSMail(FSMailKey key) {
 		super();
 		this.key = key;
+		lastCheck=System.currentTimeMillis();
 	}
 
 	public String getFile() {
@@ -35,6 +40,22 @@ public class FSMail {
 
 	public void setKey(FSMailKey key) {
 		this.key = key;
+	}
+
+	public int getReadded() {
+		return readded;
+	}
+
+	public void setReadded(int readded) {
+		this.readded = readded;
+	}
+
+	public long getLastCheck() {
+		return lastCheck;
+	}
+
+	public void setLastCheck(long lastCheck) {
+		this.lastCheck = lastCheck;
 	}
 
 	@Override
