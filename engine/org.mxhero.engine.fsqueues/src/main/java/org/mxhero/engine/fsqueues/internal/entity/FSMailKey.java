@@ -60,5 +60,13 @@ public class FSMailKey {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("FSMailKey [sequence=").append(sequence)
+				.append(", time=").append(time).append("]");
+		return builder.toString();
+	}
 	
 }

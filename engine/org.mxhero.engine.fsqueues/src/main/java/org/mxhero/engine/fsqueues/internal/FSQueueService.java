@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
@@ -92,12 +91,14 @@ public class FSQueueService implements MimeMailQueueService {
 					if(storeFile.length()<config.getDeferredSize()){
 						os = new ByteArrayOutputStream();
 						data.writeTo(os);
+						os.flush();
 						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 					//if tmp should be on disk
 					}else{
 						tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
 						os = new FileOutputStream(tmpFile);
 						data.writeTo(os);
+						os.flush();
 						is = new SharedTmpFileInputStream(tmpFile);
 					}
 	
@@ -150,7 +151,7 @@ public class FSQueueService implements MimeMailQueueService {
 				sfos = new FileOutputStream(storeFile);
 				fsmail.setFile(storeFile.getAbsolutePath());
 				mail.getMessage().writeTo(sfos);
-				
+				sfos.flush();
 				mail.getMessage().removeHeader(SENDER_HEADER);
 				mail.getMessage().removeHeader(RECIPIENT_HEADER);
 				mail.getMessage().removeHeader(OUTPUT_SERVICE_HEADER);
@@ -160,6 +161,7 @@ public class FSQueueService implements MimeMailQueueService {
 					tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
 					tfos = new FileOutputStream(tmpFile);
 					mail.getMessage().writeTo(tfos);
+					tfos.flush();
 					fsmail.setTmpFile(tmpFile.getAbsolutePath());
 					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
@@ -173,7 +175,8 @@ public class FSQueueService implements MimeMailQueueService {
 				}else{
 					ByteArrayOutputStream os = new ByteArrayOutputStream();
 					mail.getMessage().writeTo(os);
-					SharedByteArrayInputStream is = new SharedByteArrayInputStream(os.toByteArray());
+					os.flush();
+					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
 							is, 
@@ -220,7 +223,11 @@ public class FSQueueService implements MimeMailQueueService {
 	}
 	
 	public void unstore(MimeMail mail){
-		FSMailKey fsmailKey = new FSMailKey(mail.getSequence(),mail.getTime());
+		unstore(mail.getTime(),mail.getSequence());
+	}
+	
+	private void unstore(Timestamp time, Long sequence){
+		FSMailKey fsmailKey = new FSMailKey(sequence,time);
 		FSMail fsmail = store.remove(fsmailKey);
 		if(fsmail!=null){
 			if(fsmail.getTmpFile()!=null){
@@ -244,8 +251,8 @@ public class FSQueueService implements MimeMailQueueService {
 				}
 			}
 		}
-		
 	}
+	
 
 	public void saveToAndUnstore(Timestamp time, Long sequence, String path){
 		FSMailKey fsmailKey = new FSMailKey(sequence,time);
@@ -257,9 +264,12 @@ public class FSQueueService implements MimeMailQueueService {
 			File storeFileTo = new File(pathTo,storeFile.getName());
 			try {
 				Files.copy(storeFile, storeFileTo);
+				unstore(time,sequence);
 			} catch (IOException e) {
 				log.error("error while saving and unstoring email",e);
 			}
+		}else{
+			log.warn("fail to find mail for key "+fsmailKey);
 		}
 	}
 	
@@ -302,24 +312,33 @@ public class FSQueueService implements MimeMailQueueService {
 	
 	public boolean offer(String phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException{
-		if(store.containsKey(new FSMailKey(mail.getSequence(),mail.getTime()))){
+		FSMailKey key = new FSMailKey(mail.getSequence(),mail.getTime());
+		if(store.containsKey(key)){
 			return getOrCreateQueue(phase).offer(new DelayedMail(mail), timeout, unit);
+		}else{
+			log.warn("fail to find mail "+mail+" for key "+key);
 		}
 		return false;
 	}
 	
 	public void put(String phase, MimeMail mail)
     throws InterruptedException{
-		if(store.containsKey(new FSMailKey(mail.getSequence(),mail.getTime()))){
+		FSMailKey key = new FSMailKey(mail.getSequence(),mail.getTime());
+		if(store.containsKey(key)){
 			getOrCreateQueue(phase).put(new DelayedMail(mail));
+		}else{
+			log.warn("fail to find mail "+mail+" for key "+key);
 		}
 	}
 	
 
 	public void delayAndPut(String phase, MimeMail mail, long millisenconds)
 			throws InterruptedException {
-		if(store.containsKey(new FSMailKey(mail.getSequence(),mail.getTime()))){
+		FSMailKey key = new FSMailKey(mail.getSequence(),mail.getTime());
+		if(store.containsKey(key)){
 			getOrCreateQueue(phase).put(new DelayedMail(mail,millisenconds));
+		}else{
+			log.warn("fail to find mail "+mail+" for key "+key);
 		}
 	}
 	
