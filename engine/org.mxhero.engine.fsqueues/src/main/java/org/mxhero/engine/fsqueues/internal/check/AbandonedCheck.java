@@ -1,0 +1,143 @@
+package org.mxhero.engine.fsqueues.internal.check;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.DelayQueue;
+
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
+
+import org.mxhero.engine.domain.mail.MimeMail;
+import org.mxhero.engine.domain.mail.business.RulePhase;
+import org.mxhero.engine.fsqueues.internal.FSQueueService;
+import org.mxhero.engine.fsqueues.internal.entity.DelayedMail;
+import org.mxhero.engine.fsqueues.internal.entity.FSMail;
+import org.mxhero.engine.fsqueues.internal.entity.FSMailKey;
+import org.mxhero.engine.fsqueues.internal.loader.FSLoader;
+import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class AbandonedCheck {
+
+	private static Logger log = LoggerFactory.getLogger(FSLoader.class);
+	private Map<FSMailKey,FSMail> store;
+	private Map<String, DelayQueue<DelayedMail>> queues;
+	private FSQueueService srv;
+	private boolean weekWorking=true;
+	private long checkTime=60000;
+	private static final long MAX_TIME_IN_STORE = 20*60*1000;
+	private static final int TRIES=3;
+	
+	public AbandonedCheck(Map<FSMailKey, FSMail> store, FSQueueService srv, Map<String, DelayQueue<DelayedMail>> queues) {
+		this.store = store;
+		this.srv = srv;
+		this.queues = queues;
+	}
+	
+	public void init(){
+		new Thread(new Runnable() {
+			public void run() {
+				while(weekWorking){
+					try{
+						work();
+					}catch(Exception e){
+						log.error("error while working",e);
+					}
+					try {
+						Thread.sleep(checkTime);
+					} catch (InterruptedException e) {
+						log.error("error while working",e);
+					}
+				}			
+			}
+		}).start();
+	}
+	
+	public void stop(){
+		weekWorking=false;
+	}
+	
+	public boolean exists(FSMail fsMail){
+		DelayedMail mail = new DelayedMail(fsMail.getKey().getTime(), fsMail.getKey().getSequence());
+		for(String phase : queues.keySet()){
+			if(queues.get(phase).contains(mail)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void work(){
+		Collection<FSMail> fsmails = null;
+		MimeMail mail = null;
+		if(store!=null){
+			fsmails = new ArrayList<FSMail>(store.values());
+			for (FSMail fsMail : fsmails){
+				FileOutputStream tfos = null;
+				ByteArrayOutputStream os = null;
+				//if last check plus max perios is less than current time
+				if((fsMail.getLastCheck()+MAX_TIME_IN_STORE)<System.currentTimeMillis() && !exists(fsMail)){
+					//if we should try again
+					if(fsMail.getReadded()<TRIES){
+						try{
+							fsMail.setReadded(fsMail.getReadded()+1);
+							MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties())
+									, new FileInputStream(fsMail.getFile()));
+							String sender=message.getHeader(FSQueueService.SENDER_HEADER)[0];
+							String recipient=message.getHeader(FSQueueService.RECIPIENT_HEADER)[0];
+							String outputService=message.getHeader(FSQueueService.OUTPUT_SERVICE_HEADER)[0];
+							if(message.getSize()>srv.getConfig().getDeferredSize()){
+								File tmpFile = File.createTempFile(srv.getConfig().getTmpPrefix(), srv.getConfig().getSuffix(), srv.getConfig().getTmpPath());
+								tfos = new FileOutputStream(tmpFile);
+								message.writeTo(tfos);
+								fsMail.setTmpFile(tmpFile.getAbsolutePath());
+								mail = MimeMail.createCustom(sender, recipient, 
+										new SharedTmpFileInputStream(tmpFile), 
+										outputService, 
+										fsMail.getKey().getSequence(), 
+										fsMail.getKey().getTime());
+							}else{
+								os = new ByteArrayOutputStream();
+								message.writeTo(os);
+								SharedByteArrayInputStream is = new SharedByteArrayInputStream(os.toByteArray());
+								fsMail.setTmpFile(null);
+								mail = MimeMail.createCustom(sender, recipient, 
+										is, 
+										outputService, 
+										fsMail.getKey().getSequence(), 
+										fsMail.getKey().getTime());
+							}
+							srv.put(RulePhase.SEND, mail);
+							log.info("mail again on queue "+mail);
+						}catch (Exception e){
+							log.error("inserting email again",e);
+						}finally{
+							if(tfos!=null){
+								try{tfos.close();}catch(Exception e){}
+							}
+							if(os!=null){
+								try{os.close();}catch(Exception e){}
+							}
+						}
+					}
+					//take it out of the store
+					else{
+						File path = new File(srv.getConfig().getStorePath(),"error");
+						path.mkdir();
+						srv.saveToAndUnstore(fsMail.getKey().getTime(),fsMail.getKey().getSequence(), path.getAbsolutePath());
+						log.info("mail out of queue "+mail);
+					}
+				}
+			}
+		}
+
+	}
+}

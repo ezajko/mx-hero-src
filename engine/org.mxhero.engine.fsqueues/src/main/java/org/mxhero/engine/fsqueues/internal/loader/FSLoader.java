@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class FSLoader {
 
 	private static Logger log = LoggerFactory.getLogger(FSLoader.class);
-	private long checkTime=3000;
+	private long checkTime=10000;
 	private File loadPath;
 	private File tmpPath;
 	private boolean weekWorking=true;
@@ -55,14 +55,15 @@ public class FSLoader {
 		new Thread(new Runnable() {
 			public void run() {
 				while(weekWorking){
+					try{
+						work();
+					}catch(Exception e){
+						log.error("error while working",e);
+					}
 					try {
-						try{
-							work();
-						}catch(Exception e){
-							log.error("error while working",e);
-						}
 						Thread.sleep(checkTime);
 					} catch (InterruptedException e) {
+						log.error("error while working",e);
 					}
 				}			
 			}
@@ -99,7 +100,6 @@ public class FSLoader {
 						sender=data.getHeader(FSQueueService.SENDER_HEADER)[0];
 						recipient=data.getHeader(FSQueueService.RECIPIENT_HEADER)[0];
 						outputService=data.getHeader(FSQueueService.OUTPUT_SERVICE_HEADER)[0];
-						data.removeHeader(FSQueueService.SENDER_HEADER);
 						is.close();
 						is = new SharedTmpFileInputStream(tmpFile);
 						mail= new MimeMail(sender, recipient, is, outputService);

@@ -4,21 +4,25 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Timestamp;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.TimeUnit;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
+import org.mxhero.engine.fsqueues.internal.check.AbandonedCheck;
 import org.mxhero.engine.fsqueues.internal.entity.DelayedMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMailKey;
@@ -35,17 +39,21 @@ public class FSQueueService implements MimeMailQueueService {
 	
 	private static Logger log = LoggerFactory.getLogger(FSQueueService.class);
 	
-	private static Map<FSMailKey,FSMail> store = new ConcurrentHashMap<FSMailKey,FSMail>();
+	private static Map<FSMailKey,FSMail> store = new Hashtable<FSMailKey,FSMail>();
 	
-	private static Map<String, DelayQueue<DelayedMail>> queues = new ConcurrentHashMap<String, DelayQueue<DelayedMail>>();
+	private static Map<String, DelayQueue<DelayedMail>> queues = new Hashtable<String, DelayQueue<DelayedMail>>();
 	
 	private FSConfig config;
 	
+	private AbandonedCheck check;
+	
 	public FSQueueService(FSConfig config){
 		this.config = config;
+		check = new AbandonedCheck(store, this, queues);
 	}
 	
 	public void stop(){
+		check.stop();
 		queues.clear();
 		store.clear();
 		System.gc();
@@ -60,58 +68,61 @@ public class FSQueueService implements MimeMailQueueService {
 			config.setCapacity(storeMails.length);
 		}
 		for(File storeFile : storeMails){
-			MimeMessage data = null;
-			String recipient = null;
-			String sender = null;
-			String outputService = null;
-			FSMail fsmail = null;
-			MimeMail mail = null;
-			File tmpFile = null;
-			InputStream is = null;
-			OutputStream os = null;
-			try{
-				data=new MimeMessage(Session.getDefaultInstance(new Properties()), new SharedTmpFileInputStream(storeFile));
-				sender=data.getHeader(SENDER_HEADER)[0];
-				recipient=data.getHeader(RECIPIENT_HEADER)[0];
-				outputService=data.getHeader(OUTPUT_SERVICE_HEADER)[0];
-				data.removeHeader(SENDER_HEADER);
-				data.removeHeader(RECIPIENT_HEADER);
-				data.removeHeader(OUTPUT_SERVICE_HEADER);
-				data.saveChanges();
-				
-				//if tmp should be in memory
-				if(storeFile.length()<config.getDeferredSize()){
-					os = new ByteArrayOutputStream();
-					data.writeTo(os);
-					is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
-				//if tmp should be on disk
-				}else{
-					tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
-					os = new FileOutputStream(tmpFile);
-					data.writeTo(os);
-					is = new SharedTmpFileInputStream(tmpFile);
-				}
-
-				mail= new MimeMail(sender, recipient, is, outputService);
-				fsmail = new FSMail(new FSMailKey(mail.getSequence(), mail.getTime()));
-				fsmail.setFile(storeFile.getAbsolutePath());
-				if(tmpFile!=null){
-					fsmail.setTmpFile(tmpFile.getAbsolutePath());
-				}
-				getOrCreateQueue(RulePhase.SEND).put(new DelayedMail(mail));
-				store.put(fsmail.getKey(), fsmail);
-			}catch(Exception e){
-				log.error("error loading email "+storeFile.getAbsolutePath(),e);
-				continue;
-			}finally{
-				if(os!=null){
-					try{os.close();}catch(Exception e){}
-				}
-				if(is!=null){
-					try{is.close();}catch(Exception e){}
+			if(!storeFile.isDirectory()){
+				MimeMessage data = null;
+				String recipient = null;
+				String sender = null;
+				String outputService = null;
+				FSMail fsmail = null;
+				MimeMail mail = null;
+				File tmpFile = null;
+				InputStream is = null;
+				OutputStream os = null;
+				try{
+					data=new MimeMessage(Session.getDefaultInstance(new Properties()), new SharedTmpFileInputStream(storeFile));
+					sender=data.getHeader(SENDER_HEADER)[0];
+					recipient=data.getHeader(RECIPIENT_HEADER)[0];
+					outputService=data.getHeader(OUTPUT_SERVICE_HEADER)[0];
+					data.removeHeader(SENDER_HEADER);
+					data.removeHeader(RECIPIENT_HEADER);
+					data.removeHeader(OUTPUT_SERVICE_HEADER);
+					data.saveChanges();
+					
+					//if tmp should be in memory
+					if(storeFile.length()<config.getDeferredSize()){
+						os = new ByteArrayOutputStream();
+						data.writeTo(os);
+						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
+					//if tmp should be on disk
+					}else{
+						tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
+						os = new FileOutputStream(tmpFile);
+						data.writeTo(os);
+						is = new SharedTmpFileInputStream(tmpFile);
+					}
+	
+					mail= new MimeMail(sender, recipient, is, outputService);
+					fsmail = new FSMail(new FSMailKey(mail.getSequence(), mail.getTime()));
+					fsmail.setFile(storeFile.getAbsolutePath());
+					if(tmpFile!=null){
+						fsmail.setTmpFile(tmpFile.getAbsolutePath());
+					}
+					getOrCreateQueue(RulePhase.SEND).put(new DelayedMail(mail));
+					store.put(fsmail.getKey(), fsmail);
+				}catch(Exception e){
+					log.error("error loading email "+storeFile.getAbsolutePath(),e);
+					continue;
+				}finally{
+					if(os!=null){
+						try{os.close();}catch(Exception e){}
+					}
+					if(is!=null){
+						try{is.close();}catch(Exception e){}
+					}
 				}
 			}
 		}
+		check.init();
 	}
 	
 	public boolean store(String phase, MimeMail mail, long timeout, TimeUnit unit)
@@ -159,12 +170,27 @@ public class FSQueueService implements MimeMailQueueService {
 					newMail.setProperties(mail.getProperties());
 					newMail.setPhase(mail.getPhase());
 					mail=newMail;
+				}else{
+					ByteArrayOutputStream os = new ByteArrayOutputStream();
+					mail.getMessage().writeTo(os);
+					SharedByteArrayInputStream is = new SharedByteArrayInputStream(os.toByteArray());
+					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
+							, mail.getRecipient(), 
+							is, 
+							mail.getResponseServiceId(), 
+							mail.getSequence(), 
+							mail.getTime());
+					newMail.setProperties(mail.getProperties());
+					newMail.setPhase(mail.getPhase());
+					mail=newMail;
 				}
-				addedToQueue = getOrCreateQueue(phase).offer(new DelayedMail(mail), timeout, unit);
-				if(addedToQueue){
+				synchronized (queues) {
 					store.put(fsmail.getKey(), fsmail);
+					addedToQueue = getOrCreateQueue(phase).offer(new DelayedMail(mail), timeout, unit);
+					if(!addedToQueue){
+						store.remove(fsmail.getKey());
+					}
 				}
-				log.debug("added "+mail.toString());
 				return true;
 			} catch (Exception e) {
 				log.error(mail.toString(),e);
@@ -195,7 +221,7 @@ public class FSQueueService implements MimeMailQueueService {
 	
 	public void unstore(MimeMail mail){
 		FSMailKey fsmailKey = new FSMailKey(mail.getSequence(),mail.getTime());
-		FSMail fsmail = store.get(fsmailKey);
+		FSMail fsmail = store.remove(fsmailKey);
 		if(fsmail!=null){
 			if(fsmail.getTmpFile()!=null){
 				try{
@@ -218,7 +244,23 @@ public class FSQueueService implements MimeMailQueueService {
 				}
 			}
 		}
-		fsmail=store.remove(fsmailKey);
+		
+	}
+
+	public void saveToAndUnstore(Timestamp time, Long sequence, String path){
+		FSMailKey fsmailKey = new FSMailKey(sequence,time);
+		FSMail fsmail = store.get(fsmailKey);
+		if(fsmail!=null){
+			File storeFile=null;
+			storeFile = new File(fsmail.getFile());
+			File pathTo = new File(path);
+			File storeFileTo = new File(pathTo,storeFile.getName());
+			try {
+				Files.copy(storeFile, storeFileTo);
+			} catch (IOException e) {
+				log.error("error while saving and unstoring email",e);
+			}
+		}
 	}
 	
 	public void saveToAndUnstore(MimeMail mail, String path, boolean useTmp){
@@ -318,6 +360,10 @@ public class FSQueueService implements MimeMailQueueService {
 	
 	public int size(){
 		return store.size();
+	}
+	
+	public FSConfig getConfig(){
+		return this.config;
 	}
 
 }

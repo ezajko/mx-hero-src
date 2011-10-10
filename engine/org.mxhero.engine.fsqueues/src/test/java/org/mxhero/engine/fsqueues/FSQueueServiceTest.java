@@ -83,11 +83,11 @@ public class FSQueueServiceTest {
 		}
 		
 		srv.init();
-		MimeMail mail = new MimeMail("sender@example.com", "recipient@example.com", createMessage(), "service");
+		MimeMail mail = null;
 		//first store it
 		
 		//SAVE EMAIL INTO PLATFORM
-		Assert.assertTrue(srv.store("send",mail, 1000, TimeUnit.MILLISECONDS));
+		Assert.assertTrue(srv.store("send",(new MimeMail("sender@example.com", "recipient@example.com", createMessage(), "service")), 1000, TimeUnit.MILLISECONDS));
 		
 		//TAKE EMAIL IN SEND PAHSE AND PROCESS IT
 		mail=srv.poll("send", 1000, TimeUnit.MILLISECONDS);
@@ -96,6 +96,11 @@ public class FSQueueServiceTest {
 		
 		mail=srv.poll("send", 100, TimeUnit.MILLISECONDS);
 		Assert.assertNull(mail);
+		
+		//SAVE EMAIL INTO PLATFORM
+		Assert.assertTrue(srv.store("send",(new MimeMail("sender@example.com", "recipient@example.com", createMessage(), "service")), 1000, TimeUnit.MILLISECONDS));
+		mail=srv.poll("send", 100, TimeUnit.MILLISECONDS);
+		Assert.assertNotNull(mail);
 		
 		Thread.sleep(1500);
 		
