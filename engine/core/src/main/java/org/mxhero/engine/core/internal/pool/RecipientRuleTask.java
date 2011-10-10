@@ -92,15 +92,15 @@ public final class RecipientRuleTask implements Runnable {
 				log.error("error while saving stats",e);
 			}
 			
-			if (mail.getStatus().equals(MailState.DELIVER)) {
-				mail.getMessage().saveChanges();
-				queueService.put(OutputPool.PHASE, mail);
-			} else if(mail.getStatus().equals(MailState.REQUEUE)){
+			if (mail.getStatus().equalsIgnoreCase(MailState.REQUEUE)){
 				mail.getMessage().saveChanges();
 				mail.setStatus(MailState.DELIVER);
 				queueService.delayAndPut(ReceivePool.PHASE, mail, delayTime);
-			} else if(mail.getStatus().equals(MailState.DROP)) {
+			} else if (mail.getStatus().equalsIgnoreCase(MailState.DROP)) {
 				queueService.unstore(mail);
+			} else {
+				mail.setStatus(MailState.DELIVER);
+				queueService.put(OutputPool.PHASE, mail);
 			}
 		} catch (Exception e) {
 			log.error("error while sending email to next phase:",e);

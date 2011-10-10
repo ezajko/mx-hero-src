@@ -64,7 +64,6 @@ public final class DeliverTask implements Runnable {
 			if (serviceReference != null) {
 				service = (OutputService) bc.getService(serviceReference);
 				if (service != null) {
-					mail.getMessage().saveChanges();
 					try{
 						service.addOutMail(mail);
 						delivered=true;
