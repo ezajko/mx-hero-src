@@ -83,4 +83,14 @@ public class FSMail {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("FSMail [file=").append(file).append(", tmpFile=")
+				.append(tmpFile).append(", key=").append(key)
+				.append(", readded=").append(readded).append(", lastCheck=")
+				.append(lastCheck).append("]");
+		return builder.toString();
+	}
+
 }
