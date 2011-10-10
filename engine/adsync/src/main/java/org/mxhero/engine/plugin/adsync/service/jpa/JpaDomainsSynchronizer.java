@@ -110,6 +110,7 @@ public class JpaDomainsSynchronizer implements DomainsSynchronizer{
 				//if account is not in the list from the source and is managed, we need to remove it.
 				if(!exists && existingAccount.getDataSource().equalsIgnoreCase(SYNC_TYPE)){
 					domainAd.getDomain().getEmailAccounts().remove(existingAccount);
+					existingAccount.getDomain().getEmailAccounts().remove(existingAccount);
 					
 					List<FeatureRule> rules = ruleDao.findRulesByAccount(existingAccount.getId().getAccount(), existingAccount.getId().getDomainId());
 					if(rules!=null){
@@ -144,13 +145,13 @@ public class JpaDomainsSynchronizer implements DomainsSynchronizer{
 		}
 	}
 
-	private void syncAccount(Account account, Domain domain, Boolean override){
+	private void syncAccount(Account account, Domain domain, boolean override){
 		EmailAccountPk pk = new EmailAccountPk();
 		pk.setAccount(account.getUid());
 		pk.setDomainId(domain.getDomain());
 		EmailAccount emailAccount = emailAccountDao.readByPrimaryKey(pk);
 		//exists, override it if managed or flag true
-		if(emailAccount!=null && (emailAccount.getDataSource().equalsIgnoreCase(SYNC_TYPE) || override)){
+		if(emailAccount!=null && (SYNC_TYPE.equalsIgnoreCase(emailAccount.getDataSource()) || override)){
 			emailAccount.setUpdatedDate(Calendar.getInstance());
 			emailAccount.setDataSource(SYNC_TYPE);
 
