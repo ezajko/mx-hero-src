@@ -23,7 +23,34 @@ sub getDistri
 	}
 
 	&_setOSInfo();
+
+	my $term = Term::ReadLine->new( 'mxHero' );
+
+	# Add question confirming distribution (?)
+	if ( $LINUX_DISTRIBUTION ) {
+		my $bool = $term->ask_yn( prompt => T("Correct?"),
+							   default  => 'y',
+							   print_me => T("\nThis Operating System distribution is:")." '$LINUX_DISTRIBUTION'" );
+		if ( ! $bool ) {
+			$LINUX_DISTRIBUTION = "";
+		}
+	}
 	
+	# Add question if can't find distribution
+	if ( ! $LINUX_DISTRIBUTION ) {
+		my $reply = $term->get_reply( prompt => T("Selection? "),
+							   choices  => [ ('Ubuntu', 'Debian', 'Redhat/Centos/Fedora', 'None of the above') ],
+							   print_me => T("\nWhat Operating System distribution is installed?") );
+		if ( $reply =~ /^Redhat/ ) {
+			$LINUX_DISTRIBUTION = "Redhat";
+		} elsif ( $reply =~ /^None/ ) {
+			warn "Installation cancelled.\n";
+			exit;
+		} else {
+			$LINUX_DISTRIBUTION = $reply;
+		}
+	}
+
 	return $LINUX_DISTRIBUTION;
 }
 
@@ -278,34 +305,6 @@ sub _setOSInfo
 	if ( ! $LINUX_DISTRIBUTION &&  -f "/etc/SuSE-release" ) {
 		$LINUX_DISTRIBUTION = "Suse";
 	}
-
-	my $term = Term::ReadLine->new( 'mxHero' );
-
-	# Add question confirming distribution (?)
-	if ( $LINUX_DISTRIBUTION ) {
-		my $bool = $term->ask_yn( prompt => T("Correct?"),
-							   default  => 'y',
-							   print_me => T("\nThis Operating System distribution is:")." '$LINUX_DISTRIBUTION'" );
-		if ( ! $bool ) {
-			$LINUX_DISTRIBUTION = "";
-		}
-	}
-	
-	# Add question if can't find distribution
-	if ( ! $LINUX_DISTRIBUTION ) {
-		my $reply = $term->get_reply( prompt => T("Selection? "),
-							   choices  => [ ('Ubuntu', 'Debian', 'Redhat/Centos/Fedora', 'None of the above') ],
-							   print_me => T("\nWhat Operating System distribution is installed?") );
-		if ( $reply =~ /^Redhat/ ) {
-			$LINUX_DISTRIBUTION = "Redhat";
-		} elsif ( $reply =~ /^None/ ) {
-			warn "Installation cancelled.\n";
-			exit;
-		} else {
-			$LINUX_DISTRIBUTION = $reply;
-		}
-	}
-
 }
 
 
