@@ -9,6 +9,7 @@ no warnings qw(uninitialized);
 use File::Path qw(make_path);
 use File::Find;
 use File::Copy;
+use Cwd;
 
 use mxHero::Config;
 use mxHero::Locale;
@@ -29,9 +30,10 @@ sub install
 	}
 
 	print T("Installing JDK... (takes time)"), "\n";
+	my $cwd = cwd();
 	chdir "$myConfig{INSTALLER_PATH}/binaries";
 	&_progressCopy( "$dirName", "$myConfig{MXHERO_PATH}/$dirName" );
-	chdir "$myConfig{INSTALLER_PATH}";
+	chdir $cwd;
 
 	# if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$dirName $myConfig{MXHERO_PATH}/$dirName")) != 0)
 	# {
