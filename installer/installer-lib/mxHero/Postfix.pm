@@ -14,8 +14,8 @@ use mxHero::Locale;
 
 # distribution => mysql package name
 my %PKG_NAME = (
-	"debian" => "postfix",
-	"ubuntu" => "postfix",
+	"debian" => "postfix postfix-mysql",
+	"ubuntu" => "postfix postfix-mysql",
 	"redhat" => "postfix"
 	# TODO: redhat, suse
 );
@@ -124,6 +124,13 @@ sub configure
 							$$errorRef = T("Failed to alter ")."'$file'";
 							return 0;
 						}
+						# Copy config files
+						for my $f ( ( 'domains.sql', 'transports.sql' ) ) {
+							if ( ! copy( "$myConfig{INSTALLER_PATH}/conf/postfix/$f", "/etc/postfix/mxhero/$f" ) ) {
+								warn "$!\n\t$myConfig{INSTALLER_PATH}/conf/postfix/$f", "/etc/postfix/mxhero/$f";
+								$$errorRef = T("Failed to copy")
+							}
+						}
 						last;
 					}
 				}
@@ -165,15 +172,15 @@ sub _alterPostfixMasterCf {
 	
 	my $mxHero = <<END;
 smtp      inet  n       -       -       -       -       smtpd
-	-o smtpd_proxy_filter=$ip:$port1
-	$ip:$port2 inet     n       -       n       -       -       smtpd
-	-o smtpd_authorized_xforward_hosts=$ip/24
+	-o smtpd_proxy_filter=127.0.0.1:5555
+127.0.0.1:5556 inet     n       -       n       -       -       smtpd
+	-o smtpd_authorized_xforward_hosts=127.0.0.0/8
 	-o smtpd_client_restrictions=
 	-o smtpd_helo_restrictions=
 	-o smtpd_sender_restrictions=
 	-o smtpd_recipient_restrictions=permit_mynetworks,reject
 	-o smtpd_data_restrictions=
-	-o mynetworks=$ip/24
+	-o mynetworks=127.0.0.0/8
 	-o receive_override_options=no_unknown_recipient_checks
 END
 	
