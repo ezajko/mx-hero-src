@@ -320,7 +320,7 @@ sub _processLsbRelease
 	while (<F>) {
 		if ( $_ =~ /DISTRIB_ID\s*=\s*(\w+)/ ) {
 			$distri = $1;
-		} elsif ( $_ =~ /DISTRIB_RELEASE\s*=\s*(\w+)/ ) {
+		} elsif ( $_ =~ /DISTRIB_RELEASE\s*=\s*(\S+)/ ) {
 			$version = $1;
 		}
 	}
