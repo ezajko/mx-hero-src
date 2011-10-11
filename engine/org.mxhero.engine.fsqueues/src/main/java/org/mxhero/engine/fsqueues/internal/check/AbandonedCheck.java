@@ -1,6 +1,5 @@
 package org.mxhero.engine.fsqueues.internal.check;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +14,7 @@ import java.util.concurrent.DelayQueue;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
@@ -33,7 +33,7 @@ public class AbandonedCheck {
 	private Map<String, DelayQueue<DelayedMail>> queues;
 	private FSQueueService srv;
 	private boolean weekWorking=true;
-	private long checkTime=60000;
+	private long checkTime=180*1000;
 	private static final long MAX_TIME_IN_STORE = 20*60*1000;
 	private static final int TRIES=3;
 	
@@ -107,12 +107,16 @@ public class AbandonedCheck {
 							if(storeFile.length()<srv.getConfig().getDeferredSize()){
 								os = new ByteArrayOutputStream();
 								message.writeTo(os);
-								is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
+								os.flush();
+								os.close();
+								is = new SharedByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 							//if tmp should be on disk
 							}else{
 								tmpFile = File.createTempFile(srv.getConfig().getTmpPrefix(), srv.getConfig().getSuffix(), srv.getConfig().getTmpPath());
 								os = new FileOutputStream(tmpFile);
 								message.writeTo(os);
+								os.flush();
+								os.close();
 								is = new SharedTmpFileInputStream(tmpFile);
 							}
 							
@@ -127,7 +131,7 @@ public class AbandonedCheck {
 									outputService, 
 									fsMail.getKey().getSequence(), 
 									fsMail.getKey().getTime());
-							
+							is.close();
 							srv.put(RulePhase.SEND, mail);
 							log.info("mail again on queue "+mail);
 						}catch (Exception e){

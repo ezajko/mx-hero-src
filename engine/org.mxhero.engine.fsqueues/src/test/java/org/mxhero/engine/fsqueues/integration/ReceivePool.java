@@ -27,7 +27,7 @@ public class ReceivePool extends QueueTaskPool{
 					e.printStackTrace();
 				}
 				try {
-					queueService.delayAndPut(RulePhase.OUT, mail, 200);
+					queueService.delayAndPut(RulePhase.OUT, mail, 100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

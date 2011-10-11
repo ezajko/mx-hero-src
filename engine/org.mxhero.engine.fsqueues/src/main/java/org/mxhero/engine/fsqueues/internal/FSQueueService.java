@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
+import javax.mail.util.SharedByteArrayInputStream;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
@@ -93,17 +94,20 @@ public class FSQueueService implements MimeMailQueueService {
 						os = new ByteArrayOutputStream();
 						data.writeTo(os);
 						os.flush();
-						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
+						os.close();
+						is = new SharedByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 					//if tmp should be on disk
 					}else{
 						tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
 						os = new FileOutputStream(tmpFile);
 						data.writeTo(os);
 						os.flush();
+						os.close();
 						is = new SharedTmpFileInputStream(tmpFile);
 					}
 	
 					mail= new MimeMail(sender, recipient, is, outputService);
+					is.close();
 					fsmail = new FSMail(new FSMailKey(mail.getSequence(), mail.getTime()));
 					fsmail.setFile(storeFile.getAbsolutePath());
 					if(tmpFile!=null){
@@ -163,13 +167,16 @@ public class FSQueueService implements MimeMailQueueService {
 					tfos = new FileOutputStream(tmpFile);
 					mail.getMessage().writeTo(tfos);
 					tfos.flush();
+					tfos.close();
 					fsmail.setTmpFile(tmpFile.getAbsolutePath());
+					SharedTmpFileInputStream is = new SharedTmpFileInputStream(tmpFile);
 					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
-							new SharedTmpFileInputStream(tmpFile), 
+							is, 
 							mail.getResponseServiceId(), 
 							mail.getSequence(), 
 							mail.getTime());
+					is.close();
 					newMail.setProperties(mail.getProperties());
 					newMail.setPhase(mail.getPhase());
 					mail=newMail;
@@ -177,13 +184,15 @@ public class FSQueueService implements MimeMailQueueService {
 					ByteArrayOutputStream os = new ByteArrayOutputStream();
 					mail.getMessage().writeTo(os);
 					os.flush();
-					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+					os.close();
+					ByteArrayInputStream is = new SharedByteArrayInputStream(os.toByteArray());
 					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
 							is, 
 							mail.getResponseServiceId(), 
 							mail.getSequence(), 
 							mail.getTime());
+					is.close();
 					newMail.setProperties(mail.getProperties());
 					newMail.setPhase(mail.getPhase());
 					mail=newMail;
@@ -193,6 +202,7 @@ public class FSQueueService implements MimeMailQueueService {
 					addedToQueue = getOrCreateQueue(phase).offer(new DelayedMail(mail), timeout, unit);
 					if(!addedToQueue){
 						store.remove(fsmail.getKey());
+						return false;
 					}
 				}
 				return true;
@@ -274,12 +284,12 @@ public class FSQueueService implements MimeMailQueueService {
 		}
 	}
 	
-	public void saveToAndUnstore(MimeMail mail, String path, boolean useTmp){
+	public void saveToAndUnstore(MimeMail mail, String path, boolean useOriginal){
 		FSMailKey fsmailKey = new FSMailKey(mail.getSequence(),mail.getTime());
 		FSMail fsmail = store.get(fsmailKey);
 		if(fsmail!=null){
 			try{
-				if(useTmp){
+				if(useOriginal){
 					File storeFile=null;
 					storeFile = new File(fsmail.getFile());
 					File pathTo = new File(path);
