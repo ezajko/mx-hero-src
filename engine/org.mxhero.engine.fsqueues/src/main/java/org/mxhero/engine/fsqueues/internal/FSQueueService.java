@@ -3,6 +3,7 @@ package org.mxhero.engine.fsqueues.internal;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,7 +79,7 @@ public class FSQueueService implements MimeMailQueueService {
 				InputStream is = null;
 				OutputStream os = null;
 				try{
-					data=new MimeMessage(Session.getDefaultInstance(new Properties()), new SharedTmpFileInputStream(storeFile));
+					data=new MimeMessage(Session.getDefaultInstance(new Properties()), new FileInputStream(storeFile));
 					sender=data.getHeader(SENDER_HEADER)[0];
 					recipient=data.getHeader(RECIPIENT_HEADER)[0];
 					outputService=data.getHeader(OUTPUT_SERVICE_HEADER)[0];
