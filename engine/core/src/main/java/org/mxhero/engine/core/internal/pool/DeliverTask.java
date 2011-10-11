@@ -7,7 +7,6 @@ import org.mxhero.engine.core.mail.filter.MailFilter;
 import org.mxhero.engine.domain.connector.OutputService;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
-import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.properties.PropertiesService;
 import org.mxhero.engine.domain.queue.MimeMailQueueService;
 import org.mxhero.engine.domain.statistic.LogStat;
@@ -91,12 +90,10 @@ public final class DeliverTask implements Runnable {
 					queueService.saveToAndUnstore(mail, path, true);
 				}
 			}
-		} catch (Exception e) {
-			log.error("Error sending mail to connector:" + mail,e);
-			LogMail.saveErrorMail(mail.getMessage(), 
-					getProperties().getValue(Core.ERROR_PREFIX),
-					getProperties().getValue(Core.ERROR_SUFFIX),
-					getProperties().getValue(Core.ERROR_DIRECTORY));
+		} catch (Exception e) {			
+			log.debug("Error sending mail to connector:" + mail,e);
+			log.error("Error sending mail to connector:" + mail + e.toString());
+			queueService.saveToAndUnstore(mail, getProperties().getValue(Core.ERROR_DIRECTORY), true);
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail, properties.getValue(Core.CONNECTOR_ERROR_STAT),
 						e.getMessage());
