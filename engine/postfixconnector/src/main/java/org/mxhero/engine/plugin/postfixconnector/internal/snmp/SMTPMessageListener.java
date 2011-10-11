@@ -123,11 +123,13 @@ public final class SMTPMessageListener implements MessageListener {
 			}
 			mail.getMessage().saveChanges();
 		} catch (Exception e1) {
-			log.error("error while receiving email", e1);
-			LogMail.saveErrorMail(mail.getMessage(),
-					getProperties().getValue(PostfixConnector.ERROR_PREFIX),
-					getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-					getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			log.error("rejecting malformed email", e1);
+			if(log.isDebugEnabled()){
+				LogMail.saveErrorMail(mail.getMessage(),
+						getProperties().getValue(PostfixConnector.ERROR_PREFIX),
+						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+			}
 			throw new IOException(e1);
 		}
 		log.debug("Mail received:" + mail);
