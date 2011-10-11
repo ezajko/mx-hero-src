@@ -71,6 +71,7 @@ public class TestWithPools {
 			try {
 				srv.logState();
 				Thread.sleep(1000);
+				System.gc();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

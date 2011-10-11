@@ -27,7 +27,7 @@ public class SendPool extends QueueTaskPool{
 					e.printStackTrace();
 				}
 				try {
-					queueService.delayAndPut(RulePhase.RECEIVE, mail, 200);
+					queueService.delayAndPut(RulePhase.RECEIVE, mail, 100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
