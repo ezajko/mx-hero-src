@@ -5,7 +5,6 @@ import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.rules.BaseLoader;
 import org.mxhero.engine.core.internal.service.Core;
 import org.mxhero.engine.domain.mail.finders.UserFinder;
-import org.mxhero.engine.domain.mail.log.LogMail;
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
 import org.mxhero.engine.domain.properties.PropertiesListener;
@@ -94,16 +93,14 @@ public final class SendPool extends QueueTaskPool implements
 						try {
 							queueService.delayAndPut(PHASE, mail, delayTime);
 						} catch (InterruptedException e1) {
-							log.error("error while reEnqueue email:",e1);
-							LogMail.saveErrorMail(mail.getMessage(), 
-									getProperties().getValue(Core.ERROR_PREFIX),
-									getProperties().getValue(Core.ERROR_SUFFIX),
-									getProperties().getValue(Core.ERROR_DIRECTORY));
+							log.debug("error while reEnqueue email ",e1);
+							log.error("error while reEnqueue email "+e1.toString());
 						}
 					}
 				};
 			}
-			else if (object.getPhase().equals(RulePhase.SEND)) {
+			else {
+				object.setPhase(RulePhase.SEND);
 				SenderRuleTask task = new SenderRuleTask(loader.getBuilder().getBase(), object,
 						userFinderService,queueService);
 				task.setFiller(this.getFiller());
@@ -113,32 +110,18 @@ public final class SendPool extends QueueTaskPool implements
 				task.setProperties(properties);
 				task.setDelayTime(delayTime);
 				return task;
-			} else {
-				final MimeMail mail = object;
-				return new Runnable() {
-					@Override
-					public void run() {
-						log.error("Phase does not exists for " + mail);
-						LogMail.saveErrorMail(mail.getMessage(), 
-								getProperties().getValue(Core.ERROR_PREFIX),
-								getProperties().getValue(Core.ERROR_SUFFIX),
-								getProperties().getValue(Core.ERROR_DIRECTORY));
-					}
-				};
 			}
 		}catch(Exception e){
 			final MimeMail mail = object;
+			log.error("Error while trying to do task for " + mail +" "+e.getClass().getCanonicalName()+": "+e.getMessage());
 			return new Runnable() {
 				@Override
 				public void run() {
-					log.error("Error while trying to do task for " + mail);
 					try {
-						queueService.put(PHASE, mail);
+						queueService.delayAndPut(PHASE, mail, delayTime);
 					} catch (InterruptedException e) {
-						LogMail.saveErrorMail(mail.getMessage(), 
-								getProperties().getValue(Core.ERROR_PREFIX),
-								getProperties().getValue(Core.ERROR_SUFFIX),
-								getProperties().getValue(Core.ERROR_DIRECTORY));
+						log.debug("Error sending mail to queue again " + mail,e);
+						log.error("Error sending mail to queue again " + mail + e.getClass().getCanonicalName() +": " + e.getMessage());
 					}
 				}
 			};

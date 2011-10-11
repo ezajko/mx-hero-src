@@ -81,7 +81,7 @@ public final class SenderRuleTask implements Runnable {
 				getLogStatService().log(mail,
 						getProperties().getValue(Core.PROCESS_ERROR_STAT),e.getMessage());
 			}
-			log.error("error while processing rules:", e);
+			log.error("error while processing rules:"+ e.toString());
 		}
 
 		try {
@@ -94,11 +94,10 @@ public final class SenderRuleTask implements Runnable {
 					getLogRecordService().log(mail);
 				}
 			}catch(Exception e){
-				log.error("error while saving stats",e);
+				log.error("error while saving stats"+e.toString());
 			}
 			
 			if (mail.getStatus().equalsIgnoreCase(MailState.REQUEUE)) {
-				mail.getMessage().saveChanges();
 				mail.setStatus(MailState.DELIVER);
 				queueService.delayAndPut(SendPool.PHASE, mail, delayTime);
 			} else if (mail.getStatus().equalsIgnoreCase(MailState.DROP)) {
@@ -110,13 +109,12 @@ public final class SenderRuleTask implements Runnable {
 				queueService.put(ReceivePool.PHASE, mail);
 			}
 		} catch (Exception e) {
-			log.error("error while sending email to next phase:", e);
-			LogMail.saveErrorMail(mail.getMessage(),
-					getProperties().getValue(Core.ERROR_PREFIX),
-					getProperties().getValue(Core.ERROR_SUFFIX),
-					getProperties().getValue(Core.ERROR_DIRECTORY));
-			if (getLogStatService() != null) {
-				getLogStatService().log(mail,getProperties().getValue(Core.PROCESS_ERROR_STAT),e.getMessage());
+			log.error("error while sending email to next phase:"+e.toString());
+			if(log.isDebugEnabled()){
+				LogMail.saveErrorMail(mail.getMessage(), 
+						getProperties().getValue(Core.ERROR_PREFIX),
+						getProperties().getValue(Core.ERROR_SUFFIX),
+						null);
 			}
 		}
 	}
