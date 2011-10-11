@@ -28,7 +28,7 @@ sub install
 	# Install binary if needed
 	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
-			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
+			$$errorRef = "Failed to install $PKG_NAME{$distri} package";
 			return 0;
 		}
 	}
@@ -39,8 +39,8 @@ sub install
 		my $term = Term::ReadLine->new( 'mxHero' );
 		my $bool;
 		$bool = $term->ask_yn( prompt => T("Continue?"),
-							   default  => 'y',
-							   print_me => T("\nFound database 'mxhero'. Maybe from a broken installation. Will now delete database.") );
+				default  => 'y',
+				print_me => T("\nFound database 'mxhero'. Maybe from a broken installation. Will now delete database.") );
 		if ( $bool ) {
 			system( "/usr/bin/mysql -e 'drop database mxhero'" );
 			system( "/usr/bin/mysql -e 'drop database statistics'" );
