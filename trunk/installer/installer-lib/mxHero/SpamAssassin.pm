@@ -24,7 +24,7 @@ sub install
 	# Install binary if needed
 	if ( ! &mxHero::Tools::packageCheck( $PKG_NAME{$distri} ) ) {
 		if ( ! &mxHero::Tools::packageInstall( $PKG_NAME{$distri} ) ) {
-			$$errorRef = "Failed to intall $PKG_NAME{$distri} package";
+			$$errorRef = "Failed to install $PKG_NAME{$distri} package";
 			return 0;
 		}
 	}
