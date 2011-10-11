@@ -37,9 +37,13 @@ if ( $^O !~ /linux/i ) {
 # Check distribution & versions
 my $distri  = &mxHero::Tools::getDistri();
 my $version = &mxHero::Tools::getDistriVersion();
-if ( $distri eq 'Ubuntu' && ($version =~ /^8\./ || $version =~ /^9\./) ) { # 
-	print "Linux $distri $version not supported or tested. Cancelling install.\n\n";
-	exit;
+if ( $distri eq 'Ubuntu' ) {
+	$version =~ m/^(\d+)\..+/;
+	my $major = $1;
+	if ( $major < 10 ) {
+		print "Linux $distri $version not supported or tested. Cancelling install.\n\n";
+		exit;
+	}
 } elsif ( $distri eq 'Redhat' ) {
 	print "Linux $distri not yet supported or tested. Cancelling install.\n\n";
 	exit;
