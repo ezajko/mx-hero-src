@@ -3,6 +3,7 @@ package org.mxhero.engine.fsqueues.internal.check;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -96,7 +97,7 @@ public class AbandonedCheck {
 							log.debug("abandoned email "+fsMail);
 							File storeFile = new File(fsMail.getFile());
 							
-							MimeMessage message=new MimeMessage(Session.getDefaultInstance(new Properties()), new SharedTmpFileInputStream(storeFile));
+							MimeMessage message=new MimeMessage(Session.getDefaultInstance(new Properties()), new FileInputStream(storeFile));
 
 							String sender=message.getHeader(FSQueueService.SENDER_HEADER)[0];
 							String recipient=message.getHeader(FSQueueService.RECIPIENT_HEADER)[0];
