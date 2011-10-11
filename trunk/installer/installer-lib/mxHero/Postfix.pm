@@ -66,13 +66,13 @@ sub configure
 							   default  => 'y',
 							   print_me => T("Found postfix master.cf at")." [$file]." );
 			if ( $bool ) {
-				if ( ! &_alterPostfixMasterCf( $file, "127.0.0.1",5555,5556) ) {
+				if ( ! &_alterPostfixMasterCf( $file ) ) {
 					$$errorRef = T("Failed to alter ")."'$file'";
 					return 0;
 				}
 				# w/ Zimbra alter template file as well
 				if ( $file eq '/opt/zimbra/postfix/conf/master.cf' ) {
-					if ( ! &_alterPostfixMasterCf( $file.'.in', "127.0.0.1",5555,5556) ) {
+					if ( ! &_alterPostfixMasterCf( $file.'.in' ) ) {
 						$$errorRef = T("Failed to alter ")."'$file'";
 						return 0;
 					}
@@ -87,7 +87,7 @@ sub configure
 		my $reply = $term->get_reply( prompt => T("Please enter full path to your master.cf".":"));
 		if ( $reply && -f $reply ) {
 			# set master.cf path for alteration routine
-			if ( ! &_alterPostfixMasterCf( $reply, "127.0.0.1",5555,5556) ) {
+			if ( ! &_alterPostfixMasterCf( $reply ) ) {
 				$$errorRef = T("Failed to alter ")."'$reply'";
 				return 0;
 			}
@@ -163,13 +163,7 @@ sub configure
 sub _alterPostfixMasterCf {
 
 	my $file = $_[0]; # master.cf path
-	my $ip = $_[1];
-	my $port1 = $_[2];
-	my $port2 = $_[3];
 
-###	warn "TEST: Altering master.cf [$file, $ip, $port1, $port2]\n"; ### TESTING
-###	return 1; ### TESTING
-	
 	my $mxHero = <<END;
 smtp      inet  n       -       -       -       -       smtpd
 	-o smtpd_proxy_filter=127.0.0.1:5555
