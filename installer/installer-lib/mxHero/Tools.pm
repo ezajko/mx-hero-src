@@ -186,7 +186,7 @@ sub packageListUpdate
 	
 	my $bool = $term->ask_yn( prompt => T("Update? "),
 				   default  => 'y',
-				   print_me => T("Will update your package database before installation.") );
+				   print_me => T("\nWill update your package database before installation.") );
 	
 	return if ! $bool;
 	
@@ -273,7 +273,7 @@ sub setUTC
 	
 	my $bool = $term->ask_yn( prompt => T("Set to UTC and continue installation? "),
 				default  => 'y',
-				print_me => T("mxHero realtime statistics require a UTC system timezone.") );
+				print_me => T("\nmxHero realtime statistics require a UTC system timezone.") );
 	
 	if ( ! $bool ) {
 		print "Quitting installation.\n";
