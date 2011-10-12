@@ -1,5 +1,6 @@
 package org.mxhero.engine.fsqueues.internal.check;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +15,6 @@ import java.util.concurrent.DelayQueue;
 
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
-import javax.mail.util.SharedByteArrayInputStream;
 
 import org.mxhero.engine.domain.mail.MimeMail;
 import org.mxhero.engine.domain.mail.business.RulePhase;
@@ -108,15 +108,13 @@ public class AbandonedCheck {
 								os = new ByteArrayOutputStream();
 								message.writeTo(os);
 								os.flush();
-								os.close();
-								is = new SharedByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
+								is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 							//if tmp should be on disk
 							}else{
 								tmpFile = File.createTempFile(srv.getConfig().getTmpPrefix(), srv.getConfig().getSuffix(), srv.getConfig().getTmpPath());
 								os = new FileOutputStream(tmpFile);
 								message.writeTo(os);
 								os.flush();
-								os.close();
 								is = new SharedTmpFileInputStream(tmpFile);
 							}
 							
@@ -131,7 +129,6 @@ public class AbandonedCheck {
 									outputService, 
 									fsMail.getKey().getSequence(), 
 									fsMail.getKey().getTime());
-							is.close();
 							srv.put(RulePhase.SEND, mail);
 							log.info("mail again on queue "+mail);
 						}catch (Exception e){
@@ -139,6 +136,9 @@ public class AbandonedCheck {
 						}finally{
 							if(os!=null){
 								try{os.close();}catch(Exception e){}
+							}
+							if(is!=null){
+								try{is.close();}catch(Exception e){}
 							}
 						}
 					}
