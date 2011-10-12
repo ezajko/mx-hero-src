@@ -147,20 +147,9 @@ sub packageInstall
 	
 	print "\n\n** INSTALLING package '$package' **\n\n";
 
-	#my $term = Term::ReadLine->new( 'mxHero' );
-	#my $bool;
-	#$bool = $term->ask_yn( prompt => T("Continue?"),
-	#					   default  => 'y',
-	#					   print_me => T("\nInstalling binary package:")." '$package'" );
-	#if ( ! $bool ) {
-	#	print "INSTALL CANCELLED.\n";
-	#	return 0;
-	#}
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
-###		warn "TEST: installing '$package'\n"; ### TESTING
-###		return 1; ### TESTING
 		# apt-get return 0 on success, 100 on error
 		sleep( 1 );
 		my $ret = system("/usr/bin/apt-get -y install $package 2>/dev/null");
@@ -191,6 +180,30 @@ sub packageInstall
 	return 0;
 }
 
+sub packageListUpdate
+{
+	my $term = Term::ReadLine->new( 'mxHero' );
+	
+	my $bool = $term->ask_yn( prompt => T("Update? "),
+				   default  => 'y',
+				   print_me => T("Will update your package database before installation.") );
+	
+	return if ! $bool;
+	
+	my $distri = &getDistri();
+
+	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
+		my $ret = system("/usr/bin/apt-get update 2>/dev/null");
+		if ( ($ret >> 8) == 0 ) {
+			print "Package database updated\n";
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	
+	return 1;
+}
 
 # Returns 1 if a > b, 0 if the same, -1 if b > a
 sub mxheroVersionCompare
@@ -239,6 +252,48 @@ sub backupFile
 	}
 	
 	return $oldFile;
+}
+
+# Check if system is on UTC timezone
+sub isUTC
+{
+	my $date = `/bin/date`;
+	chomp( $date );
+	if ( $date !~ /UTC/ ) {
+		return 0;
+	}
+	
+	return 1;
+}
+
+# Set system to UTC
+sub setUTC
+{
+	my $term = Term::ReadLine->new( 'mxHero' );
+	
+	my $bool = $term->ask_yn( prompt => T("Set to UTC and continue installation? "),
+				default  => 'y',
+				print_me => T("mxHero realtime statistics require a UTC system timezone.") );
+	
+	if ( ! $bool ) {
+		print "Quitting installation.\n";
+		exit;
+	}
+	
+	my $distri = &getDistri();
+
+	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
+		if ( ! copy( "/usr/share/zoneinfo/UTC", "/etc/localtime" ) ) {
+			warn "Failed to copy UTC zonefile\n$!";
+			exit;
+		}
+		if ( ! open( TZ, ">/etc/timezone" ) ) {
+			warn "Failed to open timezone file.\n$!";
+			exit;
+		}
+		print TZ "Etc/UTC\n";
+		close TZ;
+	}
 }
 
 ## PRIVATE
