@@ -100,8 +100,10 @@ public final class SenderRuleTask implements Runnable {
 			if (mail.getStatus().equalsIgnoreCase(MailState.REQUEUE)) {
 				mail.setStatus(MailState.DELIVER);
 				queueService.delayAndPut(SendPool.PHASE, mail, delayTime);
+				log.info("REQUEUED "+mail);
 			} else if (mail.getStatus().equalsIgnoreCase(MailState.DROP)) {
 				queueService.unstore(mail);
+				log.info("DROPPED "+mail);
 			} else  {
 				mail.setStatus(MailState.DELIVER);
 				mail.getMessage().saveChanges();

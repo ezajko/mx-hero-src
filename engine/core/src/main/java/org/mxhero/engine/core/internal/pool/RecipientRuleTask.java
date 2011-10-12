@@ -96,8 +96,10 @@ public final class RecipientRuleTask implements Runnable {
 			if (mail.getStatus().equalsIgnoreCase(MailState.REQUEUE)){
 				mail.setStatus(MailState.DELIVER);
 				queueService.delayAndPut(ReceivePool.PHASE, mail, delayTime);
+				log.info("REQUEUED email "+mail);
 			} else if (mail.getStatus().equalsIgnoreCase(MailState.DROP)) {
 				queueService.unstore(mail);
+				log.info("DROPPED email "+mail);
 			} else {
 				mail.setStatus(MailState.DELIVER);
 				queueService.put(OutputPool.PHASE, mail);

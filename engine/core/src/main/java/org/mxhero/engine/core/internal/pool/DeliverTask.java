@@ -76,7 +76,7 @@ public final class DeliverTask implements Runnable {
 			} 
 			
 			if(delivered){
-				log.info("Mail sent using outputservice:" + mail);
+				log.info("DELIVERED "+mail);
 				queueService.unstore(mail);
 				queueService.logState();
 			}else{
