@@ -36,6 +36,7 @@ case "$1" in
 			-XX:MaxNewSize=$MXHERO_NEWSIZE \
 			-XX:PermSize=$MXHERO_PERMSIZE \
 			-XX:MaxPermSize=$MXHERO_PERMSIZE $MXHERO_GC \
+#			-Duser.timezone='Etc/UTC' \
 			-jar org.eclipse.osgi_3.6.2.R36x_v20110210.jar > ./logs/start.log 2>&1 &"
 		PID=`ps aux | grep osgi | grep -v grep | awk '{print $2}'`
 		echo -n $PID > $MXHERO_PID_PATH
