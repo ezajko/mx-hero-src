@@ -53,7 +53,12 @@ if ( $> ) {
 	print T("This script requires root privledges").".\n\n";
 	exit 1;
 }
-
+# Should have updated packages
+&mxHero::Tools::packageListUpdate();
+# Need to be on UTC
+if ( ! &mxHero::Tools::isUTC() ) {
+	&mxHero::Tools::setUTC();
+}
 
 my $error;
 
