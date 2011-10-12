@@ -64,7 +64,7 @@ sub configure
 		if ( -f $file ) {
 			$bool = $term->ask_yn( prompt => T("Alter this master.cf for mxHero?"),
 							   default  => 'y',
-							   print_me => T("Found postfix master.cf at")." [$file]." );
+							   print_me => T("\nFound postfix master.cf at")." [$file]." );
 			if ( $bool ) {
 				if ( ! &_alterPostfixMasterCf( $file ) ) {
 					$$errorRef = T("Failed to alter ")."'$file'";
@@ -103,7 +103,7 @@ sub configure
 	if ( ! &mxHero::Tools::zimbraCheck() ) { # no relay for Zimbra boxes
 		$bool = $term->ask_yn( prompt => T("Alter main.cf for mxHero as relay?"),
 						   default  => 'n',
-						   print_me => T("Do you plan to use this mxHero installation as a relay for another email server?") );
+						   print_me => T("\nDo you plan to use this mxHero installation as a relay for another email server?") );
 		
 		my $entry1;
 		my $entry2;
@@ -118,7 +118,7 @@ sub configure
 				if ( -f $file ) {
 					$bool = $term->ask_yn( prompt => T("Alter this main.cf for mxHero?"),
 									   default  => 'y',
-									   print_me => T("Found postfix main.cf at")." [$file]." );
+									   print_me => T("\nFound postfix main.cf at")." [$file]." );
 					if ( $bool ) {
 						if ( ! &_alterPostfixMainCf( $file, $entry1, $entry2 ) ) {
 							$$errorRef = T("Failed to alter ")."'$file'";
@@ -126,9 +126,15 @@ sub configure
 						}
 						# Copy config files
 						for my $f ( ( 'domains.sql', 'transports.sql' ) ) {
+							if ( ! -d "/etc/postfix/mxhero" && ! mkdir( "/etc/postfix/mxhero" ) ) {
+								warn "$! /etc/postfix/mxhero\n";
+								$$errorRef = T("Failed to create directory");
+								return 0;
+							}
 							if ( ! copy( "$myConfig{INSTALLER_PATH}/conf/postfix/$f", "/etc/postfix/mxhero/$f" ) ) {
 								warn "$!\n\t$myConfig{INSTALLER_PATH}/conf/postfix/$f", "/etc/postfix/mxhero/$f";
-								$$errorRef = T("Failed to copy")
+								$$errorRef = T("Failed to copy");
+								return 0;
 							}
 						}
 						last;
