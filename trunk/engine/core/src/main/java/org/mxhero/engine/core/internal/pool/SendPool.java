@@ -98,8 +98,7 @@ public final class SendPool extends QueueTaskPool implements
 						}
 					}
 				};
-			}
-			else {
+			}else {
 				object.setPhase(RulePhase.SEND);
 				SenderRuleTask task = new SenderRuleTask(loader.getBuilder().getBase(), object,
 						userFinderService,queueService);

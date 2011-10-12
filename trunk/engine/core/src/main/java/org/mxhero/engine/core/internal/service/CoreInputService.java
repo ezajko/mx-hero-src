@@ -52,7 +52,7 @@ public final class CoreInputService implements InputService {
 		if(!added){
 			throw new QueueFullException();
 		}
-		log.info("Mail added to queue:"+mail);
+		log.info("STORED "+mail);
 		queueService.logState();
 	}
 

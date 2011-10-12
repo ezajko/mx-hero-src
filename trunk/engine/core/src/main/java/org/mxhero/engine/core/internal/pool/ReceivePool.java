@@ -98,8 +98,7 @@ public final class ReceivePool extends QueueTaskPool implements
 						}
 					}
 				};
-			}
-			else {
+			} else {
 				object.setPhase(RulePhase.RECEIVE);
 				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder().getBase(), object,
 						userFinderService, this.queueService);
