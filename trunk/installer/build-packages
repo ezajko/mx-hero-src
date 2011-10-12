@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+no warnings qw(uninitialized);
+
+use File::Basename;
+use lib dirname($0) . '/installer-lib';
+use mxHero::Config;
+
+# Config
+
+my $name = "mxHero-Installable";
+my $rootFiles = "VERSION mxhero-installer conf installer-lib scripts binaries/$myConfig{MXHERO_INSTALL_VERSION}"; # Except JDK
+
+# Action
+
+if (! -d "$myConfig{INSTALLER_PATH}/binaries")
+{
+	die ("Could not find 'binaries' directory.");
+}
+
+print "Building 32-bit version...\n";
+if ((system ("tar --exclude-vcs -czf $name"."32-$myConfig{MXHERO_INSTALL_VERSION}.tar.gz $rootFiles binaries/$myConfig{JDK_X86_DIRNAME}")) != 0)
+{
+	die ("Error bulding 32-bit package");
+}
+
+print "Building 64-bit version...\n";
+if ((system ("tar --exclude-vcs -czf $name"."64-$myConfig{MXHERO_INSTALL_VERSION}.tar.gz $rootFiles binaries/$myConfig{JDK_X64_DIRNAME}")) != 0)
+{
+	die ("Error bulding 64-bit package");
+}
+
+print "Done!\n";
+
+exit (0);
