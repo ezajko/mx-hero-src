@@ -27,7 +27,6 @@
 		<prop key="initial.minConnectionsPerPartition">2</prop>
 		<prop key="initial.partitionCount">1</prop>
 		<prop key="initial.acquireIncrement">2</prop>
-		<prop key="initial.statementsCacheSize">100</prop>
 		<prop key="initial.releaseHelperThreads">1</prop>
 		<prop key="initial.zimbra.filter">(&amp;(|(objectclass=zimbraAccount)(objectclass=zimbraDistributionList))(mail=*))</prop>
 		<prop key="initial.exchange.filter">(&amp;(objectclass=user)(mail=*))</prop>
@@ -40,24 +39,20 @@
 		properties-ref="jdbcCmProps" />
 
 	<context:component-scan base-package="org.mxhero.engine.plugin.adsync" />
-
 	<context:annotation-config />
-
 	<tx:annotation-driven />
 
 
 	<osgi:reference id="inputService" interface="org.mxhero.engine.domain.connector.InputService"/>
 
-	<bean id="dsControllerRunner" class="org.mxhero.engine.plugin.adsync.DSControllerRunner" init-method="start" destroy-method="stop">
+	<bean id="dsControllerRunner" class="org.mxhero.engine.plugin.adsync.DSControllerRunner" 
+		init-method="start" 
+		destroy-method="stop">
 		<property name="dao" ref="domainAdLdapDao"/>
 		<property name="synchronizer" ref="domainsSynchronizer"/>
 	</bean>
 
-	<bean id="domainsSynchronizer" class="org.mxhero.engine.plugin.adsync.service.jpa.JpaDomainsSynchronizer">
-		<property name="dao" ref="domainAdLdapDao"/>
-		<property name="emailAccountDao" ref="emailAccountDao"/>
-		<property name="domainAliasDao" ref="domainAliasDao"/>
-		<property name="ruleDao" ref="ruleDao"/>
+	<bean id="domainsSynchronizer" class="org.mxhero.engine.plugin.adsync.service.jdbc.JdbcDomainsSynchronizer">
 		<property name="senderMail" value="${initial.sender.mail}"/>
 		<property name="exchangeFilter" value="${initial.exchange.filter}"/>
 		<property name="zimbraFilter" value="${initial.zimbra.filter}"/>
@@ -65,70 +60,11 @@
 		<property name="inputService" ref="inputService"/>
 	</bean>
 
-	<bean id="emailAccountDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.EmailAccountDao"/>
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="domainAliasDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.DomainAliasDao"/>
-	</bean>
-
-	<bean id="domainAdLdapDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.DomainAdLdapDao"/>
-	</bean>
-
-	<bean id="ruleDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.FeatureRuleDao"/>
-	</bean>
-	
-
-	<bean
-		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
-
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="emfb" />
-	</bean>
-
-	<bean id="pum"
-		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
-		<property name="persistenceXmlLocations">
-			<list>
-				<value>classpath*:META-INF/persistence.xml</value>
-			</list>
-		</property>
-		<property name="defaultDataSource" ref="dataSource" />
-	</bean>
-
-	<bean id="emfb"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceUnitManager" ref="pum" />
-		<property name="persistenceUnitName" value="mxheroPer" />
-		<property name="jpaProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.generate_statistics">${initial.hibernate.generate_statistics}</prop>				
-				<prop key="hibernate.format_sql">${initial.hibernate.format_sql}</prop>
-			</props>
-		</property>
-		<property name="jpaDialect">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-		</property>
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="database" value="MYSQL" />
-				<property name="showSql" value="${initial.showSql}" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy">
-		<property name="targetDataSource">
-			<ref local="mainDataSource" />
-		</property>
-	</bean>
-
-	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
 		<property name="poolName" value="mxhero-adsync" />
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
@@ -141,7 +77,6 @@
 		<property name="minConnectionsPerPartition" value="${initial.minConnectionsPerPartition}" />
 		<property name="partitionCount" value="${initial.partitionCount}" />
 		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
-		<property name="statementsCacheSize" value="${initial.statementsCacheSize}" />
 		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
 	</bean>
 
