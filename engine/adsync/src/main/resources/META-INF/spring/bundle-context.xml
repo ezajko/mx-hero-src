@@ -15,8 +15,6 @@
 
 	<osgix:cm-properties id="jdbcCmProps"
 		persistent-id="org.mxhero.engine.plugin.adsync.jdbc">
-		<prop key="initial.hibernate.generate_statistics">true</prop>
-		<prop key="initial.hibernate.format_sql">true</prop>
 		<prop key="initial.showSql">true</prop>
 		<prop key="initial.jdbcUrl">jdbc:mysql://127.0.0.1/mxhero</prop>
 		<prop key="initial.username">mxhero</prop>
@@ -32,7 +30,6 @@
 		<prop key="initial.exchange.filter">(&amp;(objectclass=user)(mail=*))</prop>
 		<prop key="initial.sender.mail">adsync@mxhero.com</prop>
 		<prop key="initial.output.service">org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService</prop>
-		
 	</osgix:cm-properties>
 
 	<context:property-placeholder
