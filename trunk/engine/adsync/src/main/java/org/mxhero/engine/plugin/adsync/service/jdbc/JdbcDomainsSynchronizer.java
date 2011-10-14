@@ -48,8 +48,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 		this.repository = repository;
 	}
 
-	@Override
-	@Transactional(readOnly=false)
+	@Transactional
 	public void synchronize(String domain) {
 		DomainAdLdap domainAd = null;
 		try{
@@ -69,7 +68,12 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 				filter = exchangeFilter;
 			}
 			
-			ADSource source = new ADSource(domainAd.getAddres(), domainAd.getPort(), domainAd.getUser(), domainAd.getPassword(), domainAd.getSslFlag(), domainAd.getBase());
+			ADSource source;
+			try {
+				source = new ADSource(domainAd.getAddres(), domainAd.getPort(), domainAd.getUser(), domainAd.getPassword(), domainAd.getSslFlag(), domainAd.getBase());
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 			List<Account> accounts = source.getAllPersonNames(filter);
 			if(accounts!=null){
 				List<String> managedList = repository.getManagedAccounts(domain);
@@ -113,19 +117,16 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 					}else{
 						repository.insertAccount(account.getUid(), domain, new ArrayList<String>(account.getMails()));
 					}
-					
 				}
-
 			}
 			repository.updateNextAdLdapCheck(domain);
-		}catch(Exception e){
+		}catch(RuntimeException e){
 			repository.updateErrorAdLdapCheck(domain, e.getMessage().substring(0, (e.getMessage().length()>250)?250:e.getMessage().length()));
 			sendMail(domainAd, e.getMessage());
-			throw new RuntimeException(e);
-		}
+			throw e;
+		} 
 	}
 
-	
 	private void sendMail(DomainAdLdap domainAd,String errorMessage){
 		if(inputService!=null && domainAd.getNotifyEmail()!=null){
 			MailSender.sendMail(inputService, domainAd.getNotifyEmail(), errorMessage, senderMail, outputService);
