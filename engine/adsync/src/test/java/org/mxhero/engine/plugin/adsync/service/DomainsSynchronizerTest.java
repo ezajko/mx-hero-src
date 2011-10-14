@@ -15,7 +15,7 @@ public class DomainsSynchronizerTest {
 
 	@Test
 	public void processDomain(){
-		service.synchronize("conbras.com");
+		service.synchronize("example.com");
 	}
 	
 	public DomainsSynchronizer getService() {
