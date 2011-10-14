@@ -11,79 +11,33 @@
 
 
 	<context:component-scan base-package="org.mxhero.engine.plugin.adsync" />
-
 	<context:annotation-config />
-
 	<tx:annotation-driven />
 
-	<bean id="domainsSynchronizer" class="org.mxhero.engine.plugin.adsync.service.jpa.JpaDomainsSynchronizer">
-		<property name="dao" ref="domainAdLdapDao"/>
-		<property name="emailAccountDao" ref="emailAccountDao"/>
-		<property name="domainAliasDao" ref="domainAliasDao"/>
-		<property name="ruleDao" ref="ruleDao"/>
-		<property name="outputService" value=""/>
+
+	<bean id="domainsSynchronizer" class="org.mxhero.engine.plugin.adsync.service.jdbc.JdbcDomainsSynchronizer">
+
 	</bean>
 
-	<bean id="emailAccountDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.EmailAccountDao"/>
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="dataSource"/>
 	</bean>
 
-	<bean id="domainAliasDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.DomainAliasDao"/>
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="poolName" value="mxhero-adsync" />
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/mxhero" />
+		<property name="username" value="mxhero" />
+		<property name="password" value="mxhero" />
+		<property name="idleConnectionTestPeriod" value="1" />
+		<property name="idleMaxAge" value="5" />
+		<property name="maxConnectionsPerPartition" value="10" />
+		<property name="minConnectionsPerPartition" value="2" />
+		<property name="partitionCount" value="1" />
+		<property name="acquireIncrement" value="2" />
+		<property name="releaseHelperThreads" value="1" />
 	</bean>
 
-	<bean id="domainAdLdapDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.DomainAdLdapDao"/>
-	</bean>
-
-	<bean id="ruleDao" class="org.synyx.hades.dao.orm.GenericDaoFactoryBean">
-		<property name="daoInterface" value="org.mxhero.engine.plugin.adsync.dao.FeatureRuleDao"/>
-	</bean>
-	
-	<bean
-		class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
-
-	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="emfb" />
-	</bean>
-
-	<bean id="pum"
-		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
-		<property name="persistenceXmlLocations">
-			<list>
-				<value>classpath*:META-INF/persistence.xml</value>
-			</list>
-		</property>
-		<property name="defaultDataSource" ref="dataSource" />
-	</bean>
-
-	<bean id="emfb"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceUnitManager" ref="pum" />
-		<property name="persistenceUnitName" value="mxheroPer" />
-		<property name="jpaProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.generate_statistics">${initial.hibernate.generate_statistics}</prop>				
-				<prop key="hibernate.format_sql">${initial.hibernate.format_sql}</prop>
-			</props>
-		</property>
-		<property name="jpaDialect">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
-		</property>
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="database" value="MYSQL" />
-				<property name="showSql" value="true" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://127.0.0.1/mxhero"/>
-		<property name="username" value="mxhero"/>
-		<property name="password" value="mxhero"/>
-	</bean>
 
 </beans>
