@@ -61,10 +61,12 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 			try{
 				msg.saveChanges();
 			}catch (Exception e){
-				LogMail.saveErrorMail(msg, 
-						getProperties().getValue(PostfixConnector.ERROR_PREFIX),
-						getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
-						getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+				if(log.isDebugEnabled()){
+					LogMail.saveErrorMail(msg, 
+							getProperties().getValue(PostfixConnector.ERROR_PREFIX),
+							getProperties().getValue(PostfixConnector.ERROR_SUFFIX),
+							getProperties().getValue(PostfixConnector.ERROR_DIRECTORY));
+				}
 				throw new RuntimeException(e);
 			}
 			
