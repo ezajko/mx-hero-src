@@ -133,6 +133,7 @@ public class FSQueueService implements MimeMailQueueService {
 		File tmpFile=null;
 		FileOutputStream sfos = null;
 		FileOutputStream tfos = null;
+		InputStream is = null;
 		FSMail fsmail = null;
 		boolean addedToQueue = false;
 		//this is not a strict condition at all
@@ -164,7 +165,7 @@ public class FSQueueService implements MimeMailQueueService {
 					mail.getMessage().writeTo(tfos);
 					tfos.flush();
 					fsmail.setTmpFile(tmpFile.getAbsolutePath());
-					SharedTmpFileInputStream is = new SharedTmpFileInputStream(tmpFile);
+					is = new SharedTmpFileInputStream(tmpFile);
 					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
 							is, 
@@ -178,7 +179,7 @@ public class FSQueueService implements MimeMailQueueService {
 					ByteArrayOutputStream os = new ByteArrayOutputStream();
 					mail.getMessage().writeTo(os);
 					os.flush();
-					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
+					is = new ByteArrayInputStream(os.toByteArray());
 					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
 							is, 
@@ -205,6 +206,9 @@ public class FSQueueService implements MimeMailQueueService {
 				}
 				if(tfos!=null){
 					try{tfos.close();}catch(Exception e){}
+				}
+				if(is!=null){
+					try{is.close();}catch(Exception e){}
 				}
 				//if email was not added, them clean things up
 				if(addedToQueue==false){
