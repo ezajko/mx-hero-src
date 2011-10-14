@@ -1,12 +1,12 @@
 package org.mxhero.engine.plugin.adsync;
 
-import java.util.Calendar;
 import java.util.List;
 
-import org.mxhero.engine.plugin.adsync.dao.DomainAdLdapDao;
+import org.mxhero.engine.plugin.adsync.repository.DomainAdLdapRepository;
 import org.mxhero.engine.plugin.adsync.service.DomainsSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class DSControllerRunner {
 
@@ -16,7 +16,8 @@ public class DSControllerRunner {
 	
 	private Thread runnerThread=null;
 	
-	private DomainAdLdapDao dao;
+	@Autowired(required=true)
+	private DomainAdLdapRepository repository;
 	
 	private DomainsSynchronizer synchronizer;
 	
@@ -56,7 +57,7 @@ public class DSControllerRunner {
 		
 		private void checkAndSync(){
 			try{
-				List<String> domains = dao.findDomainsToSync(Calendar.getInstance());
+				List<String> domains = repository.findDomainsToSync();
 				if(domains!=null){
 					for(String domain : domains){
 						try{
@@ -73,20 +74,20 @@ public class DSControllerRunner {
 	
 	}
 
-	public DomainAdLdapDao getDao() {
-		return dao;
-	}
-
-	public void setDao(DomainAdLdapDao dao) {
-		this.dao = dao;
-	}
-
 	public DomainsSynchronizer getSynchronizer() {
 		return synchronizer;
 	}
 
 	public void setSynchronizer(DomainsSynchronizer synchronizer) {
 		this.synchronizer = synchronizer;
+	}
+
+	public DomainAdLdapRepository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(DomainAdLdapRepository repository) {
+		this.repository = repository;
 	}
 	
 }
