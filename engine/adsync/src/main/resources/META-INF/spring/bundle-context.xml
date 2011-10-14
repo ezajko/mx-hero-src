@@ -45,7 +45,6 @@
 	<bean id="dsControllerRunner" class="org.mxhero.engine.plugin.adsync.DSControllerRunner" 
 		init-method="start" 
 		destroy-method="stop">
-		<property name="dao" ref="domainAdLdapDao"/>
 		<property name="synchronizer" ref="domainsSynchronizer"/>
 	</bean>
 
