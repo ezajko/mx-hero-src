@@ -121,7 +121,11 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 			}
 			repository.updateNextAdLdapCheck(domain);
 		}catch(RuntimeException e){
-			repository.updateErrorAdLdapCheck(domain, e.getMessage().substring(0, (e.getMessage().length()>250)?250:e.getMessage().length()));
+			String message = e.toString();
+			if(message.length()>250){
+				message=message.substring(0,250);
+			}
+			repository.updateErrorAdLdapCheck(domain, message);
 			sendMail(domainAd, e.getMessage());
 			throw e;
 		} 
