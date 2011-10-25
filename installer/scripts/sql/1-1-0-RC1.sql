@@ -484,6 +484,8 @@ UNLOCK TABLES;
 -- Dumping data for table `event`
 --
 
+use `mysql`;
+
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
 INSERT INTO `event` VALUES ('statistics','drop_stats_parts','CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,\'mail_stats\',\'statistics\')','root@localhost',NULL,1,'DAY','2011-08-15 13:47:42','2011-08-15 13:47:42',NULL,'2011-04-25 20:35:45',NULL,'ENABLED','DROP','','',0,'SYSTEM','latin1','latin1_swedish_ci','latin1_swedish_ci','CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,\'mail_stats\',\'statistics\')'),('statistics','drop_records_parts','CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,\'mail_records\',\'statistics\')','root@localhost',NULL,1,'DAY','2011-08-15 13:47:42','2011-08-15 13:47:42',NULL,'2011-04-25 20:35:45',NULL,'ENABLED','DROP','','',0,'SYSTEM','latin1','latin1_swedish_ci','latin1_swedish_ci','CALL partition_drop(CURRENT_DATE()-INTERVAL 20 DAY,\'mail_records\',\'statistics\')'),('statistics','add_stats_parts','CALL partition_add(CURRENT_DATE()+INTERVAL 7 DAY,\'mail_stats\',\'statistics\')','root@localhost',NULL,1,'DAY','2011-08-15 13:47:42','2011-08-15 13:47:42',NULL,'2011-04-25 20:35:45',NULL,'ENABLED','DROP','','',0,'SYSTEM','latin1','latin1_swedish_ci','latin1_swedish_ci','CALL partition_add(CURRENT_DATE()+INTERVAL 7 DAY,\'mail_stats\',\'statistics\')'),('statistics','add_records_parts','CALL partition_add (CURRENT_DATE()+INTERVAL 7 DAY, \'mail_records\',\'statistics\')','root@localhost',NULL,1,'DAY','2011-08-15 13:47:42','2011-08-15 13:47:42',NULL,'2011-04-25 20:35:45',NULL,'ENABLED','DROP','','',0,'SYSTEM','latin1','latin1_swedish_ci','latin1_swedish_ci','CALL partition_add (CURRENT_DATE()+INTERVAL 7 DAY, \'mail_records\',\'statistics\')'),('statistics','group_all_stats','CALL group_statistics (NOW())','root@localhost',NULL,10,'MINUTE','2011-08-15 13:47:42','2011-08-15 13:47:42',NULL,'2011-04-25 20:35:45',NULL,'ENABLED','DROP','','',0,'SYSTEM','latin1','latin1_swedish_ci','latin1_swedish_ci','CALL group_statistics (NOW())');
@@ -850,3 +852,9 @@ DELIMITER ;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+--
+-- Creating mxhero user access
+--
+
+GRANT ALL PRIVILEGES ON *.* TO mxhero@'localhost' IDENTIFIED BY 'mxhero';
