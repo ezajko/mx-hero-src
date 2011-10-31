@@ -61,10 +61,10 @@ public class FSQueueService implements MimeMailQueueService {
 	}
 	
 	public void init(){
-		for(File tmpFile : config.getTmpPath().listFiles()){
+		for(File tmpFile : config.getTmpPathFile().listFiles()){
 			tmpFile.delete();
 		}
-		File[] storeMails = config.getStorePath().listFiles();
+		File[] storeMails = config.getStorePathFile().listFiles();
 		if(storeMails.length>config.getCapacity()){
 			config.setCapacity(storeMails.length);
 		}
@@ -97,7 +97,7 @@ public class FSQueueService implements MimeMailQueueService {
 						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 					//if tmp should be on disk
 					}else{
-						tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
+						tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPathFile());
 						os = new FileOutputStream(tmpFile);
 						data.writeTo(os);
 						os.flush();
@@ -150,7 +150,7 @@ public class FSQueueService implements MimeMailQueueService {
 				mail.getMessage().saveChanges();
 				
 				fsmail = new FSMail(new FSMailKey(mail.getSequence(),mail.getTime()));
-				storeFile = File.createTempFile(config.getStorePrefix(), config.getSuffix(), config.getStorePath());
+				storeFile = File.createTempFile(config.getStorePrefix(), config.getSuffix(), config.getStorePathFile());
 				sfos = new FileOutputStream(storeFile);
 				fsmail.setFile(storeFile.getAbsolutePath());
 				mail.getMessage().writeTo(sfos);
@@ -161,7 +161,7 @@ public class FSQueueService implements MimeMailQueueService {
 				mail.getMessage().saveChanges();
 				
 				if(mail.getInitialSize()>config.getDeferredSize()){
-					tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
+					tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPathFile());
 					tfos = new FileOutputStream(tmpFile);
 					mail.getMessage().writeTo(tfos);
 					tfos.flush();
@@ -298,7 +298,7 @@ public class FSQueueService implements MimeMailQueueService {
 					mail.getMessage().addHeader(RECIPIENT_HEADER, mail.getRecipient());
 					mail.getMessage().addHeader(OUTPUT_SERVICE_HEADER, mail.getResponseServiceId());
 					mail.getMessage().saveChanges();
-					File tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPath());
+					File tmpFile = File.createTempFile(config.getTmpPrefix(), config.getSuffix(), config.getTmpPathFile());
 					FileOutputStream tfos = null;
 					try{
 						tfos = new FileOutputStream(tmpFile);

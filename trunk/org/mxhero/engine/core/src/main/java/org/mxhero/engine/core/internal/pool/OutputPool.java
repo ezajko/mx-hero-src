@@ -1,7 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import java.util.Map;
-
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
@@ -101,12 +99,4 @@ public final class OutputPool extends QueueTaskPool {
 		this.properties = properties;
 	}
 
-
-	@SuppressWarnings("rawtypes")
-	public void updateCallback(Map properties) {
-		setCorePoolsize(properties.get("corePoolsize").toString());
-		setKeepAliveTime(properties.get("keepAliveTime").toString());
-		setMaximumPoolSize(properties.get("maximumPoolSize").toString());
-		setWaitTime(properties.get("waitTime").toString());
-	}
 }

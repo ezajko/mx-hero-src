@@ -9,6 +9,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.fsqueues.internal.FSConfig;
 import org.mxhero.engine.fsqueues.internal.FSQueueService;
 import org.mxhero.engine.fsqueues.internal.util.Files;
 import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
@@ -19,37 +20,9 @@ public class FSLoader {
 
 	private static Logger log = LoggerFactory.getLogger(FSLoader.class);
 	private long checkTime=10000;
-	private File loadPath;
-	private File tmpPath;
+	private FSConfig config;
 	private boolean weekWorking=true;
 	private FSQueueService queueService;
-	
-	public FSLoader(String loadPath, String tmpPath){
-		if(tmpPath==null || tmpPath.trim().length()<1){
-			throw new IllegalArgumentException("not valid tmpPath:"+tmpPath);
-		}
-		if(loadPath==null || loadPath.trim().length()<1){
-			throw new IllegalArgumentException("not valid storePath:"+loadPath);
-		}
-		if(loadPath.trim().equalsIgnoreCase(tmpPath.trim())){
-			throw new IllegalArgumentException("storePath and tmpPath are the same");
-		}
-		File newTmpPath=new File(tmpPath);
-		if(!newTmpPath.exists()){
-			if(!newTmpPath.mkdir()){
-				throw new IllegalArgumentException("clould not create tmpPath:"+tmpPath);
-			}
-		}
-		this.tmpPath=newTmpPath;
-		
-		File newLoadPath=new File(loadPath);
-		if(!newLoadPath.exists()){
-			if(!newLoadPath.mkdir()){
-				throw new IllegalArgumentException("clould not create storePath:"+newLoadPath);
-			}
-		}
-		this.loadPath=newLoadPath;
-	}
 	
 	public void init(){
 		new Thread(new Runnable() {
@@ -82,7 +55,7 @@ public class FSLoader {
 
 	private void loadPhase( String phase){
 		try{
-			File pathFile = new File(loadPath,phase);
+			File pathFile = new File(config.getLoadPathFile(),phase);
 			if(pathFile.exists() && pathFile.isDirectory()){
 				File[] mailFiles = pathFile.listFiles();
 				for(File mailFile : mailFiles){
@@ -93,7 +66,7 @@ public class FSLoader {
 					MimeMail mail = null;
 
 					try{
-						File tmpFile = File.createTempFile("load", ".eml",tmpPath);
+						File tmpFile = File.createTempFile("load", ".eml",config.getTmpPathFile());
 						Files.copy(mailFile, tmpFile);
 						SharedTmpFileInputStream is = new SharedTmpFileInputStream(tmpFile);
 						data=new MimeMessage(Session.getDefaultInstance(new Properties()), is);
@@ -125,5 +98,13 @@ public class FSLoader {
 	public void setQueueService(FSQueueService queueService) {
 		this.queueService = queueService;
 	}
-	
+
+	public FSConfig getConfig() {
+		return config;
+	}
+
+	public void setConfig(FSConfig config) {
+		this.config = config;
+	}
+
 }

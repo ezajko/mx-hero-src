@@ -111,7 +111,7 @@ public class AbandonedCheck {
 								is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 							//if tmp should be on disk
 							}else{
-								tmpFile = File.createTempFile(srv.getConfig().getTmpPrefix(), srv.getConfig().getSuffix(), srv.getConfig().getTmpPath());
+								tmpFile = File.createTempFile(srv.getConfig().getTmpPrefix(), srv.getConfig().getSuffix(), srv.getConfig().getTmpPathFile());
 								os = new FileOutputStream(tmpFile);
 								message.writeTo(os);
 								os.flush();
