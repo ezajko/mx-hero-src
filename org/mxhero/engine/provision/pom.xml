@@ -10,7 +10,6 @@
 
 	<properties>
 		<org.springframework.version>3.0.3.RELEASE</org.springframework.version>
-		<org.springframework.osgi.version>1.2.1</org.springframework.osgi.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -20,6 +19,13 @@
 	<name>engine - imported bundles</name>
 
 	<packaging>pom</packaging>
+
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<url>http://repository.mxhero.com:8081/nexus/content/repositories/releases</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -153,26 +159,21 @@
 			<artifactId>com.springsource.javax.transaction</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.core</artifactId>
-			<version>${org.springframework.osgi.version}</version>
+			<groupId>org.eclipse.gemini.blueprint</groupId>
+			<artifactId>gemini-blueprint-core</artifactId>
+			<version>1.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.io</artifactId>
-			<version>${org.springframework.osgi.version}</version>
+			<groupId>org.eclipse.gemini.blueprint</groupId>
+			<artifactId>gemini-blueprint-io</artifactId>
+			<version>1.0.0.RELEASE</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.extensions.annotation
-			</artifactId>
-			<version>${org.springframework.osgi.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.extender</artifactId>
-			<version>${org.springframework.osgi.version}</version>
+			<groupId>org.eclipse.gemini.blueprint</groupId>
+			<artifactId>gemini-blueprint-extender</artifactId>
+			<version>1.0.0.RELEASE</version>
 		</dependency>
 	</dependencies>
 </project>

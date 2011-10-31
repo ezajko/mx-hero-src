@@ -23,6 +23,10 @@ public abstract class TaskPool implements Runnable {
 	
 	private long waitTime = DEFAULT_WAITTIME;
 	
+	public TaskPool() {
+		executor=new ThreadPoolExecutor(DEFAULT_COREPOOLSIZE, DEFAULT_MAXIMUMPOOLSIZE, DEFAULT_KEEPALIVETIME, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+	}
+
 	/** 
 	 * Starts the ThreadPool calls init method and keep calling work method while
 	 * running boolean is true, after that shutdowns the ThreadPool and call clean method.
@@ -30,7 +34,9 @@ public abstract class TaskPool implements Runnable {
 	 */
 	@Override
 	public final void run() {
-		executor=new ThreadPoolExecutor(DEFAULT_COREPOOLSIZE, DEFAULT_MAXIMUMPOOLSIZE, DEFAULT_KEEPALIVETIME, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		if(executor==null){
+			executor=new ThreadPoolExecutor(DEFAULT_COREPOOLSIZE, DEFAULT_MAXIMUMPOOLSIZE, DEFAULT_KEEPALIVETIME, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+		}
 		init();
 		running=true;
 		while(isRunning()){
@@ -79,6 +85,7 @@ public abstract class TaskPool implements Runnable {
 			}
 			thread=null;
 		}
+		this.executor=null;
 	}
 	
 	/**
@@ -92,55 +99,64 @@ public abstract class TaskPool implements Runnable {
 	/**
 	 * @param corePoolsize
 	 */
-	protected final void setCorePoolsize(String corePoolsize) {
+	public final void setCorePoolsize(Integer corePoolsize) {
 		try{
 			if(corePoolsize!=null && this.executor!=null){
-				this.executor.setCorePoolSize(Integer.parseInt(corePoolsize));
+				this.executor.setCorePoolSize(corePoolsize);
 			}
 		}
-		catch (NumberFormatException e){}
 		catch (IllegalArgumentException e){}
 	}
 
+	public final Integer getCorePoolsize(){
+		return this.executor.getCorePoolSize();
+	}
+	
 	/**
 	 * @param maximumPoolSize
 	 */
-	protected final void setMaximumPoolSize(String maximumPoolSize) {
+	public final void setMaximumPoolSize(Integer maximumPoolSize) {
 		try{
 			if(maximumPoolSize!=null && this.executor!=null){
-				this.executor.setMaximumPoolSize(Integer.parseInt(maximumPoolSize));
+				this.executor.setMaximumPoolSize(maximumPoolSize);
 			}
 		} 
-		catch (NumberFormatException e){}
 		catch (IllegalArgumentException e){}
 	}
 
+	public final Integer getMaximumPoolSize(){
+		return this.executor.getMaximumPoolSize();
+	}
+	
 	/**
 	 * @param keepAliveTime
 	 */
-	protected final void setKeepAliveTime(String keepAliveTime) {
+	public final void setKeepAliveTime(Long keepAliveTime) {
 		try{
 			if(keepAliveTime!=null && this.executor!=null){
-				this.executor.setKeepAliveTime(Long.parseLong(keepAliveTime),TimeUnit.MILLISECONDS);
+				this.executor.setKeepAliveTime(keepAliveTime,TimeUnit.MILLISECONDS);
 			}
 		}		
-		catch (NumberFormatException e){}
 		catch (IllegalArgumentException e){}
 	}
 
+	public final Long getKeepAliveTime(){
+		return this.executor.getKeepAliveTime(TimeUnit.MILLISECONDS);
+	}
+	
 	/**
 	 * @param waitTime
 	 */
-	protected final void setWaitTime(String waitTime){
+	public final void setWaitTime(Long waitTime){
 		try{
 			if(waitTime!=null){
-				long value = Long.parseLong(waitTime);
+				long value = waitTime;
 				if(value>0){
 					this.waitTime= value;
 				}
 			}
 		}		
-		catch (NumberFormatException e){}		
+		catch (NumberFormatException e){}	
 	}
 
 	/**

@@ -135,4 +135,23 @@ public class CoreProperties {
 		}
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("CoreProperties [resourceScannerInterval=")
+				.append(resourceScannerInterval).append(", errorSuffix=")
+				.append(errorSuffix).append(", errorPrefix=")
+				.append(errorPrefix).append(", errorFolder=")
+				.append(errorFolder).append(", topGroupId=").append(topGroupId)
+				.append(", bottomGroupId=").append(bottomGroupId)
+				.append(", processErrorStat=").append(processErrorStat)
+				.append(", connectorErrorStat=").append(connectorErrorStat)
+				.append(", connectorNotFoundValue=")
+				.append(connectorNotFoundValue).append(", queueDelayTime=")
+				.append(queueDelayTime).append(", queueRetries=")
+				.append(queueRetries).append(", deliveredErrorPath=")
+				.append(deliveredErrorPath).append("]");
+		return builder.toString();
+	}
+
 }

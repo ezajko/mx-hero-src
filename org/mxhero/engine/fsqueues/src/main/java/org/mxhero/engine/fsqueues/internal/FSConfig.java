@@ -16,35 +16,12 @@ public class FSConfig {
 	private String storePrefix=STORE_PREFIX;
 	private String tmpPrefix=TMP_PREFIX;
 	private String suffix = FILE_EXTENSION;
-	private File storePath;
-	private File tmpPath;
-
-	public FSConfig(String storePath, String tmpPath){
-		if(tmpPath==null || tmpPath.trim().length()<1){
-			throw new IllegalArgumentException("not valid tmpPath:"+tmpPath);
-		}
-		if(storePath==null || storePath.trim().length()<1){
-			throw new IllegalArgumentException("not valid storePath:"+storePath);
-		}
-		if(storePath.trim().equalsIgnoreCase(tmpPath.trim())){
-			throw new IllegalArgumentException("storePath and tmpPath are the same");
-		}
-		File newTmpPath=new File(tmpPath);
-		if(!newTmpPath.exists()){
-			if(!newTmpPath.mkdir()){
-				throw new IllegalArgumentException("clould not create tmpPath:"+tmpPath);
-			}
-		}
-		this.tmpPath=newTmpPath;
-		
-		File newStorePath=new File(storePath);
-		if(!newStorePath.exists()){
-			if(!newStorePath.mkdir()){
-				throw new IllegalArgumentException("clould not create storePath:"+storePath);
-			}
-		}
-		this.storePath=newStorePath;
-	}
+	private String storePath;
+	private String tmpPath;
+	private String loadPath;
+	private File storePathFile;
+	private File tmpPathFile;
+	private File loadPathFile;
 	
 	public int getCapacity() {
 		return capacity;
@@ -92,12 +69,89 @@ public class FSConfig {
 		this.suffix = suffix;
 	}
 
-	public File getStorePath() {
+	public void setStorePath(String storePath){
+		if(storePath==null || storePath.trim().length()<1){
+			throw new IllegalArgumentException("not valid storePath:"+storePath);
+		}
+
+		File newStorePath=new File(storePath);
+
+		if(tmpPath!=null && newStorePath.getAbsolutePath().equalsIgnoreCase(tmpPathFile.getAbsolutePath())){
+			throw new IllegalArgumentException("storePath and tmpPath are the same");
+		}
+		
+		if(!newStorePath.exists()){
+			if(!newStorePath.mkdir()){
+				throw new IllegalArgumentException("clould not create storePath:"+storePath);
+			}
+		}
+		this.storePathFile=newStorePath;
+		this.storePath=storePath;
+	}
+	
+	public String getStorePath() {
 		return storePath;
 	}
+	
+	public File getStorePathFile() {
+		return storePathFile;
+	}
 
-	public File getTmpPath() {
+	public void setTmpPath(String tmpPath) {
+		if(tmpPath==null || tmpPath.trim().length()<1){
+			throw new IllegalArgumentException("not valid tmpPath:"+tmpPath);
+		}
+		File newTmpPath=new File(tmpPath);
+		
+		if(storePathFile!=null && storePathFile.getAbsolutePath().equalsIgnoreCase(newTmpPath.getAbsolutePath())){
+			throw new IllegalArgumentException("storePath and tmpPath are the same");
+		}
+		
+		
+		if(!newTmpPath.exists()){
+			if(!newTmpPath.mkdir()){
+				throw new IllegalArgumentException("clould not create tmpPath:"+tmpPath);
+			}
+		}
+		this.tmpPathFile=newTmpPath;
+		this.tmpPath=tmpPath;
+	}
+	
+	public String getTmpPath() {
 		return tmpPath;
+	}
+
+	public File getTmpPathFile() {
+		return tmpPathFile;
+	}
+
+	
+	public void setLoadPath(String loadPath) {
+		if(loadPath==null || loadPath.trim().length()<1){
+			throw new IllegalArgumentException("not valid loadPath:"+loadPath);
+		}
+		File newLoadPath=new File(loadPath);
+		
+		if(tmpPath!=null && tmpPathFile.getAbsolutePath().equalsIgnoreCase(newLoadPath.getAbsolutePath())){
+			throw new IllegalArgumentException("loadPath and tmpPath are the same");
+		}
+		
+		
+		if(!newLoadPath.exists()){
+			if(!newLoadPath.mkdir()){
+				throw new IllegalArgumentException("clould not create loadPath:"+loadPath);
+			}
+		}
+		this.loadPathFile=newLoadPath;
+		this.loadPath=loadPath;
+	}
+	
+	public String getLoadPath() {
+		return loadPath;
+	}
+
+	public File getLoadPathFile() {
+		return loadPathFile;
 	}
 
 	@Override
@@ -108,8 +162,10 @@ public class FSConfig {
 				.append(", storePrefix=").append(storePrefix)
 				.append(", tmpPrefix=").append(tmpPrefix).append(", suffix=")
 				.append(suffix).append(", storePath=").append(storePath)
-				.append(", tmpPath=").append(tmpPath).append("]");
+				.append(", tmpPath=").append(tmpPath).append(", loadPath=")
+				.append(loadPath).append("]");
 		return builder.toString();
 	}
+	
 
 }

@@ -3,13 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:osgi="http://www.springframework.org/schema/osgi"
-	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xmlns:osgi="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
+	xmlns:osgix="http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
-		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd">
 
 	<context:component-scan base-package="org.mxhero.engine.core" />
 
@@ -28,7 +28,7 @@
 	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.core"/>
 	
 	<bean id="coreProperties" class="org.mxhero.engine.core.internal.CoreProperties">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.core" update-strategy="container-managed"/>
+		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 	</bean>
 
 	<osgi:service interface="org.mxhero.engine.commons.connector.InputService" ref="coreInputService">
@@ -46,14 +46,14 @@
 		<property name="rulesProviders" ref="rulesProviders"/>
 	</bean>
 
-	<bean id="bbloader" class="org.mxhero.engine.core.internal.rules.BaseLoader" init-method="start" destroy-method="stop">
+	<bean id="bbloader" class="org.mxhero.engine.core.internal.rules.BaseLoader" 
+		init-method="start" 
+		destroy-method="stop" >
 		<property name="builder" ref="bbuilder"/>
 		<property name="properties" ref="coreProperties"/>
 	</bean>
 
-	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller">
-		<property name="properties" ref="coreProperties"/>
-	</bean>
+	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller"/>
 	
 	<bean id="drprocessor" class="org.mxhero.engine.core.internal.pool.processor.DefaultRulesProcessor">
 		<property name="properties" ref="coreProperties"/>
@@ -65,6 +65,7 @@
 	</bean>
 
 	<bean id="sendPool" class="org.mxhero.engine.core.internal.pool.SendPool" init-method="start" destroy-method="stop">
+		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 		<constructor-arg ref="queuesService"/>
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
@@ -76,6 +77,7 @@
 	</bean>
 	
 	<bean id="receivePool" class="org.mxhero.engine.core.internal.pool.ReceivePool" init-method="start" destroy-method="stop">
+		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 		<constructor-arg ref="queuesService"/>
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
@@ -87,6 +89,7 @@
 	</bean>
 
 	<bean id="outputPool" class="org.mxhero.engine.core.internal.pool.OutputPool" init-method="start" destroy-method="stop">
+		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="queuesService"/>
 		<property name="properties" ref="coreProperties"/>
