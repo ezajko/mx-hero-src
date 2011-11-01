@@ -1,0 +1,7 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Embed-Dependency:\
+ smtp;groupId=org.mailster;inline=false,\
+ jcifs;groupId=org.samba.jcifs;inline=false
