@@ -43,7 +43,7 @@
           <!-- | some example Pax-Runner settings -->
           <provision>
             <param>--platform=equinox</param>
-            <param>--systemPackages=sun.misc,javax.crypto,javax.crypto.spec,javax.security.auth.x500,javax.xml.transform,javax.xml.transform.stream,sun.security.util,jsr166y</param>
+            <param>--systemPackages=sun.misc,javax.crypto,org.ietf.jgss,javax.net.ssl,javax.crypto.spec,javax.security.sasl,javax.security.auth.x500,javax.xml.transform,javax.xml.transform.stream,sun.security.util,jsr166y</param>
           </provision>
         </configuration>
         <executions>
