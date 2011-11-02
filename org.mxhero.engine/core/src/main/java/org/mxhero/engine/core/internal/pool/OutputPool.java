@@ -1,5 +1,8 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
@@ -14,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * Creates a DeliverTask for each mail that enter in the outputQueue.
  * @author mmarmol
  */
-public final class OutputPool extends QueueTaskPool {
+public final class OutputPool extends QueueTaskPool implements Observer {
 
 	public static final String PHASE=RulePhase.OUT;
 	
@@ -54,6 +57,7 @@ public final class OutputPool extends QueueTaskPool {
 	@Override
 	protected void clean() {
 		log.info("CLEAN");
+		this.getProperties().deleteObserver(this);
 	}
 
 	/**
@@ -96,7 +100,19 @@ public final class OutputPool extends QueueTaskPool {
 	 * @param properties
 	 */
 	public void setProperties(CoreProperties properties) {
+		if(this.properties!=null){
+			this.properties.deleteObserver(this);
+			properties.addObserver(this);
+		}
 		this.properties = properties;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		this.setCorePoolsize(getProperties().getCorePoolsize());
+		this.setKeepAliveTime(getProperties().getKeepAliveTime());
+		this.setMaximumPoolSize(getProperties().getMaximumPoolSize());
+		this.setWaitTime(getProperties().getWaitTime());
 	}
 
 }
