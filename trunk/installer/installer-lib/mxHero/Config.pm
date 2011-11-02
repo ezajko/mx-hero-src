@@ -21,7 +21,7 @@ our %myConfig;
 
 $myConfig{JDK_X86_DIRNAME} = 'jdk1.6.0_27-i586';
 $myConfig{JDK_X64_DIRNAME} = 'jdk1.6.0_27-x64';
-$myConfig{MXHERO_INSTALL_VERSION} = '1.0.0.RELEASE';
+$myConfig{MXHERO_INSTALL_VERSION} = '1.1.0.RC1';
 
 ###
 
