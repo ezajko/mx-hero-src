@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
+	xmlns:osgix="http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd">
+
+	<context:component-scan base-package="org.mxhero.engine.plugin.basecommands" />
+
+	<context:annotation-config />
+
+	<osgi:reference id="inputService"
+		interface="org.mxhero.engine.commons.connector.InputService" />
+
+	<osgi:service ref="addText">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.AddText</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.AddTextImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="addText"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.AddTextImpl" />
+
+	<osgi:service ref="clone">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.Clone</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.CloneImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="clone"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.CloneImpl">
+		<property name="service" ref="inputService" />
+	</bean>
+
+	<osgi:service ref="create">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.Create</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.CreateImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="create"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.CreateImpl">
+		<property name="service" ref="inputService" />
+	</bean>
+
+	<osgi:service ref="getSize">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.GetSize</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.GetSizeImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="getSize"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.GetSizeImpl" />
+
+	<osgi:service ref="removeByExtension">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.RemoveByExtension</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtensionImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="removeByExtension"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByExtensionImpl" />
+
+	<osgi:service ref="removeByType">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.RemoveByType</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByTypeImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="removeByType"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.RemoveByTypeImpl" />
+
+	<osgi:service ref="reply">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.basecommands.command.Reply</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.basecommands.internal.command.ReplyImpl" />
+		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="reply"
+		class="org.mxhero.engine.plugin.basecommands.internal.command.ReplyImpl">
+		<property name="service" ref="inputService" />
+	</bean>
+
+</beans>
