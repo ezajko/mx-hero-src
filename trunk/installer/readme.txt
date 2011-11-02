@@ -32,3 +32,9 @@ INSTALLATION
 
 For detailed installation instructions please visit our wiki:
 http://wiki.mxhero.com:8080/
+
+IMPORTANT NOTES
+
+This installer has only been tested on Ubuntu 10.04 and Debian 6.
+
+We know it does not work with Redhat. A Redhat capable installer is forthcomming.
