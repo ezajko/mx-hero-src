@@ -132,10 +132,18 @@ sub _addUpdateStartupScript
 		}
 		
 		system("/usr/sbin/update-rc.d mxhero defaults");
-		### warn "TEST: doing update-rc.d\n"; ### TESTING
-		
 	} elsif ( $distri eq "Redhat" ) {
-		# TODO
+		if ( ! copy ( "$myConfig{INSTALLER_PATH}/scripts/mxhero-init-redhat", "/etc/init.d/mxhero" ) ) {
+			warn $!;
+			return 0;
+		}
+		
+		if ( ! chmod( 0755, '/etc/init.d/mxhero' ) ) {
+			warn "Failed to chmod /etc/init.d/mxhero";
+			return 0;
+		}
+		
+		system( "/sbin/chkconfig mxhero on" );
 	} elsif ( $distri eq "Suse" ) {
 		# TODO
 	} else {

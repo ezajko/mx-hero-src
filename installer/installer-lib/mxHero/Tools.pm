@@ -146,12 +146,12 @@ sub packageInstall
 	my $package = $_[0];
 	
 	print "\n\n** INSTALLING package '$package' **\n\n";
+	sleep( 2 );
 
 	my $distri = &getDistri();
 	
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
 		# apt-get return 0 on success, 100 on error
-		sleep( 1 );
 		my $ret = system("/usr/bin/apt-get -y install $package 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
 			print "'$package' ... INSTALLED\n";
@@ -160,8 +160,7 @@ sub packageInstall
 			return 0;
 		}
 	} elsif ( $distri =~ /Redhat/ ) {
-		sleep( 1 );
-		my $ret = system("/usr/bin/yum -y install $package 2>/dev/null");
+		my $ret = system("/usr/bin/yum -y install $package");
 		if ( ($ret >> 8) == 0 ) {
 			print "'$package' ... INSTALLED\n";
 			my $service;
@@ -171,7 +170,13 @@ sub packageInstall
 				$service = $package;
 			}
 			system( "/sbin/chkconfig $service on" );
-			return 1;
+			$ret = system( "/etc/init.d/$service start" );
+			if ( ($ret >> 8) == 0 ) {
+				return 1;
+			} else {
+				warn "Failed to start $service\n";
+				return 0;
+			}
 		} else {
 			return 0;
 		}
@@ -194,6 +199,14 @@ sub packageListUpdate
 
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
 		my $ret = system("/usr/bin/apt-get update 2>/dev/null");
+		if ( ($ret >> 8) == 0 ) {
+			print "Package database updated\n";
+			return 1;
+		} else {
+			return 0;
+		}
+	} elsif ( $distri =~ /Redhat/i ) {
+		my $ret = system("/usr/bin/yum update");
 		if ( ($ret >> 8) == 0 ) {
 			print "Package database updated\n";
 			return 1;
@@ -293,7 +306,124 @@ sub setUTC
 		}
 		print TZ "Etc/UTC\n";
 		close TZ;
+	} elsif ( $distri =~ /Redhat/i ) {
+		if ( ! copy( "/usr/share/zoneinfo/UTC", "/etc/localtime" ) ) {
+			warn "Failed to copy UTC zonefile\n$!";
+			exit;
+		}
+		if ( ! open( TZ, ">/etc/sysconfig/clock" ) ) {
+			warn "Failed to open timezone file.\n$!";
+			exit;
+		}
+		print TZ "ZONE=\"UTC\"\n";
+		close TZ;
 	}
+}
+
+# To allow for expanded port access
+#  disabling iptables and putting selinux into permissive mode
+sub adjustRedhat
+{
+	my $distri = &getDistri();
+	
+	if ( $distri !~ /Redhat/i ) {
+		return;
+	}
+	
+	# Turn off iptables
+	if ( -f "/etc/init.d/iptables" ) {
+		system( "/etc/init.d/iptables stop" );
+		system( "/sbin/chkconfig iptables off" );
+	}
+	
+	# Set selinux to permissive
+	if ( ! &alterSimpleConfigFile( "/etc/sysconfig/selinux", { 'SELINUX' => 'disabled' }, '=' ) ) {
+		warn "Failed to disable SELINUX. Aboring installation.\n";
+		exit;
+	}
+}
+
+# alter basic configuration files. Type with key = value.
+#  returns 0 on failure, 1 on success
+sub alterSimpleConfigFile
+{
+	my $file = $_[0];
+	my $hashRef = $_[1];
+	my $delim = $_[2];
+	
+	if ( ! $delim ) {
+		$delim = ' '; # default to space 
+	}
+
+	if ( ! open(F, $file) ) {
+		warn $!;
+		return 0;
+	}
+	
+	my $line;
+	my $content = "";
+	my $changed;
+	
+	my %entry = %$hashRef;
+	
+	my %found;
+	for my $k ( keys %entry ) {
+		$found{ $k } = 0;
+	}
+	
+	while ( $line = <F> ) {
+		if ($line =~ /^\s*$/ or $line =~ /^\s*\#/) { # comment line or white space, write out
+			$content .= $line;
+			next;
+		}
+		
+		my ($key, $value) = split ( /\s*$delim\s*/, $line, 2);
+		chomp( $value );
+		
+		my $setContent;
+		for my $k ( keys %entry ) {
+			if ( $key eq $k ) {
+				$setContent = 1;
+				if ( $value eq $entry{ $k } ) { # same value
+					$content .= $line; # keep original
+				} else { # different value
+					# could comment out original line here
+					$content .= "$k".$delim."$entry{$k}\n"; # set new
+					$changed = 1;
+				}
+				$found{$k} = 1;
+				last;
+			}
+		}
+		
+		$content .= $line if ! $setContent;
+	}
+	
+	for my $k ( keys %found ) {
+		if ( ! $found{$k} ) {
+			$content .= "$k".$delim."$entry{$k}\n";
+			$changed = 1;
+		}
+	}
+	close F;
+	
+	if ( ! $changed ) {
+		return 1;
+	}
+	
+	my $backup = &mxHero::Tools::backupFile( $file );
+	return 0 if ! $backup;
+	
+	if ( ! open(F, ">$file") ) {
+		warn $!;
+		return 0;
+	} else {
+		print F $content;
+	}
+	
+	close F;
+	
+	return 1;
 }
 
 ## PRIVATE

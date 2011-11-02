@@ -49,8 +49,22 @@ sub upgrade
 sub configure
 {
 	my $errorRef = $_[0];
-
-	# BRUNO
+	
+	my $distri = &mxHero::Tools::getDistri();
+	if ( $distri !~ /Redhat/i ) { # only go on if Redhat
+		return 1;
+	}
+	
+	# For Redhat need to set JAVA_HOME="/opt/mxhero/java" in /etc/tomcat6/tomcat6.conf
+	
+	my $file = "/etc/tomcat6/tomcat6.conf";
+	
+	my %entry = ( "JAVA_HOME" => '"/opt/mxhero/java"' );
+	
+	if ( ! &mxHero::Tools::alterSimpleConfigFile( $file, \%entry, '=' ) ) {
+		$$errorRef = "Failed to alter $file";
+		return 0;
+	}
 	
 	return 1;
 }
