@@ -4,6 +4,8 @@ OVERVIEW
 
 mxHero is an email border system with an extensible plugin design to facilitate addition of new features and functionalities.
 
+This package includes an installation script and supporting files. It should be used to install mxHero on compatible operating systems. See below.
+
 LICENSE - GPLv3 (see included file gpl.txt)
 
 Copyright 2011 mxHero, Inc.
