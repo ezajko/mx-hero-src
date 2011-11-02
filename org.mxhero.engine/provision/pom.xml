@@ -28,16 +28,8 @@
 	</repositories>
 
 	<dependencies>
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>com.springsource.javax.activation</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>org.mxhero.javax.mail</artifactId>
-			<version>1.4.4</version>
-		</dependency>
+
+		<!-- OSGI AND CONSOLE DEPENDENCIES -->
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi.services</artifactId>
@@ -94,6 +86,9 @@
 			<artifactId>org.apache.felix.webconsole</artifactId>
 			<version>3.1.8</version>
 		</dependency>
+		<!-- OSGI AND CONSOLE DEPENDENCIES -->
+
+		<!-- LOGGING DEPENDENCIES -->
 		<dependency>
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-api</artifactId>
@@ -103,6 +98,24 @@
 			<groupId>org.ops4j.pax.logging</groupId>
 			<artifactId>pax-logging-service</artifactId>
 			<version>1.6.2</version>
+		</dependency>
+		<!-- LOGGING DEPENDENCIES -->
+
+		<!-- COMMONS DEPENDENCIES -->
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>com.springsource.javax.activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>com.springsource.javax.transaction</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>org.mxhero.javax.mail</artifactId>
+			<version>1.4.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.mina</groupId>
@@ -114,12 +127,15 @@
 					<groupId>org.slf4j</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.1</version>
 		</dependency>
+		<!-- COMMONS DEPENDENCIES -->
+
+		<!-- SPRING FRAMEWORK DEPENDENCIES -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context</artifactId>
@@ -170,12 +186,9 @@
 			<artifactId>org.springframework.transaction</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>com.springsource.javax.transaction</artifactId>
-			<version>1.1.0</version>
-		</dependency>
+		<!-- SPRING FRAMEWORK DEPENDENCIES -->
 
+		<!-- ECLIPSE GEMINI DEPENDENCIES -->
 		<dependency>
 			<groupId>org.eclipse.gemini.blueprint</groupId>
 			<artifactId>gemini-blueprint-core</artifactId>
@@ -192,4 +205,5 @@
 			<version>1.0.0.RELEASE</version>
 		</dependency>
 	</dependencies>
+	<!-- ECLIPSE GEMINI DEPENDENCIES -->
 </project>
