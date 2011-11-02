@@ -1,0 +1,5 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Embed-Dependency: libclamav;groupId=net.taldius;inline=false
