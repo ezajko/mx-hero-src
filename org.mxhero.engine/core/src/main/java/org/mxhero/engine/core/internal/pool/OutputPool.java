@@ -49,6 +49,8 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 	@Override
 	protected void init() {
 		log.info("INIT");
+		getProperties().addObserver(this);
+		update(null, null);
 	}
 	
 	/**
@@ -57,7 +59,7 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 	@Override
 	protected void clean() {
 		log.info("CLEAN");
-		this.getProperties().deleteObserver(this);
+		getProperties().deleteObserver(this);
 	}
 
 	/**
@@ -100,10 +102,6 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 	 * @param properties
 	 */
 	public void setProperties(CoreProperties properties) {
-		if(this.properties!=null){
-			this.properties.deleteObserver(this);
-			properties.addObserver(this);
-		}
 		this.properties = properties;
 	}
 
@@ -113,6 +111,7 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 		this.setKeepAliveTime(getProperties().getKeepAliveTime());
 		this.setMaximumPoolSize(getProperties().getMaximumPoolSize());
 		this.setWaitTime(getProperties().getWaitTime());
+		log.debug("updated with "+getProperties().toString());
 	}
 
 }

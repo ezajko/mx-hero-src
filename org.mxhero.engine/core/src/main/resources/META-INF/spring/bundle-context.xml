@@ -28,7 +28,7 @@
 	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.core"/>
 	
 	<bean id="coreProperties" class="org.mxhero.engine.core.internal.CoreProperties">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true" update-method="updateCallback"/>
+		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"  update-method="updateCallback"/>
 	</bean>
 
 	<osgi:service interface="org.mxhero.engine.commons.connector.InputService" ref="coreInputService">

@@ -3,8 +3,13 @@ package org.mxhero.engine.core.internal;
 import java.util.Map;
 import java.util.Observable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CoreProperties extends Observable {
 
+	private static Logger log = LoggerFactory.getLogger(CoreProperties.class);
+	
 	private Long resourceScannerInterval = 60000l;
 	private String errorSuffix = "core";
 	private String errorPrefix = ".eml";
@@ -177,6 +182,7 @@ public class CoreProperties extends Observable {
 	public void updateCallback(Map<String, ?> properties) {
 		this.setChanged();
 		this.notifyObservers();
+		log.debug("UPDATED has "+this.countObservers());
 	}
 
 	@Override
