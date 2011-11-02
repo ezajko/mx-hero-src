@@ -28,7 +28,7 @@
 	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.core"/>
 	
 	<bean id="coreProperties" class="org.mxhero.engine.core.internal.CoreProperties">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
+		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true" update-method="updateCallback"/>
 	</bean>
 
 	<osgi:service interface="org.mxhero.engine.commons.connector.InputService" ref="coreInputService">
@@ -65,7 +65,6 @@
 	</bean>
 
 	<bean id="sendPool" class="org.mxhero.engine.core.internal.pool.SendPool" init-method="start" destroy-method="stop">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 		<constructor-arg ref="queuesService"/>
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
@@ -77,7 +76,6 @@
 	</bean>
 	
 	<bean id="receivePool" class="org.mxhero.engine.core.internal.pool.ReceivePool" init-method="start" destroy-method="stop">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 		<constructor-arg ref="queuesService"/>
 		<property name="userFinderService" ref="userFinder"/>
 		<property name="filler" ref="psfiller"/>
@@ -89,7 +87,6 @@
 	</bean>
 
 	<bean id="outputPool" class="org.mxhero.engine.core.internal.pool.OutputPool" init-method="start" destroy-method="stop">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.core" autowire-on-update="true"/>
 		<constructor-arg ref="bundleContext"/>
 		<constructor-arg ref="queuesService"/>
 		<property name="properties" ref="coreProperties"/>

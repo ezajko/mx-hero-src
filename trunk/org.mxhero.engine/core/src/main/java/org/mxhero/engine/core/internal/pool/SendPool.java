@@ -1,5 +1,8 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.RulePhase;
@@ -20,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author mmarmol
  */
-public final class SendPool extends QueueTaskPool {
+public final class SendPool extends QueueTaskPool implements Observer{
 	
 	public static final String PHASE=RulePhase.SEND;
 	
@@ -66,6 +69,7 @@ public final class SendPool extends QueueTaskPool {
 	@Override
 	protected void clean() {
 		log.info("CLEAN");
+		this.getProperties().deleteObserver(this);
 	}
 
 	/**
@@ -169,6 +173,10 @@ public final class SendPool extends QueueTaskPool {
 	}
 
 	public void setProperties(CoreProperties properties) {
+		if(this.properties!=null){
+			this.properties.deleteObserver(this);
+			properties.addObserver(this);
+		}
 		this.properties = properties;
 	}
 
@@ -223,6 +231,14 @@ public final class SendPool extends QueueTaskPool {
 
 	public void setQueueService(MimeMailQueueService queueService) {
 		this.queueService = queueService;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		this.setCorePoolsize(getProperties().getCorePoolsize());
+		this.setKeepAliveTime(getProperties().getKeepAliveTime());
+		this.setMaximumPoolSize(getProperties().getMaximumPoolSize());
+		this.setWaitTime(getProperties().getWaitTime());
 	}
 
 }

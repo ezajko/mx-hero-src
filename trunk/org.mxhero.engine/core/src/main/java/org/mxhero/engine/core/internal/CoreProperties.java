@@ -1,6 +1,9 @@
 package org.mxhero.engine.core.internal;
 
-public class CoreProperties {
+import java.util.Map;
+import java.util.Observable;
+
+public class CoreProperties extends Observable {
 
 	private Long resourceScannerInterval = 60000l;
 	private String errorSuffix = "core";
@@ -14,13 +17,17 @@ public class CoreProperties {
 	private Long queueDelayTime = 10000l;
 	private Integer queueRetries = 5;
 	private String deliveredErrorPath = System.getProperty("java.io.tmpdir");
+	private Integer maximumPoolSize = 10;
+	private Long waitTime = 1000l;
+	private Long keepAliveTime = 2000l;
+	private Integer corePoolsize = 10;
 
 	public Long getResourceScannerInterval() {
 		return resourceScannerInterval;
 	}
 
 	public void setResourceScannerInterval(Long resourceScannerInterval) {
-		if(resourceScannerInterval!=null && resourceScannerInterval > 30000){
+		if (resourceScannerInterval != null && resourceScannerInterval > 30000) {
 			this.resourceScannerInterval = resourceScannerInterval;
 		}
 	}
@@ -30,7 +37,7 @@ public class CoreProperties {
 	}
 
 	public void setErrorSuffix(String errorSuffix) {
-		if(errorSuffix!=null && !errorSuffix.isEmpty()){
+		if (errorSuffix != null && !errorSuffix.isEmpty()) {
 			this.errorSuffix = errorSuffix;
 		}
 	}
@@ -40,7 +47,7 @@ public class CoreProperties {
 	}
 
 	public void setErrorPrefix(String errorPrefix) {
-		if(errorPrefix!=null && !errorPrefix.isEmpty()){
+		if (errorPrefix != null && !errorPrefix.isEmpty()) {
 			this.errorPrefix = errorPrefix;
 		}
 	}
@@ -50,7 +57,7 @@ public class CoreProperties {
 	}
 
 	public void setErrorFolder(String errorFolder) {
-		if(errorFolder!=null && !errorFolder.isEmpty()){
+		if (errorFolder != null && !errorFolder.isEmpty()) {
 			this.errorFolder = errorFolder;
 		}
 	}
@@ -60,7 +67,7 @@ public class CoreProperties {
 	}
 
 	public void setTopGroupId(String topGroupId) {
-		if(topGroupId!=null && !topGroupId.isEmpty()){
+		if (topGroupId != null && !topGroupId.isEmpty()) {
 			this.topGroupId = topGroupId;
 		}
 	}
@@ -70,7 +77,7 @@ public class CoreProperties {
 	}
 
 	public void setBottomGroupId(String bottomGroupId) {
-		if(bottomGroupId!=null && !bottomGroupId.isEmpty()){
+		if (bottomGroupId != null && !bottomGroupId.isEmpty()) {
 			this.bottomGroupId = bottomGroupId;
 		}
 	}
@@ -80,7 +87,7 @@ public class CoreProperties {
 	}
 
 	public void setProcessErrorStat(String processErrorStat) {
-		if(processErrorStat!=null && !processErrorStat.isEmpty()){
+		if (processErrorStat != null && !processErrorStat.isEmpty()) {
 			this.processErrorStat = processErrorStat;
 		}
 	}
@@ -90,7 +97,7 @@ public class CoreProperties {
 	}
 
 	public void setConnectorErrorStat(String connectorErrorStat) {
-		if(connectorErrorStat!=null && !connectorErrorStat.isEmpty()){
+		if (connectorErrorStat != null && !connectorErrorStat.isEmpty()) {
 			this.connectorErrorStat = connectorErrorStat;
 		}
 	}
@@ -100,7 +107,7 @@ public class CoreProperties {
 	}
 
 	public void setConnectorNotFoundValue(String connectorNotFoundValue) {
-		if(connectorNotFoundValue!=null && !connectorNotFoundValue.isEmpty()){
+		if (connectorNotFoundValue != null && !connectorNotFoundValue.isEmpty()) {
 			this.connectorNotFoundValue = connectorNotFoundValue;
 		}
 	}
@@ -110,7 +117,7 @@ public class CoreProperties {
 	}
 
 	public void setQueueDelayTime(Long queueDelayTime) {
-		if(queueDelayTime!=null && queueDelayTime >1000){
+		if (queueDelayTime != null && queueDelayTime > 1000) {
 			this.queueDelayTime = queueDelayTime;
 		}
 	}
@@ -120,7 +127,7 @@ public class CoreProperties {
 	}
 
 	public void setQueueRetries(Integer queueRetries) {
-		if(queueRetries!=null && queueRetries >-1){
+		if (queueRetries != null && queueRetries > -1) {
 			this.queueRetries = queueRetries;
 		}
 	}
@@ -130,9 +137,46 @@ public class CoreProperties {
 	}
 
 	public void setDeliveredErrorPath(String deliveredErrorPath) {
-		if(deliveredErrorPath!=null && !deliveredErrorPath.isEmpty()){
+		if (deliveredErrorPath != null && !deliveredErrorPath.isEmpty()) {
 			this.deliveredErrorPath = deliveredErrorPath;
 		}
+	}
+
+	public Integer getMaximumPoolSize() {
+		return maximumPoolSize;
+	}
+
+	public void setMaximumPoolSize(Integer maximumPoolSize) {
+		this.maximumPoolSize = maximumPoolSize;
+	}
+
+	public Long getWaitTime() {
+		return waitTime;
+	}
+
+	public void setWaitTime(Long waitTime) {
+		this.waitTime = waitTime;
+	}
+
+	public Long getKeepAliveTime() {
+		return keepAliveTime;
+	}
+
+	public void setKeepAliveTime(Long keepAliveTime) {
+		this.keepAliveTime = keepAliveTime;
+	}
+
+	public Integer getCorePoolsize() {
+		return corePoolsize;
+	}
+
+	public void setCorePoolsize(Integer corePoolsize) {
+		this.corePoolsize = corePoolsize;
+	}
+
+	public void updateCallback(Map<String, ?> properties) {
+		this.setChanged();
+		this.notifyObservers();
 	}
 
 	@Override
