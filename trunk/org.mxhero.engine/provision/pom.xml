@@ -133,6 +133,27 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.pool</artifactId>
+			<version>1.5.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.lang</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.17</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>			
 		<!-- COMMONS DEPENDENCIES -->
 
 		<!-- SPRING FRAMEWORK DEPENDENCIES -->
@@ -186,6 +207,12 @@
 			<artifactId>org.springframework.transaction</artifactId>
 			<version>${org.springframework.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.test</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>test</scope>
+		</dependency>				
 		<!-- SPRING FRAMEWORK DEPENDENCIES -->
 
 		<!-- ECLIPSE GEMINI DEPENDENCIES -->
