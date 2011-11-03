@@ -9,9 +9,7 @@ import java.util.Collection;
 public class User {
 
 	private String mail;
-	
-	private Collection<UserList> lists;
-	
+
 	private Collection<String> aliases;
 	
 	private Domain domain;
@@ -32,20 +30,6 @@ public class User {
 	 */
 	public void setMail(String name) {
 		this.mail = name;
-	}
-
-	/**
-	 * @return
-	 */
-	public Collection<UserList> getLists() {
-		return lists;
-	}
-
-	/**
-	 * @param lists
-	 */
-	public void setLists(Collection<UserList> lists) {
-		this.lists = lists;
 	}
 
 	/**
