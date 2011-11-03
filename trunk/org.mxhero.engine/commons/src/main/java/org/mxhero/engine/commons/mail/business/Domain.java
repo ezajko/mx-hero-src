@@ -13,9 +13,6 @@ public class Domain {
 	private Boolean managed;
 	
 	private Collection<String> aliases;
-	
-	private Collection<DomainList> lists;
-
 
 	/**
 	 * @return
@@ -43,20 +40,6 @@ public class Domain {
 	 */
 	public void setAliases(Collection<String> aliases) {
 		this.aliases = aliases;
-	}
-
-	/**
-	 * @return the lists
-	 */
-	public Collection<DomainList> getLists() {
-		return lists;
-	}
-
-	/**
-	 * @param lists the lists to set
-	 */
-	public void setLists(Collection<DomainList> lists) {
-		this.lists = lists;
 	}
 
 	/**
