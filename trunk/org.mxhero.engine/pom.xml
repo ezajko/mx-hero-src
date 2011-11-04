@@ -12,6 +12,7 @@
     <org.osgi.service.http.port>9090</org.osgi.service.http.port>
     <felix.fileinstall.dir>C:/Users/chelo/Documents/mxherodev/engine/plugins,C:/Users/chelo/Documents/mxherodev/engine/configurations/properties</felix.fileinstall.dir>
     <felix.fileinstall.bundles.new.start>true</felix.fileinstall.bundles.new.start>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <packaging>pom</packaging>
