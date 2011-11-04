@@ -6,6 +6,7 @@
 	<properties>
 		<bundle.symbolicName>org.mxhero.engine.plugin.basecommands</bundle.symbolicName>
 		<bundle.namespace>org.mxhero.engine.plugin.basecommands</bundle.namespace>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
