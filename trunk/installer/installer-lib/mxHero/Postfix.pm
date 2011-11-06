@@ -25,7 +25,7 @@ sub install
 	my $errorRef = $_[0];
 
 	if ( &mxHero::Tools::zimbraCheck() ) {
-		print "Zimbra found, not installing postfix\n";
+		myPrint "Zimbra found, not installing postfix\n";
 		return &configure( $errorRef );
 	}
 
@@ -83,7 +83,7 @@ sub configure
 	}
 	
 	if ( ! $bool ) {
-		print "\n".T("Did not find a postfix 'master.cf' file.")."\n";
+		myPrint "\n".T("Did not find a postfix 'master.cf' file.")."\n";
 		my $reply = $term->get_reply( prompt => T("Please enter full path to your master.cf".":"));
 		if ( $reply && -f $reply ) {
 			# set master.cf path for alteration routine
@@ -92,8 +92,8 @@ sub configure
 				return 0;
 			}
 		} else {
-			print T("Failed to find file")." '$reply' \n";
-			print T("Stopping installation")."\n";
+			myPrint T("Failed to find file")." '$reply' \n";
+			myPrint T("Stopping installation")."\n";
 			$$errorRef = T("Failed to find configuration file");
 			return 0;
 		}
@@ -143,7 +143,7 @@ sub configure
 			}
 		
 			if ( ! $bool ) {
-				print "\n".T("Did not find a postfix 'main.cf' file.")."\n";
+				myPrint "\n".T("Did not find a postfix 'main.cf' file.")."\n";
 				my $file = $term->get_reply( prompt => T("Please enter full path to your main.cf".":"));
 				if ( $file && -f $file ) {
 					if ( ! &_alterPostfixMainCf( $file, $entry1, $entry2 ) ) {
@@ -151,8 +151,8 @@ sub configure
 						return 0;
 					}
 				} else {
-					print T("Failed to find file")." '$file' \n";
-					print T("Stopping installation")."\n";
+					myPrint T("Failed to find file")." '$file' \n";
+					myPrint T("Stopping installation")."\n";
 					$$errorRef = T("Failed to find configuration file");
 					return 0;
 				}

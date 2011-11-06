@@ -3,9 +3,12 @@ package mxHero::Locale;
 use strict;
 use warnings;
 
+use Term::ANSIColor qw(:constants);
+$Term::ANSIColor::AUTORESET = 1;
+
 use Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw(&T);
+our @EXPORT = qw(&T &myPrint);
 
 require mxHero::Locale::en_US;
 
@@ -26,6 +29,12 @@ sub T
 	{
 		return $message;
 	}
+}
+
+sub myPrint
+{
+	my $str = shift;
+	print BOLD GREEN $str;
 }
 
 1;

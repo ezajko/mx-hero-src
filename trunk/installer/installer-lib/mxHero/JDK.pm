@@ -29,7 +29,7 @@ sub install
 		$dirName = $myConfig{JDK_X86_DIRNAME};
 	}
 
-	print T("Installing JDK...(takes time)"), "\n";
+	myPrint T("Installing JDK...(takes time)"), "\n";
 	# my $cwd = cwd();
 	# chdir "$myConfig{INSTALLER_PATH}/binaries";
 	# &_progressCopy( "$dirName", "$myConfig{MXHERO_PATH}/$dirName" );
