@@ -1,0 +1,4 @@
+2011-11-06
+
++ Updated installer to allow for MySQL database passwords.
++ Adding coloring to installer terminal output.
