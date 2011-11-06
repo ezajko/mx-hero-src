@@ -112,7 +112,7 @@
 			<artifactId>org.springframework.test</artifactId>
 			<version>3.0.3.RELEASE</version>
 			<scope>test</scope>
-		</dependency>					
+		</dependency>
 	</dependencies>
 
 </project>
