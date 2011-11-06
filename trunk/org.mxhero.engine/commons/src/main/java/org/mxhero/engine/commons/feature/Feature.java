@@ -4,6 +4,8 @@ import java.util.Set;
 
 public class Feature {
 
+	private Integer id;
+	
 	private Integer basePriority;
 	
 	private Integer version;
@@ -11,6 +13,14 @@ public class Feature {
 	private String component;
 	
 	private Set<Rule> rules;
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public Integer getBasePriority() {
 		return basePriority;
@@ -62,17 +72,13 @@ public class Feature {
 		if (getClass() != obj.getClass())
 			return false;
 		Feature other = (Feature) obj;
-		if (component == null) {
-			if (other.component != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!component.equals(other.component))
-			return false;
-		if (version == null) {
-			if (other.version != null)
-				return false;
-		} else if (!version.equals(other.version))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
+
 
 }
