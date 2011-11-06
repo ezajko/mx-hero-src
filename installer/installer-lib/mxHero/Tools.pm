@@ -99,8 +99,8 @@ sub packageCheck
 	my $package = $_[0];
 	#my $minimumVersion = $_[1]; # not yet supported with multipackage
 
-	print "\n\n---------------------------\n";
-	print "Checking packages: $package\n";
+	myPrint "\n\n---------------------------\n";
+	myPrint "Checking packages: $package\n";
 	
 	my $distri = &getDistri();
 	
@@ -145,7 +145,7 @@ sub packageInstall
 {
 	my $package = $_[0];
 	
-	print "\n\n** INSTALLING package '$package' **\n\n";
+	myPrint "\n\n** INSTALLING package '$package' **\n\n";
 	sleep( 2 );
 
 	my $distri = &getDistri();
@@ -154,7 +154,7 @@ sub packageInstall
 		# apt-get return 0 on success, 100 on error
 		my $ret = system("/usr/bin/apt-get -y install $package 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
-			print "'$package' ... INSTALLED\n";
+			myPrint "'$package' ... INSTALLED\n";
 			return 1;
 		} else {
 			return 0;
@@ -162,7 +162,7 @@ sub packageInstall
 	} elsif ( $distri =~ /Redhat/ ) {
 		my $ret = system("/usr/bin/yum -y install $package");
 		if ( ($ret >> 8) == 0 ) {
-			print "'$package' ... INSTALLED\n";
+			myPrint "'$package' ... INSTALLED\n";
 			my $service;
 			if ( $package eq "mysql-server") {
 				$service = "mysqld";
@@ -200,7 +200,7 @@ sub packageListUpdate
 	if ( $distri =~ /Ubuntu/i || $distri =~ /Debian/i ) {
 		my $ret = system("/usr/bin/apt-get update 2>/dev/null");
 		if ( ($ret >> 8) == 0 ) {
-			print "Package database updated\n";
+			myPrint "Package database updated\n";
 			return 1;
 		} else {
 			return 0;
@@ -208,7 +208,7 @@ sub packageListUpdate
 	} elsif ( $distri =~ /Redhat/i ) {
 		my $ret = system("/usr/bin/yum update");
 		if ( ($ret >> 8) == 0 ) {
-			print "Package database updated\n";
+			myPrint "Package database updated\n";
 			return 1;
 		} else {
 			return 0;
@@ -289,7 +289,7 @@ sub setUTC
 				print_me => T("\nmxHero realtime statistics require a UTC system timezone.") );
 	
 	if ( ! $bool ) {
-		print "Quitting installation.\n";
+		myPrint "Quitting installation.\n";
 		exit;
 	}
 	

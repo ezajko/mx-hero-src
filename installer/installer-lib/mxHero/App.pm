@@ -26,7 +26,7 @@ sub install
 	}
 
 	# Copying all mxhero backend files (cp, dirty way?)
-	print T("Installing mxHero backend files..."), "\n";
+	myPrint T("Installing mxHero backend files..."), "\n";
 	if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/* $myConfig{MXHERO_PATH}")) != 0)
 	{
 		$$errorRef = T("Failed to copy mxhero files");
@@ -34,7 +34,7 @@ sub install
 	}
 
 	# Creating system user
-	print T("Creating mxHero user..."), "\n";
+	myPrint T("Creating mxHero user..."), "\n";
 
 	my $result = system ("useradd -d $myConfig{MXHERO_PATH} -s /bin/bash mxhero");
 	$result = ($result >> 8);
@@ -61,7 +61,7 @@ sub install
 	
 	## FRONTEND
 
-	print T("Installing mxHero frontend files..."), "\n";
+	myPrint T("Installing mxHero frontend files..."), "\n";
 	if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/web/*.war $myConfig{TOMCAT_WEBAPPS_PATH}")) != 0)
 	{
 		$$errorRef = T("Failed to install web interface");
