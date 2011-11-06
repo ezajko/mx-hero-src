@@ -19,6 +19,8 @@ my %PKG_NAME = (
 	# TODO: redhat, suse
 );
 
+my $DBPASS;
+
 sub install
 {
 	my $errorRef = $_[0];
@@ -33,6 +35,9 @@ sub install
 		}
 	}
 	
+	# Check database connectivity (permissions)
+	&_checkDBConnection();
+	
 	# TODO - check for existence of mxhero database. Query to remove.
 	# Note: this should be part of the uninstall subroutine.
 	if ( &_mxheroDatabaseExists ) {
@@ -42,9 +47,9 @@ sub install
 				default  => 'y',
 				print_me => T("\nFound database 'mxhero'. Maybe from a broken installation. Will now delete database.") );
 		if ( $bool ) {
-			system( "/usr/bin/mysql -e 'drop database mxhero'" );
-			system( "/usr/bin/mysql -e 'drop database statistics'" );
-			system( "/usr/bin/mysql -D mysql -e \"delete from event where db = \'statistics\'\"" );
+			system( "/usr/bin/mysql $DBPASS -e 'drop database mxhero'" );
+			system( "/usr/bin/mysql $DBPASS -e 'drop database statistics'" );
+			system( "/usr/bin/mysql $DBPASS -D mysql -e \"delete from event where db = \'statistics\'\"" );
 		}
 	}
 	
@@ -65,18 +70,20 @@ sub upgrade
 		return 0;
 	}
 
+	# Check database connectivity (permissions)
+	&_checkDBConnection();
+	
 	# list sql files and order by version precedence
 	# ONLY sql files GREATER THAN current installed mxHero version!
-	print "Updating database ...\n";
+	myPrint "Updating database ...\n";
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles( $mxHeroVersion ) ) {
 		for my $file ( @sqlFiles ) {
 			# NOTE: should get exit code to check for errors or use API
-			system( "/usr/bin/mysql < $file" );
-###			warn "TEST: /usr/bin/mysql < $file\n"; ### TEST
+			system( "/usr/bin/mysql $DBPASS < $file" );
 		}
 	} else {
-		$$errorRef = "Failed to find SQL files.";
+		$$errorRef = "Failed to find upgrade SQL files.";
 		return 0;
 	}
 	
@@ -168,13 +175,15 @@ sub createDatabase
 {
 	my $errorRef = $_[0];
 	
+	# Check database connectivity (permissions)
+	&_checkDBConnection();
+	
 	# Process all sql files - from first version to last
-	print "Creating database ...\n";
+	myPrint "Creating database ...\n";
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
 		for my $file ( @sqlFiles ) {
-			system( "/usr/bin/mysql < $file" );
-###			warn "TEST: /usr/bin/mysql < $file\n"; ### TEST
+			system( "/usr/bin/mysql $DBPASS < $file" );
 		}
 	} else {
 		$$errorRef = "Failed to find SQL files.";
@@ -226,7 +235,7 @@ sub _mxheroDatabaseExists
 {
 	my $query = "\"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'mxhero'\"";
 
-	my $out = `/usr/bin/mysql -e $query`;
+	my $out = `/usr/bin/mysql $DBPASS -e $query`;
 	chomp($out);
 
 	if ( ! $out ) {
@@ -236,7 +245,28 @@ sub _mxheroDatabaseExists
 	return 1;
 }
 
-
+sub _checkDBConnection
+{
+	my $exit = system ("/usr/bin/mysql $DBPASS -e ''");
+	if ( ($exit >> 8) ) {
+		myPrint T("\nFailed to connect to MySQL database\n");
+		my $term = Term::ReadLine->new( 'mxHero' );
+		my $reply = $term->get_reply( prompt => T("Enter the root password of your MySQL database").":" );
+		chomp( $reply );
+		if ( ! $reply ) {
+			myPrint T("No password given").".\n";
+			myPrint T("Exiting installer").".\n\n";
+			exit 1;
+		}
+		$DBPASS = "-p$reply";
+		$exit = system ("/usr/bin/mysql $DBPASS -e ''");
+		if ( ($exit >> 8) ) {
+			myPrint "\n".T("Failed to connect to MySQL database with password: $reply")."\n";
+			myPrint T("Exiting installer").".\n\n";
+			exit 1;
+		}
+	}
+}
 
 
 
