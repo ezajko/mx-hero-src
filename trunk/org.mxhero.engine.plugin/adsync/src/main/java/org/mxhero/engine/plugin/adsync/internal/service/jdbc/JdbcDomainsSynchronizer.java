@@ -40,6 +40,8 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 	
 	private String outputService=OUTPUT_SERVICE;
 	
+	private Boolean useMailAlternateAddress = false;
+	
 	private DomainAdLdapRepository repository;
 
 	@Autowired(required=true)
@@ -70,6 +72,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 			ADSource source;
 			try {
 				source = new ADSource(domainAd.getAddres(), domainAd.getPort(), domainAd.getUser(), domainAd.getPassword(), domainAd.getSslFlag(), domainAd.getBase());
+				source.setUseMailAlternateAddress(this.getUseMailAlternateAddress());
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -174,6 +177,14 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 
 	public void setOutputService(String outputService) {
 		this.outputService = outputService;
+	}
+
+	public Boolean getUseMailAlternateAddress() {
+		return useMailAlternateAddress;
+	}
+
+	public void setUseMailAlternateAddress(Boolean useMailAlternateAddress) {
+		this.useMailAlternateAddress = useMailAlternateAddress;
 	}
 	
 }
