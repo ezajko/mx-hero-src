@@ -15,7 +15,7 @@ public class CachedRecordRepository implements RecordRepository, Runnable{
 	
 	private Set<Stat> stats;
 	
-	private Long updateTime = 15000l;
+	private Long updateTime = 5000l;
 	
 	private static final long CHECK_TIME = 1000;
 	

@@ -24,7 +24,7 @@
 		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/statistics</prop>
 		<prop key="jdbcUserName">mxhero</prop>
 		<prop key="jdbcPassord">mxhero</prop>
-		<prop key="updateTime">60000</prop>
+		<prop key="updateTime">5000</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
