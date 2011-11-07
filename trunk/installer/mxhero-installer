@@ -44,9 +44,9 @@ if ( $distri eq 'Ubuntu' ) {
 		print "Linux $distri $version not supported or tested. Cancelling install.\n\n";
 		exit;
 	}
-} elsif ( $distri eq 'Redhat' ) {
-	print "Linux $distri not yet supported or tested. Cancelling install.\n\n";
-	exit;
+} 
+elsif ( $distri eq 'Redhat' ) {
+	&mxHero::Tools::adjustRedhat();
 }
 # Must be root
 if ( $> ) {
