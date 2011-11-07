@@ -22,7 +22,8 @@
 
 	<repositories>
 		<repository>
-			<id>releases</id>
+			<id>com.mxhero.repository.releases</id>
+			<name>mxHero Repository</name>
 			<url>http://repository.mxhero.com:8081/nexus/content/repositories/releases</url>
 		</repository>
 	</repositories>
@@ -148,7 +149,58 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.17</version>
 		</dependency>
-	
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.codec</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>com.springsource.org.jasypt.encryption</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>com.springsource.org.apache.velocity</artifactId>
+			<version>1.5.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jdom</groupId>
+					<artifactId>com.springsource.org.jdom</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>com.springsource.org.jdom</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.beanutils</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.digester</artifactId>
+			<version>1.8.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>com.springsource.org.apache.velocity.tools.view</artifactId>
+			<version>1.4.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.commons</groupId>
+					<artifactId>com.springsource.org.apache.commons.beanutils</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<!-- COMMONS DEPENDENCIES -->
 
 		<!-- SPRING FRAMEWORK DEPENDENCIES -->
@@ -201,7 +253,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.transaction</artifactId>
 			<version>${org.springframework.version}</version>
-		</dependency>			
+		</dependency>
 		<!-- SPRING FRAMEWORK DEPENDENCIES -->
 
 		<!-- ECLIPSE GEMINI DEPENDENCIES -->
