@@ -18,6 +18,14 @@ public class TestUserRepository {
 	@Autowired
 	private JdbcUserRepository repository;
 
+	@Test
+	public void test(){
+		Map<String, Domain> domainMap = repository.getDomains();
+		Assert.assertNotNull(domainMap);
+		Map<String, User> usersMap = repository.getUsers();
+		Assert.assertNotNull(usersMap);
+	}
+	
 	public JdbcUserRepository getRepository() {
 		return repository;
 	}
@@ -26,11 +34,5 @@ public class TestUserRepository {
 		this.repository = repository;
 	}
 	
-	@Test
-	public void test(){
-		Map<String, Domain> domainMap = repository.getDomains();
-		Assert.assertNotNull(domainMap);
-		Map<String, User> usersMap = repository.getUsers();
-		Assert.assertNotNull(usersMap);
-	}
+
 }

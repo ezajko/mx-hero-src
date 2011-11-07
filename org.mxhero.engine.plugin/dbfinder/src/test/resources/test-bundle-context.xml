@@ -11,8 +11,6 @@
 	<context:component-scan base-package="org.mxhero.engine.plugin.dbfinder" />
 
 	<context:annotation-config />
-	
-	<tx:annotation-driven transaction-manager="txManager" />
 
 	<bean id="userFinderService" class="org.mxhero.engine.plugin.dbfinder.internal.service.MappedUserFinder">
 		<property name="repository" ref="cachedUserRepository"/>
