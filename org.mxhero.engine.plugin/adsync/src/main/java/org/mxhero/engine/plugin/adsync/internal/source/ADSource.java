@@ -19,6 +19,7 @@ public class ADSource {
 	private LdapTemplate tpl = null;
 	private LdapContextSource source = null;
 	private static Logger log = LoggerFactory.getLogger(ADSource.class);
+	private boolean useMailAlternateAddress = true;
 	
 	public ADSource(String address, String port, String user, String password, boolean ssl, String base) throws Exception {
 		String connectionAddress="ldap://";
@@ -60,11 +61,18 @@ public class ADSource {
 						}
 						Account account = new Account();
 						account.setUid(attrs.get(id).get().toString());
-						
-						if(attrs.get("mail")!=null && attrs.get("mail").size()>0){
-							account.setMails(new HashSet<String>());
+						account.setMails(new HashSet<String>());
+						if(attrs.get("mail")!=null && attrs.get("mail").size()>0){			
 							for(int i=0;i<attrs.get("mail").size();i++){
 								account.getMails().add(attrs.get("mail").get(i).toString().toLowerCase().trim());
+							}
+						}
+						
+						if(useMailAlternateAddress){
+							if(attrs.get("mailAlternateAddress")!=null && attrs.get("mailAlternateAddress").size()>0){
+								for(int i=0;i<attrs.get("mailAlternateAddress").size();i++){
+									account.getMails().add(attrs.get("mailAlternateAddress").get(i).toString().toLowerCase().trim());
+								}
 							}
 						}
 						
@@ -117,5 +125,12 @@ public class ADSource {
 		
 	}
 
+	public boolean isUseMailAlternateAddress() {
+		return useMailAlternateAddress;
+	}
+
+	public void setUseMailAlternateAddress(boolean useMailAlternateAddress) {
+		this.useMailAlternateAddress = useMailAlternateAddress;
+	}
 	
 }
