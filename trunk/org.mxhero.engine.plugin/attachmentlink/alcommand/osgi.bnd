@@ -1,0 +1,7 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Embed-Dependency: \
+bonecp;groupId=com.jolbox;inline=false,\
+guava;groupId=com.google.guava;inline=false
