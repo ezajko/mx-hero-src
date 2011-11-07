@@ -45,10 +45,14 @@ public class DSControllerRunner {
 	private class DSRunner implements Runnable{
 
 		public void run() {
+			long lastCheck = 0;
 			while(keepWorking){
-				checkAndSync();
+				if(lastCheck+CHECK_TIME-System.currentTimeMillis()<0){
+					checkAndSync();
+					lastCheck=System.currentTimeMillis();
+				}
 				try {
-					Thread.sleep(CHECK_TIME);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					log.error("interrupted while waiting for next cicle",e);
 				}
