@@ -11,8 +11,6 @@
 	<context:component-scan base-package="org.mxhero.engine.plugin.statistics" />
 
 	<context:annotation-config />
-	
-	<tx:annotation-driven transaction-manager="txManager" />
 
 	<bean id="logStatCommand" class="org.mxhero.engine.plugin.statistics.internal.command.LogStatCommand">
 		<property name="repository" ref="cachedRecordRepository"/>
