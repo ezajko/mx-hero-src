@@ -3,4 +3,7 @@
 #-----------------------------------------------------------------
 
 Import-Package: \
-com.mysql.jdbc, *
+com.mysql.jdbc, \
+org.aopalliance.aop, \
+org.springframework.aop, \
+org.springframework.aop.framework, *
