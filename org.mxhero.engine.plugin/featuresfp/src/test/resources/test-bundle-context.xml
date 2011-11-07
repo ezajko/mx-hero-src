@@ -12,8 +12,6 @@
 
 	<context:annotation-config />
 
-	<tx:annotation-driven transaction-manager="txManager" />
-
 	<bean id="jdbcRulesFinder" class="org.mxhero.engine.plugin.featuresfp.internal.JdbcRulesFinder"/>
 
 	<bean id="txManager"
