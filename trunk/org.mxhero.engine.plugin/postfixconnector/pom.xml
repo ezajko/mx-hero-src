@@ -79,6 +79,7 @@
 			<groupId>org.mxhero.engine.build</groupId>
 			<artifactId>provision</artifactId>
 			<version>1.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -98,6 +99,7 @@
 			<groupId>org.mxhero.engine</groupId>
 			<artifactId>commons</artifactId>
 			<version>1.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mailster</groupId>
