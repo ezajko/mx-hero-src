@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository("jdbcUserRepository")
-@Transactional(readOnly=true)
 public class JdbcUserRepository implements UserRepository{
 
 	private NamedParameterJdbcTemplate template;
@@ -27,7 +26,7 @@ public class JdbcUserRepository implements UserRepository{
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 	
-	
+	@Transactional(readOnly=true)
 	public Map<String, Domain> getDomains(){
 		String domainSql = "SELECT domain, alias FROM domains_aliases";
 		Map<String, Domain> domainMap = new HashMap<String, Domain>();
@@ -51,6 +50,7 @@ public class JdbcUserRepository implements UserRepository{
 		return domainMap;
 	}
 	
+	@Transactional(readOnly=true)
 	private Map<String, User> getUsers(Map<String, Domain> domainMap){
 		Map<String, User> aliasesMap = new HashMap<String, User>();	
 		if(domainMap.size()>0){
