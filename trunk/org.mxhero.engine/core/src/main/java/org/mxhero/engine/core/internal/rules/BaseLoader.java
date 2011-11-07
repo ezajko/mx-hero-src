@@ -62,7 +62,6 @@ public class BaseLoader implements Runnable{
 				log.warn("error while building knowledge base",e);
 			}
 		}
-		log.info("Stopping");
 	}
 	
 	/**
