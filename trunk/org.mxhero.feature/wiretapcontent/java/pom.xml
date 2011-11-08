@@ -4,39 +4,45 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<properties>
-		<bundle.symbolicName>org.mxhero.feature.wiretapcontent</bundle.symbolicName>
-		<bundle.namespace>org.mxhero.feature.wiretapcontent</bundle.namespace>
-		<org.springframework.version>3.0.3.RELEASE</org.springframework.version>
+		<bundle.symbolicName>org.mxhero.feature.wiretapcontent.provider</bundle.symbolicName>
+		<bundle.namespace>org.mxhero.feature.wiretapcontent.provider</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.feature.wiretapcontent</groupId>
-	<artifactId>wiretapcontent-java</artifactId>
-	<version>1.0.0</version>
+	<artifactId>provider</artifactId>
+	<version>1.2.0</version>
 
-	<name>org.mxhero.feature.wiretapcontent-java</name>
+	<name>${bundle.symbolicName}</name>
 
 	<packaging>bundle</packaging>
 
 	<dependencies>
 		<dependency>
+			<type>pom</type>
+			<groupId>org.mxhero.engine.build</groupId>
+			<artifactId>provision</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi_R4_core</artifactId>
+			<optional>true</optional>
 			<version>1.0</version>
 			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi_R4_compendium</artifactId>
+			<optional>true</optional>
 			<version>1.0</version>
 			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.mxhero.engine</groupId>
-			<artifactId>domain</artifactId>
-			<version>1.0.0.M1</version>
+			<artifactId>commons</artifactId>
+			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -45,69 +51,10 @@
 			<version>4.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.ops4j.pax.logging</groupId>
-			<artifactId>pax-logging-api</artifactId>
-			<version>1.5.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.context</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.aop</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.asm</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.aopalliance</groupId>
-			<artifactId>com.springsource.org.aopalliance</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.expression</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.beans</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.core</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.test</artifactId>
-			<version>${org.springframework.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.lang</artifactId>
-			<version>2.5.0</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>org.mxhero.feature.wiretapcontent_${pom.version}</finalName>
+		<finalName>${bundle.symbolicName}-${pom.version}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -144,7 +91,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>1.4.3</version>
+				<version>2.2.0</version>
 				<!-- | the following instructions build a simple set of public/private 
 					classes into an OSGi bundle -->
 				<configuration>
