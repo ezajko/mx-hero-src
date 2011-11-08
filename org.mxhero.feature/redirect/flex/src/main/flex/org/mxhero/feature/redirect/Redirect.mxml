@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			private var properties:ArrayCollection;
+			
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				if(properties!=null){
+					emailTi.text=PropertyHelper.getProperty(properties,"redirect.email").propertyValue;
+				}
+			}
+			
+			public function isValid():Boolean{
+				var results:Array = emailV.validate().results;
+				if(results == null || results.length<1){
+					return true;
+				}
+				return false;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				properties = data;
+			}
+			
+			public function getProperties():ArrayCollection{
+				var ruleProperties:ArrayCollection = new ArrayCollection();
+				
+				var property:FeatureRuleProperty = new FeatureRuleProperty();
+				property.propertyKey="redirect.email";
+				property.propertyValue=emailTi.text;
+				ruleProperties.addItem(property);
+				
+				return ruleProperties;
+			}
+			
+			public function getValidationError():String{
+				return emailTi.errorString;
+			}
+
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("redirect")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString('redirect','redirect.label')}" fontSize="16" fontWeight="bold"/>
+	<s:HGroup verticalAlign="middle" paddingLeft="20">
+		<s:Label text="{resourceManager.getString('redirect','email.addres.label')}"/>
+		<s:TextInput id="emailTi" width="300"/>
+	</s:HGroup>
+	
+</mx:Module>
