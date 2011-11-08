@@ -5,7 +5,6 @@
 	<properties>
 		<bundle.symbolicName>org.mxhero.feature.attachmentlink.provider</bundle.symbolicName>
 		<bundle.namespace>org.mxhero.feature.attachmentlink.provider</bundle.namespace>
-		<org.springframework.version>3.0.3.RELEASE</org.springframework.version>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
