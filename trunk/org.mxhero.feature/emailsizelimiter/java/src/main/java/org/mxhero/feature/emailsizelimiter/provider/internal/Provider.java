@@ -1,17 +1,17 @@
-package org.mxhero.feature.emailsizelimiter.internal;
+package org.mxhero.feature.emailsizelimiter.provider.internal;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-import org.mxhero.engine.domain.feature.Rule;
-import org.mxhero.engine.domain.feature.RuleProperty;
-import org.mxhero.engine.domain.mail.business.Mail;
-import org.mxhero.engine.domain.mail.business.MailState;
-import org.mxhero.engine.domain.mail.business.RulePhase;
-import org.mxhero.engine.domain.rules.Actionable;
-import org.mxhero.engine.domain.rules.CoreRule;
-import org.mxhero.engine.domain.rules.Evaluable;
-import org.mxhero.engine.domain.rules.provider.RulesByFeature;
+import org.mxhero.engine.commons.feature.Rule;
+import org.mxhero.engine.commons.feature.RuleProperty;
+import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.rules.Actionable;
+import org.mxhero.engine.commons.rules.CoreRule;
+import org.mxhero.engine.commons.rules.Evaluable;
+import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 
 public class Provider extends RulesByFeature{
 
@@ -102,7 +102,7 @@ public class Provider extends RulesByFeature{
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.initialsizelimiter");
 			}
 			if(action.equalsIgnoreCase(ACTION_RETURN) && isDropped){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Replay",replyMail,returnMessage,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,returnMessage,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.initialsizelimiter",Boolean.toString(isDropped) );
 		}
