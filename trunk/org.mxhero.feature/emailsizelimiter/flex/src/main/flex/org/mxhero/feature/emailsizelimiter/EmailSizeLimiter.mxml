@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="blockType"/>
+		<mx:NumberValidator id="sizeV" 
+							required="true" 
+							allowNegative="false" 
+							source="{sizeTi}" 
+							property="text"
+							/>
+		<mx:NumberFormatter id="numberFormatter"
+							useThousandsSeparator="false"
+							useNegativeSign="true"
+							/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.formatters.NumberFormatter;
+			import mx.managers.DragManager;
+			import mx.messaging.messages.ErrorMessage;
+			import mx.resources.ResourceManager;
+			import mx.utils.StringUtil;
+			import mx.validators.NumberValidatorDomainType;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			public var validationError:String;
+			
+			private var initialProperties:ArrayCollection;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				returnTa.text=resourceManager.getString('emailsizelimiter','action.return.textarea.text');
+				loadData();
+			}
+			
+			public function isValid():Boolean{
+				var valResult:Array = sizeV.validate().results;
+				if(valResult!=null && valResult.length>0){
+					validationError = sizeTi.errorString;
+					return false;
+				}
+				if(returnRb.selected){
+					if(StringUtil.trim(returnTa.text).length<1){
+						validationError = resourceManager.getString('emailsizelimiter','error.return.message');
+						return false;
+					}
+				}
+				validationError="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				this.initialProperties=data;
+			}
+			
+			private function loadData():void{
+				if(initialProperties!=null){
+					var property:FeatureRuleProperty;
+					property=PropertyHelper.getProperty(initialProperties,'max.size');
+					if(property!=null){
+						sizeTi.text=property.propertyValue;
+					}
+					property=PropertyHelper.getProperty(initialProperties,'action.selection');
+					if(property!=null && property.propertyValue=='return'){
+						returnRb.selected=true;
+						returnTa.text=PropertyHelper.getProperty(initialProperties,'return.message').propertyValue;
+					} else if(property!=null && property.propertyValue=='discard'){
+						discardRb.selected=true;
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				var property:FeatureRuleProperty = new FeatureRuleProperty();
+				numberFormatter.decimalSeparatorFrom=sizeV.decimalSeparator;
+				numberFormatter.decimalSeparatorTo=sizeV.decimalSeparator;
+				numberFormatter.thousandsSeparatorFrom=sizeV.thousandsSeparator;
+				numberFormatter.thousandsSeparatorTo=sizeV.thousandsSeparator;
+				property.propertyKey='max.size';
+				property.propertyValue=numberFormatter.format(sizeTi.text).replace(sizeV.decimalSeparator,".");
+				properties.addItem(property);
+				
+				ResourceManager.getInstance().localeChain[0];
+				if(returnRb.selected){
+					property = new FeatureRuleProperty();
+					property.propertyKey='action.selection';
+					property.propertyValue='return';
+					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey='return.message';
+					property.propertyValue=returnTa.text;
+					properties.addItem(property);
+				} else if(discardRb.selected){
+					property = new FeatureRuleProperty();
+					property.propertyKey='action.selection';
+					property.propertyValue='discard';
+					properties.addItem(property);
+				}
+
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return this.validationError;
+			}
+			
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("emailsizelimiter")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString('emailsizelimiter','first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:HGroup verticalAlign="middle" paddingLeft="24">
+		<s:Label text="{resourceManager.getString('emailsizelimiter','size.label.start')}"/>
+		<s:TextInput id="sizeTi" width="50" text="10"/>
+		<s:Label text="{resourceManager.getString('emailsizelimiter','size.label.end')}"/>
+	</s:HGroup>
+	
+	<s:Label text="{resourceManager.getString('emailsizelimiter','second.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20" gap="20">
+		<s:VGroup>
+			<s:RadioButton id="returnRb" 
+						   groupName="blockType"
+						   label="{resourceManager.getString('emailsizelimiter','action.return.label')}"
+						   selected="true"/>
+			<s:VGroup paddingLeft="18">
+				<s:Label 
+					paddingTop="5"
+					text="{resourceManager.getString('emailsizelimiter','action.return.textarea.title')}"
+					fontStyle="italic"/>
+				<s:TextArea id="returnTa"
+							editable="true" 
+							enabled="{returnRb.selected}"
+							width="350"/>			
+			</s:VGroup>
+		</s:VGroup>
+		<s:RadioButton id="discardRb" 
+					   groupName="blockType"
+					   label="{resourceManager.getString('emailsizelimiter','action.discard.label')}"/>
+	</s:VGroup>
+</mx:Module>
