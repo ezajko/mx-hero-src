@@ -4,8 +4,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<properties>
-		<bundle.symbolicName>org.mxhero.feature.emailsizelimiter</bundle.symbolicName>
-		<bundle.namespace>org.mxhero.feature.emailsizelimiter</bundle.namespace>
+		<bundle.symbolicName>org.mxhero.feature.emailsizelimiter.provider</bundle.symbolicName>
+		<bundle.namespace>org.mxhero.feature.emailsizelimiter.provider</bundle.namespace>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
