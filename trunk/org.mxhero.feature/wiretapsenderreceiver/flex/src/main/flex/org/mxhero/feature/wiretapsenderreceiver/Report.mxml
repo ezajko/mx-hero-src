@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   width="100%"
+		   height="100%" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   xmlns:mails="org.mxhero.console.components.mails.*"
+		   implements="org.mxhero.console.commons.feature.IReport">
+	
+	<fx:Declarations>
+
+		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
+		
+		<mx:SeriesSlide id="slideIn" 
+						duration="800" 
+						direction="up"/>
+		
+		<mx:SeriesSlide id="slideOut" 
+						duration="800" 
+						direction="down"/>
+		
+		<fx:Array id="bge">
+			<mx:GridLines 
+				horizontalChangeCount="1" 
+				verticalChangeCount="1"
+				gridDirection="both"
+				>
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:verticalStroke>
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+			</mx:GridLines>
+		</fx:Array>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace chartClasses "mx.charts.chartClasses.*"; 
+		
+		mx|ColumnChart.myChart {
+			fontSize:14;
+			font-weight:bold;
+			data-tip-style-name:myDataTip;
+			axisTitleStyleName:axisTitles;
+		}
+
+		.axisTitles {
+			color:#323232;
+			fontWeight:bold;
+			fontFamily:Ubuntu;
+			fontSize:16;
+		}
+
+		
+		.myDataTip{
+			color:#000000;
+			font-style:italic;
+			font-weight:bold;
+			border-weight:2;
+		}
+		
+	</fx:Style>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.events.ChartItemEvent;
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.IReport;
+			import org.mxhero.console.commons.feature.IReportService;
+			import org.mxhero.console.commons.feature.TimeUtils;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private static const WEEK:String = "week";
+			private static const TODAY:String = "today";
+			private static const SENDER_QUERY:String = "sender.query";
+			private static const RECIPIENT_QUERY:String = "recipient.query";
+			
+			private var selectedPeriod:String = TODAY;
+			
+			[Bindable]
+			private var options:ArrayCollection;
+			
+			private var _reportService:IReportService;
+			
+			[Bindable]
+			private var _senders:ArrayCollection;
+			
+			private static const DAYSBEFORE:Number = 24*60*60*1000; 
+			
+			[Bindable]
+			private static var sinceDate:Date;
+			
+			[Bindable]
+			private var _recipients:ArrayCollection;
+			
+			private var _sendersQuery:String =	"SELECT COUNT(*), r0.from_recipeints " 
+				+" FROM mail_records r0 " 
+				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
+				+" AND EXISTS( SELECT 1 FROM mail_stats s "
+				+" WHERE s.insert_date = r0.insert_date " 
+				+" AND s.record_sequence = r0.record_sequence " 
+				+" AND s.stat_key = 'org.mxhero.feature.wiretapsenderreceiver' ) ";
+			
+			private var _recipientsQuery:String =	"SELECT COUNT(*), r0.recipient " 
+				+" FROM mail_records r0 " 
+				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
+				+" AND EXISTS( SELECT 1 FROM mail_stats s "
+				+" WHERE s.insert_date = r0.insert_date " 
+				+" AND s.record_sequence = r0.record_sequence " 
+				+" AND s.stat_key = 'org.mxhero.feature.wiretapsenderreceiver' ) ";
+			
+		
+			public function setResult(queryId:String, result:*):void{
+				if(queryId==SENDER_QUERY){
+					var sendersArray:Array = new Array();
+					for each(var dataRow:Object in result){
+						sendersArray.push({Qty:dataRow[0],Email:dataRow[1]});
+					}
+					this._senders=new ArrayCollection(sendersArray.reverse());
+				}else if(queryId==RECIPIENT_QUERY){
+					var recipientsArray:ArrayCollection = new ArrayCollection();
+					for each(var row:Object in result){
+						recipientsArray.addItem({Qty:row[0],Email:row[1]});
+					}
+					this._recipients=recipientsArray;
+				}
+			}
+			
+			public function setReportService(service:IReportService):void{
+				_reportService=service;
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				options = 
+					new ArrayCollection([{label:resourceManager.getString('wiretapsenderreceiver_report','last.week'),value:'week'}, 
+						{label:resourceManager.getString('wiretapsenderreceiver_report','today'),value:'today'}]);
+				periodBar.selectedIndex=1;
+			}
+			
+			
+			public function refresh():void
+			{
+				sinceDate=new Date();
+				if(selectedPeriod==TODAY){
+					sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+				}else if(selectedPeriod==WEEK){
+					sinceDate.setTime(sinceDate.getTime()-7*DAYSBEFORE);
+				}
+				sinceDate.setHours(0,0,0,0);
+				queryForSenders();
+				queryForRecipients();
+			}
+			
+			private function queryForSenders():void{
+				var domain:String = _reportService.getDomain();
+				var params:Array = new Array();
+				var sendersQuery:String = _sendersQuery;
+				
+				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+
+				if(domain!=null){
+					params.push(domain,domain);
+					sendersQuery = sendersQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
+				}
+				sendersQuery = sendersQuery + " group by r0.from_recipeints ORDER BY 1 DESC limit 10 ";
+				_reportService.processQuery(SENDER_QUERY,sendersQuery,params,this);
+				
+			}
+			
+			private function queryForRecipients():void{
+				var domain:String = _reportService.getDomain();
+				var params:Array = new Array();
+				var recipientsQuery:String = _recipientsQuery;
+				
+				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+
+				if(domain!=null){
+					params.push(domain,domain);
+					recipientsQuery = recipientsQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
+				}
+				recipientsQuery = recipientsQuery + " group by r0.recipient ORDER BY 1 DESC limit 10";
+				_reportService.processQuery(RECIPIENT_QUERY,recipientsQuery,params,this);
+				
+			}
+			
+			protected function buttonbar1_changeHandler(event:IndexChangeEvent):void
+			{
+				selectedPeriod=ButtonBar(event.target).selectedItem.value;
+				refresh();
+			}
+		]]>
+	</fx:Script>
+		
+	<fx:Metadata>
+		[ResourceBundle("wiretapsenderreceiver_report")]
+	</fx:Metadata>
+	
+		<s:HGroup horizontalAlign="left" 
+				  width="100%"
+				  paddingRight="5"
+				  paddingBottom="5"
+				  paddingTop="40">
+			<s:Label text="{resourceManager.getString('wiretapsenderreceiver_report','topten.senders.title')}" 
+					 fontWeight="bold" fontSize="16"
+					 color="#FFFFFF"
+					 textDecoration="underline"/>
+			<mx:Spacer width="100%"/>
+			<s:ButtonBar id="periodBar"
+						 buttonMode="true" 
+						 change="buttonbar1_changeHandler(event)"
+						 dataProvider="{options}"
+						 requireSelection="true"
+						 selectedIndex="1"/>
+		</s:HGroup>
+		
+		<s:VGroup width="100%" height="100%">
+
+			
+			<mx:BarChart id="linechart" color="0x323232" 
+							width="100%"
+							minHeight="200"
+							height="100%"
+							showDataTips="true" 
+							styleName="myChart"
+							dataProvider="{_senders}"
+							axisTitleStyleName="axisTitles"
+							backgroundElements="{bge}">
+				
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+				
+				<mx:horizontalAxis>
+
+					<mx:LinearAxis id="qtyAxis" 
+								   displayName="{resourceManager.getString('wiretapsenderreceiver_report','amount.axis')}"  
+								   title="{resourceManager.getString('wiretapsenderreceiver_report','amount.axis')}" 
+								   />
+				</mx:horizontalAxis>
+				
+				<mx:verticalAxis>
+
+					<mx:CategoryAxis
+						id="emailAxis"
+						categoryField="Email"
+						displayName="{resourceManager.getString('wiretapsenderreceiver_report','mail.axis')}"
+						title="{resourceManager.getString('wiretapsenderreceiver_report','mail.axis')}"
+						/>
+				</mx:verticalAxis>
+				
+				<mx:verticalAxisRenderers>
+					<mx:AxisRenderer 
+						axis="{emailAxis}" 
+						color="#FFFFFF" 
+						fontSize="14"
+						/>
+				</mx:verticalAxisRenderers>
+				
+				<mx:horizontalAxisRenderers>
+					<mx:AxisRenderer 
+						axis="{qtyAxis}" 
+						color="#FFFFFF" 
+						fontSize="14"
+						/>	  
+
+
+				</mx:horizontalAxisRenderers>
+
+				<mx:fill>
+					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+				</mx:fill>
+				
+				<mx:series>
+					<mx:BarSeries xField="Qty" 
+									 yField="Email" 
+									 showDataEffect="{slideIn}" 
+									 hideDataEffect="{slideOut}"
+									 id="cserie"
+									 >
+						<mx:stroke>
+							<s:SolidColorStroke color="#FFFFFF" caps="round" />
+						</mx:stroke>
+						<mx:fills>
+							<mx:SolidColor color="0xC6FFB3" alpha=".6"/>
+							<mx:SolidColor color="0xB3FF99" alpha=".6"/>
+							<mx:SolidColor color="0x9FFF80" alpha=".6"/>
+							<mx:SolidColor color="0x8CFF66" alpha=".6"/>
+							<mx:SolidColor color="0x79FF4D" alpha=".6"/>
+							<mx:SolidColor color="0x66FF33" alpha=".6"/>
+							<mx:SolidColor color="0x53FF1A" alpha=".6"/>
+							<mx:SolidColor color="0x40FF00" alpha=".6"/>
+							<mx:SolidColor color="0x39E600" alpha=".6"/>
+							<mx:SolidColor color="0x33CC00" alpha=".6"/>
+						</mx:fills>
+						<mx:filters>
+							<s:DropShadowFilter
+								distance="8"
+								color="0x666666"
+								alpha=".8"/>
+						</mx:filters>
+					</mx:BarSeries>
+				</mx:series>
+				
+			</mx:BarChart>
+			
+		</s:VGroup>
+
+	<s:HGroup horizontalAlign="left" 
+				  width="100%"
+				  paddingRight="5"
+				  paddingBottom="5">
+			<s:Label text="{resourceManager.getString('wiretapsenderreceiver_report','topten.recipients.title')}" 
+					 fontWeight="bold" fontSize="16"
+					 color="#FFFFFF"
+					 textDecoration="underline"/>
+		</s:HGroup>
+	
+		<s:VGroup width="100%" height="100%">
+
+			<mx:BarChart id="linechartTo" color="0x323232" 
+						 width="100%"
+						 minHeight="200"
+						 height="100%"
+						 showDataTips="true" 
+						 styleName="myChart"
+						 dataProvider="{_recipients}"
+						 axisTitleStyleName="axisTitles"
+						 backgroundElements="{bge}">
+				
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+				
+				<mx:horizontalAxis>
+					
+					<mx:LinearAxis id="qtyAxisTo" 
+								   displayName="{resourceManager.getString('wiretapsenderreceiver_report','amount.axis')}"  
+								   title="{resourceManager.getString('wiretapsenderreceiver_report','amount.axis')}" 
+								   />
+				</mx:horizontalAxis>
+				
+				<mx:verticalAxis>
+					
+					<mx:CategoryAxis
+						id="emailAxisTo"
+						categoryField="Email"
+						displayName="{resourceManager.getString('wiretapsenderreceiver_report','mail.axis')}"
+						title="{resourceManager.getString('wiretapsenderreceiver_report','mail.axis')}"
+						/>
+				</mx:verticalAxis>
+				
+				<mx:verticalAxisRenderers>
+					<mx:AxisRenderer 
+						axis="{emailAxisTo}" 
+						color="#FFFFFF" 
+						fontSize="14"
+						/>
+				</mx:verticalAxisRenderers>
+				
+				<mx:horizontalAxisRenderers>
+					<mx:AxisRenderer 
+						axis="{qtyAxisTo}" 
+						color="#FFFFFF" 
+						fontSize="14"
+						/>	  
+					
+					
+				</mx:horizontalAxisRenderers>
+				
+				<mx:fill>
+					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+				</mx:fill>
+				
+				<mx:series>
+					<mx:BarSeries xField="Qty" 
+								  yField="Email" 
+								  showDataEffect="{slideIn}" 
+								  hideDataEffect="{slideOut}"
+								  id="cserieTo"
+								  >
+						<mx:stroke>
+							<s:SolidColorStroke color="#FFFFFF" caps="round" />
+						</mx:stroke>
+						<mx:fills>
+							<mx:SolidColor color="0xCCD9FF" alpha=".6"/>
+							<mx:SolidColor color="0xB3C6FF" alpha=".6"/>
+							<mx:SolidColor color="0x99B3FF" alpha=".6"/>
+							<mx:SolidColor color="0x809FFF" alpha=".6"/>
+							<mx:SolidColor color="0x668CFF" alpha=".6"/>
+							<mx:SolidColor color="0x4D79FF" alpha=".6"/>
+							<mx:SolidColor color="0x3366FF" alpha=".6"/>
+							<mx:SolidColor color="0x1A53FF" alpha=".6"/>
+							<mx:SolidColor color="0x0040FF" alpha=".6"/>
+							<mx:SolidColor color="0x0039E6" alpha=".6"/>
+						</mx:fills>
+						<mx:filters>
+							<s:DropShadowFilter
+								distance="8"
+								color="0x666666"
+								alpha=".8"/>
+						</mx:filters>
+					</mx:BarSeries>
+				</mx:series>
+				
+			</mx:BarChart>
+		
+		</s:VGroup>
+
+</mx:Module>
