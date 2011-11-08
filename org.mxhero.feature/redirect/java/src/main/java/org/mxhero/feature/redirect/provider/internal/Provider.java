@@ -1,14 +1,14 @@
-package org.mxhero.feature.redirect.internal;
+package org.mxhero.feature.redirect.provider.internal;
 
-import org.mxhero.engine.domain.feature.Rule;
-import org.mxhero.engine.domain.feature.RuleProperty;
-import org.mxhero.engine.domain.mail.business.Mail;
-import org.mxhero.engine.domain.mail.business.MailState;
-import org.mxhero.engine.domain.mail.business.RulePhase;
-import org.mxhero.engine.domain.rules.Actionable;
-import org.mxhero.engine.domain.rules.CoreRule;
-import org.mxhero.engine.domain.rules.Evaluable;
-import org.mxhero.engine.domain.rules.provider.RulesByFeature;
+import org.mxhero.engine.commons.feature.Rule;
+import org.mxhero.engine.commons.feature.RuleProperty;
+import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.rules.Actionable;
+import org.mxhero.engine.commons.rules.CoreRule;
+import org.mxhero.engine.commons.rules.Evaluable;
+import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 
 public class Provider extends RulesByFeature{
 
