@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   verticalGap="30"
+		   paddingTop="40" 
+		   creationComplete="creationCompleteHandler(event)" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			private var errorMessage:String;
+			
+			private var initialProperties:ArrayCollection;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadProperties();
+			}
+			
+			public function isValid():Boolean{
+				var valArray:Array;
+				valArray=emailV.validate().results;
+				if(valArray!=null && valArray.length>0){
+					errorMessage=emailTi.errorString;
+					return false;
+				}
+				errorMessage="";
+				return true;
+			}
+			
+			private function loadProperties():void{
+				if(initialProperties!=null){
+					emailTi.text=PropertyHelper.getProperty(initialProperties,'email.value').propertyValue;
+					if(PropertyHelper.getProperty(initialProperties,'spam.check')!=null){
+						if(PropertyHelper.getProperty(initialProperties,'spam.check').propertyValue=='true'){
+							spamCB.selected=true;
+						}else{
+							spamCB.selected=false;
+						}
+					}
+				}
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initialProperties=data;
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+
+				var emailProperty:FeatureRuleProperty = new FeatureRuleProperty();
+				emailProperty.propertyKey="email.value";
+				emailProperty.propertyValue=emailTi.text;
+				properties.addItem(emailProperty);
+				
+				var spamemails:FeatureRuleProperty = new FeatureRuleProperty();
+				spamemails.propertyKey="spam.check";
+				spamemails.propertyValue=spamCB.selected.toString();
+				properties.addItem(spamemails);
+				
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return errorMessage;
+			}
+			
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("backupcopy")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString('backupcopy','first.title')}" fontSize="16" fontWeight="bold"/>
+
+	<s:VGroup width="100%" gap="10" paddingLeft="24">
+		<s:HGroup width="100%" verticalAlign="top">
+			<component:LabelExpanded
+				paddingTop="5"
+				labelText="{resourceManager.getString('backupcopy','email.label.text')}"
+				expandedText="{resourceManager.getString('backupcopy','email.label.expanded')}"
+				explainText="{resourceManager.getString('backupcopy','label.explain')}"
+				hideText="{resourceManager.getString('backupcopy','label.hide')}"
+				width="100%"/>
+		</s:HGroup>
+		<s:VGroup gap="20">
+			<s:HGroup  verticalAlign="middle">
+				<s:Label text="Email address:"/>
+				<s:TextInput id="emailTi" width="300"/>
+			</s:HGroup>
+			<s:CheckBox id="spamCB" label="Do not backup emails identified as spam" selected="true"/>
+		</s:VGroup>
+
+	</s:VGroup>
+		
+</mx:Module>
