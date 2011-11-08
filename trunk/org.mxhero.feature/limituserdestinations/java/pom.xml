@@ -17,7 +17,7 @@
 
 	<packaging>bundle</packaging>
 
-		<dependencies>
+	<dependencies>
 		<dependency>
 			<type>pom</type>
 			<groupId>org.mxhero.engine.build</groupId>
@@ -52,7 +52,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<finalName>${bundle.symbolicName}-${pom.version}</finalName>
 		<resources>
