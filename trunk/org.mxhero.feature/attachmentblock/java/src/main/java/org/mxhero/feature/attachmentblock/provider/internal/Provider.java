@@ -133,7 +133,7 @@ public class Provider extends RulesByFeature{
 
 			boolean droppedByAttachments=mail.getState().equals(MailState.DROP);
 			if(action!=null && action.equals(RETURN_ACTION) && droppedByAttachments){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Replay",new String[]{noreplyMail,returnMessage,RulePhase.SEND,mail.getInitialData().getSender().getMail()} );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,returnMessage,RulePhase.SEND,mail.getInitialData().getSender().getMail()} );
 			}
 			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock", "rule="+ruleId+";blocked="+droppedByAttachments);
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments) );
