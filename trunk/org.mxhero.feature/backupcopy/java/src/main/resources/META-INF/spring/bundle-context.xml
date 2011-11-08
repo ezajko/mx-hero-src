@@ -21,11 +21,11 @@
 	  		<value>org.mxhero.engine.commons.rules.provider.RulesProvider</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.feature.backupcopy.internal.Provider"/>
+     		<entry key="service.pid" value="org.mxhero.feature.backupcopy.provider.internal.Provider"/>
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="provider" class="org.mxhero.feature.backupcopy.internal.Provider">
+	<bean id="provider" class="org.mxhero.feature.backupcopy.provider.internal.Provider">
 		<property name="rulesFinder" ref="rulesFinderService"/>
 		<property name="component" value="org.mxhero.feature.backupcopy"/>
 		<property name="version" value="1"/>
