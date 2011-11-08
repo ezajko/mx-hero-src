@@ -95,7 +95,7 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			Result result = mail.cmd("org.mxhero.engine.plugin.attachmentlink.command.ALExternal",locale,Boolean.toString(notify),message);
+			Result result = mail.cmd("org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand",locale,Boolean.toString(notify),message);
 			if(!mail.getState().equalsIgnoreCase(MailState.REQUEUE)){
 				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
