@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="andor"/>
+		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			[Bindable]
+			public var words:ArrayCollection = new ArrayCollection();
+			
+			private var initProperties:ArrayCollection;
+			
+			private var errorMessage:String;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadData();
+			}
+
+			public function isValid():Boolean{
+				
+				if(words.length<1){
+					errorMessage=resourceManager.getString('wiretapcontent','no.words.error');
+					wordsDg.errorString=errorMessage;
+					return false;
+				}
+				
+				var valResult:Array = emailV.validate().results;
+				if(valResult!=null && valResult.length>0){
+					errorMessage=emailTi.errorString;
+					return false;
+				}
+				
+				emailTi.errorString="";
+				wordsDg.errorString="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initProperties = data;
+			}
+			
+			private function loadData():void{
+				if(initProperties!=null){
+					var property:FeatureRuleProperty;
+					property=PropertyHelper.getProperty(initProperties,'andor.selection');
+					if(property!=null && property.propertyValue=='and'){
+						andRd.selected=true;
+						orRd.selected=false;
+					} else if (property!=null && property.propertyValue=='or'){
+						orRd.selected=true;
+						andRd.selected=false;
+					}
+					
+					for each(var wordProperty:Object in PropertyHelper.getProperties(initProperties,'word.list')){
+						words.addItem(wordProperty.propertyValue);
+					}
+					
+					property=PropertyHelper.getProperty(initProperties,'email.value');
+					if(property!=null){
+						emailTi.text = property.propertyValue;
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				var property:FeatureRuleProperty;
+				
+				property=new FeatureRuleProperty();
+				property.propertyKey='andor.selection';
+				if(andRd.selected){
+					property.propertyValue="and";
+				} else if(orRd.selected){
+					property.propertyValue="or";
+				}
+				properties.addItem(property);
+				
+				for each(var word:Object in words){
+					property=new FeatureRuleProperty();
+					property.propertyKey='word.list';
+					property.propertyValue=word.toString();
+					properties.addItem(property);
+				}
+				
+				property=new FeatureRuleProperty();
+				property.propertyKey='email.value';
+				property.propertyValue=emailTi.text;
+				
+				properties.addItem(property);
+				
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return errorMessage;
+			}
+			
+			protected function addWordBtt_clickHandler(event:MouseEvent):void
+			{
+				var newWord:String = StringUtil.trim(wordTi.text);
+				if(newWord.length<1){
+					wordTi.errorString=resourceManager.getString('wiretapcontent','word.empty.error');
+					return;
+				}
+				
+				for each(var object:Object in words){
+					if(object.toString()==newWord){
+						wordTi.errorString=resourceManager.getString('wiretapcontent','word.already.error');
+						return;
+					}
+				}
+				words.addItem(newWord);
+				wordTi.text="";
+				wordTi.errorString="";
+			}
+
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("wiretapcontent")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString('wiretapcontent','first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20">
+		<s:RadioButton id="orRd"
+					   groupName="andor" 
+					   selected="true"
+					   label="{resourceManager.getString('wiretapcontent','or.label')}"/>
+		<s:RadioButton id="andRd"
+					   groupName="andor" 
+					   label="{resourceManager.getString('wiretapcontent','and.label')}"/>
+		
+		<mx:Spacer height="10"/>
+		
+		<component:LabelExpanded labelText="{resourceManager.getString('wiretapcontent','word.label.text')}"
+								 explainText="{resourceManager.getString('wiretapcontent','label.explain')}"
+								 hideText="{resourceManager.getString('wiretapcontent','label.hide')}"
+								 expandedText="{resourceManager.getString('wiretapcontent','word.label.expanded')}"
+								 width="100%"/>
+		<s:VGroup width="400">
+			<mx:Form defaultButton="{addWordBtt}" width="100%"
+					 paddingBottom="0"
+					 paddingLeft="0"
+					 paddingRight="0"
+					 paddingTop="0">
+				<s:HGroup width="100%">
+					<s:TextInput id="wordTi" width="100%"/>
+					<s:Button id="addWordBtt" 
+							  label="{resourceManager.getString('wiretapcontent','add.button')}" 
+							  height="100%" 
+							  click="addWordBtt_clickHandler(event)"/>
+				</s:HGroup>				
+			</mx:Form>
+			<mx:DataGrid id="wordsDg"
+						 dataProvider="{words}" 
+						 width="100%"
+						 showHeaders="false">
+				<mx:columns>
+					<mx:DataGridColumn dataField="data"/>
+					<mx:DataGridColumn width="48" >
+						<mx:itemRenderer>
+							<fx:Component>
+								<mx:HBox width="100%" horizontalAlign="center">
+									<fx:Script>
+										<![CDATA[
+											import flash.events.MouseEvent;
+											
+											[Bindable]
+											[Embed(source="/org/mxhero/feature/wiretapcontent/delete.png")]
+											public static var DELETE:Class;
+											
+											protected function remove_clickHandler(event:MouseEvent):void
+											{
+												outerDocument.words.removeItemAt(outerDocument.words.getItemIndex(outerDocument.wordsDg.selectedItem));
+											}
+										]]>
+									</fx:Script>
+									<mx:Image source="{DELETE}"
+											  buttonMode="true"
+											  toolTip="{resourceManager.getString('wiretapcontent','remove.tooltip')}"
+											  click="remove_clickHandler(event)"/>
+								</mx:HBox>		  
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>		
+		</s:VGroup>
+	</s:VGroup>
+	
+	<mx:Spacer/>
+	
+	<s:Label text="{resourceManager.getString('wiretapcontent','second.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:HGroup paddingLeft="20" verticalAlign="middle">
+		<s:Label text="{resourceManager.getString('wiretapcontent','email.copy')}"/>
+		<s:TextInput id="emailTi" width="200"/>
+	</s:HGroup>
+	
+</mx:Module>
