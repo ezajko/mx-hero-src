@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:component="org.mxhero.console.commons.feature.component.*">
+	<fx:Declarations>
+		<s:RadioButtonGroup id="type" />
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="managed"/>
+		<s:State name="advanced"/>
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			public var selectedHeader:String="";
+			[Bindable]
+			public var selectedValue:String="";
+			[Bindable]
+			public var selectedId:String="";
+			[Bindable]
+			public var isManaged:String="";
+			
+			[Bindable]
+			private var antispams:ArrayCollection = 
+				new ArrayCollection([{label:'Barracuda',id:'0',header:'X-Barracuda-Spam-Status',value:'(?i)\\s*Yes\\s*,.*'},
+					{label:'Brightmail',id:'1',header:'X-BrightMail-Spam-Flag',value:'(?i)\\s*YES\\s*'},
+					{label:'Cloudmark',id:'2',header:'X-CMAE-Score',value:'(?i)\\s*100.00\\s*'},
+					{label:'Ironport',id:'3',header:'X-IronPort-SPAM',value:'(?i)\\s*SPAM\\s*'},
+					{label:'Postini',id:'4',header:'X-pstn-levels',value:'(?i)^\\s*\\(S:\\s+0\\.[3-9][0-9]*.*'},
+					{label:'Proofpoint',id:'5',header:'X-Proofpoint-Spam-Details',value:'(?i)^.+score=\\s?[8-9][0-9].*|.+score=\\s?100.*'},
+					{label:'SpamAssassin',id:'6',header:'X-Spam-Flag',value:'(?i)\\s*YES\\s*'}
+				]);
+
+			
+			public function setHeader(id:String,header:String, value:String, managed:String):void{
+				if(managed=='true'){
+					for each (var headerItem:Object in antispamsDdl.dataProvider){
+						if(headerItem.id==id){
+							antispamsDdl.selectedItem=headerItem;
+							break;
+						}
+					}
+					isManaged='true'
+					currentState='managed';
+					
+				}else{
+					isManaged='false';
+					currentState='advanced';
+					customRb.selected=true;
+				}
+				this.selectedHeader=header;
+				this.selectedValue=value;
+				this.selectedId=id;
+			}
+			
+
+			protected function antispamsDdl_changeHandler(event:IndexChangeEvent):void
+			{
+				if(antispamsDdl.selectedIndex>-1){
+					selectedHeader=antispamsDdl.selectedItem.header;
+					selectedValue=antispamsDdl.selectedItem.value;
+					selectedId=antispamsDdl.selectedItem.id;
+					isManaged="true"
+					currentState="managed";
+				}else{
+					selectedHeader='';
+					selectedValue='';
+					currentState="advanced";
+				}
+				antispamsDdl.errorString="";
+			}
+
+
+			protected function customRb_changeHandler(event:Event):void
+			{
+				if(customRb.selected){
+					selectedHeader=resourceManager.getString('externalantispam','header.default');
+					selectedValue=resourceManager.getString('externalantispam','value.default');
+					selectedId="";
+					antispamsDdl.selectedIndex=-1;
+					currentState='advanced';
+					antispamsDdl.errorString="";
+				}
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingLeft="20"/>
+	</s:layout>
+	
+	<fx:Metadata>
+		[ResourceBundle("externalantispam")]
+	</fx:Metadata>
+
+	<s:HGroup>
+		<s:RadioButton id="predefinedRb" groupName="type" 
+					   change="{currentState='managed'}"
+					   selected="true"/>
+		<s:DropDownList id="antispamsDdl"
+						dataProvider="{antispams}" 
+						width="160" 
+						prompt="{resourceManager.getString('externalantispam','prompt.antispam')}"
+						change="antispamsDdl_changeHandler(event)"
+						enabled="{predefinedRb.selected}"/>
+		<mx:Spacer width="10"/>
+		<s:RadioButton id="customRb" label="{resourceManager.getString('externalantispam','custom.label')}" groupName="type" 
+					   change="customRb_changeHandler(event)"/>
+	</s:HGroup>
+		
+	<mx:Spacer height.advanced="10" height="0"/>
+
+	<s:Group height.managed="20" height.default="0">
+		<s:HGroup width="100%" paddingLeft="20" visible="false" visible.managed="true">
+			<mx:LinkButton label="{resourceManager.getString('externalantispam','customize.header.label')}" 
+						   click="{currentState='advanced'}" 
+						   textRollOverColor="#FFFFFF"
+						   textSelectedColor="#FFFFFF"
+						   textDecoration="underline"
+						   fontWeight="bold"
+						   enabled="{antispamsDdl.selectedIndex>-1}"
+						   />
+		</s:HGroup>
+		<s:VGroup visible="false" paddingLeft="20" visible.advanced="true">
+			<component:LabelExpanded width="100%"
+									 labelText="{resourceManager.getString('externalantispam','header.label.text')}" 
+									 explainText="{resourceManager.getString('externalantispam','label.explain')}"
+									 hideText="{resourceManager.getString('externalantispam','label.hide')}"
+									 expandedText="{resourceManager.getString('externalantispam','header.label.expanded')}"/>
+			
+			<mx:Form >
+				<mx:FormItem label="{resourceManager.getString('externalantispam','header.label')}">
+					<s:TextInput id="headerTi" width="240" text="@{selectedHeader}"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString('externalantispam','value.label')}">
+					<s:TextInput id="valueTi" width="240" text="@{selectedValue}"/>
+				</mx:FormItem>
+			</mx:Form>
+		</s:VGroup>
+
+	</s:Group>	
+
+</s:Group>
