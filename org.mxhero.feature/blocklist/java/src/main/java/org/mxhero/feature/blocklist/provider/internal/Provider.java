@@ -102,7 +102,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-BlockList", "rule="+ruleId.toString());
 			mail.drop("org.mxhero.feature.blocklist");
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Replay",replyMail,returnText,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,returnText,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.sender",mail.getInitialData().getSender().getMail());
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.blocklist");			
