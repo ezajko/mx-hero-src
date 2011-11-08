@@ -1,17 +1,17 @@
-package org.mxhero.feature.externalantispam.internal;
+package org.mxhero.feature.externalantispam.provider.internal;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.mxhero.engine.domain.feature.Rule;
-import org.mxhero.engine.domain.feature.RuleProperty;
-import org.mxhero.engine.domain.mail.business.Mail;
-import org.mxhero.engine.domain.mail.business.MailState;
-import org.mxhero.engine.domain.rules.Actionable;
-import org.mxhero.engine.domain.rules.CoreRule;
-import org.mxhero.engine.domain.rules.Evaluable;
-import org.mxhero.engine.domain.rules.provider.RulesByFeature;
+import org.mxhero.engine.commons.feature.Rule;
+import org.mxhero.engine.commons.feature.RuleProperty;
+import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.rules.Actionable;
+import org.mxhero.engine.commons.rules.CoreRule;
+import org.mxhero.engine.commons.rules.Evaluable;
+import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 
 public class Provider extends RulesByFeature{
 
@@ -174,7 +174,7 @@ public class Provider extends RulesByFeature{
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","spam.detected",Boolean.toString(isSpam) );
 			
 			if (!isException && isSpam && action.equals(ACTION_REJECT)) {
-				mail.drop("org.mxhero.feature.spamassassin");
+				mail.drop("org.mxhero.feature.externalantispam");
 			}else if(!isException && isSpam && action.equals(ACTION_RECEIVE)){
 				if (addHeaderKey != null && !addHeaderKey.trim().isEmpty()
 						&& addHeaderValue != null
