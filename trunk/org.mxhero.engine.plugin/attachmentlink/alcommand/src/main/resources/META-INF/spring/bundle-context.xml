@@ -85,8 +85,8 @@
 		<property name="jdbcUrl" value="${jdbcUrl}" />
 		<property name="username" value="${jdbcUserName}" />
 		<property name="password" value="${jdbcPassord}" />
-		<property name="idleConnectionTestPeriod" value="${idleConnectionTestPeriod}" />
-		<property name="idleMaxAge" value="${idleMaxAge}" />
+		<property name="idleConnectionTestPeriodInMinutes" value="${idleConnectionTestPeriod}" />
+		<property name="idleMaxAgeInMinutes" value="${idleMaxAge}" />
 		<property name="maxConnectionsPerPartition" value="${maxConnectionsPerPartition}" />
 		<property name="minConnectionsPerPartition" value="${minConnectionsPerPartition}" />
 		<property name="partitionCount" value="${partitionCount}" />

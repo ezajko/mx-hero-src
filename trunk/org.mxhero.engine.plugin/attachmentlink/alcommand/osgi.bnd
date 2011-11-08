@@ -2,6 +2,13 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
+Import-Package: \
+com.mysql.jdbc, \
+org.aopalliance.aop, \
+org.springframework.aop, \
+org.springframework.aop.framework, *
+
+
 Embed-Dependency: \
 bonecp;groupId=com.jolbox;inline=false,\
 guava;groupId=com.google.guava;inline=false
