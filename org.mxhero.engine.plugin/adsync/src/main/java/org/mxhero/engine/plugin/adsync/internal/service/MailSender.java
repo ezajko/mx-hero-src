@@ -3,6 +3,7 @@ package org.mxhero.engine.plugin.adsync.internal.service;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
+import java.util.Properties;
 
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
@@ -24,7 +25,7 @@ public abstract class MailSender {
 				InternetAddress recipient = new InternetAddress(notifyEmail,false);
 				InternetAddress sender = new InternetAddress(senderMail);
 				
-				MimeMessage newMessage = new MimeMessage(Session.getDefaultInstance(null));
+				MimeMessage newMessage = new MimeMessage(Session.getDefaultInstance(new Properties()));
 				newMessage.setSender(sender);
 				newMessage.setFrom(sender);
 				newMessage.setReplyTo(new InternetAddress[] {sender});
