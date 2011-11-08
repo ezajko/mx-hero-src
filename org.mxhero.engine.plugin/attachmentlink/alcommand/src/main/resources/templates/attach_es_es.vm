@@ -1,0 +1,38 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	</head>	
+	<body style="font-family: sans-serif;">
+<!--
+		<div style="width: 100%;border-bottom-width: 2px;border-bottom-style: solid;padding-bottom: 10px;">
+			<img style="width: 200px;height: 50px;padding-bottom: 5px;" src="http://www.mxhero.com/wp-content/uploads/2011/09/logo3.png" width="200" height="50" border="0"/>
+		</div>
+-->
+		<span style="font-size: 2em;font-weight: bold;">Adjuntos</span>
+		<div style="font-style: italic;color: grey;font-size: 1em;font-weight: bold;">Available for 30 days</div>
+		<table style="border-collapse: collapse;margin-top: 20px;">	
+			<thead style="background: #D6D6D6;font-weight: bold;">
+				<tr>
+					<th style="padding: 3px;padding-right: 50px;">Archivo</th>
+					<th style="padding: 3px;">Tama&ntilde;o</th>
+					<th colspan="2" style="padding: 3px;"></th>
+				</tr>
+			</thead>
+			<tbody>
+				#foreach($file in $files)
+				#if( $velocityCount % 2 == 0 )
+				<tr style="background-color: #EDEDED;">
+				#else
+				<tr>
+				#end
+					<td style="padding: 3px;">$esc.html($file.attach.fileName)</td>
+					<td style="padding: 3px;">$file.attach.beautySize</td>
+					<td style="padding: 3px;"><a href="$file.attach.tempLink&amp;type=1" target="">Guardar</a></td>
+					<td style="padding: 3px;"><a href="$file.attach.tempLink&amp;type=2">Abrir</a></td>
+				</tr>
+				#end
+			</tbody>
+		</table>
+		<div style="font-style: italic;color: grey;font-size: small;">powered by <a style="color: grey;" href="http://mxhero.com">mxHero</a></div>
+	</body>
+</html>
