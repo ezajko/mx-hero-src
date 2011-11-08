@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   initialize="creationCompleteHandler(event)"
+		   width="100%"
+		   height="100%" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IReport" xmlns:mails="org.mxhero.console.mails.*">
+	<fx:Declarations>
+		
+		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
+		
+		<mx:SeriesSlide id="slideIn" 
+						duration="800" 
+						direction="up"/>
+		
+		<mx:SeriesSlide id="slideOut" 
+						duration="800" 
+						direction="down"/>
+		
+		<fx:Array id="bge">
+			<mx:GridLines 
+				horizontalChangeCount="1" 
+				verticalChangeCount="1"
+				gridDirection="both"
+				>
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:verticalStroke>
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+			</mx:GridLines>
+		</fx:Array>
+		
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace chartClasses "mx.charts.chartClasses.*"; 
+		
+		mx|ColumnChart.myChart {
+			fontSize:14;
+			font-weight:bold;
+			data-tip-style-name:myDataTip;
+			axisTitleStyleName:axisTitles;
+		}
+		
+		.axisTitles {
+			color:#323232;
+			fontWeight:bold;
+			fontFamily:Ubuntu;
+			fontSize:16;
+		}
+		
+		
+		.myDataTip{
+			color:#000000;
+			font-style:italic;
+			font-weight:bold;
+			border-weight:2;
+		}
+		
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.charts.events.ChartItemEvent;
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectProxy;
+			
+			import org.mxhero.console.commons.feature.IReport;
+			import org.mxhero.console.commons.feature.IReportService;
+			import org.mxhero.console.commons.feature.TimeUtils;
+			
+			private static const DATA_QUERY:String = "data.query";
+			private static const EMAIL_QUERY:String = "email.query";
+			
+			private var _reportService:IReportService;
+			
+			[Bindable]
+			private var _data:ArrayCollection;
+			
+			private static const DAYSBEFORE:Number = 7*24*60*60*1000; 
+			
+			[Bindable]
+			private static var sinceDate:Date;
+			
+			[Bindable]
+			private static var untilDate:Date;
+			
+			[Bindable]
+			private var _emails:ArrayCollection;
+			[Bindable]
+			public var selectedDateLabel:String;
+			
+			private var _dataQuery:String =	"SELECT COALESCE(SUM(r0.amount),0),date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
+				+" FROM mail_stats_grouped r0 " 
+				+" WHERE r0.insert_date >= CONVERT_TZ(?, ?, '+00:00' ) "
+				+" AND r0.stat_key = 'org.mxhero.feature.attachementblock' " 
+				+" AND r0.stat_value = 'true' ";
+			
+			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipeints, r0.sender, r0.recipient, " 
+											+" r0.to_recipeints, r0.cc_recipeints, r0.bcc_recipeints, " 
+											+" r0.subject, r0.phase, r0.bytes_size, r0.state, " 
+											+" r0.state_reason, r0.insert_date " 
+											+" FROM mail_records r0 " 
+											+" WHERE r0.insert_date BETWEEN CONVERT_TZ(?, ?, '+00:00' ) AND  CONVERT_TZ(?, ?, '+00:00' ) "
+											+" AND EXISTS( SELECT 1 FROM mail_stats s "
+											+" WHERE s.insert_date = r0.insert_date " 
+											+" AND s.record_sequence = r0.record_sequence " 
+											+" AND s.stat_key = 'org.mxhero.feature.attachementblock' " 
+											+" AND s.stat_value = 'true' ) ";
+			
+		
+			public function setResult(queryId:String, result:*):void{
+				if(queryId==DATA_QUERY){
+					if(result==null){
+						this._data=null;
+						return;
+					}
+					var dataArray:ArrayCollection = new ArrayCollection();
+					for each(var dataRow:Object in result){
+						var axisDate:Date = dataRow[1];
+						axisDate.setTime(axisDate.getTime()+axisDate.timezoneOffset*60*1000);
+						dataArray.addItem({Qty:dataRow[0],Date:axisDate});
+					}
+					this._data=dataArray;
+				}else if(queryId==EMAIL_QUERY){
+					var emailArray:ArrayCollection = new ArrayCollection();
+					for each(var row:Object in result){
+						emailArray.addItem({messageId:row[0],from:row[1],sender:row[2]
+							,recipient:row[3],toRecipients:row[4]
+							,ccRecipients:row[5],bccRecipients:row[6]
+							,subject:row[7],phase:row[8],bytesSize:row[9]
+							,state:row[10],stateReason:row[11],insertDate:row[12]});
+					}
+					this._emails=emailArray;
+				}
+			}
+			
+			public function setReportService(service:IReportService):void{
+				_reportService=service;
+			}
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				untilDate=new Date();
+				untilDate.setHours(23,59,59,999);
+			}
+			
+
+			
+			public function refresh():void
+			{
+				sinceDate=new Date();
+				sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+				sinceDate.setHours(0,0,0,0);
+				queryForData();
+				queryForEmails(new Date());
+			}
+			
+			private function queryForEmails(date:Date):void{
+				var domain:String = _reportService.getDomain();
+				var params:Array = new Array();
+				var emailsQuery:String = _emailsQuery;
+				date.setHours(0,0,0,0);
+				var untilDate:Date = new Date();
+				untilDate.setTime(date.getTime()+24*60*60*1000);
+				selectedDateLabel=dateFormatter.format(date);
+				params.push(dateFormatter.format(date),TimeUtils.offsetToTZ(date.getTimezoneOffset()));
+				params.push(dateFormatter.format(untilDate),TimeUtils.offsetToTZ(untilDate.getTimezoneOffset()));
+				if(domain!=null){
+					params.push(domain,domain);
+					emailsQuery = emailsQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
+				}
+				
+				emailsQuery = emailsQuery + " order by r0.insert_date desc ";
+				
+				_reportService.processQuery(EMAIL_QUERY,emailsQuery,params,this);
+				
+			}
+			
+			private function queryForData():void{
+				var domain:String = _reportService.getDomain();
+				var params:Array = new Array();
+				var dataQuery:String = _dataQuery;
+				
+				params.push(TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+				if(domain!=null){
+					params.push(domain,domain);
+					dataQuery = dataQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
+				}
+				dataQuery = dataQuery + " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))";
+				params.push(TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
+				
+			}
+			
+
+			protected function vgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				chartContainer.addEventListener(ChartItemEvent.CHANGE, chartItemEventChange, true, 0, true);
+			}
+			private function chartItemEventChange(event: Event): void
+			{
+				event.stopImmediatePropagation();
+			}
+
+			protected function linechart_itemClickHandler(event:ChartItemEvent):void
+			{
+				queryForEmails(event.hitData.item.Date);
+			}
+
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("attachmentblock_report")]
+	</fx:Metadata>
+	
+	<s:HGroup horizontalAlign="right" 
+			  width="100%"
+			  paddingRight="5"
+			  paddingBottom="5"
+			  paddingTop="40">
+		<s:Label 
+			fontSize="18" fontWeight="bold" 
+			text="{resourceManager.getString('attachmentblock_report','title')}" />
+		<mx:Spacer width="100%"/>
+	</s:HGroup>
+	
+	<s:VGroup id="chartContainer" width="100%" height="100%" creationComplete="vgroup1_creationCompleteHandler(event)">
+		<mx:ColumnChart id="linechart" color="0x323232" 
+						height="240" 
+						width="100%"
+						showDataTips="true" 
+						styleName="myChart"
+						dataProvider="{_data}"
+						axisTitleStyleName="axisTitles"
+						selectionMode="single"
+						itemClick="linechart_itemClickHandler(event)"
+						backgroundElements="{bge}">
+			
+			<mx:filters>
+				<s:DropShadowFilter
+					distance="4"
+					color="0x666666"
+					alpha=".9"/>
+			</mx:filters>
+			
+			<mx:horizontalAxis>
+				<mx:DateTimeAxis id="dateAxis" 
+								 dataUnits="days"
+								 labelUnits="days"
+								 disabledDays="{[]}"
+								 autoAdjust="true"
+								 dataInterval="1"
+								 title="{resourceManager.getString('attachmentblock_report','date.axis')}"
+								 maximum="{untilDate}"
+								 minimum="{sinceDate}"
+								 displayName="{resourceManager.getString('attachmentblock_report','date.axis')}"
+								 />
+			</mx:horizontalAxis>
+			
+			<mx:verticalAxis>
+				<mx:LinearAxis id="qtyAxis" 
+							   title="{resourceManager.getString('attachmentblock_report','emails.axis')}" 
+							   displayName="{resourceManager.getString('attachmentblock_report','emails.axis')}"/>
+			</mx:verticalAxis>
+			
+			<mx:verticalAxisRenderers>
+				<mx:AxisRenderer labelRotation="45" 
+								 axis="{qtyAxis}" 
+								 color="#FFFFFF" 
+								 fontSize="14"
+								 />	   
+			</mx:verticalAxisRenderers>
+			
+			<mx:horizontalAxisRenderers>
+				<mx:AxisRenderer labelRotation="45" 
+								 axis="{dateAxis}" 
+								 color="#FFFFFF" 
+								 fontSize="14"
+								 />
+			</mx:horizontalAxisRenderers>
+			
+			
+			
+			<mx:fill>
+				<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+			</mx:fill>
+			
+			<mx:series>
+				<mx:ColumnSeries xField="Date" yField="Qty" 
+								 showDataEffect="{slideIn}" 
+								 hideDataEffect="{slideOut}"
+								 id="cserie"
+								 selectable="true"
+								 buttonMode="true"
+								 displayName="{resourceManager.getString('attachmentblock_report','hits.axis')}">
+					<mx:stroke>
+						<s:SolidColorStroke color="purple" caps="round" />
+					</mx:stroke>
+					<mx:fill>
+						<mx:SolidColor color="purple" alpha="0.6"/>
+					</mx:fill>
+					<mx:filters>
+						<s:DropShadowFilter
+							distance="8"
+							color="0x666666"
+							alpha=".8"/>
+					</mx:filters>
+				</mx:ColumnSeries>
+			</mx:series>
+			
+		</mx:ColumnChart>
+		<s:Label text="{resourceManager.getString('attachmentblock_report','emails.title')+' ('+selectedDateLabel+')'}" 
+				 fontWeight="bold" fontSize="16"
+				 paddingLeft="50"/>
+		<s:HGroup width="100%" paddingLeft="50" height="100%">
+			<mails:EmailsDataGrid dataProvider="{_emails}" height="100%" width="100%"/>
+		</s:HGroup>
+		
+	</s:VGroup>
+</mx:Module>
