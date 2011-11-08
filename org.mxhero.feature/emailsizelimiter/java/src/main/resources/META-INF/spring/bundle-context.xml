@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi.xsd
+		http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium.xsd">
+
+	<context:component-scan base-package="org.mxhero.feature.emailsizelimiter" />
+
+	<context:annotation-config />
+
+	<osgi:reference id="rulesFinderService" interface="org.mxhero.engine.domain.feature.RulesFinder"/>
+
+	<osgi:service ref="provider">
+	  	<osgi:interfaces>
+	  		<value>org.mxhero.engine.domain.rules.provider.RulesProvider</value>
+	  	</osgi:interfaces>
+	  	<osgi:service-properties>
+     		<entry key="service.pid" value="org.mxhero.feature.emailsizelimiter.internal.Provider"/>
+   		</osgi:service-properties>
+	</osgi:service>
+
+	<bean id="provider" class="org.mxhero.feature.emailsizelimiter.internal.Provider">
+		<property name="rulesFinder" ref="rulesFinderService"/>
+		<property name="component" value="org.mxhero.feature.emailsizelimiter"/>
+		<property name="version" value="1"/>
+	</bean>
+
+</beans>
