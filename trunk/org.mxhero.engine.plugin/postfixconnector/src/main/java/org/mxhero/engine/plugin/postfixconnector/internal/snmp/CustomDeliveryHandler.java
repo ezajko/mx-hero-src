@@ -38,8 +38,6 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 
 	private List<Delivery> deliveries = new ArrayList<Delivery>();
 	private String from;
-
-	private ConnectorProperties properties;
 	
 	/**
 	 * Basic constructor.
@@ -116,7 +114,7 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 		}
 
 		//check for max size allowed for emails
-		if(getProperties().getMessageMaxSize()>1042){
+		if(ConnectorProperties.getInstance().getMessageMaxSize()>1042){
 			InputStream in = SharedStreamUtils.getPrivateInputStream(true,
 					data);
 			byte[] buf = new byte[BUFF_SIZE];
@@ -125,7 +123,7 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 			while ((len = in.read(buf)) >= 0) {
 				total=total+len;
 			}
-			if(total>=getProperties().getMessageMaxSize()){
+			if(total>=ConnectorProperties.getInstance().getMessageMaxSize()){
 				throw new TooMuchDataException();
 			}
 		}
@@ -142,14 +140,6 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 		    useCopy = true;
 		}
 
-	}
-
-	public ConnectorProperties getProperties() {
-		return properties;
-	}
-
-	public void setProperties(ConnectorProperties properties) {
-		this.properties = properties;
 	}
 
 }

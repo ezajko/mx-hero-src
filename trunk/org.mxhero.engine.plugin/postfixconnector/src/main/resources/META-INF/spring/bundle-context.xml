@@ -17,7 +17,8 @@
 
 	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.plugin.postfixconnector"/>
 	
-	<bean id="connectorProperties" class="org.mxhero.engine.plugin.postfixconnector.internal.ConnectorProperties">
+	<bean id="connectorProperties" class="org.mxhero.engine.plugin.postfixconnector.internal.ConnectorProperties"
+		init-method="init">
 		<osgix:managed-properties persistent-id="org.mxhero.engine.plugin.postfixconnector" autowire-on-update="true"/>
 	</bean>
 

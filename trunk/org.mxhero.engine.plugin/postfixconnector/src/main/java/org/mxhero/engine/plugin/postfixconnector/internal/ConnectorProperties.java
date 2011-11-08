@@ -20,6 +20,7 @@ public class ConnectorProperties {
 	private String hostName = "localhost";
 	private String charset = "UTF-8";
 	private Integer maxRecipients = 100;
+	private static ConnectorProperties instance=null;
 
 	
 	public ConnectorProperties() {
@@ -33,6 +34,14 @@ public class ConnectorProperties {
 		}
 	}
 
+	public void init(){
+		instance=this;
+	}
+	
+	public static ConnectorProperties getInstance(){
+		return instance;
+	}
+	
 	public String getMailSmtpHost() {
 		return mailSmtpHost;
 	}
