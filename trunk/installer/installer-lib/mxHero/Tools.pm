@@ -333,7 +333,7 @@ sub adjustRedhat
 	# Turn off iptables
 	if ( -f "/etc/init.d/iptables" ) {
 		system( "/etc/init.d/iptables stop" );
-		system( "/sbin/chkconfig iptables off" );
+		system( "/sbin/chkconfig --del iptables" );
 	}
 	
 	# Set selinux to permissive
