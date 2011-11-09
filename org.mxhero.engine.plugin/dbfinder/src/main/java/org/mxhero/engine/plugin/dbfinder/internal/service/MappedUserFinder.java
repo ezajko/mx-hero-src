@@ -7,10 +7,12 @@ import org.mxhero.engine.commons.mail.business.Domain;
 import org.mxhero.engine.commons.mail.business.User;
 import org.mxhero.engine.plugin.dbfinder.internal.repository.UserRepository;
 import org.mxhero.engine.plugin.dbfinder.internal.util.Cloner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MappedUserFinder implements UserFinder
 {
-
+	private static Logger log = LoggerFactory.getLogger(MappedUserFinder.class);
 	private UserRepository repository;
 	
 	@Override
@@ -42,6 +44,9 @@ public class MappedUserFinder implements UserFinder
 			user.setDomain(userDomain);
 			user.setAliases(new HashSet<String>());
 			user.getAliases().add(mailAdress);
+		}
+		if(log.isDebugEnabled()){
+			log.debug("found "+user.toString()+" and "+user.getDomain().toString());
 		}
 		return user;
 	}
