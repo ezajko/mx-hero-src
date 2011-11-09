@@ -12,6 +12,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository("jdbcRecordRepository")
@@ -25,7 +27,7 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 	
 	@Override
-	@Transactional(readOnly=false)
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW, isolation=Isolation.SERIALIZABLE)
 	public void saveRecord(final Collection<Record> records) {
 		String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipeints`" +
 				",`bytes_size`,`cc_recipeints`,`from_recipeints`,`message_id`,`ng_recipeints`" +
@@ -56,7 +58,7 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 
 	@Override
-	@Transactional(readOnly=false)
+	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW, isolation=Isolation.SERIALIZABLE)
 	public void saveStat(Collection<Stat> stats) {
 		String sql = "INSERT INTO mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`phase`) " +
 				" VALUES(:stat_key,:stat_value,:insert_date,:record_sequence,:phase) " +
