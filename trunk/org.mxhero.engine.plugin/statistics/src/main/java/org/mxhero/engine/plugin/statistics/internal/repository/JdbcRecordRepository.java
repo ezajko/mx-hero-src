@@ -12,24 +12,26 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @Repository("jdbcRecordRepository")
 public class JdbcRecordRepository implements RecordRepository{
 
+	 
+	private final TransactionTemplate transactionTemplate;
+	
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
-	public JdbcRecordRepository(DataSource ds){
+	public JdbcRecordRepository(DataSource ds, TransactionTemplate transactionTemplate){
 		this.template = new NamedParameterJdbcTemplate(ds);
+		this.transactionTemplate = transactionTemplate;
 	}
 	
-	@Override
-	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW, isolation=Isolation.SERIALIZABLE)
 	public void saveRecord(final Collection<Record> records) {
-		String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipeints`" +
+		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipeints`" +
 				",`bytes_size`,`cc_recipeints`,`from_recipeints`,`message_id`,`ng_recipeints`" +
 				",`phase`,`recipient`,`recipient_domain_id`,`recipient_id`,`sender`" +
 				",`sender_domain_id`,`sender_id`,`sent_date`,`state`,`state_reason`,`subject`,`to_recipeints`,`flow`) " +
@@ -44,11 +46,14 @@ public class JdbcRecordRepository implements RecordRepository{
 				",`state`=VALUES(state),`state_reason`=VALUES(state_reason),`subject`=VALUES(subject)" +
 				",`to_recipeints`=VALUES(to_recipeints),`flow`=VALUES(flow);";
 		if(records!=null && records.size()>0){
-			template.batchUpdate(sql, recordsToBatch(records));
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+					template.batchUpdate(sql, recordsToBatch(records));
+				}
+			});
 		}
 	}
 
-	@Override
 	public void saveRecord(Record record) {
 		if(record!=null){
 			Collection<Record> records = new ArrayList<Record>();
@@ -57,18 +62,19 @@ public class JdbcRecordRepository implements RecordRepository{
 		}
 	}
 
-	@Override
-	@Transactional(readOnly=false,propagation=Propagation.REQUIRES_NEW, isolation=Isolation.SERIALIZABLE)
-	public void saveStat(Collection<Stat> stats) {
-		String sql = "INSERT INTO mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`phase`) " +
+	public void saveStat(final Collection<Stat> stats) {
+		final String sql = "INSERT INTO mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`phase`) " +
 				" VALUES(:stat_key,:stat_value,:insert_date,:record_sequence,:phase) " +
 				" ON DUPLICATE KEY UPDATE `stat_value`=VALUES(stat_value);";
 		if(stats!=null && stats.size()>0){
-			template.batchUpdate(sql, statsToBatch(stats));
+			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+					template.batchUpdate(sql, statsToBatch(stats));
+				}
+			});			
 		}
 	}
 
-	@Override
 	public void saveStat(Stat stat) {
 		if(stat!=null){
 			Collection<Stat> stats = new ArrayList<Stat>();
