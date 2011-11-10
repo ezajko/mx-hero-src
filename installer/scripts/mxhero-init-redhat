@@ -10,7 +10,7 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
         
-. /lib/init/vars.sh
+#. /lib/init/vars.sh
 . /lib/lsb/init-functions
 
 LSBNAME='/etc/init.d/mxhero'
