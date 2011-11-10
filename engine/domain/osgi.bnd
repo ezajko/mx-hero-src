@@ -1,9 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-#Bundle-Activator: ${bundle.namespace}.internal.ExampleActivator
-
-Export-Package: org.mxhero.engine.domain*,!*
-
-Import-Package: javax.mail;version="(1.4.0,1.4.9]",javax.mail.internet;version="(1.4.0,1.4.9]",*
