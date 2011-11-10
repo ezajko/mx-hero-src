@@ -16,8 +16,6 @@
 
 	<context:annotation-config />
 
-	<tx:annotation-driven transaction-manager="txManager" />
-
 	<osgix:cm-properties id="cmProps"
 		persistent-id="org.mxhero.engine.plugin.statistics">
 		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
@@ -79,6 +77,13 @@
 				autowire-on-update="true" />
 		<property name="repository" ref="jdbcRecordRepository"/>
 		<property name="updateTime" value="${updateTime}"/>
+	</bean>
+
+	<bean id="sharedTransactionTemplate"
+	      class="org.springframework.transaction.support.TransactionTemplate">
+	    <property name="transactionManager" ref="txManager"/>
+	    <property name="isolationLevelName" value="ISOLATION_READ_UNCOMMITTED"/>
+	    <property name="timeout" value="30"/>
 	</bean>
 
 	<bean id="txManager"
