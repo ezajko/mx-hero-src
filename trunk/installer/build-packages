@@ -11,7 +11,7 @@ use mxHero::Config;
 # Config
 
 my $name = "mxHero-Installable";
-my $rootFiles = "VERSION mxhero-installer conf installer-lib scripts binaries/$myConfig{MXHERO_INSTALL_VERSION}"; # Except JDK
+my $rootFiles = "*.txt VERSION mxhero-installer conf installer-lib scripts binaries/$myConfig{MXHERO_INSTALL_VERSION}"; # Except JDK
 
 # Action
 
