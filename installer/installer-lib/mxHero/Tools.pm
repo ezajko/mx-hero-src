@@ -166,6 +166,8 @@ sub packageInstall
 			my $service;
 			if ( $package eq "mysql-server") {
 				$service = "mysqld";
+			} elsif ($package eq "clamav clamd") { # TODO: fix this
+				$service = "clamd";
 			} else {
 				$service = $package;
 			}

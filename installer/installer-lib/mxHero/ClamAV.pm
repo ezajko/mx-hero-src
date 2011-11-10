@@ -9,6 +9,7 @@ use Term::ReadLine;
 
 use mxHero::Tools;
 use mxHero::Config;
+use mxHero::Locale;
 
 # distribution => package name
 my %PKG_NAME = (
