@@ -1,8 +1,0 @@
-#-----------------------------------------------------------------
-# Use this file to add customized Bnd instructions for the bundle
-#-----------------------------------------------------------------
-
-Export-Package: org.mxhero.engine.plugin.spamd*
-
-Import-Package: org.slf4j.*; resolution:=optional;version="[1.4,1.9)", org.springframework.beans.factory.annotation;resolution:=optional,*
-
