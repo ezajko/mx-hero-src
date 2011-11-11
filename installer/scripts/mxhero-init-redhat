@@ -1,18 +1,10 @@
 #!/bin/sh
-### BEGIN INIT INFO
-# Provides:          mxhero_va
-# Required-Start:    $remote_fs $syslog $all
-# Required-Stop:
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Run mxHero VA Config
-### END INIT INFO
+
+# chkconfig: 2345 90 50
+# description: Run mxhero
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
         
-#. /lib/init/vars.sh
-. /lib/lsb/init-functions
-
 LSBNAME='/etc/init.d/mxhero'
 SYSNAME='mxHero service ...'
 MXHERO_PATH='/opt/mxhero'

@@ -1,11 +1,11 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          mxhero_va
+# Provides:          mxhero
 # Required-Start:    $remote_fs $syslog $all
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Run mxHero VA Config
+# Short-Description: Run mxHero
 ### END INIT INFO
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
