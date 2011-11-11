@@ -226,7 +226,7 @@
 	</s:VGroup>
 	
 	<mx:Spacer/>
-	
+
 	<s:Label text="{resourceManager.getString('wiretapcontent','second.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:HGroup paddingLeft="20" verticalAlign="middle">

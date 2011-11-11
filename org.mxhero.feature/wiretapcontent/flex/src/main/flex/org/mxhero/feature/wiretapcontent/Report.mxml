@@ -319,7 +319,7 @@
 					</mx:filters>
 				</mx:ColumnSeries>
 			</mx:series>
-			
+		
 		</mx:ColumnChart>
 		<s:Label text="{resourceManager.getString('wiretapcontent_report','emails.title')+' ('+selectedDateLabel+')'}" 
 				 fontWeight="bold" fontSize="16"
