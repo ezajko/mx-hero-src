@@ -2,6 +2,13 @@ package org.mxhero.console.backend.vo;
 
 public class FeatureRuleDirectionVO {
 
+	public static final String DOMAIN = "domain";
+	public static final String GROUP = "group";
+	public static final String INDIVIDUAL = "individual";
+	public static final String ANYONE = "anyone";
+	public static final String ANYONEELSE = "anyoneelse";
+	public static final String ALLDOMAINS = "alldomains";
+	
 	private Integer id;
 	
 	private String directionType;

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 public class EmailAccountVO {
 
+	public static final String MANUAL="manual";
+	
 	private String account;
 	
 	private String domain;
@@ -73,6 +75,37 @@ public class EmailAccountVO {
 
 	public void setDataSource(String dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((account == null) ? 0 : account.hashCode());
+		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EmailAccountVO other = (EmailAccountVO) obj;
+		if (account == null) {
+			if (other.account != null)
+				return false;
+		} else if (!account.equals(other.account))
+			return false;
+		if (domain == null) {
+			if (other.domain != null)
+				return false;
+		} else if (!domain.equals(other.domain))
+			return false;
+		return true;
 	}
 
 }
