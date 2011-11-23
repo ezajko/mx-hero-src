@@ -14,6 +14,8 @@ package org.mxhero.console.frontend.domain
 		public var updated:Date;
 		public var enabled:Boolean;
 		public var adminOrder:String;
+		public var featureId:Number;
+		public var domain:String;
 		public var fromDirection:FeatureRuleDirection;
 		public var toDirection:FeatureRuleDirection;
 		public var properties:ArrayCollection;
@@ -28,6 +30,8 @@ package org.mxhero.console.frontend.domain
 			newRule.name = this.name;
 			newRule.adminOrder = this.adminOrder;
 			newRule.twoWays = this.twoWays;
+			newRule.featureId = this.featureId;
+			newRule.domain = this.domain;
 			if(this.fromDirection!=null){
 				newRule.fromDirection = this.fromDirection.clone();
 			} else {
