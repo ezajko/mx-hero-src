@@ -6,9 +6,14 @@ import java.util.Set;
 
 import org.mxhero.engine.plugin.statistics.internal.entity.Record;
 import org.mxhero.engine.plugin.statistics.internal.entity.Stat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.ConcurrencyFailureException;
 
 public class CachedRecordRepository implements RecordRepository, Runnable{
 
+	private static Logger log = LoggerFactory.getLogger(CachedRecordRepository.class);
+	
 	private RecordRepository repository;
 	
 	private Set<Record> records;
@@ -97,8 +102,16 @@ public class CachedRecordRepository implements RecordRepository, Runnable{
 			this.records=new HashSet<Record>();
 			this.stats=new HashSet<Stat>();
 		}
-		repository.saveRecord(oldRecords);
-		repository.saveStat(oldStats);
+		try{
+			repository.saveRecord(oldRecords);
+			repository.saveStat(oldStats);
+		}catch(ConcurrencyFailureException e){
+			log.warn(e.toString());
+			synchronized (this) {
+				this.records.addAll(oldRecords);
+				this.stats.addAll(oldStats);
+			}
+		}
 	}
 	
 	public RecordRepository getRepository() {
