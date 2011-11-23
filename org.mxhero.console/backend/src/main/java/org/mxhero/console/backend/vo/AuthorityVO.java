@@ -1,7 +1,12 @@
 package org.mxhero.console.backend.vo;
 
-public class AuthorityVO {
+import org.springframework.security.core.GrantedAuthority;
 
+@SuppressWarnings("serial")
+public class AuthorityVO implements GrantedAuthority{
+
+	public static final String ROLE_DOMAIN_ADMIN = "ROLE_DOMAIN_ADMIN";
+	
 	private Integer id;
 	
 	private String authority;

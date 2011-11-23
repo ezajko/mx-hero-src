@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 public class DomainAdLdapVO {
 	
+	public static final String MANUAL="manual";
+	
 	private String domainId;
 	
 	private String directoryType;
@@ -142,6 +144,32 @@ public class DomainAdLdapVO {
 
 	public void setDnAuthenticate(String dnAuthenticate) {
 		this.dnAuthenticate = dnAuthenticate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((domainId == null) ? 0 : domainId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DomainAdLdapVO other = (DomainAdLdapVO) obj;
+		if (domainId == null) {
+			if (other.domainId != null)
+				return false;
+		} else if (!domainId.equals(other.domainId))
+			return false;
+		return true;
 	}
 	
 }
