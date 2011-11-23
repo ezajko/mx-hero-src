@@ -11,7 +11,7 @@
 	<beans:bean id="entryPoint"
 		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
 
-	<beans:bean id="jpaUserDetailsService" class="org.mxhero.console.backend.security.JpaUserDetailsService"/>
+	<beans:bean id="jdbcUserDetailsService" class="org.mxhero.console.backend.security.JdbcUserDetailsService"/>
 
 	<beans:bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
 
@@ -19,7 +19,7 @@
 		secured-annotations="enabled" jsr250-annotations="enabled" />
 
 	<authentication-manager>
-		<authentication-provider user-service-ref="jpaUserDetailsService">
+		<authentication-provider user-service-ref="jdbcUserDetailsService">
 			<password-encoder hash="md5"/>
 		</authentication-provider>
 	</authentication-manager>
