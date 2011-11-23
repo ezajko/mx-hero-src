@@ -13,6 +13,7 @@ package org.mxhero.console.frontend.domain
 		public var adminMail:String;
 		public var logoPath:String;
 		public var newsFeedEnabled:String;
+		public var defaultLanguage:String;
 
 		public function clone():Configuration{
 			var clonedConfiguration:Configuration=new Configuration();

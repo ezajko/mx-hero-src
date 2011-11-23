@@ -17,7 +17,7 @@ package org.mxhero.console.features.application.command
 		
 		public function execute(event:CreateNoDomainRuleEvent):AsyncToken
 		{
-			return service.createRule(event.rule, event.featureId);
+			return service.createRule(event.rule, event.featureId, null);
 		}
 		
 		public function error (fault:Fault) : void {

@@ -9,7 +9,7 @@ package org.mxhero.console.features.application.command
 
 	public class RemoveRuleCommand
 	{
-		[Inject(id="featureService")]
+		[Inject(id="ruleService")]
 		public var service:RemoteObject;
 		
 		[MessageDispatcher]

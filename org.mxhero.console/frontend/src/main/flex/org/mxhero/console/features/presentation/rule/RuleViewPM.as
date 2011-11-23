@@ -63,14 +63,22 @@ package org.mxhero.console.features.presentation.rule
 				RuleViewPM.realoadExternal();
 			}
 			if(context.selectedDomain==null){
-				dispatcher(new GetDomainsEvent());
-				dispatcher(new GetAccountsEvent());
+				if(context.accounts==null){
+					dispatcher(new GetAccountsEvent());
+				}
+				if(context.domains==null){
+					dispatcher(new GetDomainsEvent());
+				}
 			} else {
 				var newDomains:ArrayCollection = new ArrayCollection();
 				newDomains.addItem(context.selectedDomain);
 				context.domains=newDomains;
-				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.domain));
-				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.domain));
+				if(context.accounts==null){
+					dispatcher(new GetDomainAccountsEvent(context.selectedDomain.domain));
+				}
+				if(context.groups==null){
+					dispatcher(new GetDomainGroupsEvent(context.selectedDomain.domain));
+				}
 			}
 		}
 		
