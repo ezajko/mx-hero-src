@@ -3,7 +3,6 @@ package org.mxhero.console.backend.service;
 import java.util.Collection;
 
 import org.mxhero.console.backend.vo.CategoryVO;
-import org.mxhero.console.backend.vo.FeatureRuleVO;
 import org.springframework.security.access.annotation.Secured;
 
 public interface FeatureService {
@@ -14,15 +13,4 @@ public interface FeatureService {
 	@Secured("ROLE_DOMAIN_ADMIN")
 	Collection<CategoryVO> findFeaturesByDomainId(String domainId);
 	
-	@Secured("ROLE_DOMAIN_ADMIN")
-	void remove(Integer id);
-	
-	@Secured("ROLE_DOMAIN_ADMIN")
-	void toggleStatus(Integer id);
-	
-	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<FeatureRuleVO> getRulesByDomainId(String domainId, Integer featureId);
-	
-	@Secured("ROLE_ADMIN")
-	Collection<FeatureRuleVO> getRulesWithoutDomain(Integer featureId);
 }
