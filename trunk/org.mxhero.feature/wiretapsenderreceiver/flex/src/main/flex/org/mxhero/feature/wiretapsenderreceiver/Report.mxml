@@ -108,7 +108,7 @@
 			[Bindable]
 			private var _recipients:ArrayCollection;
 			
-			private var _sendersQuery:String =	"SELECT COUNT(*), r0.from_recipeints " 
+			private var _sendersQuery:String =	"SELECT COUNT(*) as `count`, r0.from_recipeints as `label`" 
 				+" FROM mail_records r0 " 
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
@@ -116,7 +116,7 @@
 				+" AND s.record_sequence = r0.record_sequence " 
 				+" AND s.stat_key = 'org.mxhero.feature.wiretapsenderreceiver' ) ";
 			
-			private var _recipientsQuery:String =	"SELECT COUNT(*), r0.recipient " 
+			private var _recipientsQuery:String =	"SELECT COUNT(*) as `count`, r0.recipient as `label`" 
 				+" FROM mail_records r0 " 
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
@@ -129,13 +129,13 @@
 				if(queryId==SENDER_QUERY){
 					var sendersArray:Array = new Array();
 					for each(var dataRow:Object in result){
-						sendersArray.push({Qty:dataRow[0],Email:dataRow[1]});
+						sendersArray.push({Qty:dataRow.count,Email:dataRow.label});
 					}
 					this._senders=new ArrayCollection(sendersArray.reverse());
 				}else if(queryId==RECIPIENT_QUERY){
 					var recipientsArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
-						recipientsArray.addItem({Qty:row[0],Email:row[1]});
+						recipientsArray.addItem({Qty:row.count,Email:row.label});
 					}
 					this._recipients=recipientsArray;
 				}
