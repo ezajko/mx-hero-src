@@ -27,7 +27,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 	
 	@Override
 	public Collection getIncomming(String domain, long since, String offset) {
-		String query = " SELECT tcount.c, tsize.s, tcount.ddate "
+		String query = " SELECT tcount.c as `count`, tsize.s as `bytes`, tcount.ddate as `date`"
 				+ " FROM"
 				+ " (SELECT SUM(r0.amount) s, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ddate "
 				+ " FROM mail_stats_grouped r0 "
@@ -58,7 +58,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getIncommingByDay(String domain, long day) {
-		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date), HOUR(insert_date) "
+		String query = "SELECT count(*) as `count`, sum(bytes_size) as `bytes`, DATE(insert_date) as `date`, HOUR(insert_date) as `hours` "
 				+ "FROM  mail_records "
 				+ "WHERE insert_date > :date_since "
 				+ "AND insert_date < :date_to "
@@ -89,7 +89,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getOutgoing(String domain, long since, String offset) {
-		String query = " SELECT tcount.c, tsize.s, tcount.ddate "
+		String query = " SELECT tcount.c as `count`, tsize.s as `bytes`, tcount.ddate as `date`"
 				+ " FROM"
 				+ " (SELECT SUM(r0.amount) s, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ddate "
 				+ " FROM mail_stats_grouped r0 "
@@ -120,7 +120,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getOutgoingByDay(String domain, long day) {
-		String query = "SELECT count(*) count, sum(bytes_size) bytes, DATE(insert_date), HOUR(insert_date) "
+		String query = "SELECT count(*) as `count`, sum(bytes_size) as `bytes`, DATE(insert_date) as `date`, HOUR(insert_date) as `hours` "
 				+ "FROM  mail_records "
 				+ "WHERE insert_date > :date_since "
 				+ "AND insert_date < :date_to "
