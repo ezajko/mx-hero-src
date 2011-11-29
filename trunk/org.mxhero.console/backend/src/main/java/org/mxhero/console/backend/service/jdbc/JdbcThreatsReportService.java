@@ -26,13 +26,13 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 	
 	private NamedParameterJdbcTemplate template;
 	
-	String hitsSqlQuery = "SELECT SUM(r0.amount), date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
+	String hitsSqlQuery = "SELECT SUM(r0.amount) as `count`, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) as `date` " 
 		+" FROM mail_stats_grouped r0 " 
 		+" WHERE r0.insert_date > ? "
 		+" AND r0.stat_key = ? " 
 		+" AND r0.stat_value = ? ";
 	
-	String dayHitsSqlQuery = "SELECT COUNT(*),date(r0.insert_date),hour(r0.insert_date)" 
+	String dayHitsSqlQuery = "SELECT COUNT(*) as `count`, date(r0.insert_date) as `date`,hour(r0.insert_date) as `hours` " 
 		+" FROM mail_records r0 " 
 		+" WHERE r0.insert_date > ? "
 		+" AND EXISTS( SELECT 1 FROM mail_stats s "
@@ -41,7 +41,7 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 								+" AND s.stat_key = ? " 
 								+" AND s.stat_value = ?) ";
 	
-	String mailQuerySql = "SELECT r0.*" 
+	String mailQuerySql = "SELECT r0.* " 
 		+" FROM mail_records r0 " 
 		+" WHERE r0.insert_date between ? AND ? "
 		+" AND EXISTS( SELECT 1 FROM mail_stats s "

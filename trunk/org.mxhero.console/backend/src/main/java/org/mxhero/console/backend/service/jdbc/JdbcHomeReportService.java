@@ -99,13 +99,13 @@ public class JdbcHomeReportService implements HomeReportService{
 	@Override
 	public ActivityDataVO getActivity(long since, String domainId) {
 		ActivityDataVO data = new ActivityDataVO();
-		String threatsQuery = "SELECT COUNT(*), date_format(r0.insert_date,'%Y-%m-%d %H:%i') FROM mail_records r0 " 
+		String threatsQuery = "SELECT COUNT(*) as `count`, date_format(r0.insert_date,'%Y-%m-%d %H:%i') as `date` FROM mail_records r0 " 
 				+" WHERE r0.insert_date > ? "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 										+" WHERE s.insert_date = r0.insert_date " 
 										+" AND s.record_sequence = r0.record_sequence " 
 										+" AND ${CONDITION}) ";
-		String trafficQuery =" SELECT COUNT(*), date_format(r0.insert_date,'%Y-%m-%d %H:%i') FROM mail_records r0 " +
+		String trafficQuery =" SELECT COUNT(*) as `count`, date_format(r0.insert_date,'%Y-%m-%d %H:%i') as `date` FROM mail_records r0 " +
 				" WHERE r0.insert_date >= ? ";
 		String incomming = " AND (r0.flow = 'both' OR r0.flow = 'in') ";
 		String outgoing = " AND (r0.flow = 'both' OR r0.flow = 'out') ";
