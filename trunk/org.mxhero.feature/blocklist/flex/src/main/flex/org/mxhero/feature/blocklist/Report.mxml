@@ -108,7 +108,7 @@
 			[Bindable]
 			private var options:ArrayCollection;
 			
-			private var _dataQuery:String =	"SELECT COUNT(*), r0.from_recipeints " 
+			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, r0.from_recipeints as `label`" 
 				+" FROM mail_records r0 " 
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
@@ -132,17 +132,17 @@
 				if(queryId==DATA_QUERY){
 					var dataArray:Array = new Array();
 					for each(var dataRow:Object in result){
-						dataArray.push({Qty:dataRow[0],Email:dataRow[1]});
+						dataArray.push({Qty:dataRow.count,Email:dataRow.label});
 					}
 					this._data=new ArrayCollection(dataArray.reverse());
 				}else if(queryId==EMAIL_QUERY){
 					var emailArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
-						emailArray.addItem({messageId:row[0],from:row[1],sender:row[2]
-							,recipient:row[3],toRecipients:row[4]
-							,ccRecipients:row[5],bccRecipients:row[6]
-							,subject:row[7],phase:row[8],bytesSize:row[9]
-							,state:row[10],stateReason:row[11],insertDate:row[12]});
+						emailArray.addItem({messageId:row.message_id,from:row.from_recipeints,sender:row.sender
+							,recipient:row.recipient,toRecipients:row.to_recipeints
+							,ccRecipients:row.cc_recipeints,bccRecipients:row.bcc_recipeints
+							,subject:row.subject,phase:row.phase,bytesSize:row.bytes_size
+							,state:row.state,stateReason:row.state_reason,insertDate:row.insert_date});
 					}
 					this._emails=emailArray;
 				}
