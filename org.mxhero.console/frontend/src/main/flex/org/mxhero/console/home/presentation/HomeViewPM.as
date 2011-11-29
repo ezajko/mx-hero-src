@@ -240,7 +240,7 @@ package org.mxhero.console.home.presentation
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						newData.addItem({Qty: object[0], Label:object[1]});
+						newData.addItem({Qty: object.count, Label:object.label});
 					}
 				}
 				newData.source = newData.source;
@@ -257,15 +257,15 @@ package org.mxhero.console.home.presentation
 				activityArray.addItem({Qty:0,Date:newDate});
 			}
 			for each(var item:Object in data){
-				var dateString:String = (item[1] as String).split(" ")[0];
-				var hourString:String = (item[1] as String).split(" ")[1];
+				var dateString:String = (item.date as String).split(" ")[0];
+				var hourString:String = (item.date as String).split(" ")[1];
 				var date:Date = DateField.stringToDate(dateString,"YYYY-MM-DD");
 				date.time=Date.UTC(date.fullYear,date.month,date.date,new Number(hourString.split(":")[0]),new Number(hourString.split(":")[1]));
 				var index:int = (date.time-hourSince.time)/(60*1000);
 				if(index<activityArray.length){
-					activityArray.setItemAt({Qty:item[0],Date:date},index);
+					activityArray.setItemAt({Qty:item.count,Date:date},index);
 				}else{
-					activityArray.addItem({Qty:item[0],Date:date});
+					activityArray.addItem({Qty:item.count,Date:date});
 				}
 			}
 			return activityArray;

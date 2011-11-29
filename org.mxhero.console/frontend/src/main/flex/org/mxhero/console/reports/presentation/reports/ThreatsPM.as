@@ -231,10 +231,10 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						var day:Date = new Date((object[1]as Date).getTime());
-						day.setUTCHours(object[2]);
+						var day:Date = new Date((object.date as Date).getTime());
+						day.setUTCHours(object.hours);
 						day.setTime(day.getTime()-day.getTimezoneOffset()*60*1000);
-						newData.addItem({Qty: object[0], Date:day});
+						newData.addItem({Qty: object.count, Date:day});
 					}
 				}
 			}
@@ -246,9 +246,9 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						var day:Date = object[1];
+						var day:Date = object.date;
 						day.setTime(day.getTime()+day.getTimezoneOffset()*60*1000);
-						newData.addItem({Qty: object[0], Date:day});
+						newData.addItem({Qty: object.count, Date:day});
 					}
 				}
 			}

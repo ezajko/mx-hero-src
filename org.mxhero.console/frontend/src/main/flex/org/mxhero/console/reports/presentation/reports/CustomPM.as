@@ -134,7 +134,7 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						newData.addItem({Qty: object[0], Email:object[1]});
+						newData.addItem({Qty: object.count, Email:object.label});
 					}
 				}
 				newData.source = newData.source.reverse();

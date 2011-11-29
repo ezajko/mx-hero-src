@@ -234,9 +234,9 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						var day:Date = object[2];
+						var day:Date = object.date;
 						day.setTime(day.getTime()+day.getTimezoneOffset()*60*1000);
-						newData.addItem({Qty: object[0], MB:int((((object[1])/1024)/1024)*1000)/1000, Date:day});
+						newData.addItem({Qty: object.count, MB:int((((object.bytes)/1024)/1024)*1000)/1000, Date:day});
 					}
 				}
 			}
@@ -248,10 +248,10 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						var day:Date = new Date((object[2]as Date).getTime());
-						day.setUTCHours(object[3]);
+						var day:Date = new Date((object.date as Date).getTime());
+						day.setUTCHours(object.hours);
 						day.setTime(day.getTime()-day.getTimezoneOffset()*60*1000);
-						newData.addItem({Qty: object[0], MB:int((((object[1])/1024)/1024)*1000)/1000, Date:day});
+						newData.addItem({Qty: object.count, MB:int((((object.bytes)/1024)/1024)*1000)/1000, Date:day});
 					}
 				}
 			}
@@ -263,7 +263,7 @@ package org.mxhero.console.reports.presentation.reports
 			if(result!=null){
 				if(result is Array || result is ArrayCollection){
 					for each(var object:Object in result){
-						newData.addItem({Qty: object[0], Email:object[1]});
+						newData.addItem({Qty: object.count, Email:object.label});
 					}
 				}
 				newData.source = newData.source.reverse();
