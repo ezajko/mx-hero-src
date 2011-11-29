@@ -102,7 +102,7 @@
 			[Bindable]
 			public var selectedDateLabel:String;
 			
-			private var _dataQuery:String =	"SELECT COALESCE(SUM(r0.amount),0),date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))" 
+			private var _dataQuery:String =	"SELECT COALESCE(SUM(r0.amount),0) as `count`,date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) as `date`" 
 				+" FROM mail_stats_grouped r0 " 
 				+" WHERE r0.insert_date >= CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND r0.stat_key = 'org.mxhero.feature.wiretapcontent' " 
@@ -129,19 +129,19 @@
 					}
 					var dataArray:ArrayCollection = new ArrayCollection();
 					for each(var dataRow:Object in result){
-						var axisDate:Date = dataRow[1];
+						var axisDate:Date = dataRow.date;
 						axisDate.setTime(axisDate.getTime()+axisDate.timezoneOffset*60*1000);
-						dataArray.addItem({Qty:dataRow[0],Date:axisDate});
+						dataArray.addItem({Qty:dataRow.count,Date:axisDate});
 					}
 					this._data=dataArray;
 				}else if(queryId==EMAIL_QUERY){
 					var emailArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
-						emailArray.addItem({messageId:row[0],from:row[1],sender:row[2]
-							,recipient:row[3],toRecipients:row[4]
-							,ccRecipients:row[5],bccRecipients:row[6]
-							,subject:row[7],phase:row[8],bytesSize:row[9]
-							,state:row[10],stateReason:row[11],insertDate:row[12]});
+						emailArray.addItem({messageId:row.message_id,from:row.from_recipeints,sender:row.sender
+							,recipient:row.recipient,toRecipients:row.to_recipeints
+							,ccRecipients:row.cc_recipeints,bccRecipients:row.bcc_recipeints
+							,subject:row.subject,phase:row.phase,bytesSize:row.bytes_size
+							,state:row.state,stateReason:row.state_reason,insertDate:row.insert_date});
 					}
 					this._emails=emailArray;
 				}
