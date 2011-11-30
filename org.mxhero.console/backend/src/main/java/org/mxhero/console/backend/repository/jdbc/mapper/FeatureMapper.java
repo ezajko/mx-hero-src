@@ -22,6 +22,7 @@ public class FeatureMapper implements RowMapper<FeatureVO>{
 	public static final String MODULE_URL="module_url";
 	public static final String VERSION="version";
 	public static final String CATEGORY_ID="category_id";
+	public static final String ENABLED="enabled";
 	
 	@Override
 	public FeatureVO mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -35,6 +36,7 @@ public class FeatureMapper implements RowMapper<FeatureVO>{
 		feature.setLabel(rs.getString(LABEL_KEY));
 		feature.setModuleReportUrl(rs.getString(MODULE_REPORT_URL));
 		feature.setModuleUrl(rs.getString(MODULE_URL));
+		feature.setEnabled(rs.getBoolean(ENABLED));
 
 		return feature;
 	}
