@@ -34,7 +34,7 @@ public class JdbcRulesFinder implements RulesFinder{
 	public Feature find(String componet, Integer version) {
 		Feature feature = null;
 		String featureSql = "SELECT id, base_priority, component, version " +
-				" FROM features WHERE component = :component AND version = :version;";
+				" FROM features WHERE component = :component AND version = :version AND  enabled = true;";
 		MapSqlParameterSource featureParams = new MapSqlParameterSource();
 		featureParams.addValue("component", componet);
 		featureParams.addValue("version", version);
