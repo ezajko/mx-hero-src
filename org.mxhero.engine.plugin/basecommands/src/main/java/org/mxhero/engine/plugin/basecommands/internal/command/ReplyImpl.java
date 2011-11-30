@@ -201,4 +201,12 @@ public class ReplyImpl implements Reply {
 		this.service = service;
 	}
 
+	public String getNoReplySignature() {
+		return noReplySignature;
+	}
+
+	public void setNoReplySignature(String noReplySignature) {
+		this.noReplySignature = noReplySignature;
+	}
+
 }
