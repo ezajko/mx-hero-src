@@ -24,7 +24,7 @@ sub install
 	
 	$reply =~ s/[^\d]*(\d+)[^\d]*/$1/g; # Extract only numbers in case user adds MB to input.
 	
-	print T( "\n\nENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR SERVER OF UP TO" ) . "$defaultMax MB\n";
+	print T( "\n\nENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . "$defaultMax MB\n";
 	print T( "Enter to continue" ) . "...\n";
 	my $enter = <STDIN>;
 	
