@@ -14,6 +14,11 @@
 
 	<context:annotation-config />
 
+	<osgix:cm-properties id="jdbcCmProps"
+		persistent-id="org.mxhero.engine.plugin.basecommands.reply">
+		<prop key="noReplySignature">\n\n- mxHero - \nhttp://mxhero.com</prop>
+	</osgix:cm-properties>
+
 	<osgi:reference id="inputService"
 		interface="org.mxhero.engine.commons.connector.InputService" />
 
@@ -118,6 +123,8 @@
 
 	<bean id="reply"
 		class="org.mxhero.engine.plugin.basecommands.internal.command.ReplyImpl">
+		<osgix:managed-properties persistent-id="org.mxhero.engine.plugin.basecommands.reply"
+			autowire-on-update="true" />
 		<property name="service" ref="inputService" />
 	</bean>
 
