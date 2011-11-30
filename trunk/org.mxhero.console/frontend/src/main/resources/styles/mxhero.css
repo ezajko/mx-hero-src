@@ -49,11 +49,14 @@ s|Label.item{
 	font-weight:bold;
 	color:#FFFFFF;
 }
+s|TextInput{
+ 	borderVisible:true;
+}
 
 s|TextInput.item{
 	font-weight:bold;
 }
-
+	
 s|ComboBox.item{
 	font-weight:bold;
 }
@@ -166,7 +169,6 @@ s|Label.categorylist_child
 	font-size:14;
 	font-weight:"bold";
 	text-align:"left";
-	color:#FFFFFF;
 	padding-bottom:4;
 	padding-top:4;
 }

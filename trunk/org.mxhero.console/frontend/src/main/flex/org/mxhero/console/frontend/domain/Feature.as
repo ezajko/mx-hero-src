@@ -19,6 +19,7 @@ package org.mxhero.console.frontend.domain
 		public var moduleReportUrl:String;
 		public var defaultAdminOrder:String;
 		private var _component:String;
+		public var enabled:Boolean;
 
 		public function Feature(){
 			rm.addEventListener("change",dispatchChange);
