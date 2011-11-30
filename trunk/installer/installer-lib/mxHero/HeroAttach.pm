@@ -31,7 +31,8 @@ sub install
 	my $enter = <STDIN>;
 	
 	## ALTER main.cf established in Postfix.pm around lines 100-162 (see Zimbra main.cf and optional other main.cf)
-	### NEED TO EXPORT / GLOBAL VALUE IN Postfix.pm
+	### NEED TO EXPORT / GLOBAL VALUE from Postfix.pm main.cf full path.
+	# Set message_size_limit
 	
 	## Discover IP
 	my $ip = '0.0.0.0'; # IP DISCOVERY HERE
