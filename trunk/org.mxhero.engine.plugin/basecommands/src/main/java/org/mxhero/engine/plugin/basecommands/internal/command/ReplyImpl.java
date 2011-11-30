@@ -158,7 +158,7 @@ public class ReplyImpl implements Reply {
 					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 					replayMail = new MimeMail(sender.getAddress(), recipient.getAddress(),
 							is, outputService);
-					replayMail.setPhase(RulePhase.SEND);
+					replayMail.setPhase(RulePhase.OUT);
 					replayMail.getProperties().put(Reply.class.getName(), recipient.getAddress());
 				} catch (MessagingException e) {
 					log.warn("error while creating replay message");
