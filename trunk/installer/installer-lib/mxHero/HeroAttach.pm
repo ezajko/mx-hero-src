@@ -19,12 +19,14 @@ sub install
 	my $term = Term::ReadLine->new( 'mxHero' );
 	my $reply;
 	
+	print "\n\n*** " . T("HERO ATTACH SETUP"). " ***\n\n";
+	
 	$reply = $term->get_reply( prompt => T("What is the maximum size email in MegaBytes to allow for Hero Attach")." [$defaultMax] ",
 				   default  => $defaultMax );
 	
 	$reply =~ s/[^\d]*(\d+)[^\d]*/$1/g; # Extract only numbers in case user adds MB to input.
 	
-	print T( "\n\nENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . "$defaultMax MB\n";
+	print "\n\n" . T( "ENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . "$defaultMax MB\n";
 	print T( "Enter to continue" ) . "...\n";
 	my $enter = <STDIN>;
 	
