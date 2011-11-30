@@ -75,9 +75,10 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
         	DataSource ds = new ByteArrayDataSource(writer.toString(), "text/html");
         	String attachFileName = fileNames.get(language);
         	if(attachFileName == null)attachFileName = "attachments.html";
+        	part.setDataHandler(new DataHandler(ds));
         	part.setFileName(attachFileName);
         	part.setDisposition(Part.ATTACHMENT);
-        	part.setDataHandler(new DataHandler(ds));
+        	part.setHeader("Content-Type","text/html; charset=\"utf-8\"");
 		} catch (Exception e) {
 			log.error("Error generating HTML attach. MailId: "+mail.getMessagePlatformId()+" - "+e.getClass().getName()+" - "+e.getMessage());
 			throw new RuntimeException("Could not generate HTML attachment for email "+mail.getMessagePlatformId());
