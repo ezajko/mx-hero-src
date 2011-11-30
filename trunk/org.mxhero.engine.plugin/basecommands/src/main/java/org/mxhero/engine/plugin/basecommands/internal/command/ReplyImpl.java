@@ -44,6 +44,8 @@ public class ReplyImpl implements Reply {
 	private static final String RECIPIENT_KEY = "mxrecipient";
 
 	private InputService service;
+	
+	private String noReplySignature = "";
 
 	/**
 	 * @see org.mxhero.engine.domain.mail.command.Command#exec(org.mxhero.engine.domain.mail.MimeMail,
@@ -151,7 +153,7 @@ public class ReplyImpl implements Reply {
 					replayMessage.setSender(sender);
 					replayMessage.setFrom(sender);
 					replayMessage.setReplyTo(new InternetAddress[]{sender});
-					replayMessage.setText(sb.toString());
+					replayMessage.setText(sb.toString()+((noReplySignature!=null)?noReplySignature:""));
 					replayMessage.saveChanges();
 					ByteArrayOutputStream os = new ByteArrayOutputStream();
 					replayMessage.writeTo(os);
