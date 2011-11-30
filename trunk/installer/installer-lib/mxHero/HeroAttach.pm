@@ -30,7 +30,7 @@ sub install
 	print T( "Enter to continue" ) . "...\n";
 	my $enter = <STDIN>;
 	
-	## ALTER main.cf established in Postfix.pm around lines 63-99
+	## ALTER main.cf established in Postfix.pm around lines 100-162 (see Zimbra main.cf and optional other main.cf)
 	### NEED TO EXPORT / GLOBAL VALUE IN Postfix.pm
 	
 	## Discover IP
