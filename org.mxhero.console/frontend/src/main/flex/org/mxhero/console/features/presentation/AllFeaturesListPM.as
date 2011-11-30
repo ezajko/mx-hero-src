@@ -106,9 +106,11 @@ package org.mxhero.console.features.presentation
 		}
 		
 		public function childClickHandler(child:Object,category:Object):void{
-			featureView.selectedFeature=child as Feature;
-			featureView.selectedCategory=category as Category;
-			allFeaturesView.navigateTo(FeaturesDestinations.FEATURE_VIEW);
+			if(child.enabled){
+				featureView.selectedFeature=child as Feature;
+				featureView.selectedCategory=category as Category;
+				allFeaturesView.navigateTo(FeaturesDestinations.FEATURE_VIEW);
+			}
 		}
 
 		private function preload(categories:ArrayCollection):void{

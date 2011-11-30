@@ -26,6 +26,8 @@ package org.mxhero.console.commons.domain
 		
 		public var navigateTo:String;
 		
+		public var enabled:Boolean = true;
+		
 		public function LCChild(){
 			rm.addEventListener("change",dispatchChange);
 		}

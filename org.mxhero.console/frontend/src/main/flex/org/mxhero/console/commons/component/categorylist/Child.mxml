@@ -30,6 +30,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
 
 			[Bindable]
 			public var model:CategoryListPM;
@@ -59,18 +60,33 @@
 		
 			private function onRollOverHandler():void{
 				model.selectedChild=child;
-				lastColor=childLabel.getStyle("color");
-				childLabel.setStyle("color",glowColor);
+				if(child.enabled){
+					lastColor=childLabel.getStyle("color");
+					childLabel.setStyle("color",glowColor);
+				}
 			}
 
 			private function onRollOutHandler():void{
 				model.selectedChild=null
-				childLabel.setStyle("color",lastColor);
+				if(child.enabled){
+					childLabel.setStyle("color",lastColor);
+				}
+			}
+			
+			protected function childLabel_updateCompleteHandler(event:FlexEvent):void
+			{
+				if(child.enabled){
+					childLabel.setStyle("color","0xFFFFFF");
+					childLabel.setStyle("rollOverEffect",glowOn);
+					childLabel.setStyle("rollOutEffect",glowOff);
+					childLabel.toolTip="";
+				}else{
+					childLabel.toolTip=resourceManager.getString("features_list","feature.disable.tooltip");
+				}
 			}
 			
 		]]>
 	</fx:Script>
-	
 	<s:Label id="childLabel"
 			 styleName="categorylist_child"
 			 text="{child.label}"
@@ -79,8 +95,8 @@
 			 width="{this.width}"
 			 buttonMode="true"
 			 mouseEnabled="true"
-			 click="model.clickHandler(child,model.selectedCategory)"
-			 rollOverEffect="{glowOn}"
-			 rollOutEffect="{glowOff}"/>
+			 updateComplete="childLabel_updateCompleteHandler(event)"
+			 enabled="{child.enabled}"
+			 click="model.clickHandler(child,model.selectedCategory)"/>
 
 </s:Group>

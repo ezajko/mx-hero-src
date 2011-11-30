@@ -151,13 +151,6 @@
 			<version>${commons.version}</version>
 			<type>swc</type>
 		</dependency>
-
-		<dependency>
-		  <groupId>org.mxhero.console</groupId>
-		  <artifactId>cloudtag</artifactId>
-		  <version>1.0.0</version>
-		  <type>swc</type>
-		</dependency>
 		
 	</dependencies>
 </project>
