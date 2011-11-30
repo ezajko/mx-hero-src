@@ -24,7 +24,8 @@ public class JdbcFeatureRepository implements FeatureRepository{
 			"SELECT `"+FeatureMapper.COMPONENT+"`,`"+FeatureMapper.DEFAULT_ADMIN_ORDER+"`," +
 			" `"+FeatureMapper.DESCRIPTION_KEY+"`, `"+FeatureMapper.EXPLAIN_KEY+"`," +
 			" `"+FeatureMapper.ID+"`, `"+FeatureMapper.LABEL_KEY+"`," +
-			" `"+FeatureMapper.MODULE_REPORT_URL+"`, `"+FeatureMapper.MODULE_URL+"`" +
+			" `"+FeatureMapper.MODULE_REPORT_URL+"`, `"+FeatureMapper.MODULE_URL+"`," +
+			" `"+FeatureMapper.ENABLED+"`" +
 			" FROM `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"`";
 
 	private static final String SQL_CATEGORY = 

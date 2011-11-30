@@ -22,6 +22,8 @@ public class FeatureVO {
 	
 	private String defaultAdminOrder;
 	
+	private Boolean enabled;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -92,6 +94,14 @@ public class FeatureVO {
 
 	public void setDefaultAdminOrder(String defaultAdminOrder) {
 		this.defaultAdminOrder = defaultAdminOrder;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	@Override
