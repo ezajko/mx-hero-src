@@ -138,7 +138,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock", "rule="+ruleId+";blocked="+droppedByAttachments);
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments) );
 			if(droppedByAttachments){
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat",new String[]{"email.blocked","org.mxhero.feature.attachementblock"});
+				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.attachementblock");
 			}
 		}
 		
