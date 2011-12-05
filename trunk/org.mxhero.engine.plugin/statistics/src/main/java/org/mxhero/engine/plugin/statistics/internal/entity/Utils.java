@@ -87,8 +87,8 @@ public final class Utils {
 				record.setFrom(((InternetAddress)froms[0]).getAddress());
 			}
 		} catch (MessagingException e) {
-			log.error("could not read From from email");
-			record.setFrom("");
+			log.debug("could not read From from email");
+			record.setFrom("<>");
 		}
 		if(record.getFrom()==null || record.getFrom().trim().length()<1){
 			record.setFrom(mail.getInitialSender());
@@ -98,13 +98,13 @@ public final class Utils {
 		try {
 			record.setSentDate(mail.getMessage().getSentDate());
 		} catch (MessagingException e) {
-			log.error("could not read SentDate id from email");
+			log.debug("could not read SentDate id from email");
 			record.setSentDate(null);
 		}
 		try {
 			record.setSubject(mail.getMessage().getSubject());
 		} catch (MessagingException e) {
-			log.error("could not read Subject id from email");
+			log.debug("could not read Subject id from email");
 			record.setSubject(null);
 		}
 		record.setBytesSize(mail.getInitialSize());

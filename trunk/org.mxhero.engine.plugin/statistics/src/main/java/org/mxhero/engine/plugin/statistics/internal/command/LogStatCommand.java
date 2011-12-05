@@ -24,12 +24,12 @@ public class LogStatCommand implements LogStat{
 		Result result = new Result();
 		result.setResult(false);
 		
-		if (args==null || args.length!=2 || args[0]==null || args[0].isEmpty() || args[1]==null || args[1].isEmpty()){
+		if (args==null || args.length!=2 || args[0]==null || args[0].isEmpty() ){
 			log.warn("wrong params");
 			return result;
 		}
 
-		Stat stat = Utils.createStat(mail, args[0], args[1]);
+		Stat stat = Utils.createStat(mail, args[0], (args[1]==null)?"":args[1]);
 		try{
 			getRepository().saveStat(stat);
 			result.setResult(true);
