@@ -68,14 +68,15 @@ public class CloneImpl implements Clone {
 						.equalsIgnoreCase(RulePhase.RECEIVE))) {
 			log.warn("wrong params.");
 			return result;
-		} else if (args[SENDER_PARAM_NUMBER] == null
-				|| args[RECIPIENT_PARAM_NUMBER] == null
+		} else if (args[RECIPIENT_PARAM_NUMBER] == null
 				|| args[RECIPIENT_PARAM_NUMBER].isEmpty()) {
 			log.warn("wrong params.");
 			return result;
 		} else {
 			try {
-				sender = new InternetAddress(args[SENDER_PARAM_NUMBER]);
+				if(args[SENDER_PARAM_NUMBER]!=null && !args[SENDER_PARAM_NUMBER].isEmpty()){
+					sender = new InternetAddress(args[SENDER_PARAM_NUMBER]);
+				}
 			} catch (AddressException e) {
 				log.warn("wrong sender address");
 				return result;
@@ -111,7 +112,7 @@ public class CloneImpl implements Clone {
 						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 					}
 					
-					clonedMail = new MimeMail(sender.getAddress(), recipient.getAddress(),is, outputService);
+					clonedMail = new MimeMail((sender!=null)?sender.getAddress():"<>", recipient.getAddress(),is, outputService);
 
 					clonedMail.setPhase(RulePhase.SEND);
 					clonedMail.getProperties().putAll(mail.getProperties());
