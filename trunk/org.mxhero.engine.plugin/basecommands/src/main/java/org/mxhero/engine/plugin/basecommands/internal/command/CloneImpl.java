@@ -70,7 +70,6 @@ public class CloneImpl implements Clone {
 			return result;
 		} else if (args[SENDER_PARAM_NUMBER] == null
 				|| args[RECIPIENT_PARAM_NUMBER] == null
-				|| args[SENDER_PARAM_NUMBER].isEmpty()
 				|| args[RECIPIENT_PARAM_NUMBER].isEmpty()) {
 			log.warn("wrong params.");
 			return result;
