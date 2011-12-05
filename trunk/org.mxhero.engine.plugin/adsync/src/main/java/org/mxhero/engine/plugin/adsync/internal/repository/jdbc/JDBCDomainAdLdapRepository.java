@@ -184,8 +184,8 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	}
 	
 	public void insertAccount(String account, String domainId, List<String> aliases){
-		String sql = " INSERT INTO email_accounts (account, domain_id, created, data_source, updated, group_domain_id, group_name) " +
-				" VALUES (?,?,NOW(),?,NOW(),null,null) ";
+		String sql = " INSERT INTO email_accounts (account, domain_id, created, data_source, updated, group_name) " +
+				" VALUES (?,?,NOW(),?,NOW(),null) ";
 		
 		template.getJdbcOperations().update(sql, new Object[]{account, domainId, SYNC_TYPE});
 		String aliasSql = " INSERT INTO account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
