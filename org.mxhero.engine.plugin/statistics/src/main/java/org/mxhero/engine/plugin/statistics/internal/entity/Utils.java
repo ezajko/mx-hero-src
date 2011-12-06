@@ -96,12 +96,6 @@ public final class Utils {
 		record.setSender(mail.getInitialSender());
 
 		try {
-			record.setSentDate(mail.getMessage().getSentDate());
-		} catch (MessagingException e) {
-			log.debug("could not read SentDate id from email");
-			record.setSentDate(null);
-		}
-		try {
 			record.setSubject(mail.getMessage().getSubject());
 		} catch (MessagingException e) {
 			log.debug("could not read Subject id from email");
