@@ -217,16 +217,6 @@ CREATE TABLE `domain` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `domain`
---
-
-LOCK TABLES `domain` WRITE;
-/*!40000 ALTER TABLE `domain` DISABLE KEYS */;
-REPLACE INTO `domain` (`domain`, `creation`, `server`, `updated`) VALUES ('inova.net','2011-07-04 13:41:46','zimbra.inova.net','2011-07-20 11:39:55'),('kmf.net','2011-11-28 12:47:10','aspmx.l.google.com','2011-11-28 12:47:10'),('mxhero.com','2011-07-04 16:04:26','aspmx.l.google.com','2011-07-04 16:04:26'),('mxtrial.com','2011-07-04 16:04:42','smtp.mxtrial.com','2011-07-12 16:49:52'),('test.com','2011-08-05 19:27:55','mx.test.com','2011-08-05 19:27:55'),('velop.net','2011-07-04 16:05:03','mx-escudo.u.inova.com.br','2011-07-04 16:05:03'),('zimbra.mxhero.com','2011-10-04 20:34:48','zimbra.mxhero.com','2011-10-12 00:44:23');
-/*!40000 ALTER TABLE `domain` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `app_users_authorities`
 --
 
