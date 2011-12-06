@@ -179,7 +179,7 @@ sub createDatabase
 	&_checkDBConnection();
 	
 	# Process all sql files - from first version to last
-	myPrint "Creating database ...\n";
+	myPrint "\n".T("Creating database")." ...\n";
 	my @sqlFiles;
 	if ( @sqlFiles = &_versionOrderedSqlFiles() ) {
 		for my $file ( @sqlFiles ) {
