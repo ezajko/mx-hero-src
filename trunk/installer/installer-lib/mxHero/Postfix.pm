@@ -124,6 +124,7 @@ sub configure
 							$$errorRef = T("Failed to alter ")."'$file'";
 							return 0;
 						}
+						$myConfig{CURRENT_POSTFIX_MAIN_CF} = $file;
 						# Copy config files
 						for my $f ( ( 'domains.sql', 'transports.sql' ) ) {
 							if ( ! -d "/etc/postfix/mxhero" && ! mkdir( "/etc/postfix/mxhero" ) ) {
@@ -150,6 +151,7 @@ sub configure
 						$$errorRef = T("Failed to alter ")."'$file'";
 						return 0;
 					}
+					$myConfig{CURRENT_POSTFIX_MAIN_CF} = $file;
 				} else {
 					myPrint T("Failed to find file")." '$file' \n";
 					myPrint T("Stopping installation")."\n";

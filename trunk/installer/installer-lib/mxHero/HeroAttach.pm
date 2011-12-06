@@ -26,25 +26,46 @@ sub install
 	
 	$reply =~ s/[^\d]*(\d+)[^\d]*/$1/g; # Extract only numbers in case user adds MB to input.
 	
-	print "\n\n" . T( "ENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . "$defaultMax MB\n";
+	print "\n\n" . T( "ENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . " $reply MB\n";
 	print T( "Enter to continue" ) . "...\n";
 	my $enter = <STDIN>;
 	
-	## ALTER main.cf established in Postfix.pm around lines 100-162 (see Zimbra main.cf and optional other main.cf)
-	### NEED TO EXPORT / GLOBAL VALUE from Postfix.pm main.cf full path.
-	# Set message_size_limit
+	# Set message_size_limit (in postfix and mxhero)
+
+	my $sizeInBytes = int($reply) * 1024 * 1024;
+	my %entry;
+
+	%entry = ( "message_size_limit" => $sizeInBytes );
+
+	if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{CURRENT_POSTFIX_MAIN_CF}, \%entry, '=' ) ) {
+		warn "Failed to add Postfix message_size_limit. Aborting installation.\n";
+		exit;
+	}
+
+	%entry = ( "messageMaxSize" => $sizeInBytes );
+
+	if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{MXHERO_POSTFIX_CONFIG}, \%entry, '=' ) ) {
+		warn "Failed to add Hero Attach messageMaxSize config. Aborting installation.\n";
+		exit;
+	}
 	
 	## Discover IP
-	my $ip = '0.0.0.0'; # IP DISCOVERY HERE
+	my $command = `/sbin/ifconfig eth0 | grep 'inet addr'`;
+	$command =~ m/inet addr\:(\S+)/s;
+	my $ip = $1;
 	$reply = $term->get_reply(
 					prompt => T("What is the external address or IP of this mxHero installation. Hit enter to use the auto-detected ip address ")." [$ip] ",
 					default  => $ip );
-	
-	# SET IP ADDRESS for HERO ATTACH IN MXHERO
-	
+
+	%entry = ( "http.file.server.attach" => "http://$reply:8080/fileserver/download" );
+
+	if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{MXHERO_HEROATTACH_CONFIG}, \%entry, '=' ) ) {
+		warn "Failed to add Hero Attach link config. Aborting installation.\n";
+		exit;
+	}
+
 	return 1;
 }
-
 
 sub upgrade
 {
