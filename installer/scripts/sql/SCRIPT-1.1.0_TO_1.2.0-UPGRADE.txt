@@ -1,0 +1,42 @@
+
+USE mxhero;
+ 
+ALTER TABLE `mxhero`.`app_users` CHANGE COLUMN `userName` `user_name` VARCHAR(100) NULL DEFAULT NULL, DROP INDEX `userName` , ADD UNIQUE INDEX `user_name_idx` (`user_name` ASC) ;
+
+ALTER TABLE `mxhero`.`system_properties` DROP COLUMN `id` , DROP PRIMARY KEY , ADD PRIMARY KEY (`property_key`) ;
+
+ALTER TABLE `mxhero`.`email_accounts` DROP COLUMN `group_domain_id` , DROP INDEX `FK3B65F12986881E05` , ADD INDEX `FK3B65F12986881E05` (`group_name` ASC) ;
+
+ALTER TABLE `mxhero`.`features` ADD COLUMN `enabled` BIT(1) NOT NULL DEFAULT 1  AFTER `category_id` ;
+
+
+ALTER TABLE `mxhero`.`account_aliases` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`app_users` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`app_users_authorities` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`authorities` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`domain` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`domain_adldap` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`domains_aliases` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`email_accounts` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`features` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`features_categories` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`features_rules` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`features_rules_directions` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`features_rules_properties` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`groups` ENGINE = InnoDB ;
+ALTER TABLE `mxhero`.`system_properties` ENGINE = InnoDB ;
+
+USE statistics;
+
+ALTER TABLE `statistics`.`mail_records` ENGINE = InnoDB ;
+ALTER TABLE `statistics`.`mail_stats` ENGINE = InnoDB ;
+ALTER TABLE `statistics`.`mail_stats_grouped` ENGINE = InnoDB ;
+ALTER TABLE `statistics`.`mail_stats_grouped_keys` ENGINE = InnoDB ;
+
+USE attachments;
+
+ALTER TABLE `attachments`.`attach` ENGINE = InnoDB ;
+ALTER TABLE `attachments`.`history_access_attach` ENGINE = InnoDB ;
+ALTER TABLE `attachments`.`message` ENGINE = InnoDB ;
+ALTER TABLE `attachments`.`message_attach` ENGINE = InnoDB ;
+
