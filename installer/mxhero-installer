@@ -22,6 +22,7 @@ use mxHero::Postfix;
 use mxHero::SpamAssassin;
 use mxHero::Tomcat;
 use mxHero::Tools;
+use mxHero::HeroAttach;
 
 
 print T('*************************************'),"\n";
@@ -72,7 +73,8 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 			&mxHero::SpamAssassin::install ( \$error ) &&
 			&mxHero::App::install ( \$error ) &&
 			&mxHero::JDK::install ( \$error ) &&
-			&mxHero::MySQL::createDatabase ( \$error )
+			&mxHero::MySQL::createDatabase ( \$error ) &&
+			&mxHero::HeroAttach::install ( \$error )
 			)
 		{
 			if ( ! copy( "$myConfig{INSTALLER_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
@@ -131,7 +133,8 @@ else # upgrade
 			&mxHero::ClamAV::upgrade ( \$error ) &&
 			&mxHero::SpamAssassin::upgrade ( \$error ) &&
 			&mxHero::App::upgrade ( \$error ) &&
-			&mxHero::JDK::upgrade ( \$error )
+			&mxHero::JDK::upgrade ( \$error ) &&
+			&mxHero::HeroAttach::upgrade ( \$error )
 			)
 		{
 			print T("\n!! MXHERO UPGRADED !!"),"\n"; # Success message
