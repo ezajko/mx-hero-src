@@ -36,11 +36,42 @@ sub install
 	my $sizeInBytes = int($reply) * 1024 * 1024;
 	my %entry;
 
-	%entry = ( "message_size_limit" => $sizeInBytes );
+	if ( &mxHero::Tools::zimbraCheck() ) {
+		print "\n*** NOTE FOR ZIMBRA INSTALLATIONS ***\n";
+		print "You can change maximum size email configuration by running the command:\n";
+		print "\t# su - zimbra\n";
+		print "\t\$ zmprov mcf zimbraMtaMaxMessageSize $reply zimbraFileUploadMaxSize $reply\n\n";
 
-	if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{CURRENT_POSTFIX_MAIN_CF}, \%entry, '=' ) ) {
-		warn "Failed to add Postfix message_size_limit. Aborting installation.\n";
-		exit;
+		my $term = Term::ReadLine->new( 'mxHero' );
+		my $bool = $term->ask_yn( prompt => T("The installer can submit this command now? "),
+					   default  => 'y');
+
+		if ( $bool ) {
+			system( "su - zimbra -c 'zmprov mcf zimbraMtaMaxMessageSize $reply zimbraFileUploadMaxSize $reply'" );
+		}
+	}
+	elsif (! -f $myConfig{CURRENT_POSTFIX_MAIN_CF})
+	{
+		myPrint "\n".T("Did not find a postfix 'main.cf' file.")."\n";
+		my $file = $term->get_reply( prompt => T("Please enter full path to your main.cf".":"));
+		if ( $file && -f $file ) {
+			$myConfig{CURRENT_POSTFIX_MAIN_CF} = $file;
+		} else {
+			myPrint T("Failed to find file")." '$file' \n";
+			myPrint T("Stopping installation")."\n";
+			$$errorRef = T("Failed to find configuration file");
+			return 0;
+		}
+	}
+
+	if (! &mxHero::Tools::zimbraCheck())
+	{
+		%entry = ( "message_size_limit" => $sizeInBytes );
+
+		if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{CURRENT_POSTFIX_MAIN_CF}, \%entry, '=' ) ) {
+			warn "Failed to add Postfix message_size_limit. Aborting installation.\n";
+			exit;
+		}
 	}
 
 	%entry = ( "messageMaxSize" => $sizeInBytes );
