@@ -19,15 +19,16 @@ sub install
 	my $term = Term::ReadLine->new( 'mxHero' );
 	my $reply;
 	
-	print "\n\n*** " . T("HERO ATTACH SETUP"). " ***\n\n";
+	myPrint "\n\n*** " . T("HERO ATTACH SETUP"). " ***\n\n";
 	
-	$reply = $term->get_reply( prompt => T("What is the maximum size email in MegaBytes to allow for Hero Attach")." [$defaultMax] ",
+	$reply = $term->get_reply( prompt => T("What is the maximum size email in MegaBytes to allow for Hero Attach"),
 				   default  => $defaultMax );
 	
 	$reply =~ s/[^\d]*(\d+)[^\d]*/$1/g; # Extract only numbers in case user adds MB to input.
 	
-	print "\n\n" . T( "ENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . " $reply MB\n";
-	print T( "Enter to continue" ) . "...\n";
+	myPrint "\n\n";
+	myPrint	T( "ENSURE THAT YOUR USERS CAN SEND EMAILS TO YOUR EMAIL SERVER OF UP TO" ) . " $reply MB\n";
+	myPrint T( "Enter to continue" ) . "...\n";
 	my $enter = <STDIN>;
 	
 	# Set message_size_limit (in postfix and mxhero)
@@ -54,7 +55,7 @@ sub install
 	$command =~ m/inet addr\:(\S+)/s;
 	my $ip = $1;
 	$reply = $term->get_reply(
-					prompt => T("What is the external address or IP of this mxHero installation. Hit enter to use the auto-detected ip address ")." [$ip] ",
+					prompt => T("What is the external address or IP of this mxHero installation. Hit enter to use the auto-detected ip address "),
 					default  => $ip );
 
 	%entry = ( "http.file.server.attach" => "http://$reply:8080/fileserver/download" );
