@@ -39,3 +39,10 @@ IMPORTANT NOTES
 
 This installer has only been tested on Ubuntu 10.04, Debian 6 and CentOS 6.
 
+UPGRADING TO 1.2.0
+
+Due to significant changes in code and database structure, there is no
+upgrade from ealier versions to 1.2.0.
+
+From 1.2.0 forward we are committed to enabling smooth in-place upgrading.
+
