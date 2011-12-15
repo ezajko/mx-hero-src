@@ -40,14 +40,14 @@ sub install
 		print "\n*** NOTE FOR ZIMBRA INSTALLATIONS ***\n";
 		print "You can change maximum size email configuration by running the command:\n";
 		print "\t# su - zimbra\n";
-		print "\t\$ zmprov mcf zimbraMtaMaxMessageSize $reply zimbraFileUploadMaxSize $reply\n\n";
+		print "\t\$ zmprov mcf zimbraMtaMaxMessageSize $sizeInBytes zimbraFileUploadMaxSize $sizeInBytes\n\n";
 
 		my $term = Term::ReadLine->new( 'mxHero' );
 		my $bool = $term->ask_yn( prompt => T("The installer can submit this command now? "),
 					   default  => 'y');
 
 		if ( $bool ) {
-			system( "su - zimbra -c 'zmprov mcf zimbraMtaMaxMessageSize $reply zimbraFileUploadMaxSize $reply'" );
+			system( "su - zimbra -c 'zmprov mcf zimbraMtaMaxMessageSize $sizeInBytes zimbraFileUploadMaxSize $sizeInBytes'" );
 		}
 	}
 	elsif (! -f $myConfig{CURRENT_POSTFIX_MAIN_CF})
