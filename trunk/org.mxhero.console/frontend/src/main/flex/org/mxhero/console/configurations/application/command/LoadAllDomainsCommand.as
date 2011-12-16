@@ -17,7 +17,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:LoadAllDomainsEvent):AsyncToken
 		{
-			return service.findAll();
+			return service.findAll(event.domainFilter,event.pageNumber,event.pageSize);
 		}
 		
 		public function error (fault:Fault) : void {

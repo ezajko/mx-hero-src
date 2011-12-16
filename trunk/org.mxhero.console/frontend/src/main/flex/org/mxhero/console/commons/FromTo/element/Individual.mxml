@@ -91,7 +91,7 @@
 				if(event.newState=="inactive"){
 					ipeComboBox.selectedItem=null;
 					ipeComboBox.selectedLabel=null;
-					ipeComboBox.comboBox.textInput.text=null;
+					ipeComboBox.comboBox.text=null;
 					ipeComboBox.comboBox.selectedItem=null;
 					ipeComboBox.switchState();
 				}
@@ -152,7 +152,7 @@
 				  verticalAlign="middle"
 				  paddingLeft="5"
 				  paddingRight="5">
-			<IPE:IPEComboBox id="ipeComboBox"
+			<IPE:IPEAutoComplete id="ipeComboBox"
 							 subStyles="item"
 							 currentState="edit"
 							 dataProvider="{model.accountsAliases}"

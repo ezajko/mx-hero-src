@@ -25,7 +25,7 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:GetDomainAccountsEvent):AsyncToken
 		{
-			return service.findByDomain(event.domainId);
+			return service.findPageBySpecs(event.domainId,null,null,-1,-1);
 		}
 		
 		public function error (fault:Fault) : void {
@@ -33,19 +33,7 @@ package org.mxhero.console.frontend.application.command
 		}
 		
 		public function result (result:*):void{
-			if(result is EmailAccount){
-				var accountsArray:ArrayCollection = new ArrayCollection();
-				accountsArray.addItem(result);
-				context.accounts=accountsArray;
-			} else {
-				context.accounts=result;
-			}
-			if(context.accounts!=null){
-				//var sortByName:Sort=new Sort();
-				//sortByName.fields=[new SortField("domain"), new SortField("account")];
-				//context.accounts.sort=sortByName;
-				//context.accounts.refresh();
-			}		
+			context.accounts=result.elements;
 		}
 
 	}

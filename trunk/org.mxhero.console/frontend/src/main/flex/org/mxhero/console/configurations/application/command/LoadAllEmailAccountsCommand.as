@@ -25,7 +25,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:LoadAllEmailAccountsEvent):AsyncToken
 		{
-			return service.findPageBySpecs(event.domainId,event.email,event.groupId);
+			return service.findPageBySpecs(event.domainId,event.email,event.groupId,-1,-1);
 		}
 		
 		public function error (fault:Fault) : void {
