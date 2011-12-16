@@ -240,7 +240,7 @@
 						domainFT.currentState="restricted";
 						if(domainFT.ipeComboBox.comboBox.selectedItem==null){
 							domainFT.ipeComboBox.currentState="edit";
-							domainFT.ipeComboBox.comboBox.textInput.text="";
+							domainFT.ipeComboBox.comboBox.text="";
 						}
 					} else if(currentState=="individual"){
 						individualFT.currentState="restricted";

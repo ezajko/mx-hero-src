@@ -36,15 +36,13 @@
 			
 			protected function filterBtt_clickHandler(event:MouseEvent):void
 			{
-				model.filterDomains(domainTI.text,emailTI.text,serverTI.text);
+				model.filterDomains(domainTI.text,1);
 			}
 
 			protected function clearBtt_clickHandler(event:MouseEvent):void
 			{
 				domainTI.text="";
-				emailTI.text="";
-				serverTI.text="";
-				model.filterDomains(domainTI.text,emailTI.text,serverTI.text);
+				model.filterDomains(domainTI.text,1);
 			}
 	
 			protected function newDomainLink_clickHandler(event:MouseEvent):void
@@ -84,6 +82,16 @@
 				return label;
 			}
 
+			protected function prevButton_clickHandler(event:MouseEvent):void
+			{
+				model.filterDomains(domainTI.text,model.domains.actualPage-1);
+			}
+			
+			protected function nextButton_clickHandler(event:MouseEvent):void
+			{
+				model.filterDomains(domainTI.text,model.domains.actualPage+1);
+			}
+			
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -120,14 +128,6 @@
 				fontWeight="bold"
 				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_DOMAIN_LABEL)}"/>
 			<s:TextInput id="domainTI" width="100%"/>
-			<s:Label 
-				fontWeight="bold"
-				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_EMAIL_LABEL)}"/>
-			<s:TextInput id="emailTI" width="100%"/>
-			<s:Label 
-				fontWeight="bold"
-				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_SERVER_LABEL)}"/>
-			<s:TextInput id="serverTI" width="100%"/>
 			<mx:Spacer height="5"/>
 			<s:HGroup width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
@@ -141,10 +141,16 @@
 		</mx:Form>		
 	</s:BorderContainer>
 
-	<mx:DataGrid dataProvider="{model.domains}" 
+
+	<s:Panel width="100%" 
+			 height="100%"
+			 minWidth="600"
+			 skinClass="org.mxhero.console.commons.skin.TitleLessPanel"
+			 cornerRadius="0">
+
+	<mx:DataGrid dataProvider="{model.domains.elements}" 
 				 width="100%" 
 				 height="100%"
-				 minWidth="600"
 				 selectedItem="@{model.selectDomain}"
 				 variableRowHeight="true"
 				 mouseChildren="true">
@@ -271,4 +277,26 @@
 			</mx:DataGridColumn>
 		</mx:columns>
 	</mx:DataGrid>
+		<s:controlBarContent>
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.DOMAINS_TOTAL)+' '+model.domains.totalElements}"/>
+				<mx:Spacer width="100%"/>
+				<component1:GlowButton id="prevButton"
+										maxGlow="10.0" 
+									   source="{ImageResources.LEFT_ICO}"
+									   enabled="{model.domains.hasPrev()}"
+									   click="prevButton_clickHandler(event)"
+									   />
+				<s:Label text="{(model.domains.totalElements==0)?0:(model.domains.actualPage)}"/>
+				<s:Label text="{'/'}"/>
+				<s:Label text="{(model.domains.totalElements==0)?0:(model.domains.totalPages)}"/>
+				<component1:GlowButton id="nextButton"
+										maxGlow="10.0" 
+									   source="{ImageResources.RIGHT_ICO}"
+									   enabled="{model.domains.hasNext()}"
+									   click="nextButton_clickHandler(event)"/>
+			</s:HGroup>
+		</s:controlBarContent>
+	</s:Panel>
 </s:Group>

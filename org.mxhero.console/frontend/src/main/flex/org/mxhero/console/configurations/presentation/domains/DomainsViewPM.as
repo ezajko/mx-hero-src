@@ -26,6 +26,7 @@ package org.mxhero.console.configurations.presentation.domains
 	import org.mxhero.console.frontend.application.message.ApplicationMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Domain;
+	import org.mxhero.console.frontend.domain.Page;
 	import org.mxhero.console.reports.application.ReportsDestinations;
 
 	[Landmark(name="main.dashboard.configurations.domains")]
@@ -34,6 +35,10 @@ package org.mxhero.console.configurations.presentation.domains
 		
 		private var domainShow:DomainShow;
 				
+		private var domainFilter:String="";
+		
+		public static const PAGE_SIZE:Number=10;
+		
 		[Bindable]
 		private var rm:IResourceManager = ResourceManager.getInstance();
 		
@@ -52,14 +57,11 @@ package org.mxhero.console.configurations.presentation.domains
 		public var context:ApplicationContext;
 		
 		[Bindable]
-		public var domains:ArrayCollection;
+		public var domains:Page;
 			
 		[Bindable]
 		public var isLoading:Boolean=false;
-		
-		private var _domainFilter:String=null;
-		private var _emailFilter:String=null;
-		private var _serverFilter:String=null;
+
 		
 		[Enter(time="every")]
 		public function every():void{
@@ -67,23 +69,13 @@ package org.mxhero.console.configurations.presentation.domains
 		}
 		
 		public function loadDomains():void{
-			dispatcher(new LoadAllDomainsEvent());
+			filterDomains("",1);
 			isLoading=true;
 		}
 		
 		[CommandResult]
 		public function loadingResult (result:*, event:LoadAllDomainsEvent) : void {
-			if (result is Domain){
-				domains=new ArrayCollection();
-				domains.addItem(result);
-			} else {
-				domains=result;	
-			}
-			if(domains!=null){
-				var sortByDomain:Sort=new Sort();
-				sortByDomain.fields=[new SortField("domain")];
-				domains.sort=sortByDomain;
-			}
+			domains=result;	
 			isLoading=false;
 		}
 		
@@ -92,34 +84,9 @@ package org.mxhero.console.configurations.presentation.domains
 			isLoading=false;
 		}
 		
-		public function filterDomains(domain:String,email:String,server:String):void{
-			_domainFilter=trim(domain).toLowerCase();
-			_emailFilter=trim(email).toLowerCase();
-			_serverFilter=trim(server).toLowerCase();
-			domains.filterFunction=orderFuntion;
-			domains.refresh()
-		}
-		
-		public function orderFuntion(object:Object):Boolean{
-			if(_domainFilter!=null && _domainFilter.length>0){
-				if(object.domain.toLowerCase().search(_domainFilter)==-1){
-					return false;
-				}
-			}
-			if(_emailFilter!=null && _emailFilter.length>0){
-				if(object.owner==null){
-					return false;
-				}
-				if(object.owner.email.toLowerCase().search(_emailFilter)==-1){
-					return false;
-				}
-			}
-			if(_serverFilter!=null && _serverFilter.length>0){
-				if(object.server.toLowerCase().search(_serverFilter)==-1){
-					return false;
-				}
-			}
-			return true;
+		public function filterDomains(domain:String,page:Number):void{
+			domainFilter=domain;
+			dispatcher(new LoadAllDomainsEvent(trim(domainFilter).toLowerCase(),page,PAGE_SIZE));
 		}
 		
 		private function trim(s:String):String { 
@@ -142,10 +109,7 @@ package org.mxhero.console.configurations.presentation.domains
 		
 		[CommandResult]
 		public function removeResult (result:*, event:RemoveDomainEvent) : void {
-			var itemPosition:Number= domains.getItemIndex(selectDomain);
-			if(itemPosition>-1){
-				domains.removeItemAt(itemPosition);
-			}
+			dispatcher(new LoadAllDomainsEvent(trim(domainFilter).toLowerCase(),domains.actualPage,PAGE_SIZE));
 		}
 		
 		public function newDomain(parent:DisplayObject):void{

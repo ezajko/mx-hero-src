@@ -36,7 +36,7 @@
 					model.domainFilter=ipeComboBox.selectedLabel;
 				}else{
 					model.domainFilter=null;
-					ipeComboBox.comboBox.textInput.text="";
+					ipeComboBox.comboBox.text="";
 				}
 				model.getCompleteData();
 				model.refreshActivity();
@@ -49,7 +49,7 @@
 					&& event.newState=="admin"
 					&& ipeComboBox.currentState=="show"
 					&& ipeComboBox.comboBox!=null
-					&& ipeComboBox.comboBox.textInput!=null){
+					&& ipeComboBox.comboBox.text!=null){
 					ipeComboBox.switchState();
 				}
 			}
@@ -85,7 +85,7 @@
 					<s:HGroup width="100%" height="100%" verticalAlign="middle">
 						<mx:FormItemLabel text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.DOMAIN_LABEL)+':'}"/>
 						<element:Item width="100%">
-							<IPE:IPEComboBox id="ipeComboBox"
+							<IPE:IPEAutoComplete id="ipeComboBox"
 											 subStyles="item"
 											 currentState="edit"
 											 dataProvider="{context.domains}"

@@ -6,6 +6,8 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const TITLE:String="title";
 		
+		public static const DOMAINS_TOTAL:String="domains.total";
+		
 		public static const DESCRIPTION:String="description";
 		
 		public static const EXPANDED_DESCRIPTION:String="expanded.description";

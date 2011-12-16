@@ -25,7 +25,7 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:GetDomainsEvent):AsyncToken
 		{
-			return service.findAll();
+			return service.findAll(null,-1,-1);
 		}
 		
 		public function error (fault:Fault) : void {
@@ -33,18 +33,7 @@ package org.mxhero.console.frontend.application.command
 		}
 		
 		public function result (result:*):void {
-			if(result is Domain){
-				context.domains=new ArrayCollection();
-				context.domains.addItem(result);
-			}else {
-				context.domains=result;
-			}
-			if(context.domains!=null){
-				//var sortByName:Sort=new Sort();
-				//sortByName.fields=[new SortField("domain")];
-				//context.domains.sort=sortByName;
-				//context.domains.refresh();
-			}
+			context.domains=result.elements;
 		}
 	}
 }

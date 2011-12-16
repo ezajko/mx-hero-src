@@ -131,8 +131,8 @@
 		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
-				<!--<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>-->
+				<!--<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>-->
+				<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>
 			</s:channels>
 		</s:ChannelSet>
 
