@@ -3,18 +3,13 @@ package org.mxhero.console.backend.service;
 import java.util.Collection;
 
 import org.mxhero.console.backend.vo.EmailAccountVO;
+import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.security.access.annotation.Secured;
 
 public interface EmailAccountService {
 
-	@Secured("ROLE_ADMIN")
-	Collection<EmailAccountVO> findAll();
-	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findPageBySpecs(String domainId, String email,  String group);
-	
-	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findByDomain(String domaindId);
+	PageVO findPageBySpecs(String domainId, String email,  String group, int pageNo, int pageSize);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	void remove(String account, String domain);

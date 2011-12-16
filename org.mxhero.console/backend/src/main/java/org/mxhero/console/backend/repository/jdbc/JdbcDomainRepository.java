@@ -1,5 +1,6 @@
 package org.mxhero.console.backend.repository.jdbc;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +8,9 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
+import org.mxhero.console.backend.infrastructure.pagination.jdbc.BaseJdbcDao;
+import org.mxhero.console.backend.infrastructure.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.console.backend.repository.DomainRepository;
 import org.mxhero.console.backend.repository.jdbc.mapper.DomainMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountAliasMapper;
@@ -21,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(value="mxhero",readOnly=true)
-public class JdbcDomainRepository implements DomainRepository{
+public class JdbcDomainRepository extends BaseJdbcDao<DomainVO> implements DomainRepository{
 
 	private static final String SELECT = "SELECT `"+DomainMapper.TABLE_NAME+"`.`"+DomainMapper.DOMAIN+"`," +
 			" `"+DomainMapper.TABLE_NAME+"`.`"+DomainMapper.CREATION+"`," +
@@ -40,6 +44,7 @@ public class JdbcDomainRepository implements DomainRepository{
 	@Autowired
 	public JdbcDomainRepository(@Qualifier("mxheroDataSource")DataSource ds) {
 		this.template = new NamedParameterJdbcTemplate(ds);
+		super.setNamedParameterJdbcTemplate(template);
 	}
 	
 	@Override
@@ -159,9 +164,22 @@ public class JdbcDomainRepository implements DomainRepository{
 	}
 
 	@Override
-	public List<DomainVO> findAll() {
-		String sql = SELECT + ORDER;
-		return template.getJdbcOperations().query(sql, new DomainMapper());
+	public PageResult<DomainVO> findAll(String domainName, int pageNo, int pageSize) {
+		String sql = SELECT;
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		if(domainName!=null && !domainName.trim().isEmpty()){
+			sql = sql + " WHERE `"+DomainMapper.TABLE_NAME+"`.`"+DomainMapper.DOMAIN+"` like :domainName ";
+			source.addValue("domainName",domainName+"%");
+		}
+		JdbcPageInfo pi = new JdbcPageInfo();
+		pi.setOrderByList(new ArrayList<String>());
+		pi.getOrderByList().add("`"+DomainMapper.DOMAIN+"`");
+		pi.setPageNo(pageNo);
+		pi.setPageSize(pageSize);
+		pi.putRowMapper(new DomainMapper());
+		pi.putSql(sql);
+		pi.putExampleModel(source.getValues());
+		return super.findByPage(pi);
 	}
 
 }

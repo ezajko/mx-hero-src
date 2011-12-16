@@ -9,6 +9,7 @@ import org.mxhero.console.backend.repository.FeatureRuleRepository;
 import org.mxhero.console.backend.service.EmailAccountService;
 import org.mxhero.console.backend.vo.EmailAccountAliasVO;
 import org.mxhero.console.backend.vo.EmailAccountVO;
+import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -33,8 +34,8 @@ public class JdbcEmailAccountService implements EmailAccountService{
 		this.ruleRepository = ruleRepository;
 	}
 
-	public Collection<EmailAccountVO> findPageBySpecs(String domainId, String email, String group) {
-		return accountRepository.findAll(domainId, email, group);
+	public PageVO findPageBySpecs(String domainId, String email, String group, int pageNo, int pageSize) {
+		return accountRepository.findAll(domainId, email, group, pageNo, pageSize).createVO();
 	}
 
 	@Override
@@ -83,16 +84,6 @@ public class JdbcEmailAccountService implements EmailAccountService{
 		for(EmailAccountVO emailAccountVO : emailAccountVOs){
 			accountRepository.insert(emailAccountVO);
 		}
-	}
-	
-	@Override
-	public Collection<EmailAccountVO> findByDomain(String domainId) {
-		return accountRepository.findAll(domainId, null, null);
-	}
-
-	@Override
-	public Collection<EmailAccountVO> findAll() {
-		return accountRepository.findAll(null, null, null);
 	}
 
 	@Override

@@ -5,12 +5,13 @@ import java.util.Collection;
 import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
 import org.mxhero.console.backend.vo.LdapAccountVO;
+import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.security.access.annotation.Secured;
 
 public interface DomainService {
 
 	@Secured("ROLE_ADMIN")
-	Collection<DomainVO> findAll();
+	PageVO findAll(String domainName, int pageNo, int pageSize);
 	
 	@Secured("ROLE_ADMIN")
 	void remove(String domain);
