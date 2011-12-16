@@ -1,5 +1,6 @@
 package org.mxhero.console.backend.repository.jdbc;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +8,9 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
+import org.mxhero.console.backend.infrastructure.pagination.jdbc.BaseJdbcDao;
+import org.mxhero.console.backend.infrastructure.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.console.backend.repository.EmailAccountRepository;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountAliasMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountMapper;
@@ -21,20 +25,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(value="mxhero",readOnly=false)
-public class JdbcEmailAccountRepository implements EmailAccountRepository{
+public class JdbcEmailAccountRepository extends BaseJdbcDao<EmailAccountVO> implements EmailAccountRepository{
 	
 	private static final String SELECT = "SELECT `"+EmailAccountMapper.ACCOUNT+"`, `"+EmailAccountMapper.CREATED+"`," +
 			" `"+EmailAccountMapper.DATA_SOURCE+"`, `"+EmailAccountMapper.DOMAIN_ID+"`, `"+EmailAccountMapper.GROUP_NAME+"`," +
 			" `"+EmailAccountMapper.UPDATED+"` " +
 			" FROM `"+EmailAccountMapper.DATABASE+"`.`"+EmailAccountMapper.TABLE_NAME+"`";
 	
-	private static final String ORDER = " ORDER BY `"+EmailAccountMapper.DOMAIN_ID+"`, `"+EmailAccountMapper.ACCOUNT+"` ";
-	
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
 	public JdbcEmailAccountRepository(@Qualifier("mxheroDataSource")DataSource ds) {
 		this.template =  new NamedParameterJdbcTemplate(ds);
+		super.setNamedParameterJdbcTemplate(template);
 	}
 
 	@Override
@@ -66,8 +69,8 @@ public class JdbcEmailAccountRepository implements EmailAccountRepository{
 	}
 
 	@Override
-	public List<EmailAccountVO> findAll(
-			String domainId, String account, String group) {
+	public PageResult<EmailAccountVO> findAll(
+			String domainId, String account, String group, int pageNo, int pageSize) {
 		String sql = SELECT;
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		boolean hasCondition = false;
@@ -102,11 +105,20 @@ public class JdbcEmailAccountRepository implements EmailAccountRepository{
 			source.addValue("group", "%"+group.trim()+"%");
 		}
 		
-		sql = sql + ORDER;
+		//new Page Sistem Add
+		JdbcPageInfo pi = new JdbcPageInfo();
+		pi.setOrderByList(new ArrayList<String>());
+		pi.getOrderByList().add("`"+EmailAccountMapper.DOMAIN_ID+"`");
+		pi.getOrderByList().add("`"+EmailAccountMapper.ACCOUNT+"`");
+		pi.setPageNo(pageNo);
+		pi.setPageSize(pageSize);
+		pi.putRowMapper(new EmailAccountMapper());
+		pi.putSql(sql);
+		pi.putExampleModel(source.getValues());
+		PageResult<EmailAccountVO> result = super.findByPage(pi);
 		
-		List<EmailAccountVO> result = template.query(sql, source, new EmailAccountMapper());
-		if(result!=null && result.size()>0){
-			for(EmailAccountVO accountResult : result){
+		if(result!=null && result.getPageData().size()>0){
+			for(EmailAccountVO accountResult : result.getPageData()){
 				List<EmailAccountAliasVO> aliases = findAliases(accountResult.getAccount(),accountResult.getDomain());
 				if(aliases!=null && aliases.size()>0){
 					for(EmailAccountAliasVO alias : aliases){

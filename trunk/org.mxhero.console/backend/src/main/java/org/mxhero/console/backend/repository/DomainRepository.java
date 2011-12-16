@@ -2,6 +2,7 @@ package org.mxhero.console.backend.repository;
 
 import java.util.List;
 
+import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
 import org.mxhero.console.backend.vo.DomainVO;
 
 public interface DomainRepository {
@@ -12,7 +13,7 @@ public interface DomainRepository {
 
 	void delete(String domainIdd);
 	
-	List<DomainVO> findAll();
+	PageResult<DomainVO> findAll(String domainNamepageSize, int pageNo, int pageSize);
 	
 	DomainVO findById(String domainId);
 	

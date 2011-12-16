@@ -20,8 +20,10 @@ import org.mxhero.console.backend.vo.ApplicationUserVO;
 import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
 import org.mxhero.console.backend.vo.LdapAccountVO;
+import org.mxhero.console.backend.vo.PageVO;
 import org.mxhero.console.backend.infrastructure.ADSource;
 import org.mxhero.console.backend.infrastructure.ADSource.Account;
+import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -83,15 +85,15 @@ public class JdbcDomainService implements DomainService {
 	}
 
 	@Override
-	public Collection<DomainVO> findAll() {
-		List<DomainVO> domains= domainRepository.findAll();
-		if(domains!=null && domains.size()>0){
-			for(DomainVO domain : domains){
+	public PageVO findAll(String domainName, int pageNo, int pageSize) {
+		PageResult<DomainVO> domains= domainRepository.findAll(domainName, pageNo, pageSize);
+		if(domains!=null && domains.getPageData().size()>0){
+			for(DomainVO domain : domains.getPageData()){
 				domain.setAdLdap(adLdapRepository.findByDomainId(domain.getDomain()));
 				domain.setAliases(domainRepository.findAliases(domain.getDomain()));
 			}
 		}
-		return domains;
+		return domains.createVO();
 	}
 
 	@Override
