@@ -160,7 +160,7 @@ public class JdbcDomainService implements DomainService {
 				user.setNotifyEmail(email);
 				userRepository.insert(user, encoder.encodePassword(password, null));		
 			} else {
-				ApplicationUserVO user = userRepository.finbByUserName(domain.getOwner().getEmail());
+				ApplicationUserVO user = userRepository.finbById(domain.getOwner().getId());
 				user.setNotifyEmail(email);
 				userRepository.update(user);
 				if(password!=null && !password.isEmpty()){

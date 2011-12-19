@@ -1,14 +1,13 @@
 package org.mxhero.console.backend.repository;
 
-import java.util.List;
-
+import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
 import org.mxhero.console.backend.vo.GroupVO;
 
 public interface GroupRepository {
 
 	void deleteByDomainId(String domainId);
 	
-	List<GroupVO> findByDomain(String domainId);
+	PageResult<GroupVO> findByDomain(String domainId, int pageNo, int pageSize);
 	
 	void insert(GroupVO group);
 	

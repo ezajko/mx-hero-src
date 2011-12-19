@@ -77,8 +77,8 @@ public class JdbcCustomReportService implements CustomReportService{
 		String query = " FROM `"+RecordMapper.DATABASE+"`.`"+RecordMapper.TABLE_NAME+"`" +
 				" WHERE `"+RecordMapper.INSERT_DATE+"` BETWEEN ? AND ?";
 		
-		Collection<EmailAccountVO> groupFrom = (from.getDirectionType().equals(GROUP))?accountRepository.findMembersByGroupId(from.getDomain(), from.getGroup()):null;
-		Collection<EmailAccountVO> groupTo = (to.getDirectionType().equals(GROUP))?accountRepository.findMembersByGroupId(to.getDomain(), to.getGroup()):null;
+		Collection<EmailAccountVO> groupFrom = (from.getDirectionType().equals(GROUP))?accountRepository.findMembersByGroupId(from.getDomain(), from.getGroup(),-1,-1).getPageData():null;
+		Collection<EmailAccountVO> groupTo = (to.getDirectionType().equals(GROUP))?accountRepository.findMembersByGroupId(to.getDomain(), to.getGroup(),-1,-1).getPageData():null;
 
 		final Collection<String> groupFromEmails = new ArrayList<String>();
 		final Collection<String> groupToEmails = new ArrayList<String>();

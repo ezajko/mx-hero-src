@@ -253,21 +253,67 @@ public class JdbcEmailAccountRepository extends BaseJdbcDao<EmailAccountVO> impl
 	}
 	
 	@Override
-	public List<EmailAccountVO> findMembersByGroupId(String domainId, String groupName){
+	public PageResult<EmailAccountVO> findMembersByGroupId(String domainId, String groupName,  int pageNo, int pageSize){
 		String sql = SELECT + " WHERE `"+EmailAccountMapper.DOMAIN_ID+"` = :domainId " +
 				" AND `"+EmailAccountMapper.GROUP_NAME+"` = :groupName ";
 		MapSqlParameterSource source = new MapSqlParameterSource("domainId", domainId);
 		source.addValue("groupName", groupName);
-		List<EmailAccountVO> result = template.query(sql, source, new EmailAccountMapper());
+		
+		//new Page Sistem Add
+		JdbcPageInfo pi = new JdbcPageInfo();
+		pi.setOrderByList(new ArrayList<String>());
+		pi.getOrderByList().add("`"+EmailAccountMapper.DOMAIN_ID+"`");
+		pi.getOrderByList().add("`"+EmailAccountMapper.ACCOUNT+"`");
+		pi.setPageNo(pageNo);
+		pi.setPageSize(pageSize);
+		pi.putRowMapper(new EmailAccountMapper());
+		pi.putSql(sql);
+		pi.putExampleModel(source.getValues());
+		PageResult<EmailAccountVO> result = super.findByPage(pi);
+		
+		if(result!=null && result.getPageData().size()>0){
+			for(EmailAccountVO accountResult : result.getPageData()){
+				List<EmailAccountAliasVO> aliases = findAliases(accountResult.getAccount(),accountResult.getDomain());
+				if(aliases!=null && aliases.size()>0){
+					for(EmailAccountAliasVO alias : aliases){
+						alias.setAccount(accountResult);
+					}
+				}
+				accountResult.setAliases(aliases);
+			}
+		}
 		return result;
 	}
 
 	@Override
-	public List<EmailAccountVO> findMembersByDomainIdWithoutGroup(String domainId){
+	public PageResult<EmailAccountVO> findMembersByDomainIdWithoutGroup(String domainId, int pageNo, int pageSize){
 		String sql = SELECT + " WHERE `"+EmailAccountMapper.DOMAIN_ID+"` = :domainId " +
 				" AND `"+EmailAccountMapper.GROUP_NAME+"` IS NULL ";
 		MapSqlParameterSource source = new MapSqlParameterSource("domainId", domainId);
-		List<EmailAccountVO> result = template.query(sql, source, new EmailAccountMapper());
+
+		//new Page Sistem Add
+		JdbcPageInfo pi = new JdbcPageInfo();
+		pi.setOrderByList(new ArrayList<String>());
+		pi.getOrderByList().add("`"+EmailAccountMapper.DOMAIN_ID+"`");
+		pi.getOrderByList().add("`"+EmailAccountMapper.ACCOUNT+"`");
+		pi.setPageNo(pageNo);
+		pi.setPageSize(pageSize);
+		pi.putRowMapper(new EmailAccountMapper());
+		pi.putSql(sql);
+		pi.putExampleModel(source.getValues());
+		PageResult<EmailAccountVO> result = super.findByPage(pi);
+		
+		if(result!=null && result.getPageData().size()>0){
+			for(EmailAccountVO accountResult : result.getPageData()){
+				List<EmailAccountAliasVO> aliases = findAliases(accountResult.getAccount(),accountResult.getDomain());
+				if(aliases!=null && aliases.size()>0){
+					for(EmailAccountAliasVO alias : aliases){
+						alias.setAccount(accountResult);
+					}
+				}
+				accountResult.setAliases(aliases);
+			}
+		}
 		return result;
 	}
 }

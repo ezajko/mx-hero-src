@@ -1,10 +1,13 @@
 package org.mxhero.console.backend.repository.jdbc;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
+import org.mxhero.console.backend.infrastructure.pagination.jdbc.BaseJdbcDao;
+import org.mxhero.console.backend.infrastructure.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.console.backend.repository.GroupRepository;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.GroupMapper;
@@ -18,13 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(value="mxhero",readOnly=false)
-public class JdbcGroupRepository implements GroupRepository{
+public class JdbcGroupRepository extends BaseJdbcDao<GroupVO> implements GroupRepository{
 
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
 	public JdbcGroupRepository(@Qualifier("mxheroDataSource")DataSource ds) {
 		this.template =  new NamedParameterJdbcTemplate(ds);
+		super.setNamedParameterJdbcTemplate(template);
 	}
 
 	@Override
@@ -41,14 +45,25 @@ public class JdbcGroupRepository implements GroupRepository{
 	}
 
 	@Override
-	public List<GroupVO> findByDomain(String domainId) {
+	public PageResult<GroupVO> findByDomain(String domainId, int pageNo, int pageSize) {
 		String sql = "SELECT `"+GroupMapper.DOMAIN_ID+"`,`"+GroupMapper.NAME+"`," +
 				" `"+GroupMapper.CREATED+"`,`"+GroupMapper.DESCRIPTION+"`," +
 				" `"+GroupMapper.UPDATED+"`" +
 				" FROM `"+GroupMapper.DATABASE+"`.`"+GroupMapper.TABLE_NAME+"`" +
-				" WHERE `"+GroupMapper.DOMAIN_ID+"` = :domainId" +
-				" ORDER BY `"+GroupMapper.NAME+"` ;";
-		return template.query(sql, new MapSqlParameterSource("domainId",domainId),new GroupMapper());
+				" WHERE `"+GroupMapper.DOMAIN_ID+"` = :domainId";
+		
+		MapSqlParameterSource source = new MapSqlParameterSource("domainId", domainId);
+
+		//new Page Sistem Add
+		JdbcPageInfo pi = new JdbcPageInfo();
+		pi.setOrderByList(new ArrayList<String>());
+		pi.getOrderByList().add("`"+GroupMapper.NAME+"`");
+		pi.setPageNo(pageNo);
+		pi.setPageSize(pageSize);
+		pi.putRowMapper(new GroupMapper());
+		pi.putSql(sql);
+		pi.putExampleModel(source.getValues());
+		return super.findByPage(pi);
 	}
 
 	@Override
