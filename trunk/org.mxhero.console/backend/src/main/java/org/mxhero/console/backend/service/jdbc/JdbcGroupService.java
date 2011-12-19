@@ -10,6 +10,7 @@ import org.mxhero.console.backend.repository.GroupRepository;
 import org.mxhero.console.backend.service.GroupService;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.GroupVO;
+import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.flex.remoting.RemotingDestination;
@@ -39,19 +40,18 @@ public class JdbcGroupService implements GroupService{
 	}
 
 	@Override
-	public Collection<EmailAccountVO> findMembersByGroupId(String groupId, String domainId) {
-		return accountRepository.findMembersByGroupId(domainId, groupId);
+	public PageVO findMembersByGroupId(String groupId, String domainId, int pageNo, int pageSize) {
+		return accountRepository.findMembersByGroupId(domainId, groupId, pageNo, pageSize).createVO();
 	}
 
 	@Override
-	public Collection<EmailAccountVO> findMembersByDomainIdWithoutGroup(
-			String domainId) {
-		return accountRepository.findMembersByDomainIdWithoutGroup(domainId);
+	public PageVO findMembersByDomainIdWithoutGroup(String domainId, int pageNo, int pageSize) {
+		return accountRepository.findMembersByDomainIdWithoutGroup(domainId, pageNo, pageSize).createVO();
 	}
 
 	@Override
-	public Collection<GroupVO> findAll(String domainId) {
-		return groupRepository.findByDomain(domainId);
+	public PageVO findAll(String domainId, int pageNo, int pageSize) {
+		return groupRepository.findByDomain(domainId,pageNo,pageSize).createVO();
 	}
 
 	@Override
@@ -63,32 +63,35 @@ public class JdbcGroupService implements GroupService{
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void insert(GroupVO groupVO, Collection<EmailAccountVO> members) {
+	public void insert(GroupVO groupVO) {
 		try{
 			groupRepository.insert(groupVO);
 		} catch (DataIntegrityViolationException e){
 			throw new BusinessException(GROUP_ALREADY_EXISTS);
 		}
-		if(members!=null && members.size()>0){
-			for(EmailAccountVO account : members){
-				account.setGroup(groupVO.getName());
-				account.setUpdatedDate(Calendar.getInstance());
-				accountRepository.update(account);
-			}
-		}
 	}
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void edit(GroupVO groupVO, Collection<EmailAccountVO> members) {
+	public void edit(GroupVO groupVO) {
 		groupRepository.update(groupVO);
-		groupRepository.releaseMembers(groupVO.getName(), groupVO.getDomain());
-		if(members!=null && members.size()>0){
-			for(EmailAccountVO account : members){
-				account.setGroup(groupVO.getName());
-				account.setUpdatedDate(Calendar.getInstance());
-				accountRepository.update(account);
-			}
+	}
+
+	@Override
+	public void insertGroupMember(GroupVO groupVO, Collection<EmailAccountVO> accounts) {
+		for(EmailAccountVO account : accounts){
+			account.setGroup(groupVO.getName());
+			account.setUpdatedDate(Calendar.getInstance());
+			accountRepository.update(account);
+		}
+	}
+
+	@Override
+	public void removeGroupMember(Collection<EmailAccountVO> accounts) {
+		for(EmailAccountVO account : accounts){
+			account.setGroup(null);
+			account.setUpdatedDate(Calendar.getInstance());
+			accountRepository.update(account);
 		}
 	}
 

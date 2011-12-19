@@ -4,25 +4,32 @@ import java.util.Collection;
 
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.GroupVO;
+import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.security.access.annotation.Secured;
 
 public interface GroupService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<GroupVO> findAll(String domainId);
+	PageVO findAll(String domainId, int pageNo, int pageSize);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findMembersByGroupId(String groupId, String domainId);
+	PageVO findMembersByGroupId(String groupId, String domainId, int pageNo, int pageSize);
 
 	@Secured("ROLE_DOMAIN_ADMIN")
-	Collection<EmailAccountVO> findMembersByDomainIdWithoutGroup(String domainId);
+	PageVO findMembersByDomainIdWithoutGroup(String domainId, int pageNo, int pageSize);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
 	void remove(String groupName, String domainId);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void insert(GroupVO groupVO, Collection<EmailAccountVO> members);
+	void insert(GroupVO groupVO);
 	
 	@Secured("ROLE_DOMAIN_ADMIN")
-	void edit(GroupVO groupVO, Collection<EmailAccountVO> members);
+	void edit(GroupVO groupVO);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void insertGroupMember(GroupVO groupVO, Collection<EmailAccountVO> accounts);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	void removeGroupMember(Collection<EmailAccountVO> accounts);
 }

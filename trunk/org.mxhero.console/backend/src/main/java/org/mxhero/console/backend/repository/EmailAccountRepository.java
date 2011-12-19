@@ -1,7 +1,5 @@
 package org.mxhero.console.backend.repository;
 
-import java.util.List;
-
 import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
 import org.mxhero.console.backend.vo.EmailAccountAliasVO;
 import org.mxhero.console.backend.vo.EmailAccountVO;
@@ -22,9 +20,9 @@ public interface EmailAccountRepository {
 	
 	void deleteAlias(EmailAccountAliasVO aliasVO);
 	
-	List<EmailAccountVO> findMembersByGroupId(String domainId, String groupName);
+	PageResult<EmailAccountVO> findMembersByGroupId(String domainId, String groupName, int pageNo, int pageSize);
 	
-	List<EmailAccountVO> findMembersByDomainIdWithoutGroup(String domainId);
+	PageResult<EmailAccountVO> findMembersByDomainIdWithoutGroup(String domainId, int pageNo, int pageSize);
 
 	PageResult<EmailAccountVO> findAll(String domainId, String account, String group, int pageNo, int pageSize);
 }
