@@ -7,13 +7,10 @@ package org.mxhero.console.configurations.application.event
 	public class InsertGroupEvent
 	{
 		public var group:Group;
-		
-		public var members:ArrayCollection;
-		
-		public function InsertGroupEvent(group:Group, members:ArrayCollection)
+
+		public function InsertGroupEvent(group:Group)
 		{
 			this.group=group;
-			this.members=members;
 		}
 	}
 }

@@ -79,14 +79,14 @@
 				} else {
 					groupId=groupDdl.selectedItem.name;
 				}
-				model.filterEmailAccounts(emailTI.text,groupId);
+				model.filterEmailAccounts(emailTI.text,groupId,0);
 			}
 			
 			protected function clearBtt_clickHandler(event:MouseEvent):void
 			{
 				emailTI.text="";
 				groupDdl.selectedIndex=-1;
-				model.filterEmailAccounts(emailTI.text,null);
+				model.filterEmailAccounts(emailTI.text,null,0);
 			}
 			
 			
@@ -140,6 +140,28 @@
 				model.refreshAdLdap();
 			}
 
+			protected function prevButton_clickHandler(event:MouseEvent):void
+			{
+				var groupId:String;
+				if(groupDdl.selectedItem==null){
+					groupId=null;
+				} else {
+					groupId=groupDdl.selectedItem.name;
+				}
+				model.filterEmailAccounts(emailTI.text,groupId,model.accounts.actualPage-1);
+			}
+			
+			protected function nextButton_clickHandler(event:MouseEvent):void
+			{
+				var groupId:String;
+				if(groupDdl.selectedItem==null){
+					groupId=null;
+				} else {
+					groupId=groupDdl.selectedItem.name;
+				}
+				model.filterEmailAccounts(emailTI.text,groupId,model.accounts.actualPage+1);
+			}
+			
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -257,7 +279,7 @@
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
-			<mx:DataGrid dataProvider="{model.accounts}" 
+			<mx:DataGrid dataProvider="{model.accounts.elements}" 
 						 width="100%" 
 						 height="100%"
 						 borderStyle="none"
@@ -327,6 +349,26 @@
 					</mx:DataGridColumn>
 				</mx:columns>
 			</mx:DataGrid>
+			<s:controlBarContent>
+				<s:HGroup width="100%" verticalAlign="middle">
+					<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ACCOUNTS_TOTAL)+' '+model.accounts.totalElements}"/>
+					<mx:Spacer width="100%"/>
+					<component1:GlowButton id="prevButton"
+										   maxGlow="10.0" 
+										   source="{ImageResources.LEFT_ICO}"
+										   enabled="{model.accounts.hasPrev()}"
+										   click="prevButton_clickHandler(event)"
+										   />
+					<s:Label text="{(model.accounts.totalElements==0)?0:(model.accounts.actualPage)}"/>
+					<s:Label text="{'/'}"/>
+					<s:Label text="{(model.accounts.totalElements==0)?0:(model.accounts.totalPages)}"/>
+					<component1:GlowButton id="nextButton"
+										   maxGlow="10.0" 
+										   source="{ImageResources.RIGHT_ICO}"
+										   enabled="{model.accounts.hasNext()}"
+										   click="nextButton_clickHandler(event)"/>
+				</s:HGroup>
+			</s:controlBarContent>
 		</s:Panel>
 	</s:VGroup>
 

@@ -17,7 +17,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:LoadEmailAccountsWithNoGroupEvent):AsyncToken
 		{
-			return service.findMembersByDomainIdWithoutGroup(event.domainId);
+			return service.findMembersByDomainIdWithoutGroup(event.domainId,event.pageNo,event.pageSize);
 		}
 		
 		public function error (fault:Fault) : void {

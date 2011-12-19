@@ -9,6 +9,7 @@ package org.mxhero.console.frontend.application.command
 	import org.mxhero.console.frontend.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Group;
+	import org.mxhero.console.frontend.domain.Page;
 
 	public class GetDomainGroupsCommand
 	{
@@ -24,21 +25,14 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:GetDomainGroupsEvent):AsyncToken
 		{
-			return service.findAll(event.domainId);
+			return service.findAll(event.domainId,-1,-1);
 		}
 		
 		public function result(result:*) : void {
-			if (result is Group){
-				context.groups=new ArrayCollection();
-				context.groups.addItem(result);
-			} else {
-				context.groups=result;	
-			}
-			if(context.groups!=null){
-				var sortByName:Sort=new Sort();
-				sortByName.fields=[new SortField("name")];
-				context.groups.sort=sortByName;
-				context.groups.refresh();
+			if(result!=null){
+				context.groups=(result as Page).elements;
+			}else{
+				context.groups=null;
 			}
 		}
 	}

@@ -13,6 +13,7 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
@@ -20,8 +21,11 @@
 			
 			import org.mxhero.console.commons.infrastructure.parser.StringUtils;
 			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.commons.skin.TitleLessPanel;
 			import org.mxhero.console.configurations.application.resources.AccountsProperties;
 			import org.mxhero.console.configurations.application.resources.GroupsProperties;
+			import org.mxhero.console.frontend.domain.EmailAccount;
 			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			import org.mxhero.console.frontend.domain.Group;
 			
@@ -61,15 +65,17 @@
 			
 			protected function groupAccountsDg_itemDoubleClickHandler(event:ListEvent):void
 			{
-				model.groupAccounts.removeItemAt(model.groupAccounts.getItemIndex(event.itemRenderer.data));
-				model.noGroupAccounts.addItem(event.itemRenderer.data);
+				var accounts:ArrayCollection = new ArrayCollection();
+				accounts.addItem(event.itemRenderer.data as EmailAccount);
+				model.removeMember(accounts);
 			}
 
 
 			protected function noGroupAccountsDg_itemDoubleClickHandler(event:ListEvent):void
 			{
-				model.noGroupAccounts.removeItemAt(model.noGroupAccounts.getItemIndex(event.itemRenderer.data));
-				model.groupAccounts.addItem(event.itemRenderer.data);
+				var accounts:ArrayCollection = new ArrayCollection();
+				accounts.addItem(event.itemRenderer.data as EmailAccount);
+				model.addMember(accounts);
 			}
 
 
@@ -82,6 +88,37 @@
 				}
 			}
 
+			protected function prevGroupButton_clickHandler(event:MouseEvent):void
+			{
+				model.loadAccountsByGroup(model.groupAccounts.actualPage-1);
+			}
+			
+			protected function nextGroupButton_clickHandler(event:MouseEvent):void
+			{
+				model.loadAccountsByGroup(model.groupAccounts.actualPage+1);				
+			}
+			
+			protected function prevNoGroupButton_clickHandler(event:MouseEvent):void
+			{
+				model.loadAccountsWithNoGroup(model.noGroupAccounts.actualPage-1);
+			}
+			
+			protected function nextNoGroupButton_clickHandler(event:MouseEvent):void
+			{
+				model.loadAccountsWithNoGroup(model.noGroupAccounts.actualPage+1);	
+			}
+			
+			
+			protected function noGroupAccountsDg_dragDropHandler(event:DragEvent):void
+			{
+				model.removeMember(new ArrayCollection((event.dragInitiator as DataGrid).selectedItems));
+			}
+			
+			protected function groupAccountsDg_dragDropHandler(event:DragEvent):void
+			{
+				model.addMember(new ArrayCollection((event.dragInitiator as DataGrid).selectedItems));
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -119,18 +156,23 @@
 			</mx:FormItem>
 		</s:HGroup>
 		<mx:Spacer height="10"/>
-		<component1:LabelExpanded width="100%" 
+		<component1:LabelExpanded excludeFrom="new" 
+								  width="100%" 
 								  explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 								  hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.REDUCED_LABEL)}" 
 								  labelText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SELECT_MEMBERS_LABEL)}" 
 								  expandedText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SELECT_MEMBERS_EXPANDED)}"/>
-		<s:HGroup>
-			<s:VGroup>
+		<s:HGroup excludeFrom="new">
+			<s:Panel skinClass="{TitleLessPanel}"
+					 cornerRadius="0">
+				<s:layout>
+					<s:VerticalLayout/>
+				</s:layout>
 				<s:Label 
 					fontWeight="bold"
 					text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_MEMBERS_LABEL)}"/>
 				<mx:DataGrid id="groupAccountsDg"
-							dataProvider="{model.groupAccounts}" 
+							dataProvider="{model.groupAccounts.elements}" 
 							width="100%" 
 							dropShadowVisible="false"
 							minWidth="420"
@@ -142,6 +184,7 @@
 							dragMoveEnabled="true"
 							doubleClickEnabled="true"
 							mouseChildren="true"
+							dragDrop="groupAccountsDg_dragDropHandler(event)"
 							itemDoubleClick="groupAccountsDg_itemDoubleClickHandler(event)">
 					<mx:columns>
 						<mx:DataGridColumn dataField="account" 
@@ -153,15 +196,39 @@
 										   minWidth="100"
 										   sortable="false"/>
 					</mx:columns>
-				</mx:DataGrid>				
-			</s:VGroup>
+				</mx:DataGrid>
+				<s:controlBarContent>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ACCOUNTS_TOTAL)+' '+model.groupAccounts.totalElements}"/>
+						<mx:Spacer width="100%"/>
+						<component1:GlowButton id="prevGroupButton"
+											   maxGlow="10.0" 
+											   source="{ImageResources.LEFT_ICO}"
+											   enabled="{model.groupAccounts.hasPrev()}"
+											   click="prevGroupButton_clickHandler(event)"
+											   />
+						<s:Label text="{(model.groupAccounts.totalElements==0)?0:(model.groupAccounts.actualPage)}"/>
+						<s:Label text="{'/'}"/>
+						<s:Label text="{(model.groupAccounts.totalElements==0)?0:(model.groupAccounts.totalPages)}"/>
+						<component1:GlowButton id="nextGroupButton"
+											   maxGlow="10.0" 
+											   source="{ImageResources.RIGHT_ICO}"
+											   enabled="{model.groupAccounts.hasNext()}"
+											   click="nextGroupButton_clickHandler(event)"/>
+					</s:HGroup>
+				</s:controlBarContent>				
+			</s:Panel>
 
-			<s:VGroup>
+			<s:Panel skinClass="{TitleLessPanel}"
+					 cornerRadius="0">
+				<s:layout>
+					<s:VerticalLayout/>
+				</s:layout>
 				<s:Label 
 					fontWeight="bold"
 					text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.SHOW_NO_GROUP_ACCOUNTS_LABEL)}"/>
 				<mx:DataGrid id="noGroupAccountsDg"
-							dataProvider="{model.noGroupAccounts}" 
+							dataProvider="{model.noGroupAccounts.elements}" 
 							width="100%" 
 							dropShadowVisible="false" 
 							minWidth="420"
@@ -173,6 +240,7 @@
 							dragMoveEnabled="true"
 							doubleClickEnabled="true"
 							mouseChildren="true"
+							dragDrop="noGroupAccountsDg_dragDropHandler(event)"
 							itemDoubleClick="noGroupAccountsDg_itemDoubleClickHandler(event)">
 					<mx:columns>
 						<mx:DataGridColumn dataField="account" 
@@ -185,7 +253,27 @@
 										   sortable="false"/>
 					</mx:columns>
 				</mx:DataGrid>
-			</s:VGroup>
+				<s:controlBarContent>
+					<s:HGroup width="100%" verticalAlign="middle">
+						<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ACCOUNTS_TOTAL)+' '+model.noGroupAccounts.totalElements}"/>
+						<mx:Spacer width="100%"/>
+						<component1:GlowButton id="prevNoGroupButton"
+											   maxGlow="10.0" 
+											   source="{ImageResources.LEFT_ICO}"
+											   enabled="{model.noGroupAccounts.hasPrev()}"
+											   click="prevNoGroupButton_clickHandler(event)"
+											   />
+						<s:Label text="{(model.noGroupAccounts.totalElements==0)?0:(model.noGroupAccounts.actualPage)}"/>
+						<s:Label text="{'/'}"/>
+						<s:Label text="{(model.noGroupAccounts.totalElements==0)?0:(model.noGroupAccounts.totalPages)}"/>
+						<component1:GlowButton id="nextNoGroupButton"
+											   maxGlow="10.0" 
+											   source="{ImageResources.RIGHT_ICO}"
+											   enabled="{model.noGroupAccounts.hasNext()}"
+											   click="nextNoGroupButton_clickHandler(event)"/>
+					</s:HGroup>
+				</s:controlBarContent>	
+			</s:Panel>
 		</s:HGroup>
 
 		<s:HGroup horizontalAlign="right" width="100%" paddingTop="15">

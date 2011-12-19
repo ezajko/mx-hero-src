@@ -24,6 +24,7 @@
 			import org.mxhero.console.configurations.application.command.InsertDomainCommand;
 			import org.mxhero.console.configurations.application.command.InsertEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.InsertGroupCommand;
+			import org.mxhero.console.configurations.application.command.InsertGroupMemberCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllDomainsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllEmailAccountsCommand;
 			import org.mxhero.console.configurations.application.command.LoadAllGroupsCommand;
@@ -35,6 +36,7 @@
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupCommand;
+			import org.mxhero.console.configurations.application.command.RemoveGroupMemberCommand;
 			import org.mxhero.console.configurations.application.command.TestAdldapCommand;
 			import org.mxhero.console.configurations.application.command.TestEmailCommand;
 			import org.mxhero.console.configurations.application.command.UploadAccountsCommand;
@@ -58,6 +60,8 @@
 		<parsley:DynamicCommand type="{LoadAllGroupsCommand}"/>
 		<parsley:DynamicCommand type="{RemoveGroupCommand}"/>
 		<parsley:DynamicCommand type="{InsertGroupCommand}"/>
+		<parsley:DynamicCommand type="{RemoveGroupMemberCommand}"/>
+		<parsley:DynamicCommand type="{InsertGroupMemberCommand}"/>
 		<parsley:DynamicCommand type="{LoadEmailAccountsByGroupCommand}"/>
 		<parsley:DynamicCommand type="{LoadEmailAccountsWithNoGroupCommand}"/>
 		<parsley:DynamicCommand type="{EditGroupCommand}"/>

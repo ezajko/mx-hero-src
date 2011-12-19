@@ -17,7 +17,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:InsertGroupEvent):AsyncToken
 		{
-			return service.insert(event.group,event.members);
+			return service.insert(event.group);
 		}
 
 	}

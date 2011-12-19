@@ -11,6 +11,7 @@ package org.mxhero.console.configurations.application.command
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.Group;
+	import org.mxhero.console.frontend.domain.Page;
 
 	public class LoadAllGroupsCommand
 	{
@@ -26,26 +27,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:LoadAllGroupsEvent):AsyncToken
 		{
-			return service.findAll(event.domainId);
-		}
-
-		public function result(result:*) : void {
-			if (result is Group){
-				context.groups=new ArrayCollection();
-				context.groups.addItem(result);
-			} else {
-				context.groups=result;	
-			}
-			if(context.groups!=null){
-			//	var sortByName:Sort=new Sort();
-			//	sortByName.fields=[new SortField("name")];
-			//	context.groups.sort=sortByName;
-			//	context.groups.refresh();
-			}
-		}
-		
-		public function error (fault:Fault) : void {
-			dispatcher(new ApplicationErrorMessage(fault.faultCode));
+			return service.findAll(event.domainId,event.pageNo,event.pageSize);
 		}
 		
 	}
