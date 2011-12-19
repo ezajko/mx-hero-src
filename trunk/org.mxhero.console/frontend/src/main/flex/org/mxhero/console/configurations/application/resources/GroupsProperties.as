@@ -47,6 +47,8 @@ package org.mxhero.console.configurations.application.resources
 		public static const SELECT_MEMBERS_EXPANDED:String="select.members.expanded";
 		
 		public static const SHOW_NO_GROUP_ACCOUNTS_LABEL:String="show.no.group.accounts.label";
+		
+		public static const GROUPS_TOTAL:String="groups.total";
 
 	}
 }

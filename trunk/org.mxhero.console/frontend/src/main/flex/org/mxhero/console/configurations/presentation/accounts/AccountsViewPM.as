@@ -10,6 +10,7 @@ package org.mxhero.console.configurations.presentation.accounts
 	import mx.managers.PopUpManager;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.commons.infrastructure.ErrorTranslator;
@@ -30,16 +31,20 @@ package org.mxhero.console.configurations.presentation.accounts
 	import org.mxhero.console.configurations.application.event.UploadAccountsEvent;
 	import org.mxhero.console.configurations.application.resources.AccountsProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.DomainAdLdap;
 	import org.mxhero.console.frontend.domain.EmailAccount;
 	import org.mxhero.console.frontend.domain.EmailAccountAlias;
+	import org.mxhero.console.frontend.domain.Page;
 
 	[Landmark(name="main.dashboard.configurations.accounts")]
 	public class AccountsViewPM
 	{
 		public static const DEFAULT_STATE:String = "default";
 		public static const SYNC_STATE:String = "sync";
+		
+		public static const PAGE_SIZE:Number=10;
 		
 		[Bindable]
 		public var accountsState:String=DEFAULT_STATE;
@@ -60,7 +65,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		[Bindable]
 		public var context:ApplicationContext;
 		[Bindable]
-		public var accounts:ArrayCollection;
+		public var accounts:Page;
 		
 		[Inject]
 		[Bindable]
@@ -90,8 +95,10 @@ package org.mxhero.console.configurations.presentation.accounts
 		
 		[Enter(time="every")]
 		public function every():void{
-			loadEmailAccounts();
-			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain));
+			_accountFilter=null;
+			_groupIdFilter=null;
+			findAccounts(0,PAGE_SIZE);
+			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain,-1,-1));
 			if(context.selectedDomain.adLdap!=null){
 				this.accountsState=SYNC_STATE;
 			}else{
@@ -99,16 +106,24 @@ package org.mxhero.console.configurations.presentation.accounts
 			}
 		}
 		
-		public function loadEmailAccounts():void{
-			_accountFilter=null;
-			_groupIdFilter=null;
-			findAccounts();
+		[CommandResult]
+		public function loadAllGroupsResult(result:*,event:LoadAllGroupsEvent) : void {
+			if(result!=null){
+				context.groups=(result as Page).elements;
+			}else{
+				context.groups=null;
+			}
 		}
 		
-		public function filterEmailAccounts(account:String,groupName:String):void{
+		[CommandError]
+		public function error (fault:Fault,event:LoadAllGroupsEvent) : void {
+			dispatcher(new ApplicationErrorMessage(fault.faultCode));
+		}
+		
+		public function filterEmailAccounts(account:String,groupName:String,pageNo:Number):void{
 			_accountFilter=account;
 			_groupIdFilter=groupName;
-			findAccounts();
+			findAccounts(pageNo,PAGE_SIZE);
 		}
 		
 		[CommandResult]
@@ -143,7 +158,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		[CommandResult]
 		public function insertResult (result:*, event:InsertEmailAccountEvent) : void {
 			isLoading=false;
-			loadEmailAccounts();
+			findAccounts(accounts.actualPage,PAGE_SIZE);
 			PopUpManager.removePopUp(accountShow);
 		}
 		
@@ -159,10 +174,12 @@ package org.mxhero.console.configurations.presentation.accounts
 		
 		[CommandResult]
 		public function removeResult (result:*, event:RemoveEmailAccountEvent) : void {
-			var itemPosition:Number= accounts.getItemIndex(selectedEmailAccount);
-			if(itemPosition>-1){
-				accounts.removeItemAt(itemPosition);
-			}
+			isLoading=false;
+			findAccounts(accounts.actualPage,PAGE_SIZE);
+		}
+		
+		[CommandError]
+		public function removeError (faultEvent:FaultEvent, event:RemoveEmailAccountEvent) : void {
 			isLoading=false;
 		}
 		
@@ -199,13 +216,13 @@ package org.mxhero.console.configurations.presentation.accounts
 		[CommandResult]
 		public function updateResult (result:*, event:EditEmailAccountEvent) : void {
 			isLoading=false;
-			loadEmailAccounts();
+			findAccounts(accounts.actualPage,PAGE_SIZE);
 			PopUpManager.removePopUp(accountShow);
 			accountShow.cancelBtt_clickHandler(null);
 		}
 
-		private function findAccounts():void{
-			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.domain,_accountFilter,_groupIdFilter));
+		private function findAccounts(pageNo:Number,pageSize:Number):void{
+			dispatcher(new LoadAllEmailAccountsEvent(context.selectedDomain.domain,_accountFilter,_groupIdFilter,pageNo,pageSize));
 			isLoading=true;
 		}
 		
@@ -280,7 +297,7 @@ package org.mxhero.console.configurations.presentation.accounts
 			context.selectedDomain.adLdap=result;
 			this.accountsState=SYNC_STATE;
 			PopUpManager.removePopUp(accountsAdLdap);
-			loadEmailAccounts();
+			findAccounts(0,PAGE_SIZE);
 		}
 		
 		[CommandError]
@@ -294,7 +311,7 @@ package org.mxhero.console.configurations.presentation.accounts
 			context.selectedDomain.adLdap=null;
 			this.accountsState=DEFAULT_STATE;
 			PopUpManager.removePopUp(accountsAdLdap);
-			loadEmailAccounts();
+			findAccounts(0,PAGE_SIZE);
 		}
 		
 		[CommandError]
@@ -310,7 +327,7 @@ package org.mxhero.console.configurations.presentation.accounts
 		[CommandResult]
 		public function refreshAdLdapResult (result:*, event:RefreshAdLdapEvent) : void {
 			context.selectedDomain.adLdap=result;
-			loadEmailAccounts();
+			findAccounts(0,PAGE_SIZE);
 		}
 		
 		public function uploadAllAccounts(uploadAccounts:ArrayCollection,failOnError:Boolean):void{
@@ -334,7 +351,7 @@ package org.mxhero.console.configurations.presentation.accounts
 			}else{
 				accountUpload.cancelBtt_clickHandler();
 			}
-			loadEmailAccounts();
+			findAccounts(0,PAGE_SIZE);
 		}
 		
 		[CommandError]

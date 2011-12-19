@@ -20,6 +20,7 @@
 			import mx.utils.ObjectUtil;
 			
 			import org.mxhero.console.commons.resources.ImageResources;
+			import org.mxhero.console.commons.skin.TitleLessPanel;
 			import org.mxhero.console.configurations.application.resources.GroupsProperties;
 			
 			[Inject]
@@ -59,6 +60,16 @@
 				model.editGroup(this);
 			}
 
+			protected function prevButton_clickHandler(event:MouseEvent):void
+			{
+				model.loadGroups(model.groups.actualPage-1);
+			}
+			
+			protected function nextButton_clickHandler(event:MouseEvent):void
+			{
+				model.loadGroups(model.groups.actualPage+1);
+			}
+			
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -111,10 +122,17 @@
 		</mx:Form>		
 	</s:BorderContainer>
 	
+	<s:Panel width="100%" 
+			 height="100%"
+			 minWidth="600"
+			 skinClass="{TitleLessPanel}"
+			 cornerRadius="0">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>		
 	<mx:DataGrid dataProvider="{model.context.groups}" 
 				 width="100%" 
 				 height="100%"
-				 minWidth="600"
 				 selectedItem="@{model.selectGroup}"
 				 itemDoubleClick="datagrid2_itemDoubleClickHandler(event)"
 				 doubleClickEnabled="true"
@@ -157,4 +175,25 @@
 			</mx:DataGridColumn>
 		</mx:columns>
 	</mx:DataGrid>
+		<s:controlBarContent>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.GROUPS_TOTAL)+' '+model.groups.totalElements}"/>
+				<mx:Spacer width="100%"/>
+				<component1:GlowButton id="prevButton"
+									   maxGlow="10.0" 
+									   source="{ImageResources.LEFT_ICO}"
+									   enabled="{model.groups.hasPrev()}"
+									   click="prevButton_clickHandler(event)"
+									   />
+				<s:Label text="{(model.groups.totalElements==0)?0:(model.groups.actualPage)}"/>
+				<s:Label text="{'/'}"/>
+				<s:Label text="{(model.groups.totalElements==0)?0:(model.groups.totalPages)}"/>
+				<component1:GlowButton id="nextButton"
+									   maxGlow="10.0" 
+									   source="{ImageResources.RIGHT_ICO}"
+									   enabled="{model.groups.hasNext()}"
+									   click="nextButton_clickHandler(event)"/>
+			</s:HGroup>
+		</s:controlBarContent>	
+	</s:Panel>
 </s:Group>

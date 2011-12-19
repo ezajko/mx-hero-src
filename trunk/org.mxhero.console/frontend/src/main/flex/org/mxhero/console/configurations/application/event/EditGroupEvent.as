@@ -8,12 +8,9 @@ package org.mxhero.console.configurations.application.event
 	{
 		public var group:Group;
 		
-		public var members:ArrayCollection;
-		
-		public function EditGroupEvent(group:Group,members:ArrayCollection)
+		public function EditGroupEvent(group:Group)
 		{
 			this.group=group;
-			this.members=members;
 		}
 	}
 }

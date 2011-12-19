@@ -89,6 +89,8 @@ package org.mxhero.console.configurations.application.resources
 		public static const ADLDAP_MANAGED_BY_LABEL:String="adldap.managed.by.label";
 		
 		public static const ADLDAP_BIND_AUTHENTICATE_LABEL:String="adldap.bind.authenticate.label";
+		
+		public static const ACCOUNTS_TOTAL:String="accounts.total";
 
 	}
 }

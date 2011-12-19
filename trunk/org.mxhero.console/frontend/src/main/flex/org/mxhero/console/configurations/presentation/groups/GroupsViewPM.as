@@ -10,6 +10,7 @@ package org.mxhero.console.configurations.presentation.groups
 	import mx.managers.PopUpManager;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
+	import mx.rpc.Fault;
 	import mx.rpc.events.FaultEvent;
 	
 	import org.mxhero.console.commons.infrastructure.ErrorTranslator;
@@ -17,19 +18,28 @@ package org.mxhero.console.configurations.presentation.groups
 	import org.mxhero.console.configurations.application.command.LoadEmailAccountsWithNoGroupCommand;
 	import org.mxhero.console.configurations.application.event.EditGroupEvent;
 	import org.mxhero.console.configurations.application.event.InsertGroupEvent;
+	import org.mxhero.console.configurations.application.event.InsertGroupMemberEvent;
 	import org.mxhero.console.configurations.application.event.LoadAllGroupsEvent;
 	import org.mxhero.console.configurations.application.event.LoadEmailAccountsByGroupEvent;
 	import org.mxhero.console.configurations.application.event.LoadEmailAccountsWithNoGroupEvent;
 	import org.mxhero.console.configurations.application.event.RemoveGroupEvent;
+	import org.mxhero.console.configurations.application.event.RemoveGroupMemberEvent;
 	import org.mxhero.console.configurations.application.resources.GroupsProperties;
 	import org.mxhero.console.configurations.presentation.ConfigurationsViewPM;
+	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
 	import org.mxhero.console.frontend.domain.EmailAccount;
 	import org.mxhero.console.frontend.domain.Group;
+	import org.mxhero.console.frontend.domain.Page;
 
 	[Landmark(name="main.dashboard.configurations.groups")]
 	public class GroupsViewPM
 	{
+		public static const PAGE_SIZE:Number=10;
+		
+		[Bindable]
+		public var groups:Page;
+		
 		[Bindable]
 		public var isLoading:Boolean=false;
 
@@ -54,9 +64,9 @@ package org.mxhero.console.configurations.presentation.groups
 		private var _descriptionFilter:String=null;
 		
 		[Bindable]
-		public var groupAccounts:ArrayCollection;
+		public var groupAccounts:Page;
 		[Bindable]
-		public var noGroupAccounts:ArrayCollection;
+		public var noGroupAccounts:Page;
 		
 		private var groupShow:GroupShow;
 		
@@ -66,12 +76,24 @@ package org.mxhero.console.configurations.presentation.groups
 		
 		[Enter(time="every")]
 		public function every():void{
-			loadGroups();
+			loadGroups(-1);
 		}
 		
-		public function loadGroups():void{
-			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain));
+		public function loadGroups(pageNo:Number):void{
+			dispatcher(new LoadAllGroupsEvent(context.selectedDomain.domain,pageNo,PAGE_SIZE));
 			isLoading=true;
+		}
+		
+		[CommandResult]
+		public function loadAllGroupsResult(result:*,event:LoadAllGroupsEvent) : void {
+			groups=result as Page;
+			isLoading=false;
+		}
+		
+		[CommandError]
+		public function error (fault:Fault,event:LoadAllGroupsEvent) : void {
+			dispatcher(new ApplicationErrorMessage(fault.faultCode));
+			isLoading=false;
 		}
 		
 		[CommandComplete]
@@ -79,6 +101,16 @@ package org.mxhero.console.configurations.presentation.groups
 			isLoading=false;
 		}
 
+		public function loadAccountsWithNoGroup(pageNo:Number):void{
+			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.domain,pageNo,PAGE_SIZE));
+			isLoading=true;
+		}
+		
+		public function loadAccountsByGroup(pageNo:Number):void{
+			dispatcher(new LoadEmailAccountsByGroupEvent(this.selectGroup.name,this.selectGroup.domain,pageNo,PAGE_SIZE));
+			isLoading=true;
+		}
+		
 		public function newGroup(parent:DisplayObject):void{
 			groupShow=new GroupShow();
 			groupShow.model=this;
@@ -88,20 +120,13 @@ package org.mxhero.console.configurations.presentation.groups
 			PopUpManager.addPopUp(groupShow,parent,true);
 			PopUpManager.centerPopUp(groupShow);
 			PopUpManager.bringToFront(groupShow);
-			this.groupAccounts=new ArrayCollection();
-			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.domain));
-			isLoading=true;
+			loadAccountsWithNoGroup(0);
 		}
 
 		[CommandResult]
 		public function loadNoGroupResult (result:*, event:LoadEmailAccountsWithNoGroupEvent) : void {
 			isLoading=false;
-			if(result is EmailAccount){
-				this.noGroupAccounts=new ArrayCollection();
-				noGroupAccounts.addItem(result);
-			} else {
-				this.noGroupAccounts=result;
-			}
+			this.noGroupAccounts=result;
 		}
 		
 		[CommandError]
@@ -118,22 +143,13 @@ package org.mxhero.console.configurations.presentation.groups
 			PopUpManager.addPopUp(groupShow,parent,true);
 			PopUpManager.centerPopUp(groupShow);
 			PopUpManager.bringToFront(groupShow);
-			dispatcher(new LoadEmailAccountsByGroupEvent(this.selectGroup.name,this.selectGroup.domain));
-			isLoading=true;
+			loadAccountsByGroup(0);
+			loadAccountsWithNoGroup(0);
 		}
 
 		[CommandResult]
 		public function loadMembersResult (result:*, event:LoadEmailAccountsByGroupEvent) : void {
-
-			if(result is EmailAccount){
-				this.groupAccounts=new ArrayCollection();
-				groupAccounts.addItem(result);
-			} else if(result==null){
-				this.groupAccounts=new ArrayCollection();
-			} else {
-				this.groupAccounts=result;
-			}
-			dispatcher(new LoadEmailAccountsWithNoGroupEvent(context.selectedDomain.domain));
+			this.groupAccounts=result;
 		}
 		
 		[CommandError]
@@ -161,14 +177,14 @@ package org.mxhero.console.configurations.presentation.groups
 		}
 		
 		public function insertGroup(newGroup:Group):void{
-			dispatcher(new InsertGroupEvent(newGroup,groupAccounts));
+			dispatcher(new InsertGroupEvent(newGroup));
 			isLoading=true;
 		}
 		
 		[CommandResult]
 		public function insertResult (result:*, event:InsertGroupEvent) : void {
 			isLoading=false;
-			loadGroups();
+			loadGroups(groups.actualPage);
 			PopUpManager.removePopUp(groupShow);
 		}
 		
@@ -180,13 +196,49 @@ package org.mxhero.console.configurations.presentation.groups
 		
 		public function updateGroup(group:Group):void{
 			isLoading=true;
-			dispatcher(new EditGroupEvent(group,this.groupAccounts));
+			dispatcher(new EditGroupEvent(group));
 		}
 
+		public function addMember(accounts:ArrayCollection):void{
+			isLoading=true;
+			dispatcher(new InsertGroupMemberEvent((selectGroup as Group).clone(),accounts));
+		}
+		
+		[CommandResult]
+		public function addMemberResult(result:*, event:InsertGroupMemberEvent):void{
+			isLoading=false;
+			loadAccountsByGroup(groupAccounts.actualPage);
+			loadAccountsWithNoGroup(noGroupAccounts.actualPage);
+		}
+		
+		[CommandError]
+		public function addMemberError (faultEvent:FaultEvent, event:InsertGroupMemberEvent) : void {
+			isLoading=false;
+			groupShow.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+		}
+		
+		public function removeMember(accounts:ArrayCollection):void{
+			isLoading=true;
+			dispatcher(new RemoveGroupMemberEvent(accounts));
+		}
+		
+		[CommandResult]
+		public function removeMemberResult(result:*, event:RemoveGroupMemberEvent):void{
+			isLoading=false;
+			loadAccountsByGroup(groupAccounts.actualPage);
+			loadAccountsWithNoGroup(noGroupAccounts.actualPage);
+		}
+		
+		[CommandError]
+		public function removeMemberError (faultEvent:FaultEvent, event:RemoveGroupMemberEvent) : void {
+			isLoading=false;
+			groupShow.errorText.showError(ErrorTranslator.translate(faultEvent.fault.faultCode));
+		}
+		
 		[CommandResult]
 		public function editResult (result:*, event:EditGroupEvent) : void {
 			isLoading=false;
-			loadGroups();
+			loadGroups(groups.actualPage);
 			PopUpManager.removePopUp(groupShow);
 		}
 		
