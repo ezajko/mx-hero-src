@@ -155,7 +155,7 @@ package org.mxhero.console.home.presentation
 		
 		public function refreshActivity(event:*=null):void{
 			this.hourSince=new Date();
-			this.hourSince.time = this.hourSince.time - 1*60*60*1000 + 30*60*1000;
+			this.hourSince.time = this.hourSince.time - 1*60*60*1000;
 			this.hourSince.time = this.hourSince.setSeconds(0,0);
 			this.hourUntil=new Date();
 			this.hourUntil.time = this.hourUntil.time;
@@ -250,7 +250,7 @@ package org.mxhero.console.home.presentation
 		
 		private function translateActivity(data:ArrayCollection):ArrayCollection{
 			var activityArray:ArrayCollection = new ArrayCollection();
-			for (var i:int=0;i<31;i++){
+			for (var i:int=0;i<61;i++){
 				var newDate:Date= new Date();
 				newDate.time=hourSince.time;
 				newDate.time=newDate.time+i*60*1000;
