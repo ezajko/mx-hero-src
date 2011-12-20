@@ -20,6 +20,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.SortField;
+			import mx.collections.Sort;
 			import mx.validators.ValidationResult;
 			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
@@ -126,10 +128,12 @@
 			
 			private function loadData():void{
 				if(initialProperties!=null){
+					var uarray:Array = new Array();
 					for each(var property:Object in PropertyHelper.getProperties(initialProperties,"email.list")){
-						emails.addItem(property.propertyValue);
+						uarray.push(property.propertyValue);
 					}
-					
+					uarray.sort();
+					emails = new ArrayCollection(uarray);
 					var actionSelected:String = PropertyHelper.getProperty(initialProperties,"action.selection").propertyValue;
 					if(actionSelected=='discard'){
 						discardRb.selected=true;
@@ -143,7 +147,7 @@
 			public function getProperties():ArrayCollection{
 				var properties:ArrayCollection = new ArrayCollection();
 				var property:FeatureRuleProperty;
-				
+				emails.source.sort();
 				for each(var object:Object in emails){
 					property = new FeatureRuleProperty();
 					property.propertyKey = "email.list";
@@ -221,10 +225,12 @@
 		<mx:DataGrid id="emailsDg"
 					 dataProvider="{emails}" 
 					 width="100%"
-					 showHeaders="false">
+					 height="250">
 			<mx:columns>
-				<mx:DataGridColumn dataField="email"/>
-				<mx:DataGridColumn width="48" >
+				<mx:DataGridColumn id="emailColumn" dataField="email" 
+								   headerText="{resourceManager.getString(MODULE_NAME,'email.label.text')}"/>
+				<mx:DataGridColumn width="48" 
+								   sortable="false">
 					<mx:itemRenderer>
 						<fx:Component>
 							<mx:HBox width="100%" horizontalAlign="center">
