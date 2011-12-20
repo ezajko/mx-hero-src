@@ -330,7 +330,8 @@
 		</mx:Form>
 		<mx:DataGrid id="extensionsDg"
 					 dataProvider="{this.extensions}" 
-					 width="100%">
+					 width="100%"
+					 height="250">
 			<mx:columns>
 				<mx:DataGridColumn dataField="data" 
 								   headerText="{resourceManager.getString('attachmentblock','name.label')}"/>
