@@ -191,10 +191,10 @@
 			<mx:DataGrid id="wordsDg"
 						 dataProvider="{words}" 
 						 width="100%"
-						 showHeaders="false">
+						 height="250">
 				<mx:columns>
-					<mx:DataGridColumn dataField="data"/>
-					<mx:DataGridColumn width="48" >
+					<mx:DataGridColumn dataField="data" headerText="{resourceManager.getString('wiretapcontent','word.label.text')}"/>
+					<mx:DataGridColumn width="48" sortable="false" >
 						<mx:itemRenderer>
 							<fx:Component>
 								<mx:HBox width="100%" horizontalAlign="center">
