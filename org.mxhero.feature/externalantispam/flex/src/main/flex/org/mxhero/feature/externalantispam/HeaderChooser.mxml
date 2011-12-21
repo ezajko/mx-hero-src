@@ -32,7 +32,7 @@
 			private var antispams:ArrayCollection = 
 				new ArrayCollection([{label:'Barracuda',id:'0',header:'X-Barracuda-Spam-Status',value:'(?i)\\s*Yes\\s*,.*'},
 					{label:'Brightmail',id:'1',header:'X-BrightMail-Spam-Flag',value:'(?i)\\s*YES\\s*'},
-					{label:'Cloudmark',id:'2',header:'X-CMAE-Score',value:'(?i)\\s*100.00\\s*'},
+					{label:'Cloudmark',id:'2',header:'X-CMAE-Score',value:'(?i)\\s*100'},
 					{label:'Ironport',id:'3',header:'X-IronPort-SPAM',value:'(?i)\\s*SPAM\\s*'},
 					{label:'Postini',id:'4',header:'X-pstn-levels',value:'(?i)^\\s*\\(S:\\s+0\\.[3-9][0-9]*.*'},
 					{label:'Proofpoint',id:'5',header:'X-Proofpoint-Spam-Details',value:'(?i)^.+score=\\s?[8-9][0-9].*|.+score=\\s?100.*'},
