@@ -92,7 +92,7 @@ public class JdbcEmailAccountRepository extends BaseJdbcDao<EmailAccountVO> impl
 				hasCondition = true;
 			}
 			sql = sql + " `"+EmailAccountMapper.ACCOUNT+"` like :account";
-			source.addValue("account", "%"+account.trim()+"%");
+			source.addValue("account", account.trim()+"%");
 		}
 		if(group!=null && !group.trim().isEmpty()){
 			if(hasCondition){
@@ -225,13 +225,13 @@ public class JdbcEmailAccountRepository extends BaseJdbcDao<EmailAccountVO> impl
 				" `"+EmailAccountMapper.DATA_SOURCE+"`, `"+EmailAccountMapper.DOMAIN_ID+"`," +
 				" `"+EmailAccountMapper.GROUP_NAME+"`, `"+EmailAccountMapper.UPDATED+"`)" +
 				" VALUES(:account,:created,:dataSource,:domainId,:groupName,:updated);";
-		MapSqlParameterSource accountDource = new MapSqlParameterSource("domainId",accountVO.getDomain());
-		accountDource.addValue("account", accountVO.getAccount());
-		accountDource.addValue("created", Calendar.getInstance().getTime());
-		accountDource.addValue("dataSource", EmailAccountVO.MANUAL);
-		accountDource.addValue("groupName", accountVO.getGroup());
-		accountDource.addValue("updated", Calendar.getInstance().getTime());
-		template.update(accountSql, accountDource);
+		MapSqlParameterSource accountSource = new MapSqlParameterSource("domainId",accountVO.getDomain());
+		accountSource.addValue("account", accountVO.getAccount());
+		accountSource.addValue("created", Calendar.getInstance().getTime());
+		accountSource.addValue("dataSource", EmailAccountVO.MANUAL);
+		accountSource.addValue("groupName", accountVO.getGroup());
+		accountSource.addValue("updated", Calendar.getInstance().getTime());
+		template.update(accountSql, accountSource);
 		boolean hasPrincipal = false;
 		if(accountVO.getAliases()!=null && accountVO.getAliases().size()>0){
 			for(EmailAccountAliasVO alias : accountVO.getAliases()){
