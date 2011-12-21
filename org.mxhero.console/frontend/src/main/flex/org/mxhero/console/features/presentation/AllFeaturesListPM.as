@@ -14,7 +14,6 @@ package org.mxhero.console.features.presentation
 	import org.mxhero.console.features.application.event.GetFeaturesEvent;
 	import org.mxhero.console.features.presentation.feature.FeatureViewPM;
 	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
-	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.application.message.LanguageChangedMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;

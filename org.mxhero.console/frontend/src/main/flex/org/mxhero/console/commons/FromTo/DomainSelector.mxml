@@ -21,6 +21,36 @@
 			
 			public var checkRestrictionFunction:Function;
 			
+			private var _changeAccountFunction:Function;
+			
+			private var _changeDomainFunction:Function;
+			
+			public function get changeAccountFunction():Function
+			{
+				return _changeAccountFunction
+			}
+			
+			public function set changeAccountFunction(value:Function):void
+			{
+				_changeAccountFunction = value;
+				if(individualFT!=null && individualFT.ipeComboBox != null){
+					this.individualFT.ipeComboBox.changeFunction = value;
+				}
+			}
+			
+			public function get changeDomainFunction():Function
+			{
+				return _changeDomainFunction
+			}
+			
+			public function set changeDomainFunction(value:Function):void
+			{
+				_changeDomainFunction = value;
+				if(domainFT!=null && domainFT.ipeComboBox != null){
+					this.domainFT.ipeComboBox.changeFunction = value;
+				}
+			}
+			
 			[Bindable]
 			public var direction:FeatureRuleDirection;
 
@@ -169,6 +199,9 @@
 				if(direction==null){
 					return;
 				}
+				this.domainFT.ipeComboBox.changeFunction = _changeDomainFunction;
+				this.individualFT.ipeComboBox.changeFunction = _changeAccountFunction;
+				
 				domainFT.currentState="inactive";
 				individualFT.currentState="inactive";
 				groupFT.currentState="inactive";

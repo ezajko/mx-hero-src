@@ -92,6 +92,7 @@
 											 enableItemSelectionCheck="true" 
 											 enableLabelClickChangeStatus="true"
 											 enableEnterKeyChangeStatus="true"
+											 changeFunction="{model.filterDomain}"
 											 validator="{requiredValidator}"
 											 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 											 width="100%"

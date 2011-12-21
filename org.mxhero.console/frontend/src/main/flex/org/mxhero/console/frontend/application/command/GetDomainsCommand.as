@@ -25,7 +25,7 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:GetDomainsEvent):AsyncToken
 		{
-			return service.findAll(null,-1,-1);
+			return service.findAll(event.domainFilter,0,20);
 		}
 		
 		public function error (fault:Fault) : void {

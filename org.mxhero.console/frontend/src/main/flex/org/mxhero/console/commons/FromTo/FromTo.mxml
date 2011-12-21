@@ -25,6 +25,9 @@
 			import org.mxhero.console.frontend.domain.ApplicationContext;
 			import org.mxhero.console.frontend.domain.FeatureRuleDirection;
 
+			public var changeAccountFunction:Function;		
+			public var changeDomainFunction:Function;
+			
 			[Bindable]
 			public var toDirection:FeatureRuleDirection;
 			
@@ -90,6 +93,7 @@
 					var domainSelector:DomainSelector;
 					
 					domainSelector = new DomainSelector();
+					domainSelector.changeAccountFunction=this.changeAccountFunction;
 					domainSelector.checkRestrictionFunction=checkRestricted;
 					domainSelector.direction=fromDirection;
 					if(feature!=null && feature.fixedFrom()){
@@ -108,6 +112,7 @@
 					upperConteiner.addElement(domainSelector);
 					
 					domainSelector = new DomainSelector();
+					domainSelector.changeAccountFunction=this.changeAccountFunction;
 					domainSelector.checkRestrictionFunction=checkRestricted;
 					domainSelector.direction=toDirection;
 					if(feature!=null && feature.fixedTo()){
@@ -129,6 +134,8 @@
 				} else {
 					currentState='admin';
 					var adminSelector:AdminSelector = new AdminSelector();
+					adminSelector.changeAccountFunction=this.changeAccountFunction;
+					adminSelector.changeDomainFunction=this.changeDomainFunction;
 					adminSelector.checkRestrictionFunction=checkRestricted;
 					adminSelector.direction=fromDirection;
 					if(feature!=null && feature.fixedFrom()){
@@ -148,6 +155,8 @@
 					
 					
 					adminSelector = new AdminSelector();
+					adminSelector.changeAccountFunction=this.changeAccountFunction;
+					adminSelector.changeDomainFunction=this.changeDomainFunction;
 					adminSelector.checkRestrictionFunction=checkRestricted;
 					adminSelector.direction=toDirection;
 					if(feature!=null && feature.fixedTo()){

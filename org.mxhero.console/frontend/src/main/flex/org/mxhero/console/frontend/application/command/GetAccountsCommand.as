@@ -25,7 +25,7 @@ package org.mxhero.console.frontend.application.command
 		
 		public function execute(event:GetAccountsEvent):AsyncToken
 		{
-			return service.findPageBySpecs(null,null,null,-1,-1);
+			return service.findPageBySpecs(event.domainId,event.filterAccount,null,0,20);
 		}
 		
 		public function error (fault:Fault) : void {

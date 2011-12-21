@@ -19,7 +19,6 @@
 			
 			import org.mxhero.console.commons.resources.ImageResources;
 			import org.mxhero.console.frontend.application.command.GetAccountsCommand;
-			import org.mxhero.console.frontend.application.command.GetDomainAccountsCommand;
 			import org.mxhero.console.frontend.application.command.GetDomainGroupsCommand;
 			import org.mxhero.console.frontend.application.command.GetDomainsCommand;
 			import org.mxhero.console.frontend.application.command.LoadInitialDataCommand;
@@ -43,7 +42,6 @@
 		<parsley:DynamicCommand type="{ LogoutCommand }"/>
 		<parsley:DynamicCommand type="{ RecoverPasswordCommand }"/>
 		<parsley:DynamicCommand type="{ LoadInitialDataCommand }" />
-		<parsley:DynamicCommand type="{ GetDomainAccountsCommand }"/>
 		<parsley:DynamicCommand type="{ GetAccountsCommand }"/>
 		<parsley:DynamicCommand type="{ GetDomainsCommand }"/>
 		<parsley:DynamicCommand type="{ GetDomainGroupsCommand }"/>
