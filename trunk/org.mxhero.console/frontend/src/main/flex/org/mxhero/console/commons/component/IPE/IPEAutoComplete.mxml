@@ -15,6 +15,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.collections.Sort;
 			import mx.collections.errors.SortError;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			import mx.events.StateChangeEvent;
 			import mx.utils.ObjectUtil;
@@ -39,6 +40,16 @@
 			public var enableLabelClickChangeStatus:Boolean=false;
 
 			public var enableEnterKeyChangeStatus:Boolean=false;
+			
+			private var changeTimer:Timer;
+			
+			public var changeTimeDelay:Number=500;
+			
+			public var changeFunction:Function;
+			
+			private var lastSearch:String = null;
+			
+			private var nextSearch:String = null;
 			
 			[Bindable]
 			public var selectedItem:Object;
@@ -152,26 +163,23 @@
 			
 			protected function comboBox_changeHandler(event:Event):void
 			{
-				var index:Number;
-				try{
-					index=_dataProvider.getItemIndex(comboBox.selectedItem);
-				}catch (error:SortError){
-					index=-1;
+				nextSearch=comboBox.text;
+				if(changeTimer == null || !changeTimer.running){
+					changeTimer = new Timer(changeTimeDelay)
+					changeTimer.addEventListener(TimerEvent.TIMER,timerHandler);
+					changeTimer.start();
 				}
-				if(index<0){
-					this.selectedItem=null;
-				} else {
-					this.selectedItem=comboBox.selectedItem;
-					comboBox.inputTxt.errorString="";
-				}
-				if(comboBox.selectedItem!=null){
-					if(showLabelFunction!=null){
-						this.selectedLabel=showLabelFunction(comboBox.selectedItem);
-					}else{
-						this.selectedLabel=privateLabelFunction(comboBox.selectedItem);
+			}
+			
+			private function timerHandler(e:TimerEvent=null):void{
+				changeTimer.stop();
+				if(nextSearch!=lastSearch){
+					lastSearch=nextSearch;
+					nextSearch=null;
+					if(changeFunction!=null){
+						changeFunction(lastSearch);
 					}
-				}	
-				this.switchState();
+				}
 			}
 			
 			protected function comboBox_valueCommitHandler(event:Event):void
@@ -314,6 +322,8 @@
 								 labelField="{this.labelField}"
 								 select="comboBox_valueCommitHandler(event)"
 								 enter="comboBox_valueCommitHandler(event)"
+								 change="comboBox_changeHandler(event)"
+								 prefixOnly="true"
 								 creationComplete="comboBox_creationCompleteHandler(event)"/>			
 	</s:Group>
 		

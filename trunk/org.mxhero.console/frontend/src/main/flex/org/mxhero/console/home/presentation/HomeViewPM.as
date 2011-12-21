@@ -119,6 +119,10 @@ package org.mxhero.console.home.presentation
 			completeTimer.reset();
 		}
 		
+		public function filterDomain(filterDomain:String):void{
+			dispatcher(new GetDomainsEvent(filterDomain));
+		}
+		
 		public function getCompleteData(event:*=null):void{		
 			if(context.selectedDomain!=null){
 				currentState=DOMAIN_STATE;

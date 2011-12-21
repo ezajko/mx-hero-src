@@ -3,7 +3,6 @@ package org.mxhero.console.reports.presentation.reports
 	import mx.collections.ArrayCollection;
 	
 	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
-	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.frontend.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.frontend.application.event.GetDomainsEvent;
 	import org.mxhero.console.frontend.application.event.LogoutEvent;
@@ -67,7 +66,7 @@ package org.mxhero.console.reports.presentation.reports
 				var newDomains:ArrayCollection = new ArrayCollection();
 				newDomains.addItem(context.selectedDomain);
 				context.domains=newDomains;
-				dispatcher(new GetDomainAccountsEvent(context.selectedDomain.domain));
+				dispatcher(new GetAccountsEvent(context.selectedDomain.domain));
 				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.domain));
 			}
 		}

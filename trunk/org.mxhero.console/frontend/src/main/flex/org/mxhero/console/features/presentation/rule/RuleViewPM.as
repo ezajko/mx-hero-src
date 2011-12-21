@@ -11,7 +11,6 @@ package org.mxhero.console.features.presentation.rule
 	import org.mxhero.console.features.application.event.EditRuleEvent;
 	import org.mxhero.console.features.presentation.AllFeaturesViewPM;
 	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
-	import org.mxhero.console.frontend.application.event.GetDomainAccountsEvent;
 	import org.mxhero.console.frontend.application.event.GetDomainGroupsEvent;
 	import org.mxhero.console.frontend.application.event.GetDomainsEvent;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
@@ -63,22 +62,29 @@ package org.mxhero.console.features.presentation.rule
 				RuleViewPM.realoadExternal();
 			}
 			if(context.selectedDomain==null){
-				if(context.accounts==null){
-					dispatcher(new GetAccountsEvent());
-				}
-				if(context.domains==null){
-					dispatcher(new GetDomainsEvent());
-				}
+				dispatcher(new GetDomainsEvent());
+				dispatcher(new GetAccountsEvent());
 			} else {
 				var newDomains:ArrayCollection = new ArrayCollection();
 				newDomains.addItem(context.selectedDomain);
 				context.domains=newDomains;
-				if(context.accounts==null){
-					dispatcher(new GetDomainAccountsEvent(context.selectedDomain.domain));
-				}
-				if(context.groups==null){
-					dispatcher(new GetDomainGroupsEvent(context.selectedDomain.domain));
-				}
+				dispatcher(new GetDomainGroupsEvent(context.selectedDomain.domain));
+				dispatcher(new GetAccountsEvent(context.selectedDomain.domain));
+			}
+			
+		}
+		
+		public function filterAccount(accountFilter:String):void{
+			if(context.selectedDomain==null){
+				dispatcher(new GetAccountsEvent(null,accountFilter));
+			}else{
+				dispatcher(new GetAccountsEvent(context.selectedDomain.domain,accountFilter));
+			}
+		}
+		
+		public function filterDomain(domainFilter:String):void{
+			if(context.selectedDomain==null){
+				dispatcher(new GetDomainsEvent(domainFilter));
 			}
 		}
 		

@@ -84,6 +84,14 @@
 				this.addEventListener(MouseEvent.MOUSE_WHEEL,handleWheel,true,50);
 			}
 			
+			public function changeAccountFunction(accountFilter:String):void{
+				model.filterAccount(accountFilter);
+			}
+			
+			public function changeDomainFunction(domainFilter:String):void{
+				model.filterDomain(domainFilter);
+			}
+			
 			protected function handleWheel(event:MouseEvent):void{
 				event.delta = event.delta > 0 ? 1 : -1;
 			}
@@ -149,6 +157,8 @@
 									   twoWays="@{model.rule.twoWays}"
 									   showAdminPriority="false"
 									   visible="{featureLoader.loaded}"
+									   changeAccountFunction="{this.changeAccountFunction}"
+									   changeDomainFunction="{this.changeDomainFunction}"
 									   creationComplete="fromTo_creationCompleteHandler(event)"/>
 						
 						<loader:FeatureLoader id="featureLoader" 
