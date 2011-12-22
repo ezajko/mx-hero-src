@@ -31,20 +31,20 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 	
 	public void saveRecord(final Collection<Record> records) {
-		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipeints`" +
-				",`bytes_size`,`cc_recipeints`,`from_recipeints`,`message_id`,`ng_recipeints`" +
+		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipients`" +
+				",`bytes_size`,`cc_recipients`,`from_recipients`,`message_id`,`ng_recipients`" +
 				",`phase`,`recipient`,`recipient_domain_id`,`recipient_id`,`sender`" +
-				",`sender_domain_id`,`sender_id`,`sent_date`,`state`,`state_reason`,`subject`,`to_recipeints`,`flow`) " +
-				" VALUES( :insert_date,:record_sequence,:bcc_recipeints,:bytes_size,:cc_recipeints,:from_recipeints" +
-				",:message_id,:ng_recipeints,:phase,:recipient,:recipient_domain_id,:recipient_id" +
-				",:sender,:sender_domain_id,:sender_id,:sent_date,:state,:state_reason,:subject,:to_recipeints,:flow)" +
-				" ON DUPLICATE KEY UPDATE `bcc_recipeints`=VALUES(bcc_recipeints),`bytes_size`=VALUES(bytes_size)" +
-				",`cc_recipeints`=VALUES(cc_recipeints),`from_recipeints`=VALUES(from_recipeints),`ng_recipeints`=VALUES(ng_recipeints)" +
+				",`sender_domain_id`,`sender_id`,`state`,`state_reason`,`subject`,`to_recipients`,`flow`) " +
+				" VALUES( :insert_date,:record_sequence,:bcc_recipients,:bytes_size,:cc_recipients,:from_recipients" +
+				",:message_id,:ng_recipients,:phase,:recipient,:recipient_domain_id,:recipient_id" +
+				",:sender,:sender_domain_id,:sender_id,:state,:state_reason,:subject,:to_recipients,:flow)" +
+				" ON DUPLICATE KEY UPDATE `bcc_recipients`=VALUES(bcc_recipients),`bytes_size`=VALUES(bytes_size)" +
+				",`cc_recipients`=VALUES(cc_recipients),`from_recipients`=VALUES(from_recipients),`ng_recipients`=VALUES(ng_recipients)" +
 				",`phase`=VALUES(phase),`recipient`=VALUES(recipient)" +
 				",`recipient_domain_id`=VALUES(recipient_domain_id),`recipient_id`=VALUES(recipient_id),`sender`=VALUES(sender)" +
-				",`sender_domain_id`=VALUES(sender_domain_id),`sender_id`=VALUES(sender_id),`sent_date`=VALUES(sent_date)" +
+				",`sender_domain_id`=VALUES(sender_domain_id),`sender_id`=VALUES(sender_id)" +
 				",`state`=VALUES(state),`state_reason`=VALUES(state_reason),`subject`=VALUES(subject)" +
-				",`to_recipeints`=VALUES(to_recipeints),`flow`=VALUES(flow);";
+				",`to_recipients`=VALUES(to_recipients),`flow`=VALUES(flow);";
 		if(records!=null && records.size()>0){
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
@@ -90,12 +90,12 @@ public class JdbcRecordRepository implements RecordRepository{
 			MapSqlParameterSource source = new MapSqlParameterSource();
 			source.addValue("insert_date", record.getInsertDate());
 			source.addValue("record_sequence", record.getSequence());
-			source.addValue("bcc_recipeints", record.getBccRecipients());
+			source.addValue("bcc_recipients", record.getBccRecipients());
 			source.addValue("bytes_size", record.getBytesSize());
-			source.addValue("cc_recipeints", record.getCcRecipients());
-			source.addValue("from_recipeints", record.getFrom());
+			source.addValue("cc_recipients", record.getCcRecipients());
+			source.addValue("from_recipients", record.getFrom());
 			source.addValue("message_id", record.getMessageId());
-			source.addValue("ng_recipeints", record.getNgRecipients());
+			source.addValue("ng_recipients", record.getNgRecipients());
 			source.addValue("phase", record.getPhase());
 			source.addValue("recipient", record.getRecipient());
 			source.addValue("recipient_domain_id", record.getRecipientDomainId());
@@ -103,11 +103,10 @@ public class JdbcRecordRepository implements RecordRepository{
 			source.addValue("sender", record.getSender());
 			source.addValue("sender_domain_id", record.getSenderDomainId());
 			source.addValue("sender_id", record.getSenderId());
-			source.addValue("sent_date", record.getSentDate());
 			source.addValue("state", record.getState());
 			source.addValue("state_reason", record.getStateReason());
 			source.addValue("subject", record.getSubject());
-			source.addValue("to_recipeints", record.getToRecipients());
+			source.addValue("to_recipients", record.getToRecipients());
 			source.addValue("flow", record.getFlow());
 			batchValues[i]=source;
 			++i;

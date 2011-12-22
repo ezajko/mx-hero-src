@@ -41,8 +41,6 @@ public class Record{
 
 	private String ngRecipients;
 
-	private Date sentDate;
-
 	private Integer bytesSize;
 
 	private String state;
@@ -177,14 +175,6 @@ public class Record{
 
 	public void setNgRecipients(String ngRecipients) {
 		this.ngRecipients = ngRecipients;
-	}
-
-	public Date getSentDate() {
-		return sentDate;
-	}
-
-	public void setSentDate(Date sentDate) {
-		this.sentDate = sentDate;
 	}
 
 	public Integer getBytesSize() {
