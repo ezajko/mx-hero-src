@@ -74,9 +74,9 @@ public class FileService extends HttpServlet {
 				resp.setContentLength(content.getLength());
 				resp.setContentType(content.getContentType(type));
 				if(!content.hasToBeOpen(type)){
+					resp.setHeader("Content-Type", "application/octet-stream");
 					resp.addHeader("Content-Disposition", "attachment; filename=\"" + content.getFileName() + "\"");
 				}else{
-					resp.setHeader("Content-Type", "application/octet-stream");
 					resp.addHeader("Content-Disposition", "filename=\"" + content.getFileName() + "\"");
 				}
 				resp.addHeader("Cache-Control", "no-cache");
