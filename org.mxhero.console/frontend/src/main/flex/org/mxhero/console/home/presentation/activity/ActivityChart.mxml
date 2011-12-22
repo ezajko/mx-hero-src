@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 title="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_PANEL_TITLE)}"  
+		 styleName="Home"
+		 skinClass="org.mxhero.console.commons.skin.BlueLinePanel">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			import org.mxhero.console.home.application.resources.HomeProperties;
+			
+			[Bindable]
+			public var incommingProvider:ArrayCollection;
+			[Bindable]
+			public var outgoingProvider:ArrayCollection;
+			[Bindable]
+			public var spamProvider:ArrayCollection;
+			[Bindable]
+			public var virusProvider:ArrayCollection;
+			[Bindable]
+			public var blockProvider:ArrayCollection;
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<mx:SeriesInterpolate id="interpolateIn" duration="1000"/>
+		<fx:Array id="bge">
+			<mx:GridLines 
+				horizontalChangeCount="1" 
+				verticalChangeCount="1"
+				gridDirection="both"
+				>
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+				</mx:verticalStroke>
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+			</mx:GridLines>
+		</fx:Array>
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="hour"/>    
+		<s:State name="hours24"/>
+	</s:states>
+	
+	<s:VGroup width="100%" height="100%">
+		<mx:LineChart id="activityC" width="100%" height="100%" 
+					  showDataTips="true"
+					  dataTipMode="multiple"
+					  backgroundElements="{bge}">
+			<mx:filters>
+				<s:DropShadowFilter
+					distance="4"
+					color="0x666666"
+					alpha=".8"/>
+			</mx:filters>
+			<mx:horizontalAxis>
+				<mx:DateTimeAxis id="dateAxis" 
+								 dataUnits="minutes"
+								 labelUnits="minutes"
+								 dataUnits.hours24="hours"
+								 labelUnits.hours24="hours"
+								 dataInterval="1"
+								 padding="1"
+								 autoAdjust="false"
+								 displayLocalTime="true"
+								 />
+			</mx:horizontalAxis>
+			<mx:verticalAxis>
+				<mx:LinearAxis id="qtyAxis" minimum="0" autoAdjust="false"/>
+			</mx:verticalAxis>
+			<mx:verticalAxisRenderers>
+				<mx:AxisRenderer axis="{qtyAxis}" 
+								 color="#FFFFFF" 
+								 fontSize="14"
+								 
+								 />	   
+			</mx:verticalAxisRenderers>
+			<mx:horizontalAxisRenderers>
+				<mx:AxisRenderer axis="{dateAxis}" 
+								 color="#FFFFFF" 
+								 fontSize="12"
+								 />
+			</mx:horizontalAxisRenderers>
+			
+			<mx:series>
+				<mx:AreaSeries xField="Date"
+							   yField="Qty"
+							   displayName="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_INCOMMING)}"
+							   form="curve"
+							   depth="0"
+							   dataProvider="{incommingProvider}"
+							   showDataEffect="{interpolateIn}">
+					<mx:areaStroke>
+						<s:SolidColorStroke color="0xc93dc4a" weight="2" />
+					</mx:areaStroke>
+					<mx:areaFill>
+						<mx:SolidColor color="0xc93dc4a" alpha="0.9"/>
+					</mx:areaFill>
+				</mx:AreaSeries>
+				<mx:AreaSeries xField="Date"
+							   yField="Qty"
+							   displayName="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_OUTGOING)}"
+							   form="curve"
+							   depth="1"
+							   dataProvider="{outgoingProvider}"
+							   showDataEffect="{interpolateIn}">
+					<mx:areaStroke>
+						<s:SolidColorStroke color="0x1b95d9" weight="2" />
+					</mx:areaStroke>
+					<mx:areaFill>
+						<mx:SolidColor color="0x1b95d9" alpha="0.8"/>
+					</mx:areaFill>
+				</mx:AreaSeries>
+				<mx:LineSeries xField="Date"
+							   yField="Qty"
+							   displayName="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_SPAM)}"
+							   dataProvider="{spamProvider}"
+							   showDataEffect="{interpolateIn}">
+					<mx:lineStroke>
+						<s:Stroke color="0xffd512" weight="2"/>
+					</mx:lineStroke>
+				</mx:LineSeries>
+				<mx:LineSeries xField="Date"
+							   yField="Qty"
+							   displayName="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_VIRUS)}"
+							   dataProvider="{virusProvider}"
+							   showDataEffect="{interpolateIn}">
+					<mx:lineStroke>
+						<s:Stroke color="red" weight="2" alpha="0.9"/>
+					</mx:lineStroke>
+				</mx:LineSeries>
+				<mx:LineSeries xField="Date"
+							   yField="Qty"
+							   displayName="{resourceManager.getString(HomeProperties.NAME,HomeProperties.CENTER_ACTIVITY_BLOCKED)}"
+							   dataProvider="{blockProvider}"
+							   showDataEffect="{interpolateIn}">
+					<mx:lineStroke>
+						<s:Stroke color="purple" weight="2" alpha="0.9"/>
+					</mx:lineStroke>
+				</mx:LineSeries>
+			</mx:series>
+		</mx:LineChart>
+		<mx:Legend horizontalAlign="center" dataProvider="{activityC}" width="100%" direction="horizontal"/>
+	</s:VGroup>
+</s:Panel>

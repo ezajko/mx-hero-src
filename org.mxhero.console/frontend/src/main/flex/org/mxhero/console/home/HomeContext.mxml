@@ -12,6 +12,7 @@
 		<![CDATA[
 			import mx.rpc.remoting.RemoteObject;
 			
+			import org.mxhero.console.home.application.command.GetActivityByHoursCommand;
 			import org.mxhero.console.home.application.command.GetActivityCommand;
 			import org.mxhero.console.home.application.command.GetMessagesCompositionCommand;
 			import org.mxhero.console.home.application.command.GetMxHeroDataCommand;
@@ -28,6 +29,7 @@
 		<parsley:DynamicCommand type="{GetMxHeroDataCommand}"/>
 		<parsley:DynamicCommand type="{GetMessagesCompositionCommand}"/>
 		<parsley:DynamicCommand type="{GetActivityCommand}"/>
+		<parsley:DynamicCommand type="{GetActivityByHoursCommand}"/>
 		
 		<presentation:HomeViewPM/>
 		
