@@ -111,6 +111,8 @@ public class CachedRecordRepository implements RecordRepository, Runnable{
 				this.records.addAll(oldRecords);
 				this.stats.addAll(oldStats);
 			}
+		}catch(Exception e){
+			log.error(e.toString());
 		}
 	}
 	
