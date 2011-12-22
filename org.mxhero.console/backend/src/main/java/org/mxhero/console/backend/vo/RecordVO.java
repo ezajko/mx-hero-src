@@ -26,8 +26,6 @@ public class RecordVO {
 
 	private String ngRecipients;
 
-	private Calendar sentDate;
-
 	private Integer bytesSize;
 
 	private String state;
@@ -122,14 +120,6 @@ public class RecordVO {
 
 	public void setNgRecipients(String ngRecipients) {
 		this.ngRecipients = ngRecipients;
-	}
-
-	public Calendar getSentDate() {
-		return sentDate;
-	}
-
-	public void setSentDate(Calendar sentDate) {
-		this.sentDate = sentDate;
 	}
 
 	public Integer getBytesSize() {
