@@ -128,4 +128,52 @@ public class JdbcHomeReportService implements HomeReportService{
 		return data;
 	}
 
+	@Override
+	public ActivityDataVO getActivityByHour(long since, String domainId){
+		ActivityDataVO data = new ActivityDataVO();
+		
+		String groupBy = " GROUP BY DATE(insert_date), HOUR(insert_date) ";
+		String anyDomain = " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
+		String senderDomain = " AND  r0.sender_domain_id = ? ";
+		String recipientDomain = " AND  r0.recipient_domain_id = ? ";
+		String incommingQuery = "SELECT count(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
+				+ "FROM  mail_records r0 "
+				+ "WHERE r0.insert_date > ? "
+				+ "AND (r0.flow = 'both' OR r0.flow = 'in') " ;
+		String outgoingQuery = "SELECT count(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
+				+ "FROM  mail_records r0 "
+				+ "WHERE insert_date > ? "
+				+ "AND (r0.flow = 'both' OR r0.flow = 'out') ";
+		String dayHitsSql = "SELECT COUNT(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
+				+" FROM mail_records r0 " 
+				+" WHERE r0.insert_date > ? "
+				+" AND EXISTS( SELECT 1 FROM mail_stats s "
+										+" WHERE s.insert_date = r0.insert_date " 
+										+" AND s.record_sequence = r0.record_sequence " 
+										+" AND s.stat_key = ? " 
+										+" AND s.stat_value = 'true') ";
+		String dayHitsNoValueSql = "SELECT COUNT(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
+				+" FROM mail_records r0 " 
+				+" WHERE r0.insert_date > ? "
+				+" AND EXISTS( SELECT 1 FROM mail_stats s "
+										+" WHERE s.insert_date = r0.insert_date " 
+										+" AND s.record_sequence = r0.record_sequence " 
+										+" AND s.stat_key = ? ) ";		
+		if(domainId==null){
+			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(incommingQuery.concat(groupBy),new Object[]{new Timestamp(since)}));
+			data.setOutgoing(statisticsTemplate.getJdbcOperations().queryForList(outgoingQuery.concat(groupBy),new Object[]{new Timestamp(since)}));
+			data.setVirus(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(groupBy),new Object[]{new Timestamp(since),"virus.detected"}));
+			data.setSpam(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(groupBy),new Object[]{new Timestamp(since),"spam.detected"}));
+			data.setBlocked(statisticsTemplate.getJdbcOperations().queryForList(dayHitsNoValueSql.concat(groupBy),new Object[]{new Timestamp(since),"email.blocked"}));
+		}else{
+			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(incommingQuery.concat(recipientDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
+			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(outgoingQuery.concat(senderDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
+			data.setVirus(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"virus.detected",domainId}));
+			data.setSpam(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"spam.detected",domainId}));
+			data.setBlocked(statisticsTemplate.getJdbcOperations().queryForList(dayHitsNoValueSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"email.blocked",domainId}));
+		}
+		
+		return data;
+	}
+	
 }
