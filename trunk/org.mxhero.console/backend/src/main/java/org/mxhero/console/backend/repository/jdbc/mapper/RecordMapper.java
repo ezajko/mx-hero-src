@@ -14,25 +14,23 @@ public class RecordMapper implements RowMapper<RecordVO>{
 	
 	public static final String INSERT_DATE="insert_date";
 	public static final String RECORD_SEQUENCE="record_sequence";
-	public static final String BCC_RECIPIENTS="bcc_recipeints";
+	public static final String BCC_RECIPIENTS="bcc_recipients";
 	public static final String BYTES_SIZE="bytes_size";
-	public static final String CC_RECIPIENTS="cc_recipeints";
-	public static final String FROM_RECIPIENTS="from_recipeints";
+	public static final String CC_RECIPIENTS="cc_recipients";
+	public static final String FROM_RECIPIENTS="from_recipients";
 	public static final String MESSAGE_ID="message_id";
-	public static final String NG_RECIPIENTS="ng_recipeints";
+	public static final String NG_RECIPIENTS="ng_recipients";
 	public static final String PHASE="phase";
-	public static final String RECEIVED_DATE="received_date";
 	public static final String RECIPIENT="recipient";
 	public static final String RECIPIENT_DOMAIN_ID="recipient_domain_id";
 	public static final String RECIPIENT_ID="recipient_id";
 	public static final String SENDER="sender";
 	public static final String SENDER_DOMAIN_ID="sender_domain_id";
 	public static final String SENDER_ID="sender_id";
-	public static final String SENT_DATE="sent_date";
 	public static final String STATE="state";
 	public static final String STATE_REASON="state_reason";
 	public static final String SUBJECT="subject";
-	public static final String TO_RECIPIENTS="to_recipeints";
+	public static final String TO_RECIPIENTS="to_recipients";
 	public static final String FLOW="flow";
 	
 	@Override
@@ -54,11 +52,6 @@ public class RecordMapper implements RowMapper<RecordVO>{
 		record.setPhase(rs.getString(PHASE));
 		record.setRecipient(rs.getString(RECIPIENT));
 		record.setSender(rs.getString(SENDER));
-		if(rs.getTimestamp(SENT_DATE)!=null){
-			Calendar sentDate = Calendar.getInstance();
-			sentDate.setTimeInMillis(rs.getTimestamp(SENT_DATE).getTime());
-			record.setSentDate(sentDate);
-		}
 		record.setState(rs.getString(STATE));
 		record.setStateReason(rs.getString(STATE_REASON));
 		record.setSubject(rs.getString(SUBJECT));
