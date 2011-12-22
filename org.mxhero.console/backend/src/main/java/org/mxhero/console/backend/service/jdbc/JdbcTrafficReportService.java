@@ -138,7 +138,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 		params.addValue("date_to", until);
 		
 		if (domain != null && !domain.isEmpty()) {
-			query = query.replace("$REPLACE_DOMAIN$","AND recipient_domain_id = :domain ");
+			query = query.replace("$REPLACE_DOMAIN$","AND sender_domain_id = :domain ");
 			params.addValue("domain", domain);
 		}else{
 			query = query.replace("$REPLACE_DOMAIN$","");

@@ -16,4 +16,7 @@ public interface HomeReportService {
 
 	@Secured("ROLE_DOMAIN_ADMIN")
 	ActivityDataVO getActivity(long since, String domainId);
+	
+	@Secured("ROLE_DOMAIN_ADMIN")
+	ActivityDataVO getActivityByHour(long since, String domainId);
 }
