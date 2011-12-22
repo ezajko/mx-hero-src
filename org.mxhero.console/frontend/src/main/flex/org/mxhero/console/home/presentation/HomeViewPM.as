@@ -128,15 +128,15 @@ package org.mxhero.console.home.presentation
 		}
 		
 		public function periodChanged(period:String):void{
+			this.spamActivity=null;
+			this.virusActivity=null;
+			this.incommingActivity=null;
+			this.outgoingActivity=null;
+			this.blockActivity=null;
+			this.totals=null;
 			if(period==PERIOD_24HOURS){
 				timer.stop();
 				timer.reset();
-				this.spamActivity=null;
-				this.virusActivity=null;
-				this.incommingActivity=null;
-				this.outgoingActivity=null;
-				this.blockActivity=null;
-				this.totals=null;
 				this.hourSince=new Date();
 				this.hourSince.time = this.hourSince.time - 24*60*60*1000;
 				this.hourSince.time = this.hourSince.setMinutes(0,0,0);
