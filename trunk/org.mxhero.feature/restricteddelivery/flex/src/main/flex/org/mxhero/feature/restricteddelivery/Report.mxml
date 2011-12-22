@@ -107,7 +107,7 @@
 			[Bindable]
 			private var _emails:ArrayCollection;
 			
-			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, r0.from_recipeints as `label`" 
+			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, r0.from_recipients as `label`" 
 				+" FROM mail_records r0 " 
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
@@ -115,8 +115,8 @@
 				+" AND s.record_sequence = r0.record_sequence " 
 				+" AND s.stat_key = 'org.mxhero.feature.restricteddelivery.sender' ) ";
 			
-			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipeints, r0.sender, r0.recipient, " 
-				+" r0.to_recipeints, r0.cc_recipeints, r0.bcc_recipeints, " 
+			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
+				+" r0.to_recipients, r0.cc_recipients, r0.bcc_recipients, " 
 				+" r0.subject, r0.phase, r0.bytes_size, r0.state, " 
 				+" r0.state_reason, r0.insert_date " 
 				+" FROM mail_records r0 " 
@@ -136,9 +136,9 @@
 				}else if(queryId==EMAIL_QUERY){
 					var emailArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
-						emailArray.addItem({messageId:row.message_id,from:row.from_recipeints,sender:row.sender
-							,recipient:row.recipient,toRecipients:row.to_recipeints
-							,ccRecipients:row.cc_recipeints,bccRecipients:row.bcc_recipeints
+						emailArray.addItem({messageId:row.message_id,from:row.from_recipients,sender:row.sender
+							,recipient:row.recipient,toRecipients:row.to_recipients
+							,ccRecipients:row.cc_recipients,bccRecipients:row.bcc_recipients
 							,subject:row.subject,phase:row.phase,bytesSize:row.bytes_size
 							,state:row.state,stateReason:row.state_reason,insertDate:row.insert_date});
 					}
@@ -200,7 +200,7 @@
 					params.push(domain,domain);
 					dataQuery = dataQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				dataQuery = dataQuery + " group by r0.from_recipeints ORDER BY 1 DESC limit 10";
+				dataQuery = dataQuery + " group by r0.from_recipients ORDER BY 1 DESC limit 10";
 				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
 				
 			}

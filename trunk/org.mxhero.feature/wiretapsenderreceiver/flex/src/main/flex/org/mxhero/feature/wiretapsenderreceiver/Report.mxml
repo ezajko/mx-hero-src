@@ -108,7 +108,7 @@
 			[Bindable]
 			private var _recipients:ArrayCollection;
 			
-			private var _sendersQuery:String =	"SELECT COUNT(*) as `count`, r0.from_recipeints as `label`" 
+			private var _sendersQuery:String =	"SELECT COUNT(*) as `count`, r0.from_recipients as `label`" 
 				+" FROM mail_records r0 " 
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
@@ -179,7 +179,7 @@
 					params.push(domain,domain);
 					sendersQuery = sendersQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				sendersQuery = sendersQuery + " group by r0.from_recipeints ORDER BY 1 DESC limit 10 ";
+				sendersQuery = sendersQuery + " group by r0.from_recipients ORDER BY 1 DESC limit 10 ";
 				_reportService.processQuery(SENDER_QUERY,sendersQuery,params,this);
 				
 			}
