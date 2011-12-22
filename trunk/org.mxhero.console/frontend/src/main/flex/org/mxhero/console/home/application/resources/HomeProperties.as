@@ -24,6 +24,8 @@ package org.mxhero.console.home.application.resources
 		public static const CENTER_ACTIVITY_BLOCKED:String ="center.activity.blocked";
 		public static const CENTER_TIPS_PANEL_TITLE:String ="center.tips.panel.title";
 		public static const CENTER_NEWS_CONTINUE_READING:String ="center.news.continue.reading";
+		public static const HOUR_PERIOD:String = "hour.period";
+		public static const HOURS24_PERIOD:String = "hours24.period";
 		
 		public static const RIGTH_ACTIVITY_TITLE:String ="rigth.activity.title";
 		public static const RIGTH_MESSAGES_TITLE:String ="rigth.messages.title";
@@ -36,5 +38,6 @@ package org.mxhero.console.home.application.resources
 		public static const RIGTH_ACTIVITY_SPAM:String ="rigth.activity.spam";
 		public static const RIGTH_ACTIVITY_BLOCKED:String ="rigth.activity.blocked";
 		public static const RIGTH_ACTIVITY_VIRUS:String ="rigth.activity.virus";
+		
 	}
 }

@@ -18,6 +18,7 @@ package org.mxhero.console.home.presentation
 	import org.mxhero.console.frontend.domain.Domain;
 	import org.mxhero.console.frontend.domain.MessagesComposition;
 	import org.mxhero.console.frontend.domain.MxHeroData;
+	import org.mxhero.console.home.application.event.GetActivityByHoursEvent;
 	import org.mxhero.console.home.application.event.GetActivityEvent;
 	import org.mxhero.console.home.application.event.GetMessagesCompositionEvent;
 	import org.mxhero.console.home.application.event.GetMxHeroDataEvent;
@@ -34,6 +35,8 @@ package org.mxhero.console.home.presentation
 		private static const DOMAIN_STATE:String = "domain";
 		private static const ADMIN_STATE:String = "admin";
 		private static const FILTER_STATE:String = "filter";
+		public static const PERIOD_24HOURS:String = "hours24";
+		public static const PERIOD_HOUR:String = "hour";
 		
 		[Bindable]
 		public var rs:IResourceManager = ResourceManager.getInstance();
@@ -55,8 +58,6 @@ package org.mxhero.console.home.presentation
 		[Bindable]
 		public var hourSince:Date;
 		[Bindable]
-		public var hourUntil:Date;
-		[Bindable]
 		public var virusActivity:ArrayCollection=null;
 		[Bindable]
 		public var spamActivity:ArrayCollection=null;
@@ -74,6 +75,8 @@ package org.mxhero.console.home.presentation
 		public var centralState:String = 'default';
 		
 		private var hasToRefresh:Boolean = false;
+		[Bindable]
+		public var periodIndex:Number=1;
 		
 		public function HomeViewPM(){
 			timer.addEventListener(TimerEvent.TIMER,refreshActivity);
@@ -83,6 +86,7 @@ package org.mxhero.console.home.presentation
 		[Enter(time="every")]
 		public function enter():void
 		{
+			periodIndex=1;
 			hasToRefresh=true;
 			if(context.selectedDomain!=null){
 				currentState=DOMAIN_STATE;
@@ -123,6 +127,26 @@ package org.mxhero.console.home.presentation
 			dispatcher(new GetDomainsEvent(filterDomain));
 		}
 		
+		public function periodChanged(period:String):void{
+			if(period==PERIOD_24HOURS){
+				timer.stop();
+				timer.reset();
+				this.spamActivity=null;
+				this.virusActivity=null;
+				this.incommingActivity=null;
+				this.outgoingActivity=null;
+				this.blockActivity=null;
+				this.totals=null;
+				this.hourSince=new Date();
+				this.hourSince.time = this.hourSince.time - 24*60*60*1000;
+				this.hourSince.time = this.hourSince.setMinutes(0,0,0);
+				dispatcher(new GetActivityByHoursEvent(hourSince,domainFilter));
+				//24HOURSPERIOD
+			}else if(period==PERIOD_HOUR){
+				refreshActivity();
+			}
+		}
+		
 		public function getCompleteData(event:*=null):void{		
 			if(context.selectedDomain!=null){
 				currentState=DOMAIN_STATE;
@@ -161,9 +185,6 @@ package org.mxhero.console.home.presentation
 			this.hourSince=new Date();
 			this.hourSince.time = this.hourSince.time - 1*60*60*1000;
 			this.hourSince.time = this.hourSince.setSeconds(0,0);
-			this.hourUntil=new Date();
-			this.hourUntil.time = this.hourUntil.time;
-			this.hourUntil.time = this.hourUntil.setSeconds(0,0);
 			dispatcher(new GetActivityEvent(hourSince,domainFilter));
 		}
 		
@@ -174,6 +195,17 @@ package org.mxhero.console.home.presentation
 			this.incommingActivity=translateActivity((result as ActivityData).incomming);
 			this.outgoingActivity=translateActivity((result as ActivityData).outgoing);
 			this.blockActivity=translateActivity((result as ActivityData).blocked);
+			this.totals=getTotals();
+			startTimer();
+		}
+		
+		[CommandResult]
+		public function getActivityByHoursResult(result:*,event:GetActivityByHoursEvent):void{
+			this.spamActivity=translateActivityByHours((result as ActivityData).spam);
+			this.virusActivity=translateActivityByHours((result as ActivityData).virus);
+			this.incommingActivity=translateActivityByHours((result as ActivityData).incomming);
+			this.outgoingActivity=translateActivityByHours((result as ActivityData).outgoing);
+			this.blockActivity=translateActivityByHours((result as ActivityData).blocked);
 			this.totals=getTotals();
 			startTimer();
 		}
@@ -266,6 +298,27 @@ package org.mxhero.console.home.presentation
 				var date:Date = DateField.stringToDate(dateString,"YYYY-MM-DD");
 				date.time=Date.UTC(date.fullYear,date.month,date.date,new Number(hourString.split(":")[0]),new Number(hourString.split(":")[1]));
 				var index:int = (date.time-hourSince.time)/(60*1000);
+				if(index<activityArray.length){
+					activityArray.setItemAt({Qty:item.count,Date:date},index);
+				}else{
+					activityArray.addItem({Qty:item.count,Date:date});
+				}
+			}
+			return activityArray;
+		}
+		
+		private function translateActivityByHours(data:ArrayCollection):ArrayCollection{
+			var activityArray:ArrayCollection = new ArrayCollection();
+			for (var i:int=0;i<25;i++){
+				var newDate:Date= new Date();
+				newDate.time=hourSince.time;
+				newDate.time=newDate.time+i*60*60*1000;
+				activityArray.addItem({Qty:0,Date:newDate});
+			}
+			for each(var item:Object in data){
+				var date:Date = item.date as Date;
+				date.time=Date.UTC(date.fullYear,date.month,date.date,item.hours);
+				var index:int = (date.time-hourSince.time)/(60*60*1000);
 				if(index<activityArray.length){
 					activityArray.setItemAt({Qty:item.count,Date:date},index);
 				}else{
