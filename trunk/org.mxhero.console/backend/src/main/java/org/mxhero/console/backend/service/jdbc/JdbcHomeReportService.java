@@ -132,7 +132,7 @@ public class JdbcHomeReportService implements HomeReportService{
 	public ActivityDataVO getActivityByHour(long since, String domainId){
 		ActivityDataVO data = new ActivityDataVO();
 		
-		String groupBy = " GROUP BY DATE(insert_date), HOUR(insert_date) ";
+		String groupBy = " GROUP BY DATE(r0.insert_date), HOUR(r0.insert_date) ";
 		String anyDomain = " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		String senderDomain = " AND  r0.sender_domain_id = ? ";
 		String recipientDomain = " AND  r0.recipient_domain_id = ? ";
@@ -168,9 +168,9 @@ public class JdbcHomeReportService implements HomeReportService{
 		}else{
 			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(incommingQuery.concat(recipientDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
 			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(outgoingQuery.concat(senderDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
-			data.setVirus(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"virus.detected",domainId}));
-			data.setSpam(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"spam.detected",domainId}));
-			data.setBlocked(statisticsTemplate.getJdbcOperations().queryForList(dayHitsNoValueSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"email.blocked",domainId}));
+			data.setVirus(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"virus.detected",domainId,domainId}));
+			data.setSpam(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"spam.detected",domainId,domainId}));
+			data.setBlocked(statisticsTemplate.getJdbcOperations().queryForList(dayHitsNoValueSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"email.blocked",domainId,domainId}));
 		}
 		
 		return data;
