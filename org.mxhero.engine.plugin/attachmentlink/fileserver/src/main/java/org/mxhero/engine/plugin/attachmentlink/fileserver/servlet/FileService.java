@@ -20,7 +20,6 @@ import org.mxhero.engine.plugin.attachmentlink.fileserver.domain.ContentDTO;
 import org.mxhero.engine.plugin.attachmentlink.fileserver.exceptions.NotAllowedToSeeContentException;
 import org.mxhero.engine.plugin.attachmentlink.fileserver.service.ContentService;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -77,6 +76,7 @@ public class FileService extends HttpServlet {
 				if(!content.hasToBeOpen(type)){
 					resp.addHeader("Content-Disposition", "attachment; filename=\"" + content.getFileName() + "\"");
 				}else{
+					resp.setHeader("Content-Type", "application/octet-stream");
 					resp.addHeader("Content-Disposition", "filename=\"" + content.getFileName() + "\"");
 				}
 				resp.addHeader("Cache-Control", "no-cache");
