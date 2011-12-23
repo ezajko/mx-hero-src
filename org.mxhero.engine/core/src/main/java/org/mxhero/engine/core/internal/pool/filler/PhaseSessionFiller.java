@@ -158,6 +158,9 @@ public class PhaseSessionFiller implements SessionFiller {
 				mail.setFlow(MailFlow.NONE);
 			}
 			
+			mail.setSenderGroup(sender.getGroup());
+			mail.setRecipientGroup(recipient.getGroup());
+			
 			initialData = new InitialDataVO(mail, sender, recipient, from);
 		}
 		
