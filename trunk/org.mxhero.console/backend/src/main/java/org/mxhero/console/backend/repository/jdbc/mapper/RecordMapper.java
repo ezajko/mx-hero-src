@@ -32,6 +32,8 @@ public class RecordMapper implements RowMapper<RecordVO>{
 	public static final String SUBJECT="subject";
 	public static final String TO_RECIPIENTS="to_recipients";
 	public static final String FLOW="flow";
+	public static final String SENDER_GROUP="sender_group";
+	public static final String RECIPIENT_GROUP="recipient_group";
 	
 	@Override
 	public RecordVO mapRow(ResultSet rs, int rowNum) throws SQLException {

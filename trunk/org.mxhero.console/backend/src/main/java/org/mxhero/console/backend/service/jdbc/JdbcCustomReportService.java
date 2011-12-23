@@ -76,23 +76,6 @@ public class JdbcCustomReportService implements CustomReportService{
 
 		String query = " FROM `"+RecordMapper.DATABASE+"`.`"+RecordMapper.TABLE_NAME+"`" +
 				" WHERE `"+RecordMapper.INSERT_DATE+"` BETWEEN ? AND ?";
-		
-		Collection<EmailAccountVO> groupFrom = (from.getDirectionType().equals(GROUP))?accountRepository.findMembersByGroupId(from.getDomain(), from.getGroup(),-1,-1).getPageData():null;
-		Collection<EmailAccountVO> groupTo = (to.getDirectionType().equals(GROUP))?accountRepository.findMembersByGroupId(to.getDomain(), to.getGroup(),-1,-1).getPageData():null;
-
-		final Collection<String> groupFromEmails = new ArrayList<String>();
-		final Collection<String> groupToEmails = new ArrayList<String>();
-		
-		if(groupFrom!=null && groupFrom.size()>0){
-			for(EmailAccountVO email : groupFrom){
-				groupFromEmails.add("'"+email.getAccount()+"@"+email.getDomain()+"'");
-			}
-		}
-		if(groupTo!=null && groupTo.size()>0){
-			for(EmailAccountVO email : groupTo){
-				groupToEmails.add("'"+email.getAccount()+"@"+email.getDomain()+"'");
-			}
-		}
 			
 		//from condition
 		if(from.getDirectionType().equals(ANYONEELSE)){
@@ -102,12 +85,7 @@ public class JdbcCustomReportService implements CustomReportService{
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			query = query + " AND `"+RecordMapper.SENDER_DOMAIN_ID+"` = '"+from.getFreeValue()+"'";
 		}else if(from.getDirectionType().equals(GROUP)){
-			if(groupFromEmails.size()>0){
-				query = query + " AND `"+RecordMapper.SENDER_ID+"` IN("+groupFromEmails.toString().substring(1,groupFromEmails.toString().length()-1)+")";
-			}else{
-				//if got here, query should had an empty value, is asking for people in a group that is empty
-				query = query + " AND true = false";
-			}
+			query = query + " AND `"+RecordMapper.SENDER_DOMAIN_ID+"` = '"+from.getDomain()+"' AND `"+RecordMapper.SENDER_GROUP+"` = '"+from.getGroup()+"' ";
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			query = query + " AND (`"+RecordMapper.SENDER_ID+"` = '"+from.getFreeValue()+"' OR `"+RecordMapper.FROM_RECIPIENTS+"` = '"+from.getFreeValue()+"')";
 		}
@@ -120,12 +98,7 @@ public class JdbcCustomReportService implements CustomReportService{
 		} else if(to.getDirectionType().equals(DOMAIN)){
 			query = query + " AND `"+RecordMapper.RECIPIENT_DOMAIN_ID+"` = '"+to.getFreeValue()+"'";
 		}else if(to.getDirectionType().equals(GROUP)){
-			if(groupToEmails.size()>0){
-				query = query + " AND `"+RecordMapper.RECIPIENT_ID+"` IN("+groupToEmails.toString().substring(1,groupToEmails.toString().length()-1)+")";
-			}else{
-				//if got here, query should had an empty value, is asking for people in a group that is empty
-				query = query + " AND true = false";
-			}
+			query = query + " AND `"+RecordMapper.RECIPIENT_DOMAIN_ID+"` = '"+to.getDomain()+"' AND `"+RecordMapper.RECIPIENT_GROUP+"` = '"+to.getGroup()+"' ";
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			query = query + " AND `"+RecordMapper.RECIPIENT_ID+"` = '"+to.getFreeValue()+"'";
 		}
