@@ -1,7 +1,6 @@
 package org.mxhero.engine.plugin.statistics.internal.entity;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * Represents an email. One email may have to record in a database, one for each phase.
@@ -48,6 +47,10 @@ public class Record{
 	private String stateReason;
 
 	private String flow;
+	
+	private String senderGroup;
+	
+	private String recipientGroup;
 
 	public Timestamp getInsertDate() {
 		return insertDate;
@@ -207,6 +210,22 @@ public class Record{
 
 	public void setFlow(String flow) {
 		this.flow = flow;
+	}
+
+	public String getSenderGroup() {
+		return senderGroup;
+	}
+
+	public void setSenderGroup(String senderGroup) {
+		this.senderGroup = senderGroup;
+	}
+
+	public String getRecipientGroup() {
+		return recipientGroup;
+	}
+
+	public void setRecipientGroup(String recipientGroup) {
+		this.recipientGroup = recipientGroup;
 	}
 
 	@Override
