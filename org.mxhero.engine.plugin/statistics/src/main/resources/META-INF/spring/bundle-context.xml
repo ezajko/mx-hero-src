@@ -23,6 +23,7 @@
 		<prop key="jdbcUserName">mxhero</prop>
 		<prop key="jdbcPassord">mxhero</prop>
 		<prop key="updateTime">5000</prop>
+		<prop key="serverName">MXHERO</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
@@ -61,14 +62,23 @@
 
 	<bean id="logStatCommand" class="org.mxhero.engine.plugin.statistics.internal.command.LogStatCommand">
 		<property name="repository" ref="cachedRecordRepository"/>
+		<property name="utils" ref="utils"/>
 	</bean>
 
 	<bean id="logRecordService" class="org.mxhero.engine.plugin.statistics.internal.service.LogRecordService">
 		<property name="repository" ref="cachedRecordRepository"/>
+		<property name="utils" ref="utils"/>
 	</bean>
 	
 	<bean id="logStatService" class="org.mxhero.engine.plugin.statistics.internal.service.LogStatService">
 		<property name="repository" ref="cachedRecordRepository"/>
+		<property name="utils" ref="utils"/>
+	</bean>
+
+	<bean id="utils" class="org.mxhero.engine.plugin.statistics.internal.entity">
+		<osgix:managed-properties persistent-id="org.mxhero.engine.plugin.statistics"
+				autowire-on-update="true" />	
+		<property name="serverName" value="${serverName}"/>
 	</bean>
 
 	<bean id="cachedRecordRepository" class="org.mxhero.engine.plugin.statistics.internal.repository.CachedRecordRepository"
