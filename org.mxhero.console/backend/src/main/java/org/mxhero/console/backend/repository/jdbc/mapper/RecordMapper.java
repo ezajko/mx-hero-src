@@ -14,6 +14,7 @@ public class RecordMapper implements RowMapper<RecordVO>{
 	
 	public static final String INSERT_DATE="insert_date";
 	public static final String RECORD_SEQUENCE="record_sequence";
+	public static final String SERVER_NAME="server_name";
 	public static final String BCC_RECIPIENTS="bcc_recipients";
 	public static final String BYTES_SIZE="bytes_size";
 	public static final String CC_RECIPIENTS="cc_recipients";
