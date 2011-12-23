@@ -34,17 +34,17 @@ public class JdbcRecordRepository implements RecordRepository{
 		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipients`" +
 				",`bytes_size`,`cc_recipients`,`from_recipients`,`message_id`,`ng_recipients`" +
 				",`phase`,`recipient`,`recipient_domain_id`,`recipient_id`,`sender`" +
-				",`sender_domain_id`,`sender_id`,`state`,`state_reason`,`subject`,`to_recipients`,`flow`) " +
+				",`sender_domain_id`,`sender_id`,`state`,`state_reason`,`subject`,`to_recipients`,`flow`,`sender_group`,`recipient_group`) " +
 				" VALUES( :insert_date,:record_sequence,:bcc_recipients,:bytes_size,:cc_recipients,:from_recipients" +
 				",:message_id,:ng_recipients,:phase,:recipient,:recipient_domain_id,:recipient_id" +
-				",:sender,:sender_domain_id,:sender_id,:state,:state_reason,:subject,:to_recipients,:flow)" +
+				",:sender,:sender_domain_id,:sender_id,:state,:state_reason,:subject,:to_recipients,:flow,:sender_group,:recipient_group)" +
 				" ON DUPLICATE KEY UPDATE `bcc_recipients`=VALUES(bcc_recipients),`bytes_size`=VALUES(bytes_size)" +
 				",`cc_recipients`=VALUES(cc_recipients),`from_recipients`=VALUES(from_recipients),`ng_recipients`=VALUES(ng_recipients)" +
 				",`phase`=VALUES(phase),`recipient`=VALUES(recipient)" +
 				",`recipient_domain_id`=VALUES(recipient_domain_id),`recipient_id`=VALUES(recipient_id),`sender`=VALUES(sender)" +
 				",`sender_domain_id`=VALUES(sender_domain_id),`sender_id`=VALUES(sender_id)" +
 				",`state`=VALUES(state),`state_reason`=VALUES(state_reason),`subject`=VALUES(subject)" +
-				",`to_recipients`=VALUES(to_recipients),`flow`=VALUES(flow);";
+				",`to_recipients`=VALUES(to_recipients),`flow`=VALUES(flow),`sender_group`=VALUES(sender_group),`recipient_group`=VALUES(recipient_group);";
 		if(records!=null && records.size()>0){
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
@@ -108,6 +108,8 @@ public class JdbcRecordRepository implements RecordRepository{
 			source.addValue("subject", record.getSubject());
 			source.addValue("to_recipients", record.getToRecipients());
 			source.addValue("flow", record.getFlow());
+			source.addValue("sender_group", record.getSenderGroup());
+			source.addValue("recipient_group", record.getRecipientGroup());
 			batchValues[i]=source;
 			++i;
 		}

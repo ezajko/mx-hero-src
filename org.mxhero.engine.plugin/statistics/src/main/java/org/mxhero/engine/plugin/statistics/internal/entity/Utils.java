@@ -102,6 +102,8 @@ public final class Utils {
 			record.setSubject(null);
 		}
 		record.setBytesSize(mail.getInitialSize());
+		record.setSenderGroup(mail.getSenderGroup());
+		record.setRecipientGroup(mail.getRecipientGroup());
 		return record;
 	}
 	
