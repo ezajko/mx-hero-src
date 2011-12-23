@@ -42,6 +42,7 @@ public class TestJdbcRecordRepository {
 		record.setSenderDomainId("SS");
 		record.setSenderId("S");
 		record.setSequence(1l);
+		record.setServerName("MXHERO");
 		repository.saveRecord(record);
 		record.setSubject("UPDATED00");
 		repository.saveRecord(record);
@@ -52,6 +53,7 @@ public class TestJdbcRecordRepository {
 		stat.setPhase(record.getPhase());
 		stat.setSequence(record.getSequence());
 		stat.setValue("VL");
+		stat.setServerName("MXHERO");
 		repository.saveStat(stat);
 		stat.setValue("VL UPDATED");
 		repository.saveStat(stat);
