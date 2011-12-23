@@ -39,6 +39,10 @@ public final class MimeMail {
 	private String recipientId;
 	
 	private String recipientDomainId;
+	
+	private String senderGroup;
+	
+	private String recipientGroup;
 
 	private String responseServiceId;
 
@@ -293,6 +297,22 @@ public final class MimeMail {
 	 */
 	public void setRecipientDomainId(String recipientDomainId) {
 		this.recipientDomainId = recipientDomainId;
+	}
+	
+	public String getSenderGroup() {
+		return senderGroup;
+	}
+
+	public void setSenderGroup(String senderGroup) {
+		this.senderGroup = senderGroup;
+	}
+
+	public String getRecipientGroup() {
+		return recipientGroup;
+	}
+
+	public void setRecipientGroup(String recipientGroup) {
+		this.recipientGroup = recipientGroup;
 	}
 
 	public Map<String, String> getProperties() {
