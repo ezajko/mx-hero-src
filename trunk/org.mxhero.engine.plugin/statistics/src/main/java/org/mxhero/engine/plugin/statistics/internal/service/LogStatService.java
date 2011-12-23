@@ -9,9 +9,11 @@ public class LogStatService implements LogStat{
 
 	private RecordRepository repository;
 	
+	private Utils utils;
+	
 	@Override
 	public void log(MimeMail mail, String key, String value) {
-		repository.saveStat(Utils.createStat(mail, key, value));
+		repository.saveStat(utils.createStat(mail, key, value));
 	}
 
 	public RecordRepository getRepository() {
@@ -21,5 +23,13 @@ public class LogStatService implements LogStat{
 	public void setRepository(RecordRepository repository) {
 		this.repository = repository;
 	}
-	
+
+	public Utils getUtils() {
+		return utils;
+	}
+
+	public void setUtils(Utils utils) {
+		this.utils = utils;
+	}
+
 }

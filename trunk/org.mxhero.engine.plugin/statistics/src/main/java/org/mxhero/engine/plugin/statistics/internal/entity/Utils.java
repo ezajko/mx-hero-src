@@ -22,6 +22,7 @@ public final class Utils {
 	
 	private static Logger log = LoggerFactory.getLogger(Utils.class);
 	
+	private static String serverName = "MXHERO";
 	
 	/**
 	 * private so it can be instantiated
@@ -34,8 +35,9 @@ public final class Utils {
 	 * @param mail 
 	 * @return
 	 */
-	public static Record createRecord(MimeMail mail){
+	public Record createRecord(MimeMail mail){
 		Record record = new Record();
+		record.setServerName(serverName);
 		record.setSequence(mail.getSequence());
 		record.setInsertDate(mail.getTime());
 		record.setPhase(mail.getPhase());
@@ -114,8 +116,9 @@ public final class Utils {
 	 * @param value
 	 * @return
 	 */
-	public static Stat createStat(MimeMail mail, String key, String value){
+	public Stat createStat(MimeMail mail, String key, String value){
 		Stat stat = new Stat();
+		stat.setServerName(serverName);
 		stat.setKey(key);
 		stat.setPhase(mail.getPhase());
 		stat.setInsertDate(mail.getTime());
@@ -138,4 +141,13 @@ public final class Utils {
 			return "";
 		}
 	}
+
+	public String getServerName() {
+		return Utils.serverName;
+	}
+
+	public void setServerName(String serverName) {
+		Utils.serverName = serverName;
+	}
+
 }

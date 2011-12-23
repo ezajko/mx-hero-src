@@ -11,6 +11,8 @@ public class Stat {
 
 	private String key;
 	
+	private String serverName;
+	
 	private Timestamp insertDate;
 	
 	private Long sequence;
@@ -19,6 +21,14 @@ public class Stat {
 
 	private String value;
 
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
+	}
+	
 	public String getKey() {
 		return key;
 	}

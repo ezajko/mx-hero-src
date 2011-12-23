@@ -13,6 +13,7 @@ public class LogStatCommand implements LogStat{
 
 	private static Logger log = LoggerFactory.getLogger(LogStatCommand.class);
 	
+	private Utils utils;
 	
 	private RecordRepository repository;
 	
@@ -29,7 +30,7 @@ public class LogStatCommand implements LogStat{
 			return result;
 		}
 
-		Stat stat = Utils.createStat(mail, args[0], (args[1]==null)?"":args[1]);
+		Stat stat = utils.createStat(mail, args[0], (args[1]==null)?"":args[1]);
 		try{
 			getRepository().saveStat(stat);
 			result.setResult(true);
@@ -45,6 +46,14 @@ public class LogStatCommand implements LogStat{
 
 	public void setRepository(RecordRepository repository) {
 		this.repository = repository;
+	}
+
+	public Utils getUtils() {
+		return utils;
+	}
+
+	public void setUtils(Utils utils) {
+		this.utils = utils;
 	}
 
 }

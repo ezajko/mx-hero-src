@@ -9,9 +9,11 @@ public class LogRecordService implements LogRecord{
 
 	private RecordRepository repository;
 	
+	private Utils utils;
+	
 	@Override
 	public void log(MimeMail mail) {
-		repository.saveRecord(Utils.createRecord(mail));
+		repository.saveRecord(utils.createRecord(mail));
 	}
 
 	public RecordRepository getRepository() {
@@ -20,6 +22,14 @@ public class LogRecordService implements LogRecord{
 
 	public void setRepository(RecordRepository repository) {
 		this.repository = repository;
+	}
+
+	public Utils getUtils() {
+		return utils;
+	}
+
+	public void setUtils(Utils utils) {
+		this.utils = utils;
 	}
 
 }

@@ -12,6 +12,8 @@ public class Record{
 	
 	private Long sequence;
 
+	private String serverName;
+	
 	private String messageId;
 
 	private String phase;
@@ -66,6 +68,14 @@ public class Record{
 
 	public void setSequence(Long sequence) {
 		this.sequence = sequence;
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
 	}
 
 	public String getMessageId() {

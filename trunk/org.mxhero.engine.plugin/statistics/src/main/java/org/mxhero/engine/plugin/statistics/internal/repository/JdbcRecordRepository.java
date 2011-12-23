@@ -31,11 +31,11 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 	
 	public void saveRecord(final Collection<Record> records) {
-		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`bcc_recipients`" +
+		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`server_name`,`bcc_recipients`" +
 				",`bytes_size`,`cc_recipients`,`from_recipients`,`message_id`,`ng_recipients`" +
 				",`phase`,`recipient`,`recipient_domain_id`,`recipient_id`,`sender`" +
 				",`sender_domain_id`,`sender_id`,`state`,`state_reason`,`subject`,`to_recipients`,`flow`,`sender_group`,`recipient_group`) " +
-				" VALUES( :insert_date,:record_sequence,:bcc_recipients,:bytes_size,:cc_recipients,:from_recipients" +
+				" VALUES( :insert_date,:record_sequence,:server_name,:bcc_recipients,:bytes_size,:cc_recipients,:from_recipients" +
 				",:message_id,:ng_recipients,:phase,:recipient,:recipient_domain_id,:recipient_id" +
 				",:sender,:sender_domain_id,:sender_id,:state,:state_reason,:subject,:to_recipients,:flow,:sender_group,:recipient_group)" +
 				" ON DUPLICATE KEY UPDATE `bcc_recipients`=VALUES(bcc_recipients),`bytes_size`=VALUES(bytes_size)" +
@@ -63,8 +63,8 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 
 	public void saveStat(final Collection<Stat> stats) {
-		final String sql = "INSERT INTO mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`phase`) " +
-				" VALUES(:stat_key,:stat_value,:insert_date,:record_sequence,:phase) " +
+		final String sql = "INSERT INTO mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`server_name`,`phase`) " +
+				" VALUES(:stat_key,:stat_value,:insert_date,:record_sequence,:server_name,:phase) " +
 				" ON DUPLICATE KEY UPDATE `stat_value`=VALUES(stat_value);";
 		if(stats!=null && stats.size()>0){
 			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
@@ -90,6 +90,7 @@ public class JdbcRecordRepository implements RecordRepository{
 			MapSqlParameterSource source = new MapSqlParameterSource();
 			source.addValue("insert_date", record.getInsertDate());
 			source.addValue("record_sequence", record.getSequence());
+			source.addValue("server_name", record.getServerName());
 			source.addValue("bcc_recipients", record.getBccRecipients());
 			source.addValue("bytes_size", record.getBytesSize());
 			source.addValue("cc_recipients", record.getCcRecipients());
@@ -127,6 +128,7 @@ public class JdbcRecordRepository implements RecordRepository{
 			source.addValue("stat_value", stat.getValue());
 			source.addValue("insert_date", stat.getInsertDate());
 			source.addValue("record_sequence", stat.getSequence());
+			source.addValue("server_name", stat.getServerName());
 			source.addValue("phase", stat.getPhase());
 			batchValues[i]=source;
 			++i;
