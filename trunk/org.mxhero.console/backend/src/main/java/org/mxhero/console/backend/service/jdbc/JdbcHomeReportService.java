@@ -104,6 +104,7 @@ public class JdbcHomeReportService implements HomeReportService{
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 										+" WHERE s.insert_date = r0.insert_date " 
 										+" AND s.record_sequence = r0.record_sequence " 
+										+" AND s.server_name = r0.server_name " 
 										+" AND ${CONDITION}) ";
 		String trafficQuery =" SELECT COUNT(*) as `count`, date_format(r0.insert_date,'%Y-%m-%d %H:%i') as `date` FROM mail_records r0 " +
 				" WHERE r0.insert_date >= ? ";
@@ -150,6 +151,7 @@ public class JdbcHomeReportService implements HomeReportService{
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 										+" WHERE s.insert_date = r0.insert_date " 
 										+" AND s.record_sequence = r0.record_sequence " 
+										+" AND s.server_name = r0.server_name " 
 										+" AND s.stat_key = ? " 
 										+" AND s.stat_value = 'true') ";
 		String dayHitsNoValueSql = "SELECT COUNT(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
@@ -158,6 +160,7 @@ public class JdbcHomeReportService implements HomeReportService{
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 										+" WHERE s.insert_date = r0.insert_date " 
 										+" AND s.record_sequence = r0.record_sequence " 
+										+" AND s.server_name = r0.server_name " 
 										+" AND s.stat_key = ? ) ";		
 		if(domainId==null){
 			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(incommingQuery.concat(groupBy),new Object[]{new Timestamp(since)}));

@@ -38,6 +38,7 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 		+" AND EXISTS( SELECT 1 FROM mail_stats s "
 								+" WHERE s.insert_date = r0.insert_date " 
 								+" AND s.record_sequence = r0.record_sequence " 
+								+" AND s.server_name = r0.server_name " 
 								+" AND s.stat_key = ? " 
 								+" AND s.stat_value = ?) ";
 	
@@ -47,6 +48,7 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 		+" AND EXISTS( SELECT 1 FROM mail_stats s "
 								+" WHERE s.insert_date = r0.insert_date " 
 								+" AND s.record_sequence = r0.record_sequence " 
+								+" AND s.server_name = r0.server_name " 
 								+" AND s.stat_key = ? " 
 								+" AND s.stat_value = ?) ";
 	
