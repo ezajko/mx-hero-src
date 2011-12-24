@@ -75,7 +75,7 @@
 		<property name="utils" ref="utils"/>
 	</bean>
 
-	<bean id="utils" class="org.mxhero.engine.plugin.statistics.internal.entity">
+	<bean id="utils" class="org.mxhero.engine.plugin.statistics.internal.entity.Utils">
 		<osgix:managed-properties persistent-id="org.mxhero.engine.plugin.statistics"
 				autowire-on-update="true" />	
 		<property name="serverName" value="${serverName}"/>
