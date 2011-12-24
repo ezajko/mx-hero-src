@@ -12,6 +12,7 @@ package org.mxhero.console.home.presentation
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
+	import org.mxhero.console.commons.infrastructure.TimeUtils;
 	import org.mxhero.console.frontend.application.event.GetDomainsEvent;
 	import org.mxhero.console.frontend.domain.ActivityData;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
@@ -207,7 +208,6 @@ package org.mxhero.console.home.presentation
 			this.outgoingActivity=translateActivityByHours((result as ActivityData).outgoing);
 			this.blockActivity=translateActivityByHours((result as ActivityData).blocked);
 			this.totals=getTotals();
-			startTimer();
 		}
 		
 		[CommandError]
@@ -315,15 +315,20 @@ package org.mxhero.console.home.presentation
 				newDate.time=newDate.time+i*60*60*1000;
 				activityArray.addItem({Qty:0,Date:newDate});
 			}
-			for each(var item:Object in data){
-				var date:Date = item.date as Date;
-				date.time=Date.UTC(date.fullYear,date.month,date.date,item.hours);
-				var index:int = (date.time-hourSince.time)/(60*60*1000);
-				if(index<activityArray.length){
-					activityArray.setItemAt({Qty:item.count,Date:date},index);
-				}else{
-					activityArray.addItem({Qty:item.count,Date:date});
+			try{
+				for each(var item:Object in data){
+					var date:Date = item.date as Date;
+					date.time=date.time+date.timezoneOffset*60*1000;
+					date.time=Date.UTC(date.fullYear,date.month,date.date,item.hours);
+					var index:int = (date.time-hourSince.time)/(60*60*1000);
+					if(index<activityArray.length){
+						activityArray.setItemAt({Qty:item.count,Date:date},index);
+					}else{
+						activityArray.addItem({Qty:item.count,Date:date});
+					}
 				}
+			}catch(error:Error ){
+				trace(error);
 			}
 			return activityArray;
 		}
