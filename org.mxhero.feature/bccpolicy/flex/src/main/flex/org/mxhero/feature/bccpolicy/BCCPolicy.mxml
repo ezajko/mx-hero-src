@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="action"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			private var initialProperties:ArrayCollection;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				returnTa.text=resourceManager.getString('bccpolicy','action.return.textarea.text');
+				loadData();
+			}
+			
+			public function isValid():Boolean{
+				if(returnRb.selected){
+					if(returnTa.text==null || StringUtil.trim(returnTa.text).length<1){
+						returnTa.errorString=resourceManager.getString('bccpolicy','error.return.message');
+						return false;
+					}
+				}
+				returnTa.errorString="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initialProperties=data;
+			}
+			
+			private function loadData():void{
+				if(initialProperties!=null){
+					var selectedAction:String=PropertyHelper.getProperty(initialProperties,'action.selection').propertyValue;
+					if(selectedAction=='reject'){
+						discardRb.selected=true;
+					} else if(selectedAction=='return'){
+						returnRb.selected=true;
+						returnTa.text=PropertyHelper.getProperty(initialProperties,'return.message').propertyValue;
+					}
+					if(PropertyHelper.getProperty(initialProperties,"lists.ignore").propertyValue=="true"){
+						listsCB.selected=true;
+					}else{
+						listsCB.selected=false;
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				var property:FeatureRuleProperty;
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey = "action.selection";
+				
+				if(discardRb.selected){
+					property.propertyValue="reject";
+				} else if(returnRb.selected){
+					property.propertyValue="return";
+					var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
+					returnMessage.propertyKey="return.message";
+					returnMessage.propertyValue=returnTa.text;
+					properties.addItem(returnMessage);
+				}
+				properties.addItem(property);
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey = "lists.ignore";
+				if(listsCB.selected){
+					property.propertyValue="true";
+				}else{
+					property.propertyValue="false";
+				}
+				properties.addItem(property);
+				
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return returnTa.errorString;
+			}
+			
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("bccpolicy")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString('bccpolicy','first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20" gap="20">
+		<s:VGroup>
+			<s:RadioButton id="returnRb" 
+						   groupName="blockType"
+						   label="{resourceManager.getString('bccpolicy','action.return.label')}"
+						   selected="true"/>
+			<mx:Spacer/>
+			<s:VGroup paddingLeft="18">
+				<s:Label 
+					paddingTop="5"
+					text="{resourceManager.getString('bccpolicy','action.return.textarea.title')}"
+					fontStyle="italic"/>
+				<s:TextArea id="returnTa"
+							editable="true" 
+							width="350"/>			
+			</s:VGroup>
+		</s:VGroup>
+		<s:RadioButton id="discardRb" 
+					   groupName="blockType"
+					   label="{resourceManager.getString('bccpolicy','action.discard.label')}"/>
+	</s:VGroup>
+	
+	<s:Label text="{resourceManager.getString('bccpolicy','second.title')}" fontSize="16" fontWeight="bold"/>
+	<s:VGroup paddingLeft="20" gap="20">
+		<s:HGroup width="100%" verticalAlign="top">
+			<s:CheckBox id="listsCB" 
+						label=""
+						selected="true"/>
+			<component:LabelExpanded
+				paddingTop="5"
+				labelText="{resourceManager.getString('bccpolicy','lists.label.text')}"
+				expandedText="{resourceManager.getString('bccpolicy','lists.label.expanded')}"
+				explainText="{resourceManager.getString('bccpolicy','label.explain')}"
+				hideText="{resourceManager.getString('bccpolicy','label.hide')}"
+				width="100%"/>
+		</s:HGroup>
+	</s:VGroup>
+</mx:Module>
