@@ -135,7 +135,7 @@
 					text="{resourceManager.getString('bccpolicy','action.return.textarea.title')}"
 					fontStyle="italic"/>
 				<s:TextArea id="returnTa"
-							editable="true" 
+							editable="{returnRb.selected}" 
 							width="350"/>			
 			</s:VGroup>
 		</s:VGroup>
