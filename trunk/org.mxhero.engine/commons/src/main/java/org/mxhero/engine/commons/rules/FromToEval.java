@@ -56,13 +56,14 @@ public class FromToEval implements Evaluable{
 			return true;
 		}else if(from.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return !mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(mail.getInitialData().getRecipient().getDomain().getId()) && !mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(mail.getInitialData().getRecipient().getDomain().getId());
+			return mail.getInitialData().getSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases()) 
+					|| mail.getInitialData().getFromSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases());
 		}else if(from.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
 			return mail.getInitialData().getFromSender().getDomain().getManaged() || mail.getInitialData().getSender().getDomain().getManaged();
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			return mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(from)) || mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(from));
+			return mail.getInitialData().getFromSender().getDomain().hasAlias(getDomainFromRuleDirection(from)) || mail.getInitialData().getSender().getDomain().hasAlias(getDomainFromRuleDirection(from));
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group name and domain has to match*/
 			return (mail.getInitialData().getFromSender().getGroup()!=null 
@@ -73,7 +74,7 @@ public class FromToEval implements Evaluable{
 							&& mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(from.getDomain()));
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			return mail.getInitialData().getFromSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from)) || mail.getInitialData().getSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from));
+			return mail.getInitialData().getFromSender().hasAlias(getMailFromRuleDirection(from)) || mail.getInitialData().getSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from));
 		}
 		return false;
 	}
@@ -84,13 +85,14 @@ public class FromToEval implements Evaluable{
 			return true;
 		} else if(to.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(mail.getInitialData().getSender().getDomain().getId());
+			return mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getSender().getDomain().getAliases()) 
+					|| mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getFromSender().getDomain().getAliases());
 		}else if(to.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
 			return mail.getInitialData().getRecipient().getDomain().getManaged();
 		}else if(to.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			return mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(getDomainFromRuleDirection(to));
+			return mail.getInitialData().getRecipient().getDomain().hasAlias(getDomainFromRuleDirection(to));
 		}else if(to.getDirectionType().equals(GROUP)){
 			/*group */
 			return mail.getInitialData().getRecipient().getGroup()!=null 
@@ -98,7 +100,7 @@ public class FromToEval implements Evaluable{
 			&& mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			return mail.getInitialData().getRecipient().getMail().equalsIgnoreCase(getMailFromRuleDirection(to));
+			return mail.getInitialData().getRecipient().hasAlias(getMailFromRuleDirection(to));
 		}
 		return false;
 	}
