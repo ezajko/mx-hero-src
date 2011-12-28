@@ -56,8 +56,8 @@ public class FromToEval implements Evaluable{
 			return true;
 		}else if(from.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return mail.getInitialData().getSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases()) 
-					|| mail.getInitialData().getFromSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases());
+			return !(mail.getInitialData().getSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases()) 
+					|| mail.getInitialData().getFromSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases()));
 		}else if(from.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
 			return mail.getInitialData().getFromSender().getDomain().getManaged() || mail.getInitialData().getSender().getDomain().getManaged();
@@ -85,8 +85,8 @@ public class FromToEval implements Evaluable{
 			return true;
 		} else if(to.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getSender().getDomain().getAliases()) 
-					|| mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getFromSender().getDomain().getAliases());
+			return !(mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getSender().getDomain().getAliases()) 
+					|| mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getFromSender().getDomain().getAliases()));
 		}else if(to.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
 			return mail.getInitialData().getRecipient().getDomain().getManaged();
