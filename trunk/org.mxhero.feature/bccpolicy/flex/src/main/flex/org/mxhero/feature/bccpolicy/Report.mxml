@@ -113,7 +113,7 @@
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.attachmentlink' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.bccpolicy' ) ";
 			
 			public function setResult(queryId:String, result:*):void{
 				if(queryId==DATA_QUERY){
