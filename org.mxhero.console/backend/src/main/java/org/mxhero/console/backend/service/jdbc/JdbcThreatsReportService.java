@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.service.jdbc;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Collection;
 
 import javax.sql.DataSource;
@@ -28,18 +29,18 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 	
 	String hitsSqlQuery = "SELECT SUM(r0.amount) as `count`, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) as `date` " 
 		+" FROM mail_stats_grouped r0 " 
-		+" WHERE r0.insert_date > ? "
+		+" WHERE r0.insert_date >= ? "
 		+" AND r0.stat_key = ? " 
 		+" AND r0.stat_value = ? ";
 	
 	String dayHitsSqlQuery = "SELECT SUM(r0.amount) as `count`, date(r0.insert_date) as `date`, hour(r0.insert_date) as `hours` " 
 		+" FROM mail_stats_grouped r0 " 
-		+" WHERE r0.insert_date > ? "
+		+" WHERE r0.insert_date >= ? and r0.insert_date < ?"
 		+" AND r0.stat_key = ? " 
 		+" AND r0.stat_value = ? ";
 	
 	String mailQuerySql = "SELECT r0.* " 
-		+" FROM mail_stats_grouped r0 " 
+		+" FROM mail_records r0 " 
 		+" WHERE r0.insert_date between ? AND ? "
 		+" AND EXISTS( SELECT 1 FROM mail_stats s "
 								+" WHERE s.insert_date = r0.insert_date " 
@@ -73,7 +74,11 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 	@Override
 	public Collection getSpamHitsDay(String domain, long since) {
 		Timestamp sinceTime = new Timestamp(since);
-
+		Calendar untilDate = Calendar.getInstance();
+		untilDate.setTimeInMillis(since);
+		untilDate.add(Calendar.DAY_OF_MONTH, 1);
+		Timestamp untilTime = new Timestamp(untilDate.getTimeInMillis());
+		
 		String queryString = dayHitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
 			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
@@ -82,9 +87,9 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 		queryString = queryString + " group by date(r0.insert_date),hour(r0.insert_date) ";
 
 		if(domain!=null && domain.trim().length()>0){
-			return template.getJdbcOperations().queryForList(queryString, sinceTime, SPAM_DETECTED, SPAM_DETECTED_VALUE, domain, domain);
+			return template.getJdbcOperations().queryForList(queryString, sinceTime,untilTime, SPAM_DETECTED, SPAM_DETECTED_VALUE, domain, domain);
 		}else{
-			return template.getJdbcOperations().queryForList(queryString, sinceTime, SPAM_DETECTED, SPAM_DETECTED_VALUE);
+			return template.getJdbcOperations().queryForList(queryString, sinceTime,untilTime, SPAM_DETECTED, SPAM_DETECTED_VALUE);
 		}
 	}
 	
@@ -109,7 +114,11 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 	@Override
 	public Collection getVirusHitsDay(String domain, long since) {
 		Timestamp sinceTime = new Timestamp(since);
-
+		Calendar untilDate = Calendar.getInstance();
+		untilDate.setTimeInMillis(since);
+		untilDate.add(Calendar.DAY_OF_MONTH, 1);
+		Timestamp untilTime = new Timestamp(untilDate.getTimeInMillis());
+		
 		String queryString = dayHitsSqlQuery;
 		if(domain!=null && domain.trim().length()>0){
 			queryString = queryString + " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
@@ -118,9 +127,9 @@ public class JdbcThreatsReportService implements ThreatsReportService {
 		queryString = queryString + " group by date(r0.insert_date),hour(r0.insert_date) ";
 		
 		if(domain!=null && domain.trim().length()>0){
-			return template.getJdbcOperations().queryForList(queryString, sinceTime, VIRUS_DETECTED, VIRUS_DETECTED_VALUE, domain, domain);
+			return template.getJdbcOperations().queryForList(queryString, sinceTime, untilTime, VIRUS_DETECTED, VIRUS_DETECTED_VALUE, domain, domain);
 		}else{
-			return template.getJdbcOperations().queryForList(queryString, sinceTime, VIRUS_DETECTED, VIRUS_DETECTED_VALUE);
+			return template.getJdbcOperations().queryForList(queryString, sinceTime, untilTime, VIRUS_DETECTED, VIRUS_DETECTED_VALUE);
 		}
 	}
 

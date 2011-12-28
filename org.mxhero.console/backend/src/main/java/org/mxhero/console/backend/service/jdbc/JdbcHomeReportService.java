@@ -140,13 +140,13 @@ public class JdbcHomeReportService implements HomeReportService{
 		String incommingQuery = " SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
 				+ " FROM  mail_stats_grouped r0 "
 				+ " WHERE r0.insert_date > ? "
-				+ " AND r0.stat_key = 'email.size' "
+				+ " AND r0.stat_key = 'email.count' "
 				+ " AND r0.recipient_domain_id is not null "
 				+ " AND r0.recipient_domain_id !='' " ;
 		String outgoingQuery = "SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
 				+ " FROM  mail_stats_grouped r0 "
 				+ " WHERE r0.insert_date > ? "
-				+ " AND r0.stat_key = 'email.size' "
+				+ " AND r0.stat_key = 'email.count' "
 				+ " AND r0.sender_domain_id is not null "
 				+ " AND r0.sender_domain_id !='' ";
 		String dayHitsSql = "SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
