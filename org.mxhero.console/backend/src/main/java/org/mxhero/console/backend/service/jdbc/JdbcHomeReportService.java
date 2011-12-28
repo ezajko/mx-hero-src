@@ -137,31 +137,27 @@ public class JdbcHomeReportService implements HomeReportService{
 		String anyDomain = " AND (r0.recipient_domain_id = ? OR r0.sender_domain_id = ?) ";
 		String senderDomain = " AND  r0.sender_domain_id = ? ";
 		String recipientDomain = " AND  r0.recipient_domain_id = ? ";
-		String incommingQuery = "SELECT count(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
-				+ "FROM  mail_records r0 "
-				+ "WHERE r0.insert_date > ? "
-				+ "AND (r0.flow = 'both' OR r0.flow = 'in') " ;
-		String outgoingQuery = "SELECT count(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
-				+ "FROM  mail_records r0 "
-				+ "WHERE insert_date > ? "
-				+ "AND (r0.flow = 'both' OR r0.flow = 'out') ";
-		String dayHitsSql = "SELECT COUNT(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
-				+" FROM mail_records r0 " 
+		String incommingQuery = " SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
+				+ " FROM  mail_stats_grouped r0 "
+				+ " WHERE r0.insert_date > ? "
+				+ " AND r0.stat_key = 'email.size' "
+				+ " AND r0.recipient_domain_id is not null "
+				+ " AND r0.recipient_domain_id !='' " ;
+		String outgoingQuery = "SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` "
+				+ " FROM  mail_stats_grouped r0 "
+				+ " WHERE r0.insert_date > ? "
+				+ " AND r0.stat_key = 'email.size' "
+				+ " AND r0.sender_domain_id is not null "
+				+ " AND r0.sender_domain_id !='' ";
+		String dayHitsSql = "SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
+				+" FROM mail_stats_grouped r0 " 
 				+" WHERE r0.insert_date > ? "
-				+" AND EXISTS( SELECT 1 FROM mail_stats s "
-										+" WHERE s.insert_date = r0.insert_date " 
-										+" AND s.record_sequence = r0.record_sequence " 
-										+" AND s.server_name = r0.server_name " 
-										+" AND s.stat_key = ? " 
-										+" AND s.stat_value = 'true') ";
-		String dayHitsNoValueSql = "SELECT COUNT(*) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
-				+" FROM mail_records r0 " 
+				+" AND r0.stat_key = ? " 
+				+" AND r0.stat_value = 'true' ";
+		String dayHitsNoValueSql = "SELECT SUM(r0.amount) as `count`, DATE(r0.insert_date) as `date`, HOUR(r0.insert_date) as `hours` " 
+				+" FROM mail_stats_grouped r0 " 
 				+" WHERE r0.insert_date > ? "
-				+" AND EXISTS( SELECT 1 FROM mail_stats s "
-										+" WHERE s.insert_date = r0.insert_date " 
-										+" AND s.record_sequence = r0.record_sequence " 
-										+" AND s.server_name = r0.server_name " 
-										+" AND s.stat_key = ? ) ";		
+				+" AND r0.stat_key = ? ";		
 		if(domainId==null){
 			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(incommingQuery.concat(groupBy),new Object[]{new Timestamp(since)}));
 			data.setOutgoing(statisticsTemplate.getJdbcOperations().queryForList(outgoingQuery.concat(groupBy),new Object[]{new Timestamp(since)}));

@@ -58,13 +58,25 @@ public class JdbcTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getIncommingByDay(String domain, long day) {
-		String query = "SELECT count(*) as `count`, sum(bytes_size) as `bytes`, DATE(insert_date) as `date`, HOUR(insert_date) as `hours` "
-				+ "FROM  mail_records "
-				+ "WHERE insert_date > :date_since "
-				+ "AND insert_date < :date_to "
-				+ "AND (flow = 'both' OR flow = 'in') " 
-				+ " $REPLACE_DOMAIN$ "
-				+ "GROUP BY DATE(insert_date), HOUR(insert_date) ";
+		String query = " SELECT tcount.c as `count`, tsize.s as `bytes`,  DATE(tcount.ddate) as `date`, HOUR(tcount.ddate) as `hours` "
+				+ " FROM"
+				+ " (SELECT SUM(r0.amount) s, r0.insert_date ddate "
+				+ " FROM mail_stats_grouped r0 "
+				+ " WHERE r0.insert_date > :amount_date_since AND r0.insert_date < :amount_date_to"
+				+ " AND r0.stat_key = 'email.size' "
+				+ " AND recipient_domain_id is not null "
+				+ " AND recipient_domain_id !='' "
+				+ " $REPLACE_DOMAIN_AMOUNT$ "
+				+ " group by r0.insert_date ) tsize "
+				+ " join (SELECT SUM(r0.amount) c, r0.insert_date ddate "
+				+ " FROM mail_stats_grouped r0 " 
+				+ " WHERE r0.insert_date > :size_date_since AND r0.insert_date < :size_date_to "
+				+ " AND r0.stat_key = 'email.count' "
+				+ " AND recipient_domain_id is not null "
+				+ " AND recipient_domain_id !='' "
+				+ " $REPLACE_DOMAIN_SIZE$ "
+				+ " group by r0.insert_date ) tcount "
+				+ " on tsize.ddate = tcount.ddate";
 
 		Timestamp since = new Timestamp(day);
 		Calendar untilDate = Calendar.getInstance();
@@ -72,12 +84,16 @@ public class JdbcTrafficReportService implements TrafficReportService {
 		untilDate.add(Calendar.DAY_OF_MONTH, 1);
 		Timestamp until = new Timestamp(untilDate.getTimeInMillis());
 		
-		MapSqlParameterSource params = new MapSqlParameterSource("date_since", since);
-		params.addValue("date_to", until);
+		MapSqlParameterSource params = new MapSqlParameterSource("amount_date_since", since);
+		params.addValue("amount_date_to", until);
+		params.addValue("size_date_since", since);
+		params.addValue("size_date_to", until);
 		
 		if (domain != null && !domain.isEmpty()) {
-			query = query.replace("$REPLACE_DOMAIN$","AND recipient_domain_id = :domain ");
-			params.addValue("domain", domain);
+			query = query.replace("$REPLACE_DOMAIN_AMOUNT$","AND recipient_domain_id = :domain_amount ");
+			query = query.replace("$REPLACE_DOMAIN_SIZE$","AND recipient_domain_id = :domain_size ");
+			params.addValue("domain_amount", domain);
+			params.addValue("domain_size", domain);
 		}else{
 			query = query.replace("$REPLACE_DOMAIN$","");
 		}
@@ -120,13 +136,25 @@ public class JdbcTrafficReportService implements TrafficReportService {
 
 	@Override
 	public Collection getOutgoingByDay(String domain, long day) {
-		String query = "SELECT count(*) as `count`, sum(bytes_size) as `bytes`, DATE(insert_date) as `date`, HOUR(insert_date) as `hours` "
-				+ "FROM  mail_records "
-				+ "WHERE insert_date > :date_since "
-				+ "AND insert_date < :date_to "
-				+ "AND (flow = 'both' OR flow = 'out') "
-				+ " $REPLACE_DOMAIN$ "
-				+ "GROUP BY DATE(insert_date), HOUR(insert_date) ";
+		String query = " SELECT tcount.c as `count`, tsize.s as `bytes`,  DATE(tcount.ddate) as `date`, HOUR(tcount.ddate) as `hours` "
+				+ " FROM"
+				+ " (SELECT SUM(r0.amount) s, r0.insert_date ddate "
+				+ " FROM mail_stats_grouped r0 "
+				+ " WHERE r0.insert_date > :amount_date_since AND r0.insert_date < :amount_date_to"
+				+ " AND r0.stat_key = 'email.size' "
+				+ " AND sender_domain_id is not null "
+				+ " AND sender_domain_id !='' "
+				+ " $REPLACE_DOMAIN_AMOUNT$ "
+				+ " group by r0.insert_date ) tsize "
+				+ " join (SELECT SUM(r0.amount) c, r0.insert_date ddate "
+				+ " FROM mail_stats_grouped r0 " 
+				+ " WHERE r0.insert_date > :size_date_since AND r0.insert_date < :size_date_to "
+				+ " AND r0.stat_key = 'email.count' "
+				+ " AND sender_domain_id is not null "
+				+ " AND sender_domain_id !='' "
+				+ " $REPLACE_DOMAIN_SIZE$ "
+				+ " group by r0.insert_date ) tcount "
+				+ " on tsize.ddate = tcount.ddate";
 		
 		Timestamp since = new Timestamp(day);
 		Calendar untilDate = Calendar.getInstance();
@@ -134,12 +162,16 @@ public class JdbcTrafficReportService implements TrafficReportService {
 		untilDate.add(Calendar.DAY_OF_MONTH, 1);
 		Timestamp until = new Timestamp(untilDate.getTimeInMillis());
 		
-		MapSqlParameterSource params = new MapSqlParameterSource("date_since", since);
-		params.addValue("date_to", until);
+		MapSqlParameterSource params = new MapSqlParameterSource("amount_date_since", since);
+		params.addValue("amount_date_to", until);
+		params.addValue("size_date_since", since);
+		params.addValue("size_date_to", until);
 		
 		if (domain != null && !domain.isEmpty()) {
-			query = query.replace("$REPLACE_DOMAIN$","AND sender_domain_id = :domain ");
-			params.addValue("domain", domain);
+			query = query.replace("$REPLACE_DOMAIN_AMOUNT$","AND recipient_domain_id = :domain_amount ");
+			query = query.replace("$REPLACE_DOMAIN_SIZE$","AND recipient_domain_id = :domain_size ");
+			params.addValue("domain_amount", domain);
+			params.addValue("domain_size", domain);
 		}else{
 			query = query.replace("$REPLACE_DOMAIN$","");
 		}
