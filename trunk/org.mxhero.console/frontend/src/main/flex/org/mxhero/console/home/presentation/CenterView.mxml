@@ -41,7 +41,6 @@
 
 			protected function buttonbar1_changeHandler(event:IndexChangeEvent):void
 			{
-				activityChart.currentState=ButtonBar(event.target).selectedItem.value;
 				model.periodChanged(ButtonBar(event.target).selectedItem.value);
 			}
 		]]>
@@ -63,6 +62,7 @@
 								spamProvider="{model.spamActivity}"
 								virusProvider="{model.virusActivity}"
 								blockProvider="{model.blockActivity}"
+								currentState="{model.periodState}"
 								/>
 		<s:HGroup width="100%">
 			<mx:Spacer minWidth="100" width="100%"/>

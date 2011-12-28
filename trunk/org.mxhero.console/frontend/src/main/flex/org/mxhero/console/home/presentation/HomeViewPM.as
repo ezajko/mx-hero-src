@@ -77,6 +77,8 @@ package org.mxhero.console.home.presentation
 		
 		private var hasToRefresh:Boolean = false;
 		[Bindable]
+		public var periodState:String=PERIOD_HOUR;
+		[Bindable]
 		public var periodIndex:Number=1;
 		
 		public function HomeViewPM(){
@@ -87,6 +89,7 @@ package org.mxhero.console.home.presentation
 		[Enter(time="every")]
 		public function enter():void
 		{
+			periodState=PERIOD_HOUR;
 			periodIndex=1;
 			hasToRefresh=true;
 			if(context.selectedDomain!=null){
@@ -122,6 +125,12 @@ package org.mxhero.console.home.presentation
 			timer.reset();
 			completeTimer.stop();
 			completeTimer.reset();
+			this.spamActivity=null;
+			this.virusActivity=null;
+			this.incommingActivity=null;
+			this.outgoingActivity=null;
+			this.blockActivity=null;
+			this.totals=null;
 		}
 		
 		public function filterDomain(filterDomain:String):void{
@@ -146,6 +155,7 @@ package org.mxhero.console.home.presentation
 			}else if(period==PERIOD_HOUR){
 				refreshActivity();
 			}
+			periodState=period;
 		}
 		
 		public function getCompleteData(event:*=null):void{		
