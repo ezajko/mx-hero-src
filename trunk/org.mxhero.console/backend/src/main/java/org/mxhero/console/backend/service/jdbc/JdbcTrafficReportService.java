@@ -31,14 +31,14 @@ public class JdbcTrafficReportService implements TrafficReportService {
 				+ " FROM"
 				+ " (SELECT SUM(r0.amount) s, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ddate "
 				+ " FROM mail_stats_grouped r0 "
-				+ " WHERE r0.insert_date > ? "
+				+ " WHERE r0.insert_date >= ? "
 				+ " AND r0.stat_key = 'email.size' "
 				+ " AND recipient_domain_id is not null "
 				+ " AND recipient_domain_id !='' "
 				+ " $REPLACE_DOMAIN$ "
 				+ " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ) tsize "
 				+ " join (SELECT SUM(r0.amount) c, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ddate "
-				+ " FROM mail_stats_grouped r0 WHERE r0.insert_date > ? "
+				+ " FROM mail_stats_grouped r0 WHERE r0.insert_date >= ? "
 				+ " AND r0.stat_key = 'email.count' "
 				+ " AND recipient_domain_id is not null "
 				+ " AND recipient_domain_id !='' "
@@ -62,7 +62,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 				+ " FROM"
 				+ " (SELECT SUM(r0.amount) s, r0.insert_date ddate "
 				+ " FROM mail_stats_grouped r0 "
-				+ " WHERE r0.insert_date > :amount_date_since AND r0.insert_date < :amount_date_to"
+				+ " WHERE r0.insert_date >= :amount_date_since AND r0.insert_date < :amount_date_to"
 				+ " AND r0.stat_key = 'email.size' "
 				+ " AND recipient_domain_id is not null "
 				+ " AND recipient_domain_id !='' "
@@ -70,7 +70,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 				+ " group by r0.insert_date ) tsize "
 				+ " join (SELECT SUM(r0.amount) c, r0.insert_date ddate "
 				+ " FROM mail_stats_grouped r0 " 
-				+ " WHERE r0.insert_date > :size_date_since AND r0.insert_date < :size_date_to "
+				+ " WHERE r0.insert_date >= :size_date_since AND r0.insert_date < :size_date_to "
 				+ " AND r0.stat_key = 'email.count' "
 				+ " AND recipient_domain_id is not null "
 				+ " AND recipient_domain_id !='' "
@@ -95,7 +95,8 @@ public class JdbcTrafficReportService implements TrafficReportService {
 			params.addValue("domain_amount", domain);
 			params.addValue("domain_size", domain);
 		}else{
-			query = query.replace("$REPLACE_DOMAIN$","");
+			query = query.replace("$REPLACE_DOMAIN_AMOUNT$","");
+			query = query.replace("$REPLACE_DOMAIN_SIZE$","");
 		}
 
 		return template.queryForList(query, params);
@@ -109,14 +110,14 @@ public class JdbcTrafficReportService implements TrafficReportService {
 				+ " FROM"
 				+ " (SELECT SUM(r0.amount) s, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ddate "
 				+ " FROM mail_stats_grouped r0 "
-				+ " WHERE r0.insert_date > ? "
+				+ " WHERE r0.insert_date >= ? "
 				+ " AND r0.stat_key = 'email.size' "
 				+ " AND sender_domain_id is not null "
 				+ " AND sender_domain_id !='' "
 				+ " $REPLACE_DOMAIN$ "
 				+ " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ) tsize "
 				+ " join (SELECT SUM(r0.amount) c, date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) ddate "
-				+ " FROM mail_stats_grouped r0 WHERE r0.insert_date > ? "
+				+ " FROM mail_stats_grouped r0 WHERE r0.insert_date >= ? "
 				+ " AND r0.stat_key = 'email.count' "
 				+ " AND sender_domain_id is not null "
 				+ " AND sender_domain_id !='' "
@@ -140,7 +141,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 				+ " FROM"
 				+ " (SELECT SUM(r0.amount) s, r0.insert_date ddate "
 				+ " FROM mail_stats_grouped r0 "
-				+ " WHERE r0.insert_date > :amount_date_since AND r0.insert_date < :amount_date_to"
+				+ " WHERE r0.insert_date >= :amount_date_since AND r0.insert_date < :amount_date_to"
 				+ " AND r0.stat_key = 'email.size' "
 				+ " AND sender_domain_id is not null "
 				+ " AND sender_domain_id !='' "
@@ -148,7 +149,7 @@ public class JdbcTrafficReportService implements TrafficReportService {
 				+ " group by r0.insert_date ) tsize "
 				+ " join (SELECT SUM(r0.amount) c, r0.insert_date ddate "
 				+ " FROM mail_stats_grouped r0 " 
-				+ " WHERE r0.insert_date > :size_date_since AND r0.insert_date < :size_date_to "
+				+ " WHERE r0.insert_date >= :size_date_since AND r0.insert_date < :size_date_to "
 				+ " AND r0.stat_key = 'email.count' "
 				+ " AND sender_domain_id is not null "
 				+ " AND sender_domain_id !='' "
@@ -173,7 +174,8 @@ public class JdbcTrafficReportService implements TrafficReportService {
 			params.addValue("domain_amount", domain);
 			params.addValue("domain_size", domain);
 		}else{
-			query = query.replace("$REPLACE_DOMAIN$","");
+			query = query.replace("$REPLACE_DOMAIN_AMOUNT$","");
+			query = query.replace("$REPLACE_DOMAIN_SIZE$","");
 		}
 		
 		return template.queryForList(query, params);
