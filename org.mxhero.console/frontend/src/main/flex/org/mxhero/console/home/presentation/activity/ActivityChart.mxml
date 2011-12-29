@@ -25,7 +25,7 @@
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<mx:SeriesInterpolate id="interpolateIn" duration="1000"/>
+		<mx:SeriesInterpolate id="interpolateIn" duration.hour="2000" duration.hours24="1000"/>
 		<fx:Array id="bge">
 			<mx:GridLines 
 				horizontalChangeCount="1" 
