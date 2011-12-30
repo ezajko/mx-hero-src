@@ -40,6 +40,8 @@
 		<prop key="attach.html.file.name.es_es">adjuntos.html</prop>
 		<prop key="attach.html.file.name.en_us">attachments.html</prop>
 		<prop key="attach.html.file.name.pt_br">anexos.html</prop>
+		<prop key="cleaner.check.time.in.hours">12</prop>
+		<prop key="cleaner.days.period">60</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder properties-ref="jdbcCmProps" />
@@ -73,6 +75,14 @@
 		<property name="algorithm" value="PBEWithMD5AndDES"/>
 		<property name="password" value="${encryptor.seed}"/>
 	</bean>	
+
+	<bean id="daysPeriodCleaner" 
+		class="org.mxhero.engine.plugin.attachmentlink.alcommand.internal.cleaner.DaysPeriodCleaner"
+		init-method="init"
+		destroy-method="stop">
+		<property name="checkTimeInHours" value="${cleaner.check.time.in.hours}"/>
+		<property name="daysPeriod" value="${cleaner.days.period}"/>
+	</bean>
 
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 	  <property name="dataSource" ref="dataSource"/>
