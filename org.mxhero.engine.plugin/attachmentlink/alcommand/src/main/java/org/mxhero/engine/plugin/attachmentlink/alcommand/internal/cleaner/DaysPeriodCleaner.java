@@ -1,6 +1,8 @@
 package org.mxhero.engine.plugin.attachmentlink.alcommand.internal.cleaner;
 
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -71,15 +73,19 @@ public class DaysPeriodCleaner {
 				template.getJdbcOperations().update("DELETE FROM `message` WHERE `message_id` = ?", messageId);
 			}		
 		}
-		String findAttachs =" SELECT `attach`.`attach_id` " +
+		String findAttachs =" SELECT `attach`.`attach_id`, `attach`.`path` " +
 				" FROM `attach` " +
 				" WHERE NOT EXISTS (SELECT 1 " +
 									" FROM `message_attach` " +
 									" WHERE `message_attach`.`attach_id` = `attach`.`attach_id`)";
-		List<Long> unlinkedAttachs = template.getJdbcOperations().queryForList(findAttachs,Long.class);
+		List<Map<String, Object>> unlinkedAttachs = template.getJdbcOperations().queryForList(findAttachs);
 		if(unlinkedAttachs!=null){
-			for(Long attachId : unlinkedAttachs){
-				template.getJdbcOperations().update("DELETE FROM `attach` WHERE `attach_id` = ?", attachId);
+			for(Map<String, Object> attach : unlinkedAttachs){
+				template.getJdbcOperations().update("DELETE FROM `attach` WHERE `attach_id` = ?", attach.get("attach_id"));
+				File attachFile = new File(attach.get("path").toString());
+				if(attachFile.exists()){
+					attachFile.delete();
+				}
 			}
 		}	
 	}
