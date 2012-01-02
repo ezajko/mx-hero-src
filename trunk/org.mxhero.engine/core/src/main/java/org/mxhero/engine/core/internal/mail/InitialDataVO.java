@@ -1,6 +1,7 @@
 package org.mxhero.engine.core.internal.mail;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.mail.MessagingException;
 
@@ -23,11 +24,12 @@ public class InitialDataVO extends InitialData{
 	/**
 	 * @param mimemail
 	 */
-	public InitialDataVO(MimeMail mimemail, User sender, User recipient, User from){
+	public InitialDataVO(MimeMail mimemail, User sender, User recipient, User from, List<User> recipientsInHeaders){
 		this.mimeMail = mimemail;
 		super.setSender(sender);
 		super.setRecipient(recipient);
 		super.setFromSender(from);
+		super.setRecipientsInHeaders(recipientsInHeaders);
 	}
 	
 	/**
@@ -96,28 +98,6 @@ public class InitialDataVO extends InitialData{
 			log.error(MailVO.MIME_ERROR, e);
 		}
 	}
-
-	/**
-	 * @see org.mxhero.engine.domain.mail.business.InitialData#getReceivedDate()
-	 */
-	@Override
-	public Date getReceivedDate() {
-		try {
-			return this.mimeMail.getMessage().getReceivedDate();
-		} catch (MessagingException e) {
-			log.error(MailVO.MIME_ERROR, e);
-			return null;
-		}
-	}
-
-	/**
-	 * Should not be call, just override it for drools.
-	 * @see org.mxhero.engine.domain.mail.business.InitialData#setReceivedDate(java.util.Date)
-	 */
-	@Override
-	public void setReceivedDate(Date receivedDate) {
-		log.warn(MailVO.CHANGE_ERROR + this);
-	}
 	
 	/**
 	 * @see org.mxhero.engine.domain.mail.business.InitialData#getPhase()
@@ -146,7 +126,6 @@ public class InitialDataVO extends InitialData{
 		builder.append("InitialDataVO [getInitialSize()=")
 				.append(getInitialSize()).append(", getSentDate()=")
 				.append(getSentDate()).append(", getReceivedDate()=")
-				.append(getReceivedDate()).append(", getPhase()=")
 				.append(getPhase()).append(", getSender()=")
 				.append(getSender()).append(", getRecipient()=")
 				.append(getRecipient()).append("]");
