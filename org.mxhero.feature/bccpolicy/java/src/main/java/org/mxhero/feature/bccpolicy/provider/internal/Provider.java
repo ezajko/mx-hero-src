@@ -57,9 +57,8 @@ public class Provider extends RulesByFeature{
 			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
 					&& mail.getHeaders()!=null
 					&& mail.getRecipients()!=null
-					&& ((ignoreList && !ignoreListCheck(mail) ) ||
-						(!ignoreList && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients())));
-								
+					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients()))
+					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients())));
 		}
 		
 		private boolean ignoreListCheck(Mail mail){
