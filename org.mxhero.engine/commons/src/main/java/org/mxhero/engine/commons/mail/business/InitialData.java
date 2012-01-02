@@ -1,6 +1,7 @@
 package org.mxhero.engine.commons.mail.business;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Represents data that wont change in a specific phase of a mail processing.
@@ -15,10 +16,10 @@ public class InitialData {
 	private User fromSender;
 	
 	private User recipient;
+	
+	private List<User> recipientsInHeaders;
 
 	private Date sentDate;
-	
-	private Date receivedDate;
 	
 	private String phase = RulePhase.SEND;
 
@@ -87,20 +88,6 @@ public class InitialData {
 	}
 
 	/**
-	 * @return the receivedDate
-	 */
-	public Date getReceivedDate() {
-		return receivedDate;
-	}
-
-	/**
-	 * @param receivedDate the receivedDate to set
-	 */
-	public void setReceivedDate(Date receivedDate) {
-		this.receivedDate = receivedDate;
-	}
-
-	/**
 	 * @return the phase
 	 */
 	public String getPhase() {
@@ -112,6 +99,14 @@ public class InitialData {
 	 */
 	public void setPhase(String phase) {
 		this.phase = phase;
+	}
+
+	public List<User> getRecipientsInHeaders() {
+		return recipientsInHeaders;
+	}
+
+	public void setRecipientsInHeaders(List<User> recipientsInHeaders) {
+		this.recipientsInHeaders = recipientsInHeaders;
 	}
 
 }
