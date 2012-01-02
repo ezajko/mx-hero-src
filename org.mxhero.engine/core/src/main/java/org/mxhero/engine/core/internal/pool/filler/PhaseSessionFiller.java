@@ -1,7 +1,10 @@
 package org.mxhero.engine.core.internal.pool.filler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.commons.finders.UserFinder;
@@ -10,6 +13,7 @@ import org.mxhero.engine.commons.mail.business.Domain;
 import org.mxhero.engine.commons.mail.business.MailFlow;
 import org.mxhero.engine.commons.mail.business.User;
 import org.mxhero.engine.core.internal.mail.InitialDataVO;
+import org.mxhero.engine.core.internal.mail.MailUtils;
 import org.mxhero.engine.core.internal.mail.MailVO;
 
 /**
@@ -161,12 +165,38 @@ public class PhaseSessionFiller implements SessionFiller {
 			mail.setSenderGroup(sender.getGroup());
 			mail.setRecipientGroup(recipient.getGroup());
 			
-			initialData = new InitialDataVO(mail, sender, recipient, from);
+			List<User> recipientsInHeader = new ArrayList<User>();
+			
+			try {
+				for(String address : MailUtils.toStringCollection(mail.getMessage().getAllRecipients())){
+					recipientsInHeader.add(getUser(userFinder,address));
+				}
+			} catch (MessagingException e) {
+			}
+			
+			initialData = new InitialDataVO(mail, sender, recipient, from, recipientsInHeader);
 		}
 		
 		return initialData;
 	}
 
 
+	private User getUser(UserFinder userFinder, String email){
+		User user = userFinder.getUser(email);
+		if(user==null){
+			user = new User();
+			user.setMail(email);
+			user.setManaged(false);
+			user.setAliases(new HashSet<String>());
+			user.getAliases().add(email);
+			user.setDomain(new Domain());
+			user.getDomain().setId(email.substring(email.indexOf(DIV_CHAR) + 1).trim());
+			user.getDomain().setManaged(false);
+			user.getDomain().setAliases(new HashSet<String>());
+			user.getDomain().getAliases().add(email);
+		}
+		return user;
+	}
+	
 }
 
