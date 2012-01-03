@@ -56,7 +56,7 @@ sub configure
 	# MASTER.CF
 	# List of possible master.cf file locations - good for Ubuntu, Debian, Redhat.
 	# TODO: suse the same?
-	my @postfixCfFiles = qw(/etc/postfix/master.cf /opt/zimbra/postfix/conf/master.cf);
+	my @postfixCfFiles = qw(/opt/zimbra/postfix/conf/master.cf /etc/postfix/master.cf);
 	my $term = Term::ReadLine->new( 'mxHero' );
 	my $bool;
 	
