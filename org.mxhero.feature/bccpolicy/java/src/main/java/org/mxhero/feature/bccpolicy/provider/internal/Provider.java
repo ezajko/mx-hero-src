@@ -10,6 +10,7 @@ import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
+import org.mxhero.engine.commons.rules.FromInHeaders;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 
 public class Provider extends RulesByFeature{
@@ -21,8 +22,8 @@ public class Provider extends RulesByFeature{
 			
 	@Override
 	protected CoreRule createRule(Rule rule) {
-		CoreRule coreRule = this.getDefault(rule);
-		
+		CoreRule coreRule = new CoreRule(rule.getId(), this.getFeature().getBasePriority()+this.getPriority(rule.getFromDirection())+this.getPriority(rule.getToDirection()), (rule.getDomain()!=null)?rule.getDomain():rule.getAdminOrder());
+	
 		String action = null;
 		String returnMessage = "";
 		Boolean ignoreList = false;
@@ -37,6 +38,7 @@ public class Provider extends RulesByFeature{
 			}
 		}
 		
+		coreRule.addEvaluation(new FromInHeaders(rule.getFromDirection(), rule.getToDirection(), rule.getTwoWays()));
 		coreRule.addEvaluation(new BCCPEvaluation(ignoreList));
 		coreRule.addAction(new BCCPEAction(action,returnMessage,rule.getId(),this.getNoReplyEmail(rule.getDomain())));
 		
