@@ -201,6 +201,9 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	
 	
 	private Calendar dateToCalendar(Date date){
+		if(date==null){
+			return null;
+		}
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar;
