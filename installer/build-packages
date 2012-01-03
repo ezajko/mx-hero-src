@@ -15,6 +15,11 @@ my $rootFiles = "*.txt VERSION mxhero-installer conf installer-lib scripts binar
 
 # Action
 
+print "Generating VERSION file...\n";
+open (V, ">$myConfig{INSTALLER_PATH}/VERSION");
+print V "# DO NOT REMOVE OR ALTER THIS FILE\n$myConfig{MXHERO_INSTALL_VERSION}";
+close (V);
+
 if (! -d "$myConfig{INSTALLER_PATH}/binaries")
 {
 	die ("Could not find 'binaries' directory.");
@@ -35,11 +40,6 @@ if ((system ("tar --transform 's,^,$name64/,S' --exclude-vcs -czf $name64.tar.gz
 {
 	die ("Error building 64-bit package");
 }
-
-print "Generating VERSION file...\n";
-open (V, ">$myConfig{INSTALLER_PATH}/VERSION");
-print V "# DO NOT REMOVE OR ALTER THIS FILE\n$myConfig{MXHERO_INSTALL_VERSION}";
-close (V);
 
 print "Done!\n";
 
