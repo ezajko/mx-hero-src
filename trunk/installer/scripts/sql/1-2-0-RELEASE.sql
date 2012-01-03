@@ -1107,4 +1107,4 @@ DELIMITER ;
 
 GRANT ALL PRIVILEGES ON mxhero.* TO mxhero@'localhost' IDENTIFIED BY 'mxhero';
 GRANT ALL PRIVILEGES ON statistics.* TO mxhero@'localhost' IDENTIFIED BY 'mxhero';
-GRANT ALL PRIVILEGES ON attachmentlink.* TO attachmentlink@'localhost' IDENTIFIED BY 'attachmentlink';
+GRANT ALL PRIVILEGES ON attachments.* TO attachmentlink@'localhost' IDENTIFIED BY 'attachmentlink';
