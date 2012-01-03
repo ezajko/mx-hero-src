@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.formatters.NumberFormatter;
+			import mx.managers.DragManager;
+			import mx.messaging.messages.ErrorMessage;
+			import mx.resources.ResourceManager;
+			import mx.utils.StringUtil;
+			import mx.validators.NumberValidatorDomainType;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			public var validationError:String;
+			
+			private var initialProperties:ArrayCollection;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				returnTa.text=resourceManager.getString('attachmentlink','action.return.textarea.text');
+				loadData();
+			}
+			
+			public function isValid():Boolean{
+				if(returnCb.selected){
+					if(StringUtil.trim(returnTa.text).length<1){
+						validationError = resourceManager.getString('attachmentlink','error.return.message');
+						return false;
+					}
+				}
+				validationError="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				this.initialProperties=data;
+			}
+			
+			private function loadData():void{
+				if(initialProperties!=null){
+					var property:FeatureRuleProperty;
+					property=PropertyHelper.getProperty(initialProperties,'action.selection');
+					if(property!=null && property.propertyValue=='return'){
+						returnCb.selected=true;
+						returnTa.text=PropertyHelper.getProperty(initialProperties,'return.message').propertyValue;
+					} else {
+						returnCb.selected=false;
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				var property:FeatureRuleProperty = new FeatureRuleProperty();
+	
+				if(returnCb.selected){
+					property = new FeatureRuleProperty();
+					property.propertyKey='action.selection';
+					property.propertyValue='return';
+					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey='return.message';
+					property.propertyValue=returnTa.text;
+					properties.addItem(property);
+				} 
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey='locale';
+				property.propertyValue=ResourceManager.getInstance().localeChain[0];
+				properties.addItem(property);
+				
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return this.validationError;
+			}
+			
+			public function fixedTo():Boolean{
+				return true;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "anyone";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("attachmenttrack")]
+	</fx:Metadata>
+
+	<s:Label text="{resourceManager.getString('attachmenttrack','first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20" gap="20">
+		<s:VGroup>
+			<s:CheckBox id="returnCb" 
+						   label="{resourceManager.getString('attachmenttrack','action.return.label')}"
+						   selected="true"/>
+			<s:VGroup paddingLeft="18">
+				<s:Label 
+					paddingTop="5"
+					text="{resourceManager.getString('attachmenttrack','action.return.textarea.title')}"
+					fontStyle="italic"/>
+				<s:TextArea id="returnTa"
+							editable="true" 
+							enabled="{returnCb.selected}"
+							width="350"/>			
+			</s:VGroup>
+		</s:VGroup>
+	</s:VGroup>
+</mx:Module>
