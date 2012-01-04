@@ -33,21 +33,21 @@ sub install
 	
 	# Set message_size_limit (in postfix and mxhero)
 
-	my $sizeInBytes = int($reply) * 1024 * 1024;
+	my $sizeInKBytes = int($reply) * 1024 * 1024;
 	my %entry;
 
 	if ( &mxHero::Tools::zimbraCheck() ) {
 		print "\n*** NOTE FOR ZIMBRA INSTALLATIONS ***\n";
 		print "You can change maximum size email configuration by running the command:\n";
 		print "\t# su - zimbra\n";
-		print "\t\$ zmprov mcf zimbraMtaMaxMessageSize $sizeInBytes zimbraFileUploadMaxSize $sizeInBytes\n\n";
+		print "\t\$ zmprov mcf zimbraMtaMaxMessageSize $sizeInKBytes zimbraFileUploadMaxSize $sizeInKBytes\n\n";
 
 		my $term = Term::ReadLine->new( 'mxHero' );
 		my $bool = $term->ask_yn( prompt => T("The installer can submit this command now? "),
 					   default  => 'y');
 
 		if ( $bool ) {
-			system( "su - zimbra -c 'zmprov mcf zimbraMtaMaxMessageSize $sizeInBytes zimbraFileUploadMaxSize $sizeInBytes'" );
+			system( "su - zimbra -c 'zmprov mcf zimbraMtaMaxMessageSize $sizeInKBytes zimbraFileUploadMaxSize $sizeInKBytes'" );
 		}
 	}
 	elsif (! -f $myConfig{CURRENT_POSTFIX_MAIN_CF})
@@ -66,7 +66,7 @@ sub install
 
 	if (! &mxHero::Tools::zimbraCheck())
 	{
-		%entry = ( "message_size_limit" => $sizeInBytes );
+		%entry = ( "message_size_limit" => $sizeInKBytes );
 
 		if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{CURRENT_POSTFIX_MAIN_CF}, \%entry, '=' ) ) {
 			warn "Failed to add Postfix message_size_limit. Aborting installation.\n";
@@ -74,7 +74,7 @@ sub install
 		}
 	}
 
-	%entry = ( "messageMaxSize" => $sizeInBytes );
+	%entry = ( "messageMaxSize" => $sizeInKBytes );
 
 	if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{MXHERO_POSTFIX_CONFIG}, \%entry, '=' ) ) {
 		warn "Failed to add Hero Attach messageMaxSize config. Aborting installation.\n";

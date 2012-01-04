@@ -18,16 +18,7 @@ sub install
 {
 	my $errorRef = $_[0];
 
-	my $dirName;
-
-	if ($Config{archname} =~ m/x86_64/)
-	{
-		$dirName = $myConfig{JDK_X64_DIRNAME};
-	}
-	else
-	{
-		$dirName = $myConfig{JDK_X86_DIRNAME};
-	}
+	my $dirName = &_getJDKDirName();
 
 	myPrint T("Installing JDK...(takes time)"), "\n";
 	# my $cwd = cwd();
@@ -59,8 +50,37 @@ sub install
 sub upgrade
 {
 	my $errorRef = $_[0];
-	
-	# TODO:  BRUNO - verify that JDK of the correct version is already installed 
+
+	my $dirName = &_getJDKDirName();
+
+	if (!-d "$myConfig{MXHERO_PATH}/$dirName") # differente version, must upgrade
+	{
+		myPrint T("Upgrading JDK...(takes time)"), "\n";
+
+		if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$dirName $myConfig{MXHERO_PATH}/$dirName")) != 0)
+		{
+			$$errorRef = T("Failed to copy java files");
+		        return 0;
+		}
+
+		if (! unlink ("$myConfig{MXHERO_PATH}/java"))
+		{
+			$$errorRef = T("Failed to remove symlink to old java dir");
+		        return 0;
+		}
+		
+		if (! symlink ("$myConfig{MXHERO_PATH}/$dirName", "$myConfig{MXHERO_PATH}/java"))
+		{
+			$$errorRef = T("Failed to symlink java dir");
+		        return 0;
+		}
+		
+		if ((system ("chown -R mxhero: $myConfig{MXHERO_PATH}/$dirName")) != 0)
+		{
+			$$errorRef = T("Failed to chown java");
+			return 0;
+		}
+	}
 	
 	return 1;
 }
@@ -70,6 +90,22 @@ sub configure
 	my $errorRef = $_[0];
 	
 	return 1;
+}
+
+sub _getJDKDirName
+{
+	my $dirName;
+
+	if ($Config{archname} =~ m/x86_64/)
+	{
+		$dirName = $myConfig{JDK_X64_DIRNAME};
+	}
+	else
+	{
+		$dirName = $myConfig{JDK_X86_DIRNAME};
+	}
+
+	return $dirName;
 }
 
 # my $progressCopyDir; # destination
