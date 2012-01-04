@@ -71,6 +71,20 @@ package org.mxhero.console.reports.presentation.reports
 			}
 		}
 		
+		public function filterAccount(accountFilter:String):void{
+			if(context.selectedDomain==null){
+				dispatcher(new GetAccountsEvent(null,accountFilter));
+			}else{
+				dispatcher(new GetAccountsEvent(context.selectedDomain.domain,accountFilter));
+			}
+		}
+		
+		public function filterDomain(domainFilter:String):void{
+			if(context.selectedDomain==null){
+				dispatcher(new GetDomainsEvent(domainFilter));
+			}
+		}
+		
 		public function goBack():void{
 			fromDirection=new FeatureRuleDirection();
 			toDirection=new FeatureRuleDirection();

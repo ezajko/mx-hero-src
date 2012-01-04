@@ -156,6 +156,8 @@
 								   adminOrder="after"
 								   id="fromTo"
 								   showAdminPriority="false"
+								   changeAccountFunction="{model.filterAccount}"
+								   changeDomainFunction="{model.filterDomain}"
 								   creationComplete="fromTo_creationCompleteHandler(event)"/>
 					<s:HGroup paddingLeft="80" gap="20">
 						<s:HGroup verticalAlign="middle">
