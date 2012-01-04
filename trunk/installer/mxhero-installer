@@ -137,6 +137,11 @@ else # upgrade
 			&mxHero::HeroAttach::upgrade ( \$error )
 			)
 		{
+			if ( ! copy( "$myConfig{INSTALLER_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
+				warn $!;
+				print "\n\n!! MXHERO INSTALL FAILED !!\n\n";
+				exit 1;
+			}
 			print T("\n!! MXHERO UPGRADED !!"),"\n"; # Success message
 			print T("Remember to restart services.")."\n\n";
 	
