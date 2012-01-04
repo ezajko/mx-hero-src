@@ -33,6 +33,7 @@ $myConfig{MXHERO_PATH} = '/opt/mxhero';
 $myConfig{TOMCAT_WEBAPPS_PATH} = '/var/lib/tomcat6/webapps';
 $myConfig{MXHERO_POSTFIX_CONFIG} = $myConfig{MXHERO_PATH} . '/configuration/properties/org.mxhero.engine.plugin.postfixconnector.cfg';
 $myConfig{MXHERO_HEROATTACH_CONFIG} = $myConfig{MXHERO_PATH} . '/configuration/properties/org.mxhero.engine.plugin.attachmentlink.cfg';
+$myConfig{MXHERO_STATISTICS_CONFIG} = $myConfig{MXHERO_PATH} . '/configuration/properties/org.mxhero.engine.plugin.statistics.cfg';
 $myConfig{CURRENT_POSTFIX_MAIN_CF} = '/etc/postfix/main.cf'; # only a default value
 
 1;

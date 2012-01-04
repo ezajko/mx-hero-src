@@ -83,6 +83,10 @@ sub mxHeroVersion
 	#	$version = "1.0.0";
 	#}
 
+	# XXX: hack: some old packages with 1.2.0.RELEASE was released as 1.1.0.RELEASE
+	# We have no upgrades before 1.2.0.RELEASE
+	$version = '1.2.0.RELEASE' if ($version eq '1.1.0.RELEASE');
+
 	return $version;
 }
 
@@ -440,12 +444,13 @@ sub _getVersion
 			warn $!;
 			return 0;
 		}
-		while ( $version = <F> ) {
-			next if $version =~ /^\s*\#/ || $version =~ /^\s*$/;
+		while ( <F> ) {
+			next if $_ =~ /^\s*\#/ || $_ =~ /^\s*$/m;
+			$_ =~ /[\w\.]+/m;
+			$version = $&;
 			last;
 		}
 		close F;
-		chomp($version);
 	}
 
 	return $version;
