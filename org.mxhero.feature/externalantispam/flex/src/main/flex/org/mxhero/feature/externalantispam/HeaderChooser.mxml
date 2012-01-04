@@ -30,7 +30,9 @@
 			
 			[Bindable]
 			private var antispams:ArrayCollection = 
-				new ArrayCollection([{label:'Barracuda',id:'0',header:'X-Barracuda-Spam-Status',value:'(?i)\\s*Yes\\s*,.*'},
+				new ArrayCollection([
+					{label:'Anti Spam SMTP Proxy',id:'7',header:'X-Assp-Spam',value:'(?i)\\s*TRUE\\s*'},
+					{label:'Barracuda',id:'0',header:'X-Barracuda-Spam-Status',value:'(?i)\\s*Yes\\s*,.*'},
 					{label:'Brightmail',id:'1',header:'X-BrightMail-Spam-Flag',value:'(?i)\\s*YES\\s*'},
 					{label:'Cloudmark',id:'2',header:'X-CMAE-Score',value:'(?i)\\s*100.*'},
 					{label:'Ironport',id:'3',header:'X-IronPort-SPAM',value:'(?i)\\s*SPAM\\s*'},
