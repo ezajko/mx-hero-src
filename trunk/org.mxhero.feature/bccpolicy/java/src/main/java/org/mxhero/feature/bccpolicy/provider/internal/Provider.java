@@ -12,8 +12,12 @@ import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.FromInHeaders;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Provider extends RulesByFeature{
+	
+	private static Logger log = LoggerFactory.getLogger(Provider.class);
 	
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String RETURN_MESSAGE = "return.message";
@@ -55,22 +59,27 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
 					&& mail.getHeaders()!=null
 					&& mail.getRecipients()!=null
 					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients()))
 					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients())));
+			log.debug("eva result:"+result);
+			return result;
 		}
 		
 		private boolean ignoreListCheck(Mail mail){
-			String undisclosedPattern = ".*undisclosed-recipients.*";
+			String undisclosedPattern = "(?i).*undisclosed.*";
+			log.debug("TO header:"+mail.getHeaders().getHeaderValue(Message.RecipientType.TO.toString()));
 			if(mail.getHeaders().hasHeader(Message.RecipientType.TO.toString())
 					&& mail.getHeaders().getHeaderValue(Message.RecipientType.TO.toString()).matches(undisclosedPattern)){
+				log.debug("TO undisclosed");
 				return true;
 			}
+			log.debug("CC header:"+mail.getHeaders().getHeaderValue(Message.RecipientType.CC.toString()));
 			if(mail.getHeaders().hasHeader(Message.RecipientType.CC.toString())
 					&& mail.getHeaders().getHeaderValue(Message.RecipientType.CC.toString()).matches(undisclosedPattern)){
+				log.debug("CC undisclosed");
 				return true;
 			}
 			if(mail.getHeaders().hasHeader("List-Id")||
@@ -80,6 +89,7 @@ public class Provider extends RulesByFeature{
 					mail.getHeaders().hasHeader("List-Post")||
 					mail.getHeaders().hasHeader("List-Owner")||
 					mail.getHeaders().hasHeader("List-Archive")){
+				log.debug("List");
 				return true;
 			}
 			return false;
