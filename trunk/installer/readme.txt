@@ -39,10 +39,23 @@ IMPORTANT NOTES
 
 This installer has only been tested on Ubuntu 10.04, Debian 6 and CentOS 6.
 
+UPGRADING TO 1.2.1
+
+If you are upgrading from 1.2.0 the script will upgrade you installation 'in-place'.
+
+If you are upgrading from a version OLDER than 1.2.0 then the installer will proceed with a *NEW* installation. This will delete old database tables of statistics, configured rules, etc.
+
+Known Bugs in 1.2.1
+
+The combo box used in creating rules and some reports does not allow for manual text input. You can begin typing in an address but you will then need to select one of the value in the subsequent drop down for your input to take effect.
+
+This has been corrected for 1.3.0.
+
 UPGRADING TO 1.2.0
 
 Due to significant changes in code and database structure, there is no
 upgrade from ealier versions to 1.2.0.
 
 From 1.2.0 forward we are committed to enabling smooth in-place upgrading.
+
 
