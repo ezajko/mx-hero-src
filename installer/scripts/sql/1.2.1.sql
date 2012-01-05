@@ -1,3 +1,5 @@
+GRANT ALL PRIVILEGES ON attachments.* TO attachmentlink@'localhost' IDENTIFIED BY 'attachmentlink';
+
 ALTER TABLE `statistics`.`mail_records` DROP COLUMN `sent_date` , DROP COLUMN `received_date` , CHANGE COLUMN `bcc_recipeints` `bcc_recipients` LONGTEXT NULL DEFAULT NULL  , CHANGE COLUMN `cc_recipeints` `cc_recipients` LONGTEXT NULL DEFAULT NULL  , CHANGE COLUMN `from_recipeints` `from_recipients` VARCHAR(255) NULL DEFAULT NULL  , CHANGE COLUMN `ng_recipeints` `ng_recipients` LONGTEXT NULL DEFAULT NULL  , CHANGE COLUMN `to_recipeints` `to_recipients` LONGTEXT NULL DEFAULT NULL, ADD COLUMN `sender_group` VARCHAR(255) NULL  AFTER `flow` , ADD COLUMN `recipient_group` VARCHAR(255) NULL  AFTER `sender_group`;
 
 ALTER TABLE `statistics`.`mail_records` ADD COLUMN `server_name` VARCHAR(255) NOT NULL DEFAULT 'MXHERO'  AFTER `record_sequence` , DROP PRIMARY KEY , ADD PRIMARY KEY (`insert_date`, `record_sequence`, `server_name`) ;
