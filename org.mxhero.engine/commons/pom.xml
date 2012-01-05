@@ -31,8 +31,10 @@
 	<dependencies>
 		<dependency>
 			<type>pom</type>
-			<groupId>${parent.groupId}</groupId>
+			<groupId>org.mxhero.engine.build</groupId>
 			<artifactId>provision</artifactId>
+			<version>1.2.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
