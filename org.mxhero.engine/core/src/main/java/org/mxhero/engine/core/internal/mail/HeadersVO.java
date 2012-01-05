@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.ParameterList;
-import javax.mail.internet.ParseException;
 
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.Headers;
