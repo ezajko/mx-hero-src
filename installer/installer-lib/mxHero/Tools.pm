@@ -83,9 +83,9 @@ sub mxHeroVersion
 	#	$version = "1.0.0";
 	#}
 
-	# XXX: hack: some old packages with 1.2.0.RELEASE was released as 1.1.0.RELEASE
+	# XXX: hack: some old packages with 1.2.0.RELEASE was released as 1.1.0.XYZ
 	# We have no upgrades before 1.2.0.RELEASE
-	$version = '1.2.0.RELEASE' if ($version eq '1.1.0.RELEASE');
+	$version = '1.2.0.RELEASE' if ($version =~ /^1\.1\.0\./);
 
 	return $version;
 }
