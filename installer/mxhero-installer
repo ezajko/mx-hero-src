@@ -127,6 +127,7 @@ if ( ! &mxHero::Tools::mxHeroVersion() )
 else # upgrade
 {
 	if (
+			&mxHero::App::confirmUpgrade ( \$error ) &&
 			&mxHero::MySQL::upgrade ( \$error ) &&
 			&mxHero::Tomcat::upgrade ( \$error ) &&
 			&mxHero::Postfix::upgrade ( \$error ) &&
@@ -139,7 +140,7 @@ else # upgrade
 		{
 			if ( ! copy( "$myConfig{INSTALLER_PATH}/VERSION" , $myConfig{MXHERO_PATH} ) ) {
 				warn $!;
-				print "\n\n!! MXHERO INSTALL FAILED !!\n\n";
+				print "\n\n!! MXHERO UPGRADE FAILED !!\n\n";
 				exit 1;
 			}
 			print T("\n!! MXHERO UPGRADED !!"),"\n"; # Success message
