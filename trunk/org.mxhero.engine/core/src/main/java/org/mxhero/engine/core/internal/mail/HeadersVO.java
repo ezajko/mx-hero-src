@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.ParameterList;
+import javax.mail.internet.ParseException;
 
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.Headers;
@@ -74,6 +76,7 @@ public class HeadersVO extends Headers{
 	 * @param header
 	 * @param value
 	 */
+	@Override
 	public boolean addHeader(String header, String value){
 		try {
 			this.mimeMail.getMessage().addHeader(header, value);
@@ -83,7 +86,7 @@ public class HeadersVO extends Headers{
 			return false;
 		}
 	}
-
+	
 	/**
 	 * @param header
 	 */
