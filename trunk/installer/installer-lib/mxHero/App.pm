@@ -65,16 +65,37 @@ sub install
 	return &configure( $errorRef );
 }
 
+sub confirmUpgrade
+{
+	my $errorRef = $_[0];
+
+	my $oldVersion = &mxHero::Tools::mxHeroVersion();
+	my $newVersion = &mxHero::Tools::mxHeroInstallerVersion();
+
+	my $term = Term::ReadLine->new( 'mxHero' );
+	my $bool = $term->ask_yn (prompt => T("mxHero is going to be upgraded from $oldVersion to $newVersion. Continue?"), default  => 'y');
+
+	if (! $bool)
+	{
+		$$errorRef = T("mxHero application upgrade cancelled by user");
+		return 0;
+	}
+
+	return 1;
+}
+
 sub upgrade
 {
 	my $errorRef = $_[0];
 
+	my $oldVersion = &mxHero::Tools::mxHeroVersion();
+
 	## BACKEND
 
-	system ("/etc/init.d/mxhero stop");
-	sleep (5);
+	myPrint T("Copying new mxHero files..."), "\n";
 
-	my $oldVersion = &mxHero::Tools::mxHeroVersion();
+	`/etc/init.d/mxhero stop 2>&1 > /dev/null`;
+	sleep (5);
 
 	rename ("$myConfig{MXHERO_PATH}/bundles", "$myConfig{MXHERO_PATH}/$oldVersion-bundles");
 	system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/bundles $myConfig{MXHERO_PATH}");
