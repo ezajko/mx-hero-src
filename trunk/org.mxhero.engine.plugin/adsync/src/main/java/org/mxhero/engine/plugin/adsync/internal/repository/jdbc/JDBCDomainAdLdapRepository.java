@@ -191,7 +191,9 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		
 		template.getJdbcOperations().update(sql, new Object[]{account, domainId, SYNC_TYPE});
 		String aliasSql = " INSERT INTO account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
-						" VALUES (?,?,NOW(),?,?,?) ";
+						" VALUES (?,?,NOW(),?,?,?) " +
+						" ON DUPLICATE KEY UPDATE " +
+						" created=VALUES(created), data_source=VALUES(data_source), account=VALUES(account), domain_id=VALUES(domain_id)";
 		for(String mail : aliases){
 			String accountName = mail.split("@")[0].trim();
 			String domainName = mail.split("@")[1].trim();
