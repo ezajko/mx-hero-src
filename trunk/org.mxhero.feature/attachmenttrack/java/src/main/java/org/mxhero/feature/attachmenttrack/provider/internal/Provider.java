@@ -10,16 +10,20 @@ import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.commons.util.HeaderUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Provider extends RulesByFeature{
 
+	private static Logger log = LoggerFactory.getLogger(Provider.class);
+	
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_RETURN = "return";
 	private static final String RETURN_MESSAGE = "return.message";	
 	private static final String LOCALE = "locale";
 	private static final String DEFAULT_LOCALE = "en_US";
 	private static final String HEADER = "X-mxHero-Actions";
-	private static final String HEADER_VALUE = "attachmmentTrack";
+	private static final String HEADER_VALUE = "attachmentTrack";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
@@ -51,14 +55,21 @@ public class Provider extends RulesByFeature{
 		
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result =  mail.getState().equalsIgnoreCase(MailState.DELIVER)
 			&& !mail.getProperties().containsKey("org.mxhero.feature.attachmentlink")
 			&& !mail.getProperties().containsKey("org.mxhero.feature.attachmenttrack")
 			&& mail.getHeaders()!=null
 			&& mail.getAttachments()!=null
 			&& mail.getAttachments().isAttached()
 			&& (mail.getSubject().getSubject().matches("(?i)\\s*\\[\\s*mxatt\\s*\\]\\s*.*") ||
-				HeaderUtils.parseParameters(HEADER, HEADER_VALUE)!=null);
+				HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE)!=null);
+			log.debug("eval="+result);
+			log.debug("has header="+mail.getHeaders().hasHeader(HEADER));
+			log.debug("is attached="+mail.getAttachments().isAttached());
+			log.debug("match subject="+mail.getSubject().getSubject().matches("(?i).*\\[\\s*mxatt\\s*\\]\\s*.*") );
+			log.debug("header value="+HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE));
+			
+			return result;
 		}
 	}
 	
@@ -81,11 +92,13 @@ public class Provider extends RulesByFeature{
 		public void exec(Mail mail) {
 			Result result = mail.cmd("org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand",locale,Boolean.toString(notify),message);
 			if(!mail.getState().equalsIgnoreCase(MailState.REQUEUE)){
+				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst("(?i)\\s*\\[\\s*mxatt\\s*\\]\\s*", ""));
 				mail.getHeaders().addHeader("X-mxHero-AttachmentTrack","rule="+ruleId+";result="+result.isTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
 				mail.getProperties().put("org.mxhero.feature.attachmenttrack", ruleId.toString());
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmentlink",Boolean.toString(result.isResult()) );
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmenttrack",Boolean.toString(result.isResult()) );
+				log.debug("exec, attached");
 			}
 		}
 	}
