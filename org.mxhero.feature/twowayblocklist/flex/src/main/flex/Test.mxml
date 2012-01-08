@@ -45,7 +45,7 @@
 	<s:Scroller verticalScrollPolicy="on" width="100%" height="100%">
 		<s:VGroup>
 			<mx:ModuleLoader id="moduleLoader"
-							 url="org/mxhero/feature/spamassassin/SpamAssassin.swf" 
+							 url="org/mxhero/feature/twowayblocklist/TwoWayBlockList.swf" 
 							 ready="moduleloader1_readyHandler(event)">
 				
 			</mx:ModuleLoader>
