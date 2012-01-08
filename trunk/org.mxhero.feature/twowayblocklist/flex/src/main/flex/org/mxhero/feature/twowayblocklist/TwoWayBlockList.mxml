@@ -14,6 +14,7 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
+		<s:RadioButtonGroup id="blockGroup"/>
 		<mx:EmailValidator id="emailV" required="true"/>
 		<mx:RegExpValidator id="domainV" required="true" expression="{Regex.domainRegex}"/>
 	</fx:Declarations>
@@ -141,6 +142,14 @@
 						returnRb.selected=true;
 						returnTa.text=PropertyHelper.getProperty(initialProperties,"return.text").propertyValue;
 					}
+					var blockGroup:String = PropertyHelper.getProperty(initialProperties,"block.group").propertyValue;
+					if(blockGroup=="senders"){
+						sendersRb.selected=true;
+					}else if(blockGroup=="recipients"){
+						recipientsRb.selected=true;
+					}else if(blockGroup=="both"){
+						bothRb.selected=true;
+					}
 				}
 			}
 			
@@ -169,6 +178,17 @@
 					properties.addItem(property);
 				}
 				
+				property = new FeatureRuleProperty();
+				property.propertyKey = "block.group";
+				if(sendersRb.selected){
+					property.propertyValue = "senders";
+				}else if(recipientsRb.selected){
+					property.propertyValue = "recipients";
+				}else{
+					property.propertyValue = "both";
+				}
+				properties.addItem(property);
+				
 				return properties;
 			}
 			
@@ -181,7 +201,7 @@
 			}
 			
 			public function fixedFrom():Boolean{
-				return true;
+				return false;
 			}
 			
 			public function fixedToValue():String{
@@ -189,7 +209,7 @@
 			}
 			
 			public function fixedFromValue():String{
-				return "anyone";
+				return "";
 			}
 		]]>
 	</fx:Script>
@@ -202,7 +222,11 @@
 	
 	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
 		
-
+		<s:HGroup gap="15" paddingBottom="15">
+			<s:RadioButton groupName="blockGroup" id="sendersRb" label="{resourceManager.getString(MODULE_NAME,'block.group.senders')}" fontWeight="bold" selected="true" fontSize="16"/>
+			<s:RadioButton groupName="blockGroup" id="recipientsRb" label="{resourceManager.getString(MODULE_NAME,'block.group.recipients')}" fontWeight="bold" fontSize="16"/>
+			<s:RadioButton groupName="blockGroup" id="bothRb" label="{resourceManager.getString(MODULE_NAME,'block.group.both')}" fontWeight="bold" fontSize="16"/>
+		</s:HGroup>
 		
 		<mx:Form defaultButton="{addEmailBtt}" 
 				 paddingLeft="0" paddingRight="0" 
@@ -261,18 +285,6 @@
 				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>	
-		<s:HGroup width="100%" verticalAlign="top">
-			<s:CheckBox id="bothCB" 
-						label=""
-						selected="false"/>
-			<component:LabelExpanded
-				paddingTop="5"
-				labelText="{resourceManager.getString(MODULE_NAME,'lists.label.text')}"
-				expandedText="{resourceManager.getString(MODULE_NAME,'lists.label.expanded')}"
-				explainText="{resourceManager.getString(MODULE_NAME,'label.explain')}"
-				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
-				width="100%"/>
-		</s:HGroup>
 		<mx:Spacer height="20"/>
 		
 	</s:VGroup>
