@@ -108,7 +108,7 @@
 			[Bindable]
 			private var options:ArrayCollection;
 			
-			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, IF(s.stat_key='sender',r0.from_recipients,r0.sender) as `label`" 
+			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, IF(s.stat_key='sender',r0.from_recipients,r0.recipient) as `label`" 
 				+" FROM mail_records r0 " 
 				+" INNER JOIN mail_stats s"
 				+" ON s.insert_date = r0.insert_date AND s.record_sequence = r0.record_sequence AND s.stat_key = 'org.mxhero.feature.twowayblocklist'"
