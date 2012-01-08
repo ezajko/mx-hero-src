@@ -114,7 +114,7 @@
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.blocklist.sender' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.twowayblocklist' ) ";
 			
 			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
 				+" r0.to_recipients, r0.cc_recipients, r0.bcc_recipients, " 
@@ -125,7 +125,7 @@
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.blocklist.sender' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.twowayblocklist' ) ";
 
 				
 			public function setResult(queryId:String, result:*):void{
@@ -156,8 +156,8 @@
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
 				options = 
-					new ArrayCollection([{label:resourceManager.getString('blocklist_report','last.week'),value:'week'}, 
-						{label:resourceManager.getString('blocklist_report','today'),value:'today'}]);
+					new ArrayCollection([{label:resourceManager.getString('twowayblocklist_report','last.week'),value:'week'}, 
+						{label:resourceManager.getString('twowayblocklist_report','today'),value:'today'}]);
 				periodBar.selectedIndex=1;
 			}
 			
@@ -230,7 +230,7 @@
 			  paddingTop="40">
 		<s:Label 
 			fontSize="18" fontWeight="bold" 
-			text="{resourceManager.getString('blocklist_report','title')}" />
+			text="{resourceManager.getString('twowayblocklist_report','title')}" />
 		<mx:Spacer width="100%"/>
 		<s:ButtonBar id="periodBar"
 					 buttonMode="true" 
@@ -261,8 +261,8 @@
 			<mx:horizontalAxis>
 				
 				<mx:LinearAxis id="qtyAxis" 
-							   displayName="{resourceManager.getString('blocklist_report','amount.axis')}"  
-							   title="{resourceManager.getString('blocklist_report','amount.axis')}" 
+							   displayName="{resourceManager.getString('twowayblocklist_report','amount.axis')}"  
+							   title="{resourceManager.getString('twowayblocklist_report','amount.axis')}" 
 							   />
 			</mx:horizontalAxis>
 			
@@ -271,8 +271,8 @@
 				<mx:CategoryAxis
 					id="emailAxis"
 					categoryField="Email"
-					displayName="{resourceManager.getString('blocklist_report','emails.axis')}"
-					title="{resourceManager.getString('blocklist_report','emails.axis')}"
+					displayName="{resourceManager.getString('twowayblocklist_report','emails.axis')}"
+					title="{resourceManager.getString('twowayblocklist_report','emails.axis')}"
 					/>
 			</mx:verticalAxis>
 			
@@ -330,7 +330,7 @@
 			</mx:series>
 			
 		</mx:BarChart>
-		<s:Label text="{resourceManager.getString('blocklist_report','emails.title')}" 
+		<s:Label text="{resourceManager.getString('twowayblocklist_report','emails.title')}" 
 				 fontWeight="bold" fontSize="16"
 				 paddingLeft="50"/>
 		<s:HGroup width="100%" paddingLeft="50" height="100%">
