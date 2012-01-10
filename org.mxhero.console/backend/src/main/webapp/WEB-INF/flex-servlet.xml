@@ -11,10 +11,10 @@
  	<bean id="javaToFlexExceptionTranslator" class="org.mxhero.console.backend.infrastructure.JavaToFlexExceptionTranslator"/>
  
 	<flex:message-broker>
-		<flex:exception-translator ref="javaToFlexExceptionTranslator"/>
+		<flex:exception-translator ref="javaToFlexExceptionTranslator" />
 		<flex:message-service
 			default-channels="flex-amf" />
-		<flex:secured per-client-authentication="true"/>
+		<flex:secured per-client-authentication="false"/>
 	</flex:message-broker>
 
 </beans>
