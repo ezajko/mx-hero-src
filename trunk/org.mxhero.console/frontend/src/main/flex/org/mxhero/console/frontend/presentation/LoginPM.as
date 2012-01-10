@@ -2,13 +2,21 @@ package org.mxhero.console.frontend.presentation
 {
 	import mx.rpc.events.FaultEvent;
 	
+	import org.mxhero.console.frontend.application.event.IsAuthenticadedEvent;
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
 	import org.mxhero.console.frontend.application.event.LoginEvent;
 	import org.mxhero.console.frontend.application.event.RecoverPasswordEvent;
+	import org.mxhero.console.frontend.application.message.ViewChangedMessage;
 
 	[Landmark(name="main.login")]
 	public class LoginPM
 	{	
+		[Bindable]
+		[Inject]
+		public var mainView:MainViewPM;
+		[Bindable]
+		public var hasToAuthenticated:Boolean=false;
+		
 		[MessageDispatcher]
 		public var dispatcher:Function;
 
@@ -36,6 +44,13 @@ package org.mxhero.console.frontend.presentation
 			dispatcher(new RecoverPasswordEvent(mail));
 		}
 
+		[Enter(time="first")]
+		public function enter():void
+		{
+			hasToAuthenticated=false;
+			dispatcher(new IsAuthenticadedEvent());
+		}
+		
 		[Exit]
 		public function exit():void
 		{
@@ -43,5 +58,14 @@ package org.mxhero.console.frontend.presentation
 			this.mail="";
 		}
 
+		[CommandResult]
+		public function isAuthenticadedResult (result:*, event:IsAuthenticadedEvent) : void {
+			if(result==true){
+				mainView.loginResult(null,null);
+				hasToAuthenticated=false;
+			}else{
+				hasToAuthenticated=true;
+			}
+		}
 	}
 }

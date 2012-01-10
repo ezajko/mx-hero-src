@@ -3,7 +3,10 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:parsley="http://www.spicefactory.org/parsley" 
-		 xmlns:cairngorm="http://ns.adobe.com/cairngorm" xmlns:component="org.mxhero.console.commons.component.*" xmlns:component1="org.mxhero.console.commons.feature.component.*"
+		 xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
+		 xmlns:component="org.mxhero.console.commons.component.*" 
+		 xmlns:component1="org.mxhero.console.commons.feature.component.*"
+		 visible="{model.hasToAuthenticated}"
 		 >
 	
 	<fx:Metadata>
