@@ -17,6 +17,8 @@ public interface ApplicationUserService {
 	@Secured("ROLE_DOMAIN_ADMIN")
 	public ApplicationUserVO getUser();
 
+	public boolean isAuthenticated();
+	
 	public void sendPassword(String email);
 
 }

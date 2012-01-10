@@ -5,23 +5,44 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
 	<http entry-point-ref="entryPoint">
-		<anonymous enabled="false" />
+		<anonymous enabled="false"/>
+		<custom-filter position="PRE_AUTH_FILTER" ref="preAuthenticatedTSProcessingFilter"/>
+		<intercept-url pattern="/preauth.jsp" access="ROLE_DOMAIN_ADMIN" />
 	</http>
 
 	<beans:bean id="entryPoint"
 		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
 
-	<beans:bean id="jdbcUserDetailsService" class="org.mxhero.console.backend.security.JdbcUserDetailsService"/>
+	<beans:bean id="jdbcUserDetailsService"
+		class="org.mxhero.console.backend.security.JdbcUserDetailsService" />
 
-	<beans:bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"/>
+	<beans:bean
+		class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
-	<global-method-security
-		secured-annotations="enabled" jsr250-annotations="enabled" />
+	<global-method-security secured-annotations="enabled"
+		jsr250-annotations="enabled" />
 
-	<authentication-manager>
-		<authentication-provider user-service-ref="jdbcUserDetailsService">
-			<password-encoder hash="md5"/>
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider ref="preauthAuthProvider" />
+		<authentication-provider user-service-ref="jdbcUserDetailsService" >
+			<password-encoder hash="md5" />
 		</authentication-provider>
 	</authentication-manager>
+
+
+	<beans:bean id="preAuthenticatedTSProcessingFilter" class="org.mxhero.console.backend.security.PreAuthFilter">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
+
+	<beans:bean id="preauthAuthProvider"
+		class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<beans:property name="preAuthenticatedUserDetailsService">
+			<beans:bean id="userDetailsServiceWrapper"
+				class="org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper">
+				<beans:property name="userDetailsService" ref="jdbcUserDetailsService" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
 
 </beans:beans>

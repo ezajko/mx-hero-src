@@ -11,6 +11,7 @@ import org.mxhero.console.backend.repository.UserRepository;
 import org.mxhero.console.backend.vo.ApplicationUserVO;
 import org.mxhero.console.backend.vo.AuthorityVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -40,6 +41,7 @@ public class JdbcUserDetailsServiceTest {
 	private AuthenticationManager manager;
 	
 	@Autowired
+	@Qualifier("jdbcUserDetailsService")
 	private UserDetailsService service;
 	
 	@Before

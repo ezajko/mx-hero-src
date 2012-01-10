@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -114,6 +115,16 @@ public class JdbcApplicationUserService implements ApplicationUserService {
 				user.getNotifyEmail(), 
 				config);
 		userRepository.setPassword(newPassword, user.getId());
+	}
+
+
+	@Override
+	public boolean isAuthenticated() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth==null){
+			return false;
+		}
+		return auth.isAuthenticated();
 	}
 	
 
