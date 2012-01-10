@@ -1,13 +1,22 @@
 package org.mxhero.console.backend.security;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.mxhero.console.backend.repository.SystemPropertyRepository;
 import org.mxhero.console.backend.vo.SystemPropertyVO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-public class PreAuthFilter extends AbstractPreAuthenticatedProcessingFilter{
+public class PreAuthServlet extends HttpServlet {
 
 	private final static String LOGIN_NAME = "loginname";
 	private final static String DOMAIN = "domain";
@@ -20,22 +29,35 @@ public class PreAuthFilter extends AbstractPreAuthenticatedProcessingFilter{
 	private final static String PRE_AUTH_EXPIRES = "preauth.expires";
 	public final static long PRE_AUTH_EXPIRES_DEFAULT = 300000;
 	
-	@Autowired
 	private SystemPropertyRepository propertyRepository;
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		doAction(req,resp);
+	}
 	
 	@Override
-	protected Object getPreAuthenticatedCredentials(HttpServletRequest request) {
-		return request.getParameter(PREAUTH);
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		doAction(req,resp);
+	}	
+	
+	private void doAction(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException{
+		ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+		AuthenticationManager manager = (AuthenticationManager)context.getBean("authenticationManager");
+		propertyRepository = context.getBean(SystemPropertyRepository.class);
+		String principal = getPrincipal(request.getParameter(LOGIN_NAME),request.getParameter(DOMAIN),request.getParameter(TIMESTAMP),request.getParameter(EXPIRES),request.getParameter(PREAUTH));
+		if(principal!=null && !principal.isEmpty()){
+			Authentication auth = new PreAuthenticatedAuthenticationToken(principal,request.getParameter(PREAUTH));
+			auth = manager.authenticate(auth);
+			if(auth.isAuthenticated()){
+				SecurityContextHolder.getContext().setAuthentication(auth);
+			}
+		}
+		resp.sendRedirect(request.getContextPath());
 	}
-
-	@Override
-	protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-		setContinueFilterChainOnUnsuccessfulAuthentication(Boolean.TRUE);
-		setCheckForPrincipalChanges(Boolean.TRUE);
-		setInvalidateSessionOnPrincipalChange(Boolean.TRUE);
-		return getPrincipal(request.getParameter(LOGIN_NAME),request.getParameter(DOMAIN),request.getParameter(TIMESTAMP),request.getParameter(EXPIRES),request.getParameter(PREAUTH));
-	}
-
+	
 	private String getPrincipal(Object loginName, Object domain, Object timestamp, Object expires, Object preauth){
 		//check parameters
 		if(loginName==null || loginName.toString().trim().isEmpty() || 
@@ -62,9 +84,9 @@ public class PreAuthFilter extends AbstractPreAuthenticatedProcessingFilter{
 		}
 		return loginName.toString().trim();
 	}
-
+	
 	private String getPreauthKey(){
-		SystemPropertyVO property = getPropertyRepository().findById(PRE_AUTH_KEY);
+		SystemPropertyVO property = propertyRepository.findById(PRE_AUTH_KEY);
 		if(property==null){
 			return PER_AUTH_DEFAULT;
 		}
@@ -72,19 +94,10 @@ public class PreAuthFilter extends AbstractPreAuthenticatedProcessingFilter{
 	}
 
 	private Long getExpires(){
-		SystemPropertyVO property = getPropertyRepository().findById(PRE_AUTH_EXPIRES);
+		SystemPropertyVO property = propertyRepository.findById(PRE_AUTH_EXPIRES);
 		if(property==null){
 			return PRE_AUTH_EXPIRES_DEFAULT;
 		}
 		return Long.parseLong(property.getPropertyValue());
 	}
-	
-	public SystemPropertyRepository getPropertyRepository() {
-		return propertyRepository;
-	}
-
-	public void setPropertyRepository(SystemPropertyRepository propertyRepository) {
-		this.propertyRepository = propertyRepository;
-	}
-	
 }

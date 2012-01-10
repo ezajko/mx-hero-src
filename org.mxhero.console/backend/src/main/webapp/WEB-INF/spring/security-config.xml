@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-	<http entry-point-ref="entryPoint">
+	<http entry-point-ref="entryPoint" authentication-manager-ref="authenticationManager">
 		<anonymous enabled="false"/>
-		<custom-filter position="PRE_AUTH_FILTER" ref="preAuthenticatedTSProcessingFilter"/>
-		<intercept-url pattern="/preauth.jsp" access="ROLE_DOMAIN_ADMIN" />
 	</http>
 
 	<beans:bean id="entryPoint"
@@ -20,19 +18,14 @@
 		class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
 	<global-method-security secured-annotations="enabled"
-		jsr250-annotations="enabled" />
+		jsr250-annotations="enabled" authentication-manager-ref="authenticationManager"/>
 
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider ref="preauthAuthProvider" />
 		<authentication-provider user-service-ref="jdbcUserDetailsService" >
 			<password-encoder hash="md5" />
 		</authentication-provider>
+		<authentication-provider ref="preauthAuthProvider" />
 	</authentication-manager>
-
-
-	<beans:bean id="preAuthenticatedTSProcessingFilter" class="org.mxhero.console.backend.security.PreAuthFilter">
-		<beans:property name="authenticationManager" ref="authenticationManager" />
-	</beans:bean>
 
 	<beans:bean id="preauthAuthProvider"
 		class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
