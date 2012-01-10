@@ -21,6 +21,7 @@
 			import org.mxhero.console.frontend.application.command.GetAccountsCommand;
 			import org.mxhero.console.frontend.application.command.GetDomainGroupsCommand;
 			import org.mxhero.console.frontend.application.command.GetDomainsCommand;
+			import org.mxhero.console.frontend.application.command.IsAuthenticadedCommand;
 			import org.mxhero.console.frontend.application.command.LoadInitialDataCommand;
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
@@ -46,6 +47,7 @@
 		<parsley:DynamicCommand type="{ GetDomainsCommand }"/>
 		<parsley:DynamicCommand type="{ GetDomainGroupsCommand }"/>
 		<parsley:DynamicCommand type="{ ProcessQueryCommand }"/>
+		<parsley:DynamicCommand type="{ IsAuthenticadedCommand }"/>
 		
 		<!--<data:DataCache/>-->
 		<domain:ApplicationContext/>
@@ -129,8 +131,8 @@
 		
 		<s:ChannelSet id="channelSet">
 			<s:channels>
-				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
-				<!--<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>-->
+				<!--<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>-->
+				<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>
 			</s:channels>
 		</s:ChannelSet>
 

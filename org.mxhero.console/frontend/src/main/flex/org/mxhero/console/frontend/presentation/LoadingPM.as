@@ -4,7 +4,6 @@ package org.mxhero.console.frontend.presentation
 	import mx.resources.ResourceManager;
 	
 	import org.mxhero.console.frontend.application.event.LoadInitialDataEvent;
-	import org.mxhero.console.frontend.application.event.LoginEvent;
 	import org.mxhero.console.frontend.application.message.LoadingMessage;
 	import org.mxhero.console.frontend.application.resources.LoadingProperties;
 

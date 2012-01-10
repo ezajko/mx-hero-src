@@ -3,6 +3,7 @@ package org.mxhero.console.frontend.application.task
 	import flash.net.registerClassAlias;
 	
 	import mx.collections.ArrayCollection;
+	import mx.messaging.messages.RemotingMessage;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	import mx.rpc.AsyncToken;
@@ -49,12 +50,14 @@ package org.mxhero.console.frontend.application.task
 		}
 		
 		public function onResult(result:ResultEvent):void{
-			applicationContext.applicationUser = result.result as ApplicationUser;
-			applicationContext.selectedDomain=applicationContext.applicationUser.domain;
-			service.removeEventListener(ResultEvent.RESULT,onResult);
-			dispatcher(new LanguageChangedMessage(applicationContext.applicationUser.locale));
-			applicationContext.locales=new ArrayCollection(rm.getString(CommonsProperties.NAME,CommonsProperties.LOCALES).split(";"));
-			complete();
+			if((result.token.message as RemotingMessage).operation=="getUser"){
+				applicationContext.applicationUser = result.result as ApplicationUser;
+				applicationContext.selectedDomain=applicationContext.applicationUser.domain;
+				service.removeEventListener(ResultEvent.RESULT,onResult);
+				dispatcher(new LanguageChangedMessage(applicationContext.applicationUser.locale));
+				applicationContext.locales=new ArrayCollection(rm.getString(CommonsProperties.NAME,CommonsProperties.LOCALES).split(";"));
+				complete();
+			}
 		}
 		
 		public function onFault(fault:FaultEvent):void{
