@@ -156,8 +156,8 @@
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
 				options = 
-					new ArrayCollection([{label:resourceManager.getString('limituserdestinations_report','last.week'),value:'week'}, 
-						{label:resourceManager.getString('limituserdestinations_report','today'),value:'today'}]);
+					new ArrayCollection([{label:resourceManager.getString('copybysender_report','last.week'),value:'week'}, 
+						{label:resourceManager.getString('copybysender_report','today'),value:'today'}]);
 				periodBar.selectedIndex=1;
 			}
 			
