@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30"
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*">
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="blockType"/>
+		<mx:EmailValidator id="emailV" required="true"/>
+		<mx:RegExpValidator id="domainV" required="true" expression="{Regex.domainRegex}"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.DragManager;
+			import mx.messaging.messages.ErrorMessage;
+			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.Regex;
+			
+			public var validationError:String;
+			
+			private static const MODULE_NAME:String = "copybysender";
+			
+			private var initialProperties:ArrayCollection;
+			
+			[Bindable]
+			public var emails:ArrayCollection=new ArrayCollection();
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadData();
+			}
+
+			protected function addEmailBtt_clickHandler(event:MouseEvent):void
+			{
+				var textToValidate:String = StringUtil.trim(emailTi.text).replace(/^[@]+/,"");
+				var isEmail:Boolean = true;		
+				var isDomain:Boolean = true;
+				var results:Array=null;
+				
+				results=emailV.validate(textToValidate).results;
+				if(results!=null){
+					if(results.length>0){
+						for each(var result:ValidationResult in results){
+							if(result.isError){
+								emailTi.errorString= result.errorMessage;
+								isEmail=false;
+							}
+						}
+					}
+				}
+				
+				if(!isEmail){
+					results=domainV.validate(textToValidate).results;
+					if(results!=null){
+						if(results.length>0){
+							for each(var domainResult:ValidationResult in results){
+								if(domainResult.isError){
+									emailTi.errorString= domainResult.errorMessage;
+									isDomain=false;
+								}
+							}
+						}
+					}
+					if(isDomain){
+						textToValidate="@"+textToValidate;
+					}
+				}
+				if(!isDomain && !isEmail){
+					return;
+				}
+				
+				emailTi.errorString= "";
+				
+				for each(var object:Object in emails){
+					if(object.toString()==textToValidate){
+						emailTi.errorString=resourceManager.getString(MODULE_NAME,'duplicate.email.domain');
+						return;
+					}
+				}
+				emails.addItem(textToValidate);
+				emailTi.text="";
+			}
+			
+			public function isValid():Boolean{
+				if(emails.length<1){
+					validationError = resourceManager.getString(MODULE_NAME,'error.emails.empty');
+					emailsDg.errorString = validationError;
+					return false;
+				}
+				emailsDg.errorString = "";
+				validationError="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initialProperties=data;
+			}
+			
+			private function loadData():void{
+				if(initialProperties!=null){
+					for each(var property:Object in PropertyHelper.getProperties(initialProperties,"email.list")){
+						emails.addItem(property.propertyValue);
+					}
+					if(PropertyHelper.getProperty(initialProperties,"subject.pattern")!=null){
+						subjectPatterntTI.text=PropertyHelper.getProperty(initialProperties,"subject.pattern").propertyValue;
+					} else {
+						subjectPatterntTI.text="";
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				var property:FeatureRuleProperty;
+				
+				for each(var object:Object in emails){
+					property = new FeatureRuleProperty();
+					property.propertyKey = "email.list";
+					property.propertyValue = object.toString();
+					properties.addItem(property);
+				}
+				property = new FeatureRuleProperty();
+				property.propertyKey = "subject.pattern";
+				property.propertyValue = subjectPatterntTI.text;
+				properties.addItem(property);
+
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return this.validationError;
+			}
+			
+			public function fixedTo():Boolean{
+				return true;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "owndomain";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("copybysender")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString(MODULE_NAME,'first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
+		
+		<mx:Form defaultButton="{addEmailBtt}" 
+				 paddingLeft="0" paddingRight="0" 
+				 paddingTop="0" paddingBottom="0"
+				 width="100%">
+			<component:LabelExpanded
+				labelText="{resourceManager.getString(MODULE_NAME,'email.label.text')}"
+				expandedText="{resourceManager.getString(MODULE_NAME,'email.label.expanded')}"
+				explainText="{resourceManager.getString(MODULE_NAME,'label.explain')}"
+				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
+				width="100%"/>
+			<s:HGroup width="100%">
+				<s:TextInput id="emailTi" 
+							 width="100%"/>
+				<s:Button id="addEmailBtt" 
+						  label="{resourceManager.getString(MODULE_NAME,'email.add')}"
+						  buttonMode="true"
+						  click="addEmailBtt_clickHandler(event)"/>							
+			</s:HGroup>
+		</mx:Form>
+		
+		<mx:DataGrid id="emailsDg"
+					 dataProvider="{emails}" 
+					 width="100%"
+					 height="250">
+			<mx:columns>
+				<mx:DataGridColumn dataField="email" headerText="{resourceManager.getString(MODULE_NAME,'email.label.text')}"/>
+				<mx:DataGridColumn width="48" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<fx:Script>
+									<![CDATA[
+										import flash.events.MouseEvent;
+										
+										[Bindable]
+										[Embed(source="/org/mxhero/feature/copybysender/delete.png")]
+										public static var DELETE:Class;
+										
+										protected function remove_clickHandler(event:MouseEvent):void
+										{
+											outerDocument.emails.removeItemAt(outerDocument.emails.getItemIndex(outerDocument.emailsDg.selectedItem));
+										}
+									]]>
+								</fx:Script>
+								<mx:Image source="{DELETE}"
+										  buttonMode="true"
+										  toolTip="{resourceManager.getString('limituserdestination','remove.tooltip')}"
+										  click="remove_clickHandler(event)"/>
+							</mx:HBox>		  
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>	
+		
+	</s:VGroup>
+	
+	<s:Label text="{resourceManager.getString(MODULE_NAME,'second.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20" gap="20">
+		<s:Label text="{resourceManager.getString(MODULE_NAME,'subject.pattern.label')}"/>
+		<s:TextInput id="subjectPatterntTI"/>
+	</s:VGroup>
+</mx:Module>
