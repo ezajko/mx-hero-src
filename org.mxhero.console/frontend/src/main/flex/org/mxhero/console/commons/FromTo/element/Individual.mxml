@@ -51,6 +51,8 @@
 			[Bindable]
 			public var model:ApplicationContext;
 			
+			[Bindable]
+			public var changeFunction:Function;
 			
 			protected function item_clickHandler(event:MouseEvent):void
 			{
@@ -163,6 +165,7 @@
 							 labelFunction="{accountLabelFunction}"
 							 validator="{emailValidator}"
 							 showLabelFunction="{realAccountLabelFunction}"
+							 changeFunction="{changeFunction}"
 							 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_INDIVIDUAL_NOT_VALID)}"
 							 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 							 width="100%"

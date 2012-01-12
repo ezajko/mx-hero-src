@@ -54,6 +54,9 @@
 			[Bindable]
 			public var model:ApplicationContext;
 			
+			[Bindable]
+			public var changeFunction:Function;
+			
 			public var notifyChange:Function;
 
 			public var parentStateFunction:Function;
@@ -156,6 +159,7 @@
 							 labelTooltip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_EDIT_TOOLTIP)}"
 							 width="100%"
 							 labelField="alias"
+							 changeFunction="{changeFunction}"
 							 itemNotSelectedError="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_DOMAIN_NOT_VALID)}"
 							 currentStateChange="ipeComboBox_currentStateChangeHandler(event)"/>					
 		</s:VGroup>

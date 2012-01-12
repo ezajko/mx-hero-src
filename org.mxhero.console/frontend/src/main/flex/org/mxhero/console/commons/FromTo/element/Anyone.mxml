@@ -7,6 +7,7 @@
 				   verticalAlign="middle" 
 				   xmlns:parsley="http://www.spicefactory.org/parsley" 
 				   xmlns:element="org.mxhero.console.commons.FromTo.element.*">
+
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
@@ -17,6 +18,9 @@
 			public var parentStateFunction:Function;
 			
 			public var childState:String;
+			
+			[Bindable]
+			public var isClickEnabled:Boolean = true;
 			
 			public var notifyChange:Function;
 			
@@ -99,9 +103,11 @@
 				  verticalAlign="middle"
 				  paddingLeft="5"
 				  paddingRight="5">
-			<s:CheckBox 
+			<mx:CheckBox 
 						id="anyoneelse"
+						enabled="{isClickEnabled}"
 						selected="@{isSelected}"
+						disabledColor="#FFFFFF"
 						label="{checkboxLabel(model.selectedDomain)}"
 						valueCommit="anyoneelse_valueCommitHandler(event)"
 						toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_CHECKBOX_TOOLTIP)}"/>

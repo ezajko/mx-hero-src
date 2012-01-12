@@ -97,14 +97,19 @@
 					domainSelector.checkRestrictionFunction=checkRestricted;
 					domainSelector.direction=fromDirection;
 					if(feature!=null && feature.fixedFrom()){
+						domainSelector.isClickEnabled=false;
 						if(feature.fixedFromValue()==FeatureRuleDirection.ANYONE){
 							domainSelector.direction.directionType=FeatureRuleDirection.ANYONE;
 							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
-							fromHeigth=0;
 						}else if(feature.fixedFromValue()==FeatureRuleDirection.ANYONEELSE){
 							domainSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
 							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-							fromHeigth=0;
+						}else if(feature.fixedToValue()==FeatureRuleDirection.OWNDOMAIN){
+							domainSelector.direction.directionType=FeatureRuleDirection.DOMAIN;
+							domainSelector.direction.freeValue=context.selectedDomain.domain;
+							domainSelector.direction.domain=context.selectedDomain.domain;
+							domainSelector.direction.group=null;
+							domainSelector.direction.account=null;
 						}
 					}
 					upperSelector=domainSelector;
@@ -116,16 +121,20 @@
 					domainSelector.checkRestrictionFunction=checkRestricted;
 					domainSelector.direction=toDirection;
 					if(feature!=null && feature.fixedTo()){
+						domainSelector.isClickEnabled=false;
 						if(feature.fixedToValue()==FeatureRuleDirection.ANYONE){
 							domainSelector.direction.directionType=FeatureRuleDirection.ANYONE;
 							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
-							toHeigth=0;
 						}else if(feature.fixedToValue()==FeatureRuleDirection.ANYONEELSE){
 							domainSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
 							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-							toHeigth=0;
+						}else if(feature.fixedToValue()==FeatureRuleDirection.OWNDOMAIN){
+							domainSelector.direction.directionType=FeatureRuleDirection.DOMAIN;
+							domainSelector.direction.freeValue=context.selectedDomain.domain;
+							domainSelector.direction.domain=context.selectedDomain.domain;
+							domainSelector.direction.group=null;
+							domainSelector.direction.account=null;
 						}
-						
 					}
 					lowerSelector=domainSelector;
 					lowerContainer.removeAllElements();
@@ -139,14 +148,19 @@
 					adminSelector.checkRestrictionFunction=checkRestricted;
 					adminSelector.direction=fromDirection;
 					if(feature!=null && feature.fixedFrom()){
+						adminSelector.isClickEnabled=false;
 						if(feature.fixedFromValue()==FeatureRuleDirection.ANYONE){
 							adminSelector.direction.directionType=FeatureRuleDirection.ANYONE;
 							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
-							fromHeigth=0;
 						}else if(feature.fixedFromValue()==FeatureRuleDirection.ANYONEELSE){
 							adminSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
 							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-							fromHeigth=0;
+						}else if(feature.fixedToValue()==FeatureRuleDirection.OWNDOMAIN){
+							adminSelector.direction.directionType=FeatureRuleDirection.ALLDOMAINS;
+							adminSelector.direction.freeValue=FeatureRuleDirection.ALLDOMAINS;
+							adminSelector.direction.account=null;
+							adminSelector.direction.group=null;
+							adminSelector.direction.domain=null;
 						}
 					}
 					upperSelector=adminSelector;
@@ -160,14 +174,19 @@
 					adminSelector.checkRestrictionFunction=checkRestricted;
 					adminSelector.direction=toDirection;
 					if(feature!=null && feature.fixedTo()){
+						adminSelector.isClickEnabled=false;
 						if(feature.fixedToValue()==FeatureRuleDirection.ANYONE){
 							adminSelector.direction.directionType=FeatureRuleDirection.ANYONE;
 							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONE;
-							toHeigth=0;
 						}else if(feature.fixedToValue()==FeatureRuleDirection.ANYONEELSE){
 							adminSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
 							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-							toHeigth=0;
+						}else if(feature.fixedToValue()==FeatureRuleDirection.OWNDOMAIN){
+							adminSelector.direction.directionType=FeatureRuleDirection.ALLDOMAINS;
+							adminSelector.direction.freeValue=FeatureRuleDirection.ALLDOMAINS;
+							adminSelector.direction.account=null;
+							adminSelector.direction.group=null;
+							adminSelector.direction.domain=null;
 						}
 					}
 					lowerSelector=adminSelector;
@@ -220,14 +239,16 @@
 				if(feature==null){
 					return true;
 				}
-				return !feature.fixedFrom() && !refreshing;
+				//return !feature.fixedFrom() && !refreshing;
+				return !refreshing;
 			}
 			
 			private function hasToShowDown(feature:Object,refreshing:Boolean):Boolean{
 				if(feature==null){
 					return true;
 				}
-				return !feature.fixedTo() && !refreshing;
+				//return !feature.fixedTo() && !refreshing;
+				return !refreshing;
 			}
 			
 			private function hasToShowTwoWays(feature:Object,refreshing:Boolean):Boolean{

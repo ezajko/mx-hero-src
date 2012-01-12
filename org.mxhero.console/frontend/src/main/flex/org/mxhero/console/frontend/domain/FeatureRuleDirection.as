@@ -10,6 +10,7 @@ package org.mxhero.console.frontend.domain
 		public static const ANYONE:String="anyone";
 		public static const ANYONEELSE:String="anyoneelse";
 		public static const ALLDOMAINS:String="alldomains";
+		public static const OWNDOMAIN:String="owndomain";
 		
 		public var id:Number;
 		public var directionType:String;

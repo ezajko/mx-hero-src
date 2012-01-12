@@ -21,35 +21,14 @@
 			
 			public var checkRestrictionFunction:Function;
 			
-			private var _changeAccountFunction:Function;
+			[Bindable]
+			public var changeAccountFunction:Function;
 			
-			private var _changeDomainFunction:Function;
+			[Bindable]
+			public var changeDomainFunction:Function;
 			
-			public function get changeAccountFunction():Function
-			{
-				return _changeAccountFunction
-			}
-			
-			public function set changeAccountFunction(value:Function):void
-			{
-				_changeAccountFunction = value;
-				if(individualFT!=null && individualFT.ipeComboBox != null){
-					this.individualFT.ipeComboBox.changeFunction = value;
-				}
-			}
-			
-			public function get changeDomainFunction():Function
-			{
-				return _changeDomainFunction
-			}
-			
-			public function set changeDomainFunction(value:Function):void
-			{
-				_changeDomainFunction = value;
-				if(domainFT!=null && domainFT.ipeComboBox != null){
-					this.domainFT.ipeComboBox.changeFunction = value;
-				}
-			}
+			[Bindable]
+			public var isClickEnabled:Boolean=true;
 			
 			[Bindable]
 			public var direction:FeatureRuleDirection;
@@ -67,10 +46,12 @@
 			
 			protected function clickHandler(fromState:String):void
 			{
-				if(currentState==fromState){
-					currentState="all";
-				} else {
-					currentState=fromState;
+				if(isClickEnabled){
+					if(currentState==fromState){
+						currentState="all";
+					} else {
+						currentState=fromState;
+					}
 				}
 			}
 			
@@ -199,9 +180,7 @@
 				if(direction==null){
 					return;
 				}
-				this.domainFT.ipeComboBox.changeFunction = _changeDomainFunction;
-				this.individualFT.ipeComboBox.changeFunction = _changeAccountFunction;
-				
+
 				domainFT.currentState="inactive";
 				individualFT.currentState="inactive";
 				groupFT.currentState="inactive";
@@ -313,12 +292,15 @@
 					excludeFrom="domain,group,individual" 
 					currentState.anyone="active"
 					notifyChange="{notifyChange}"
-					enabled="{!isRestricted}"/>
+					enabled="{!isRestricted}"
+					isClickEnabled="{isClickEnabled}"
+					/>
 	
 	<element:Domain id="domainFT" 
 					parentStateFunction="{clickHandler}"
 					childState="domain"
 					excludeFrom="anyone,group,individual"
+					changeFunction="{changeDomainFunction}"
 					notifyChange="{notifyChange}"/>
 	<element:AccountsGroup id="groupFT" 
 						   parentStateFunction="{clickHandler}"
@@ -329,6 +311,7 @@
 						parentStateFunction="{clickHandler}"
 						childState="individual"
 						excludeFrom="anyone,domain,group"
+						changeFunction="{changeAccountFunction}"
 						notifyChange="{notifyChange}"/>
 	
 	<component1:GlowButton 
