@@ -12,6 +12,19 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace component "org.mxhero.console.commons.feature.component.*";
+		
+		.instantaliasTitleStyle { 
+			fontSize: 16;
+			color: #FFFFFF;
+			fontWeight:bold;
+		}
+		
+	</fx:Style>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -99,13 +112,16 @@
 							 expandedText="{resourceManager.getString('instantalias','alias.separator.explain')}"
 							 explainText="{resourceManager.getString('instantalias','label.explain')}"
 							 hideText="{resourceManager.getString('instantalias','label.hide')}"
-							 fontSize="16" 
-							 fontWeight="bold" width="400"/>
+							 expandedLabelStyleName="instantaliasTitleStyle"
+							 width="400"/>
 
-	<s:VGroup gap="10" paddingLeft="24" width="400">
-		<s:HGroup width="100%" verticalAlign="top">
-			<s:Label text="{resourceManager.getString('instantalias','separator.charaters.list')}"/>
-			<s:DropDownList id="charatersDdl" width="50" textAlign="center" dataProvider="{separators}" selectedIndex="2"/>
+	<s:VGroup gap="10" paddingLeft="24" width="400" verticalAlign="middle">
+		<s:HGroup width="100%" verticalAlign="top" gap="10">
+			<s:Label height="100%" verticalAlign="middle" text="{resourceManager.getString('instantalias','separator.charaters.list')}"/>
+			<s:DropDownList id="charatersDdl" width="50" 
+							textAlign="center" dataProvider="{separators}" 
+							selectedIndex="1"
+							fontSize="16"/>
 		</s:HGroup>
 
 
