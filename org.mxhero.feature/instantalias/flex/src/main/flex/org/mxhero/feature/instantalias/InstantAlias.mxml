@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   verticalGap="10"
+		   paddingTop="40" 
+		   creationComplete="creationCompleteHandler(event)" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			private var errorMessage:String;
+			
+			private var initialProperties:ArrayCollection;
+			
+			[Bindable]
+			private var separators:ArrayCollection = new ArrayCollection(["-","+","=","_","'","."]);
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadProperties();
+			}
+			
+			public function isValid():Boolean{
+				return true;
+			}
+			
+			private function loadProperties():void{
+				if(initialProperties!=null){
+					var savedCharater:String = PropertyHelper.getProperty(initialProperties,'separation.charater').propertyValue;
+					var selectItem:Number = 1;
+					for (var i:int=0;i<separators.length;i++){
+						if(savedCharater==separators.getItemAt(i)){
+							selectItem=i;
+							break;
+						}
+					}
+					charatersDdl.selectedIndex=selectItem;
+				}
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initialProperties=data;
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+
+				var property:FeatureRuleProperty = new FeatureRuleProperty();
+				property.propertyKey="separation.charater";
+				property.propertyValue=charatersDdl.selectedItem;
+				properties.addItem(property);
+				
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return errorMessage;
+			}
+			
+			public function fixedTo():Boolean{
+				return true;
+			}
+			
+			public function fixedFrom():Boolean{
+				return true;
+			}
+			
+			public function fixedToValue():String{
+				return "anyone";
+			}
+			
+			public function fixedFromValue():String{
+				return "owndomain";
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("instantalias")]
+		[ResourceBundle("textLayout")]
+	</fx:Metadata>
+	
+	<component:LabelExpanded labelText="{resourceManager.getString('instantalias','first.title')}"
+							 expandedText="{resourceManager.getString('instantalias','alias.separator.explain')}"
+							 explainText="{resourceManager.getString('instantalias','label.explain')}"
+							 hideText="{resourceManager.getString('instantalias','label.hide')}"
+							 fontSize="16" 
+							 fontWeight="bold" width="400"/>
+
+	<s:VGroup gap="10" paddingLeft="24" width="400">
+		<s:HGroup width="100%" verticalAlign="top">
+			<s:Label text="{resourceManager.getString('instantalias','separator.charaters.list')}"/>
+			<s:DropDownList id="charatersDdl" width="50" textAlign="center" dataProvider="{separators}" selectedIndex="2"/>
+		</s:HGroup>
+
+
+	</s:VGroup>
+		
+</mx:Module>
