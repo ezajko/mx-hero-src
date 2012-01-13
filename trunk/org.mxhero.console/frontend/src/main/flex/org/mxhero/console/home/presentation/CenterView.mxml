@@ -34,7 +34,7 @@
 			protected function vgroup1_creationCompleteHandler(event:FlexEvent):void
 			{
 				options = 
-					new ArrayCollection([{label:resourceManager.getString(HomeProperties.NAME,HomeProperties.HOURS24_PERIOD),value:HomeViewPM.PERIOD_24HOURS}, 
+					new ArrayCollection([{label:resourceManager.getString(HomeProperties.NAME,HomeProperties.HOURS48_PERIOD),value:HomeViewPM.PERIOD_48HOURS}, 
 						{label:resourceManager.getString(HomeProperties.NAME,HomeProperties.HOUR_PERIOD),value:HomeViewPM.PERIOD_HOUR}]);
 				periodBar.selectedIndex=1;
 			}
