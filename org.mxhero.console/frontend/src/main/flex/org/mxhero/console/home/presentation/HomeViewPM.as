@@ -36,7 +36,7 @@ package org.mxhero.console.home.presentation
 		private static const DOMAIN_STATE:String = "domain";
 		private static const ADMIN_STATE:String = "admin";
 		private static const FILTER_STATE:String = "filter";
-		public static const PERIOD_24HOURS:String = "hours24";
+		public static const PERIOD_48HOURS:String = "hours48";
 		public static const PERIOD_HOUR:String = "hour";
 		
 		[Bindable]
@@ -144,11 +144,11 @@ package org.mxhero.console.home.presentation
 			this.outgoingActivity=null;
 			this.blockActivity=null;
 			this.totals=null;
-			if(period==PERIOD_24HOURS){
+			if(period==PERIOD_48HOURS){
 				timer.stop();
 				timer.reset();
 				this.hourSince=new Date();
-				this.hourSince.time = this.hourSince.time - 24*60*60*1000;
+				this.hourSince.time = this.hourSince.time - 48*60*60*1000;
 				this.hourSince.time = this.hourSince.setMinutes(0,0,0);
 				dispatcher(new GetActivityByHoursEvent(hourSince,domainFilter));
 				//24HOURSPERIOD
@@ -319,7 +319,7 @@ package org.mxhero.console.home.presentation
 		
 		private function translateActivityByHours(data:ArrayCollection):ArrayCollection{
 			var activityArray:ArrayCollection = new ArrayCollection();
-			for (var i:int=0;i<25;i++){
+			for (var i:int=0;i<49;i++){
 				var newDate:Date= new Date();
 				newDate.time=hourSince.time;
 				newDate.time=newDate.time+i*60*60*1000;

@@ -25,7 +25,7 @@ package org.mxhero.console.home.application.resources
 		public static const CENTER_TIPS_PANEL_TITLE:String ="center.tips.panel.title";
 		public static const CENTER_NEWS_CONTINUE_READING:String ="center.news.continue.reading";
 		public static const HOUR_PERIOD:String = "hour.period";
-		public static const HOURS24_PERIOD:String = "hours24.period";
+		public static const HOURS48_PERIOD:String = "hours48.period";
 		
 		public static const RIGTH_ACTIVITY_TITLE:String ="rigth.activity.title";
 		public static const RIGTH_MESSAGES_TITLE:String ="rigth.messages.title";
