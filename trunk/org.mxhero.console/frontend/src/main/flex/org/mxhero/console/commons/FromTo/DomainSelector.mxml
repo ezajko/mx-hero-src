@@ -28,6 +28,9 @@
 			public var changeDomainFunction:Function;
 			
 			[Bindable]
+			public var forceManaged:Boolean=false;
+			
+			[Bindable]
 			public var isClickEnabled:Boolean=true;
 			
 			[Bindable]
@@ -58,6 +61,9 @@
 			[Bindable(event="stateChanged")]
 			public function get isDomainManaged():Boolean
 			{
+				if(forceManaged){
+					return true;
+				}
 				if(currentState=="all" || currentState=="anyone"){
 					return false;
 				} else if (currentState=="domain" && 
@@ -172,7 +178,8 @@
 			
 			[Bindable(event="stateChanged")]
 			private function isRestrictedVisible(isSelected:Boolean,isRestricted:Boolean):Boolean{
-				return (!isSelected && isRestricted);
+				var returnValue:Boolean = (!isSelected && isRestricted);
+				return returnValue;
 			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
@@ -274,8 +281,8 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0"/>
-		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
+		<s:Resize id="fadeout" widthFrom="24" widthTo="0" duration="0"/>
+		<s:Resize id="fadein" widthFrom="0" widthTo="24" duration="0"/>
 	</fx:Declarations>
 	
 	<s:states>
@@ -301,7 +308,8 @@
 					childState="domain"
 					excludeFrom="anyone,group,individual"
 					changeFunction="{changeDomainFunction}"
-					notifyChange="{notifyChange}"/>
+					notifyChange="{notifyChange}"
+					isClickEnabled="{isClickEnabled}"/>
 	<element:AccountsGroup id="groupFT" 
 						   parentStateFunction="{clickHandler}"
 						   childState="group"
@@ -314,13 +322,16 @@
 						changeFunction="{changeAccountFunction}"
 						notifyChange="{notifyChange}"/>
 	
-	<component1:GlowButton 
-		source="{FeaturesImages.RESTRICTED}" 
-		visible="{isRestrictedVisible(isSelected,isRestricted)}" 
-		maxGlow="15.0"
-		toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RESTRICTED_TOOLTIP)}"
-		showEffect="{fadein}"
-		hideEffect="{fadeout}"/>
+	<s:HGroup gap="0">
+		<component1:GlowButton
+			id="restrictedImage"
+			source="{FeaturesImages.RESTRICTED}" 
+			visible="{isRestrictedVisible(isSelected,isRestricted)}" 
+			maxGlow="15.0"
+			toolTip="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.RESTRICTED_TOOLTIP)}"
+			showEffect="{fadein}"
+			hideEffect="{fadeout}"/>
+	</s:HGroup>
 	
 	<s:transitions>
 		<s:Transition fromState="all" toState="anyone"> 

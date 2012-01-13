@@ -44,6 +44,8 @@ package org.mxhero.console.features.application.resources
 		
 		public static const RESTRICTED_TOOLTIP:String="restricted.tooltip";
 		
+		public static const LOCKED_TOOLTIP:String="locked.tooltip";
+		
 		public static const GROUP_PROMT:String="group.promt";
 		
 		public static const FEATURE_MODULE_LOADING:String="feature.module.loading";

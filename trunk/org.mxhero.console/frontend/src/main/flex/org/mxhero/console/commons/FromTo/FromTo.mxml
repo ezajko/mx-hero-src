@@ -84,7 +84,7 @@
 				_showAdminPriority=value;
 			}
 			
-			public function refresh():void{
+			public function refresh(event:Event=null):void{
 				isRefreshing=true;
 				fromHeigth=DEFAULT_MAX_HEIGHT;
 				toHeigth=DEFAULT_MAX_HEIGHT;
@@ -96,6 +96,7 @@
 					domainSelector.changeAccountFunction=this.changeAccountFunction;
 					domainSelector.checkRestrictionFunction=checkRestricted;
 					domainSelector.direction=fromDirection;
+					domainSelector.forceManaged=false;
 					if(feature!=null && feature.fixedFrom()){
 						domainSelector.isClickEnabled=false;
 						if(feature.fixedFromValue()==FeatureRuleDirection.ANYONE){
@@ -104,12 +105,13 @@
 						}else if(feature.fixedFromValue()==FeatureRuleDirection.ANYONEELSE){
 							domainSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
 							domainSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-						}else if(feature.fixedToValue()==FeatureRuleDirection.OWNDOMAIN){
+						}else if(feature.fixedFromValue()==FeatureRuleDirection.OWNDOMAIN){
 							domainSelector.direction.directionType=FeatureRuleDirection.DOMAIN;
 							domainSelector.direction.freeValue=context.selectedDomain.domain;
 							domainSelector.direction.domain=context.selectedDomain.domain;
 							domainSelector.direction.group=null;
 							domainSelector.direction.account=null;
+							domainSelector.forceManaged=true;
 						}
 					}
 					upperSelector=domainSelector;
@@ -120,6 +122,7 @@
 					domainSelector.changeAccountFunction=this.changeAccountFunction;
 					domainSelector.checkRestrictionFunction=checkRestricted;
 					domainSelector.direction=toDirection;
+					domainSelector.forceManaged=false;
 					if(feature!=null && feature.fixedTo()){
 						domainSelector.isClickEnabled=false;
 						if(feature.fixedToValue()==FeatureRuleDirection.ANYONE){
@@ -134,6 +137,7 @@
 							domainSelector.direction.domain=context.selectedDomain.domain;
 							domainSelector.direction.group=null;
 							domainSelector.direction.account=null;
+							domainSelector.forceManaged=true;
 						}
 					}
 					lowerSelector=domainSelector;
@@ -147,6 +151,7 @@
 					adminSelector.changeDomainFunction=this.changeDomainFunction;
 					adminSelector.checkRestrictionFunction=checkRestricted;
 					adminSelector.direction=fromDirection;
+					adminSelector.forceManaged=false;
 					if(feature!=null && feature.fixedFrom()){
 						adminSelector.isClickEnabled=false;
 						if(feature.fixedFromValue()==FeatureRuleDirection.ANYONE){
@@ -155,12 +160,13 @@
 						}else if(feature.fixedFromValue()==FeatureRuleDirection.ANYONEELSE){
 							adminSelector.direction.directionType=FeatureRuleDirection.ANYONEELSE;
 							adminSelector.direction.freeValue=FeatureRuleDirection.ANYONEELSE;
-						}else if(feature.fixedToValue()==FeatureRuleDirection.OWNDOMAIN){
+						}else if(feature.fixedFromValue()==FeatureRuleDirection.OWNDOMAIN){
 							adminSelector.direction.directionType=FeatureRuleDirection.ALLDOMAINS;
 							adminSelector.direction.freeValue=FeatureRuleDirection.ALLDOMAINS;
 							adminSelector.direction.account=null;
 							adminSelector.direction.group=null;
 							adminSelector.direction.domain=null;
+							adminSelector.forceManaged=true;
 						}
 					}
 					upperSelector=adminSelector;
@@ -173,6 +179,7 @@
 					adminSelector.changeDomainFunction=this.changeDomainFunction;
 					adminSelector.checkRestrictionFunction=checkRestricted;
 					adminSelector.direction=toDirection;
+					adminSelector.forceManaged=false;
 					if(feature!=null && feature.fixedTo()){
 						adminSelector.isClickEnabled=false;
 						if(feature.fixedToValue()==FeatureRuleDirection.ANYONE){
@@ -187,6 +194,7 @@
 							adminSelector.direction.account=null;
 							adminSelector.direction.group=null;
 							adminSelector.direction.domain=null;
+							adminSelector.forceManaged=true;
 						}
 					}
 					lowerSelector=adminSelector;
