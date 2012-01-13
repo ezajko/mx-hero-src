@@ -107,13 +107,13 @@
 			[Bindable]
 			private var _emails:ArrayCollection;
 
-			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, r0.recipient as `label`" 
+			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, s.stat_value as `label`" 
 				+" FROM mail_records r0 " 
+				+" INNER JOIN mail_stats s ON r0.insert_date=s.insert_date "
+				+" AND r0.record_sequence=s.record_sequence "
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) "
-				+" AND EXISTS( SELECT 1 FROM mail_stats s "
-				+" WHERE s.insert_date = r0.insert_date " 
-				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.instantalias' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.instantalias.alias' ";
+			
 			
 			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
 				+" r0.to_recipients, r0.cc_recipients, r0.bcc_recipients, " 
@@ -201,7 +201,7 @@
 					params.push(domain,domain);
 					dataQuery = dataQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				dataQuery = dataQuery + " group by r0.recipient ORDER BY 1 DESC limit 10";
+				dataQuery = dataQuery + " group by s.stat_value ORDER BY 1 DESC limit 10";
 				
 				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
 				
