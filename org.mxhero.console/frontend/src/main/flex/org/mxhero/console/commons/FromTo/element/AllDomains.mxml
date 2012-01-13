@@ -3,10 +3,32 @@
 		  xmlns:s="library://ns.adobe.com/flex/spark" 
 		  xmlns:mx="library://ns.adobe.com/flex/mx" 
 		  xmlns:FromTo="org.mxhero.console.commons.FromTo.*" 
-		  xmlns:element="org.mxhero.console.commons.FromTo.element.*">
+		  xmlns:element="org.mxhero.console.commons.FromTo.element.*"
+		  creationComplete="hgroup1_creationCompleteHandler(event)"
+		  currentStateChange="hgroup1_currentStateChangeHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import mx.events.FlexEvent;
+			import mx.events.StateChangeEvent;
+			
 			import org.mxhero.console.features.application.resources.RuleViewProperties;
+			
+			public var isClickEnabled:Boolean=true;
+			
+			protected function hgroup1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(!isClickEnabled){
+					currentState="fixed";
+				}
+			}
+			
+			protected function hgroup1_currentStateChangeHandler(event:StateChangeEvent):void
+			{
+				if(!isClickEnabled){
+					currentState="fixed";
+				}
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -16,11 +38,18 @@
 	<s:states>
 		<s:State name="inactive"/>
 		<s:State name="active"/>
+		<s:State name="fixed"/>
 	</s:states>
 	
+	<s:Label includeIn="fixed" 
+			 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ALLDOMAINS_LABEL)}"
+			 paddingLeft="10" paddingRight="10" 
+			 paddingBottom="10" paddingTop="10"
+			 fontWeight="bold"/>
 	<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ALLDOMAINS_LABEL)}" 
 				  toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ALLDOMAINS_TOOLTIP)}" 
 				  toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
-				  width="150"/>
+				  width="150"
+				  excludeFrom="fixed"/>
 </s:HGroup>
 

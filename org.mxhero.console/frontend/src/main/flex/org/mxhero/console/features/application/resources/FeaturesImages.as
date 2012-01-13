@@ -14,6 +14,10 @@ package org.mxhero.console.features.application.resources
 		[Bindable]
 		public static var RESTRICTED:Class; 
 		
+		[Embed(source="/images/features/locked.png")] 
+		[Bindable]
+		public static var LOCKED:Class; 
+		
 		[Embed(source="/images/features/cancel.png")] 
 		[Bindable]
 		public static var CANCEL:Class; 
