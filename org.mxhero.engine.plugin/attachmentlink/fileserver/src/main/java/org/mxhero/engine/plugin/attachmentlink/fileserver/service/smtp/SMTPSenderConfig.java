@@ -9,6 +9,7 @@ public class SMTPSenderConfig {
 	private Boolean ssl;
 	private String user;
 	private String password;
+	private String signature;
 	
 	public String getHost() {
 		return host;
@@ -66,4 +67,12 @@ public class SMTPSenderConfig {
 		this.password = password;
 	}
 
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
+	}
+	
 }

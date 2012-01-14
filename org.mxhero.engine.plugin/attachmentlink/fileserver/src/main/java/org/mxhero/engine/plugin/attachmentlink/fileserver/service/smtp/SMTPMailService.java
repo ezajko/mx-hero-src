@@ -50,8 +50,13 @@ public class SMTPMailService implements MailService{
 	
 				}
 				sb.append(content.substring(lastIndex));
+				
+				if(config.getSignature()!=null && config.getSignature().trim()!=null){
+					sb.append(config.getSignature());
+				}
 				content=sb.toString();
 			}
+			
 			SMTPSender.send(contentDTO.getSubject(), content, contentDTO.getSenderMail(), contentDTO.getMessageId(), config);
 		}catch(Exception e){
 			log.error("error sending message to "+contentDTO.getSenderMail(),e);
