@@ -20,6 +20,7 @@
 		<property name="ssl" value="${smtp.ssl}"/>
 		<property name="user" value="${smtp.user}"/>
 		<property name="password" value="${smtp.password}"/>
+		<property name="signature" value="${smtp.signature}"/>
 	</bean>
 
 	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
