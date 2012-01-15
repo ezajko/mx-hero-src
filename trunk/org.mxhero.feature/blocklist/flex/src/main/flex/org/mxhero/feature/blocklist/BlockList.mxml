@@ -275,10 +275,16 @@
 			</mx:columns>
 		</mx:DataGrid>	
 		
-		<s:CheckBox id="twoWayCb"
-					textAlign="right" 
-					label="{resourceManager.getString(MODULE_NAME,'two.way.block')}" 
-					selected="false"/>
+		<s:HGroup verticalAlign="middle">
+			<s:CheckBox id="twoWayCb" 
+						selected="false"/>
+			<component:LabelExpanded
+				labelText="{resourceManager.getString(MODULE_NAME,'two.way.block')}"
+				expandedText="{resourceManager.getString(MODULE_NAME,'two.way.block.expanded')}"
+				explainText="{resourceManager.getString(MODULE_NAME,'label.explain')}"
+				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
+				width="100%"/>			
+		</s:HGroup>
 		
 		<mx:Spacer height="20"/>
 		
