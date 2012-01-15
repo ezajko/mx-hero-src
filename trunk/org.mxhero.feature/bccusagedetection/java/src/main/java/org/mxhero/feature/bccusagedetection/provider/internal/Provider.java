@@ -7,8 +7,7 @@ import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 public class Provider extends RulesByFeature{
 
 	@Override
-	protected CoreRule createRule(Rule arg0) {
-		// TODO Auto-generated method stub
+	protected CoreRule createRule(Rule rule) {
 		return null;
 	}
 
