@@ -141,6 +141,12 @@
 						returnRb.selected=true;
 						returnTa.text=PropertyHelper.getProperty(initialProperties,"return.text").propertyValue;
 					}
+					if(PropertyHelper.getProperty(initialProperties,"two.way.flag")!=null
+						&& PropertyHelper.getProperty(initialProperties,"two.way.flag").propertyValue=="true"){
+						twoWayCb.selected=true;
+					}else{
+						twoWayCb.selected=false;
+					}
 				}
 			}
 			
@@ -168,6 +174,15 @@
 					property.propertyValue = returnTa.text;
 					properties.addItem(property);
 				}
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey = "two.way.flag";
+				if(twoWayCb.selected){
+					property.propertyValue = "true";
+				}else{
+					property.propertyValue = "false";
+				}
+				properties.addItem(property);
 				
 				return properties;
 			}
@@ -225,7 +240,8 @@
 		<mx:DataGrid id="emailsDg"
 					 dataProvider="{emails}" 
 					 width="100%"
-					 height="250">
+					 height="250"
+					 paddingBottom="5">
 			<mx:columns>
 				<mx:DataGridColumn id="emailColumn" dataField="email" 
 								   headerText="{resourceManager.getString(MODULE_NAME,'email.label.text')}"/>
@@ -250,7 +266,7 @@
 								</fx:Script>
 								<mx:Image source="{DELETE}"
 										  buttonMode="true"
-										  toolTip="{resourceManager.getString('limituserdestination','remove.tooltip')}"
+										  toolTip="{resourceManager.getString('blocklist','remove.tooltip')}"
 										  click="remove_clickHandler(event)"/>
 							</mx:HBox>		  
 						</fx:Component>
@@ -258,6 +274,11 @@
 				</mx:DataGridColumn>
 			</mx:columns>
 		</mx:DataGrid>	
+		
+		<s:CheckBox id="twoWayCb"
+					textAlign="right" 
+					label="{resourceManager.getString(MODULE_NAME,'two.way.block')}" 
+					selected="false"/>
 		
 		<mx:Spacer height="20"/>
 		
