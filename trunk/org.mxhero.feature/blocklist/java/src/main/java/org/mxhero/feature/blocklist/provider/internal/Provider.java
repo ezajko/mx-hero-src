@@ -81,8 +81,13 @@ public class Provider extends RulesByFeature{
 				|| mail.getInitialData().getFromSender().hasAlias(accounts)
 				|| mail.getInitialData().getSender().hasAlias(accounts));
 			
-			if(twoWayFlag && !result){
-				result = mail.getInitialData().getRecipient().getDomain().hasAlias(domains) || mail.getInitialData().getRecipient().hasAlias(accounts);
+			if(twoWayFlag){
+				if(!result){
+					result = mail.getInitialData().getRecipient().getDomain().hasAlias(domains) || mail.getInitialData().getRecipient().hasAlias(accounts);
+					mail.getProperties().put("org.mxhero.feature.blocklist.recipient", mail.getInitialData().getRecipient().getMail());
+				}else{
+					mail.getProperties().put("org.mxhero.feature.blocklist.sender", mail.getInitialData().getSender().getMail());
+				}
 			}
 			
 			return result;
@@ -116,7 +121,11 @@ public class Provider extends RulesByFeature{
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
 				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,returnText,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.sender",mail.getInitialData().getSender().getMail());
+			if(mail.getProperties().containsKey("org.mxhero.feature.blocklist.sender")){
+				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.email",mail.getInitialData().getSender().getMail());
+			}else{
+				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.email",mail.getInitialData().getRecipient().getMail());
+			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.blocklist");			
 		}
 		
