@@ -13,6 +13,7 @@ import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
+import org.mxhero.engine.commons.rules.FromToEval;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 
 public class Provider extends RulesByFeature{
@@ -20,15 +21,17 @@ public class Provider extends RulesByFeature{
 	private static final String EMAIL_LIST = "email.list";
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String RETURN_TEXT = "return.text";
+	private static final String TWO_WAY_FLAG = "two.way.flag";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
-		CoreRule coreRule = this.getDefault(rule);
+		CoreRule coreRule = new CoreRule(rule.getId(), this.getFeature().getBasePriority()+this.getPriority(rule.getFromDirection())+this.getPriority(rule.getToDirection()), (rule.getDomain()!=null)?rule.getDomain():rule.getAdminOrder());
 		
 		String action = "";
 		String returnText = "";
 		Set<String> accounts = new HashSet<String>();
 		Set<String> domains = new HashSet<String>();
+		boolean twoWayFlag = false;
 		
 		for(RuleProperty property : rule.getProperties()){
 			if(property.getPropertyKey().equals(ACTION_SELECTION)){
@@ -42,10 +45,12 @@ public class Provider extends RulesByFeature{
 				}
 			} else if (property.getPropertyKey().equals(RETURN_TEXT)){
 				returnText = property.getPropertyValue();
-			} 
+			} else if (property.getPropertyKey().equals(TWO_WAY_FLAG)){
+				twoWayFlag = Boolean.parseBoolean(property.getPropertyValue());
+			}
 		}
-		
-		coreRule.addEvaluation(new BLEvaluation(coreRule.getGroup(),accounts,domains));
+		coreRule.addEvaluation(new FromToEval(rule.getFromDirection(),rule.getToDirection(), twoWayFlag));
+		coreRule.addEvaluation(new BLEvaluation(coreRule.getGroup(),accounts,domains,twoWayFlag));
 		coreRule.addAction(new BLAction(rule.getId(), coreRule.getGroup(), returnText, getNoReplyEmail(rule.getDomain()), action));
 		
 		return coreRule;
@@ -56,25 +61,32 @@ public class Provider extends RulesByFeature{
 		private String group;
 		Collection<String> accounts;
 		Collection<String> domains;
-
+		boolean twoWayFlag = false;
+		
 		public BLEvaluation(String group, Collection<String> accounts,
-				Collection<String> domains) {
+				Collection<String> domains, boolean twoWayFlag) {
 			this.group = group;
 			this.accounts = accounts;
 			this.domains = domains;
+			this.twoWayFlag = twoWayFlag;
 		}
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
 			&& mail.getHeaders()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.blocklist:"+group)
 			&& (mail.getInitialData().getFromSender().getDomain().hasAlias(domains)
 				|| mail.getInitialData().getSender().getDomain().hasAlias(domains)
 				|| mail.getInitialData().getFromSender().hasAlias(accounts)
 				|| mail.getInitialData().getSender().hasAlias(accounts));
+			
+			if(twoWayFlag && !result){
+				result = mail.getInitialData().getRecipient().getDomain().hasAlias(domains) || mail.getInitialData().getRecipient().hasAlias(accounts);
+			}
+			
+			return result;
 		}
-		
 	}
 	
 	private class BLAction implements Actionable{
