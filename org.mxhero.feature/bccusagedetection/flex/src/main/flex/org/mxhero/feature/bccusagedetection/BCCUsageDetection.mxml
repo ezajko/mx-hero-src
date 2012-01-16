@@ -68,6 +68,11 @@
 				properties.addItem(property);
 				
 				property = new FeatureRuleProperty();
+				property.propertyKey="bcc.header";
+				property.propertyValue=resourceManager.getString("bccusagedetection","bcc.header");
+				properties.addItem(property);
+				
+				property = new FeatureRuleProperty();
 				property.propertyKey = "lists.ignore";
 				if(listsCB.selected){
 					property.propertyValue="true";
