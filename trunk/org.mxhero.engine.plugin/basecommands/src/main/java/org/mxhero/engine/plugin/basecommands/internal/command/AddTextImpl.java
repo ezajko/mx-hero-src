@@ -37,6 +37,7 @@ public class AddTextImpl implements AddText {
 
 	private static final String TEXT_CONTENT = "text";
 	private static final String HTML_CONTENT = "html";
+	private static final String BOTH_CONTENTS = "both";
 	
 	public static final String TEXT_TYPE = "text/*";
 	public static final String TEXT_PLAIN_TYPE = "text/plain";
@@ -127,20 +128,20 @@ public class AddTextImpl implements AddText {
 						&& !p.getDisposition().equals(Part.ATTACHMENT))) {
 
 			if (position.equals(TOP_POSITION)) {
-				if(type.equals(TEXT_CONTENT) && p.isMimeType(TEXT_PLAIN_TYPE)){
+				if((type.equals(BOTH_CONTENTS) || type.equals(TEXT_CONTENT)) && p.isMimeType(TEXT_PLAIN_TYPE)){
 					p.setContent(text + ((String) p.getContent()), p
 							.getContentType());
-				} else if (type.equals(HTML_CONTENT) && p.isMimeType(TEXT_HTML_TYPE)){
+				} else if ((type.equals(BOTH_CONTENTS) || type.equals(HTML_CONTENT)) && p.isMimeType(TEXT_HTML_TYPE)){
 					Document doc = Jsoup.parse((String) p.getContent());
 					doc.body().prepend(text);
 					p.setContent(doc.outerHtml(), p
 							.getContentType());
 				}
 			} else if (position.equals(BOTTOM_POSITION)) {
-				if(type.equals(TEXT_CONTENT) && p.isMimeType(TEXT_PLAIN_TYPE)){
+				if((type.equals(BOTH_CONTENTS) || type.equals(TEXT_CONTENT)) && p.isMimeType(TEXT_PLAIN_TYPE)){
 					p.setContent(((String) p.getContent()) + text, p
 							.getContentType());
-				} else if (type.equals(HTML_CONTENT) && p.isMimeType(TEXT_HTML_TYPE)){
+				} else if ((type.equals(BOTH_CONTENTS) || type.equals(HTML_CONTENT)) && p.isMimeType(TEXT_HTML_TYPE)){
 					Document doc = Jsoup.parse((String) p.getContent());
 					doc.body().append(text);
 					p.setContent(doc.outerHtml(), p
