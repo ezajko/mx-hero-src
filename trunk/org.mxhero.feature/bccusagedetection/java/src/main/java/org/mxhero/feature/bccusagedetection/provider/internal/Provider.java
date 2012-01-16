@@ -1,5 +1,9 @@
 package org.mxhero.feature.bccusagedetection.provider.internal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import javax.mail.Message;
 
 import org.mxhero.engine.commons.feature.Rule;
@@ -56,14 +60,28 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
+			List<String> allRecipients = new ArrayList<String>();
+			if(mail.getRecipients().getCcRecipients()!=null){
+				allRecipients.addAll(mail.getRecipients().getCcRecipients());
+			}
+			if(mail.getRecipients().getToRecipients()!=null){
+				allRecipients.addAll(mail.getRecipients().getToRecipients());
+			}
+
 			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
 					&& mail.getHeaders()!=null
 					&& mail.getRecipients()!=null
 					&& !mail.getProperties().containsKey("org.mxhero.feature.bccusagedetection")
 					&& !mail.getProperties().containsKey("org.mxhero.engine.plugin.basecommands.command.Reply")
-					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients()))
-					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients())));
-			log.debug("eva result:"+result);
+					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(allRecipients))
+					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(allRecipients)));
+			if(log.isDebugEnabled()){
+				log.debug("ignoreList:"+ignoreList);
+				log.debug("ignoreListCheck:"+ignoreListCheck(mail));
+				log.debug("allRecipients:"+Arrays.deepToString(allRecipients.toArray()));
+				log.debug("eva result:"+result);
+			}
+			
 			return result;
 		}
 		
