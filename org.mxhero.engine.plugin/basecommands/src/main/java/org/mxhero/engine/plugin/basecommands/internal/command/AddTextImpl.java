@@ -118,7 +118,7 @@ public class AddTextImpl implements AddText {
 		return result;
 	}
 
-	private static void addText(Part p, String text, String position, String type)
+	public static void addText(Part p, String text, String position, String type)
 			throws MessagingException, IOException {
 
 		if (p.isMimeType(TEXT_TYPE)
