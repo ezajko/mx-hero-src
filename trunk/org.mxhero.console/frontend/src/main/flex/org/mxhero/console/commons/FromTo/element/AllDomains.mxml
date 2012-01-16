@@ -50,6 +50,6 @@
 				  toolTip.inactive="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_SELECT_ALLDOMAINS_TOOLTIP)}" 
 				  toolTip.active="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ITEM_CLEAR_TOOLTIP)}"
 				  width="150"
-				  excludeFrom="fixed"/>
+				  visible.fixed="false"/>
 </s:HGroup>
 

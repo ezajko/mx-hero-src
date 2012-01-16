@@ -142,7 +142,7 @@
 				 click="item_clickHandler(event)"
 				 width="150"
 				 buttonMode="{isClickEnabled}"
-				 excludeFrom="fixed"/>
+				 visible.fixed="false"/>
 	<s:BorderContainer id="comboBox" 
 					   excludeFrom="inactive"
 						backgroundColor="#7c7b7b"  
