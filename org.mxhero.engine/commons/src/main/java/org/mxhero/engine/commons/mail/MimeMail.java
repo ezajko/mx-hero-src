@@ -337,6 +337,11 @@ public final class MimeMail {
 
 	public void setMessageId(String messageId) {
 		this.messageId = messageId;
+		if(message!=null){
+			try {
+				message.updateMessageID();
+			} catch (MessagingException e) {}
+		}
 	}
 
 	private static String getDomain(String email){
