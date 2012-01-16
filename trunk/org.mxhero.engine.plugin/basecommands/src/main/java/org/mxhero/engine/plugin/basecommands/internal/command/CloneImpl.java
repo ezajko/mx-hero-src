@@ -40,6 +40,7 @@ public class CloneImpl implements Clone {
 	private static final int SENDER_PARAM_NUMBER = 1;
 	private static final int RECIPIENT_PARAM_NUMBER = 2;
 	private static final int OUTPUTSERVICE_PARAM_NUMBER = 3;
+	private static final int GENERATE_NEWMESSAGEID = 4;
 	
 	private static final String TMP_FILE_SUFFIX = ".eml";
 	private static final String TMP_FILE_PREFIX = "clone";
@@ -60,6 +61,7 @@ public class CloneImpl implements Clone {
 		MimeMail clonedMail = null;
 		result.setResult(false);
 		boolean hasTextToAdd = false;
+		boolean generateNewMessageId = false;
 
 		if (args == null || args.length < MIM_PARAMANS) {
 			log.warn("wrong ammount of params.");
@@ -97,7 +99,11 @@ public class CloneImpl implements Clone {
 				outputService = mail.getResponseServiceId();
 			}
 
-			if(args.length == OUTPUTSERVICE_PARAM_NUMBER+3){
+			if(args.length > GENERATE_NEWMESSAGEID){
+				generateNewMessageId=Boolean.parseBoolean(args[GENERATE_NEWMESSAGEID]);
+			}
+			
+			if(args.length == GENERATE_NEWMESSAGEID+3){
 				hasTextToAdd=true;
 			}
 			
@@ -118,7 +124,9 @@ public class CloneImpl implements Clone {
 					}
 					
 					clonedMail = new MimeMail((sender!=null)?sender.getAddress():"<>", recipient.getAddress(),is, outputService);
-
+					if(generateNewMessageId){
+						clonedMail.setMessageId(null);
+					}
 					clonedMail.setPhase(RulePhase.SEND);
 					clonedMail.getProperties().putAll(mail.getProperties());
 					clonedMail.getProperties().put(Reply.class.getName(), recipient.getAddress());
@@ -140,7 +148,7 @@ public class CloneImpl implements Clone {
 				}
 				if(hasTextToAdd){
 					try{
-						new AddTextImpl().exec(clonedMail,args[OUTPUTSERVICE_PARAM_NUMBER+1],args[OUTPUTSERVICE_PARAM_NUMBER+2],args[OUTPUTSERVICE_PARAM_NUMBER+3]);
+						new AddTextImpl().exec(clonedMail,args[GENERATE_NEWMESSAGEID+1],args[GENERATE_NEWMESSAGEID+2],args[GENERATE_NEWMESSAGEID+3]);
 					}catch(Exception e){
 						log.warn("error while adding text",e);
 					}
