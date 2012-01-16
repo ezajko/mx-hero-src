@@ -73,7 +73,8 @@ public class AddTextImpl implements AddText {
 		case 3: {
 			if(args[TYPE_CONTENT_NUMBER]!=null
 					&&(args[TYPE_CONTENT_NUMBER].equalsIgnoreCase(HTML_CONTENT)
-						|| args[TYPE_CONTENT_NUMBER].equalsIgnoreCase(TEXT_CONTENT))){
+						|| args[TYPE_CONTENT_NUMBER].equalsIgnoreCase(TEXT_CONTENT)
+						|| args[TYPE_CONTENT_NUMBER].equalsIgnoreCase(BOTH_CONTENTS))){
 					type = args[TYPE_CONTENT_NUMBER].toLowerCase();
 			} else {
 				log.warn("wrong type");
