@@ -62,6 +62,7 @@ public class Provider extends RulesByFeature{
 			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
 					&& mail.getHeaders()!=null
 					&& mail.getRecipients()!=null
+					&& !mail.getProperties().containsKey("org.mxhero.engine.plugin.basecommands.command.Reply")
 					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients()))
 					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients())));
 			log.debug("eva result:"+result);
