@@ -111,7 +111,7 @@
 					 click="item_clickHandler(event)"
 					 enabled.restricted="false"
 					 buttonMode="{isClickEnabled}"
-					 excludeFrom="fixed"/>
+					 visible.fixed="false"/>
 	
 	<s:BorderContainer id="checkBox" 
 					   excludeFrom="inactive"
