@@ -128,8 +128,8 @@ public class Provider extends RulesByFeature{
 		@Override
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.bccusagedetection", "true");
-			mail.getHeaders().addHeader("X-mxHero-BCCUsageDetection", "rule="+ruleId+";blocked=true");
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),email,null,"true",bccHeader+mail.getInitialData().getRecipient().getMail()+"\n\n","top","both");
+			mail.getHeaders().addHeader("X-mxHero-BCCUsageDetection", "rule="+ruleId);
+			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),email,null,"true",bccHeader+mail.getInitialData().getRecipient().getMail()+"<br/><br/>\n\n","top","both");
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccusagedetection","true" );
 		}
 		
