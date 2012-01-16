@@ -101,10 +101,12 @@ public class CloneImpl implements Clone {
 
 			if(args.length > GENERATE_NEWMESSAGEID){
 				generateNewMessageId=Boolean.parseBoolean(args[GENERATE_NEWMESSAGEID]);
+				log.debug("generate new Id");
 			}
 			
-			if(args.length == GENERATE_NEWMESSAGEID+3){
+			if(args.length == GENERATE_NEWMESSAGEID+4){
 				hasTextToAdd=true;
+				log.debug("call add text");
 			}
 			
 			if(!mail.getProperties().containsKey(Reply.class.getName())){
@@ -148,7 +150,8 @@ public class CloneImpl implements Clone {
 				}
 				if(hasTextToAdd){
 					try{
-						new AddTextImpl().exec(clonedMail,args[GENERATE_NEWMESSAGEID+1],args[GENERATE_NEWMESSAGEID+2],args[GENERATE_NEWMESSAGEID+3]);
+						Result textAdded = new AddTextImpl().exec(clonedMail,args[GENERATE_NEWMESSAGEID+1],args[GENERATE_NEWMESSAGEID+2],args[GENERATE_NEWMESSAGEID+3]);
+						log.debug("text added:"+ textAdded.isTrue());
 					}catch(Exception e){
 						log.warn("error while adding text",e);
 					}
