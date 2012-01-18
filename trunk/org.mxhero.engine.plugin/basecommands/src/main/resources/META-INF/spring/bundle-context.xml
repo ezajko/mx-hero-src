@@ -17,6 +17,7 @@
 	<osgix:cm-properties id="jdbcCmProps"
 		persistent-id="org.mxhero.engine.plugin.basecommands.reply">
 		<prop key="noReplySignature">\n\n- mxHero - \nhttp://mxhero.com</prop>
+		<prop key="noReplyHTLMSignature">&lt;br/&gt;&lt;br/&gt;- mxHero -&lt;br/&gt;http://mxhero.com</prop>
 	</osgix:cm-properties>
 
 	<osgi:reference id="inputService"
