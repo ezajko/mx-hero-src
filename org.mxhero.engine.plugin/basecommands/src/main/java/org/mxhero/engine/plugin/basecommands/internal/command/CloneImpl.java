@@ -60,7 +60,6 @@ public class CloneImpl implements Clone {
 		String outputService = null;
 		MimeMail clonedMail = null;
 		result.setResult(false);
-		boolean hasTextToAdd = false;
 		boolean generateNewMessageId = false;
 
 		if (args == null || args.length < MIM_PARAMANS) {
@@ -104,11 +103,6 @@ public class CloneImpl implements Clone {
 				log.debug("generate new Id");
 			}
 			
-			if(args.length == GENERATE_NEWMESSAGEID+4){
-				hasTextToAdd=true;
-				log.debug("call add text");
-			}
-			
 			if(!mail.getProperties().containsKey(Reply.class.getName())){
 				InputStream is = null;
 				OutputStream os = null;
@@ -148,15 +142,6 @@ public class CloneImpl implements Clone {
 					log.warn("core input service is not online");
 					return result;
 				}
-				if(hasTextToAdd){
-					try{
-						Result textAdded = new AddTextImpl().exec(clonedMail,args[GENERATE_NEWMESSAGEID+1],args[GENERATE_NEWMESSAGEID+2],args[GENERATE_NEWMESSAGEID+3]);
-						log.debug("text added:"+ textAdded.isTrue());
-					}catch(Exception e){
-						log.warn("error while adding text",e);
-					}
-				}
-				
 				
 				try {
 					service.addMail(clonedMail);
