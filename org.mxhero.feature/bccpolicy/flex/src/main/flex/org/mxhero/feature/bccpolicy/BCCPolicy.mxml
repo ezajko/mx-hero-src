@@ -120,6 +120,10 @@
 		[ResourceBundle("bccpolicy")]
 	</fx:Metadata>
 	
+	<mx:Text fontStyle="italic" 
+			 width="100%" 
+			 text="{resourceManager.getString('bccpolicy','note.text')}"/>
+	
 	<s:Label text="{resourceManager.getString('bccpolicy','first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup paddingLeft="20" gap="20">
