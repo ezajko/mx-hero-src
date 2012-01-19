@@ -5,6 +5,7 @@
 		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
 		   verticalGap="20"
+		   paddingTop="20" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
