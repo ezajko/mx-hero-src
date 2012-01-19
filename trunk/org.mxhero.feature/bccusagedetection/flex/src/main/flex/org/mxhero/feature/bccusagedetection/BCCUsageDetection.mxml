@@ -29,6 +29,7 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				returnTa.text=resourceManager.getString('bccusagedetection','action.return.textarea.default');
 				loadData();
 			}
 			
@@ -39,6 +40,13 @@
 					errorMessage=emailTi.errorString;
 					return false;
 				}
+				
+				if(returnTa.text==null || StringUtil.trim(returnTa.text).length<1){
+						returnTa.errorString=resourceManager.getString('bccusagedetection','error.return.message');
+						errorMessage=resourceManager.getString('bccusagedetection','error.return.message');
+						return false;
+				}
+				returnTa.errorString="";
 				errorMessage="";
 				return true;
 			}
@@ -55,6 +63,7 @@
 					}else{
 						listsCB.selected=false;
 					}
+					returnTa.text=PropertyHelper.getProperty(initialProperties,'bcc.header').propertyValue;
 				}
 			}
 			
@@ -69,7 +78,7 @@
 				
 				property = new FeatureRuleProperty();
 				property.propertyKey="bcc.header";
-				property.propertyValue=resourceManager.getString("bccusagedetection","bcc.header");
+				property.propertyValue=returnTa.text;
 				properties.addItem(property);
 				
 				property = new FeatureRuleProperty();
@@ -110,6 +119,10 @@
 		[ResourceBundle("bccusagedetection")]
 	</fx:Metadata>
 	
+	<mx:Text fontStyle="italic" 
+			 width="100%" 
+			 text="{resourceManager.getString('bccusagedetection','note.text')}"/>
+	
 	<s:Label text="{resourceManager.getString('bccusagedetection','first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup width="100%" gap="10" paddingLeft="24">
@@ -118,6 +131,12 @@
 				<s:Label text="{resourceManager.getString('bccusagedetection','email.address.label')}"/>
 				<s:TextInput id="emailTi" width="300"/>
 			</s:HGroup>
+			<s:Label 
+				paddingTop="5"
+				text="{resourceManager.getString('bccusagedetection','action.return.textarea.title')}"
+				fontStyle="italic"/>
+			<s:TextArea id="returnTa"
+						width="350"/>	
 			<s:HGroup width="100%" verticalAlign="top">
 				<s:CheckBox id="listsCB" 
 							label=""
