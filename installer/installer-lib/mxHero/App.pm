@@ -155,7 +155,7 @@ sub _cascadeUpgrade
 	my $errorRef = $_[0];
 	my $oldVersion = $_[1];
 
-	if ($oldVersion eq '1.2.0.RELEASE')
+	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.2.0.RELEASE') <= 0)
 	{
 		my %entry = ( "serverName" => "MXHERO" );
 
