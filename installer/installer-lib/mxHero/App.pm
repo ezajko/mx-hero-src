@@ -72,6 +72,12 @@ sub confirmUpgrade
 	my $oldVersion = &mxHero::Tools::mxHeroVersion();
 	my $newVersion = &mxHero::Tools::mxHeroInstallerVersion();
 
+	if (&mxHero::Tools::mxheroVersionCompare($newVersion, $oldVersion) < 0)
+	{
+		$$errorRef = T("mxHero downgrade is not supported");
+		return 0;
+	}
+
 	my $term = Term::ReadLine->new( 'mxHero' );
 	my $bool = $term->ask_yn (prompt => T("mxHero is going to be upgraded from $oldVersion to $newVersion. Continue?"), default  => 'y');
 
