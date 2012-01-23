@@ -9,7 +9,6 @@ import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
@@ -119,7 +118,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-BlockList", "rule="+ruleId.toString());
 			mail.drop("org.mxhero.feature.blocklist");
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,returnText,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnText,returnText );
 			}
 			if(mail.getProperties().containsKey("org.mxhero.feature.blocklist.sender")){
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.email",mail.getInitialData().getSender().getMail());
