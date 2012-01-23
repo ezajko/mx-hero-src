@@ -4,7 +4,6 @@ import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
@@ -71,7 +70,7 @@ public class Provider extends RulesByFeature{
 			mail.getProperties().put("org.mxhero.feature.clamav",ruleId.toString());
 			mail.getHeaders().addHeader("X-mxHero-ClamAV","rule="+ruleId.toString()+";result="+clamavResult.getText());
 			if(action.equalsIgnoreCase(ACTION_RETURN) && clamavResult.isTrue()){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,returnText,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnText,returnText );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.clamav",Boolean.toString(clamavResult.isTrue()) );
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","virus.detected",Boolean.toString(clamavResult.isTrue()) );
