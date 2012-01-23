@@ -22,6 +22,7 @@ public class Provider extends RulesByFeature{
 	private static final String FILE_TYPE = "file.type";
 	private static final String FILE_NAME = "file.name";
 	private static final String RETURN_ACTION_TEXT = "return.action.text";
+	private static final String RETURN_ACTION_TEXT_PLAIN = "return.action.text.plain";
 
 	
 	@Override
@@ -30,6 +31,7 @@ public class Provider extends RulesByFeature{
 		
 		String action = null;
 		String returnMessage = "";
+		String returnMessagePlain = "";
 		List<String> extensions = new ArrayList<String>();
 		List<String> names = new ArrayList<String>();
 		List<String> types = new ArrayList<String>();
@@ -47,6 +49,8 @@ public class Provider extends RulesByFeature{
 				types.add(StringEscapeUtils.escapeJava(property.getPropertyValue()));
 			}else if (property.getPropertyKey().equals(FILE_NAME)){
 				names.add(StringEscapeUtils.escapeJava(property.getPropertyValue()));
+			}else if (property.getPropertyKey().equals(RETURN_ACTION_TEXT_PLAIN)){
+				returnMessagePlain=StringEscapeUtils.escapeJava(property.getPropertyValue());
 			}
 		}
 		
@@ -57,6 +61,7 @@ public class Provider extends RulesByFeature{
 										,this.getNoReplyEmail(rule.getDomain())
 										,action
 										,returnMessage
+										,returnMessagePlain
 										,extensions
 										,names
 										,types));
@@ -90,12 +95,13 @@ public class Provider extends RulesByFeature{
 		private String noreplyMail;
 		private String action = null;
 		private String returnMessage = "";
+		private String returnMessagePlain = "";
 		private Collection<String> extensions = new ArrayList<String>();
 		private Collection<String> names = new ArrayList<String>();
 		private Collection<String> types = new ArrayList<String>();
 
 		public ABAction(String group, Integer ruleId, String noreplyMail, String action,
-				String returnMessage, List<String> extensions,
+				String returnMessage,String returnMessagePlain, List<String> extensions,
 				List<String> names, List<String> types) {
 			super();
 			this.group = group;
@@ -132,7 +138,7 @@ public class Provider extends RulesByFeature{
 
 			boolean droppedByAttachments=mail.getState().equals(MailState.DROP);
 			if(action!=null && action.equals(RETURN_ACTION) && droppedByAttachments){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessage,returnMessage} );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessagePlain,returnMessage} );
 			}
 			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock", "rule="+ruleId+";blocked="+droppedByAttachments);
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments) );
