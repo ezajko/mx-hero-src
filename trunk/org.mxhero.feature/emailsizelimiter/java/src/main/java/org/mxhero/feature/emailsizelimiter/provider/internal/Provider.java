@@ -7,7 +7,6 @@ import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
@@ -102,7 +101,7 @@ public class Provider extends RulesByFeature{
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.initialsizelimiter");
 			}
 			if(action.equalsIgnoreCase(ACTION_RETURN) && isDropped){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,returnMessage,RulePhase.SEND,mail.getInitialData().getSender().getMail() );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnMessage,returnMessage );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.initialsizelimiter",Boolean.toString(isDropped) );
 		}
