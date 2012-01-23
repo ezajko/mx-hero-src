@@ -8,6 +8,21 @@
 		   paddingTop="30"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		mx|RichTextEditor.editor{
+			backgroundColor:#FFFFFF;
+			textAreaStyleName:editorArea;
+		}
+		
+		.editorArea{
+			backgroundColor:#FFFFFF;
+		}
+		
+	</fx:Style>
+	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
 	</fx:Declarations>
@@ -15,6 +30,9 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.core.UIFTETextField;
+			import mx.core.UITextField;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
 			import mx.managers.DragManager;
@@ -23,6 +41,7 @@
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.RteHtmlParser;
 			
 			public var validationError:String;
 			
@@ -146,13 +165,13 @@
 					extensionsDg.errorString="";
 				}
 				if(returnRb.selected==true && 
-					(returnTa.text==null || StringUtil.trim(returnTa.text).length<0)){
+					(rte.text==null || StringUtil.trim(rte.text).length<0)){
 					validationError=resourceManager.getString("attachmentblock","error.return.textarea.empty");
-					returnTa.errorString=resourceManager.getString("attachmentblock","error.return.textarea.empty");
+					rte.errorString=resourceManager.getString("attachmentblock","error.return.textarea.empty");
 					return false;
 				}else{
 					validationError=resourceManager.getString("attachmentblock","");
-					returnTa.errorString=resourceManager.getString("attachmentblock","");					
+					rte.errorString=resourceManager.getString("attachmentblock","");					
 				}
 				return true;
 			}
@@ -181,8 +200,12 @@
 				property = PropertyHelper.getProperty(this.properties,"return.action");
 				if(property!=null && property.propertyValue=="true"){
 					returnRb.selected=true;
-					property = PropertyHelper.getProperty(this.properties,"return.action.text");
-					returnTa.text = property.propertyValue;
+					if(PropertyHelper.getProperty(this.properties,"return.action.text.rte")!=null){
+						rte.htmlText=PropertyHelper.getProperty(this.properties,"return.action.text.rte").propertyValue;
+					}else{
+						property = PropertyHelper.getProperty(this.properties,"return.action.text");
+						rte.text= property.propertyValue;
+					}
 				} else {
 					property = PropertyHelper.getProperty(this.properties,"discard.action");
 					if(property!=null && property.propertyValue=="true"){
@@ -215,8 +238,19 @@
 					properties.addItem(property);
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.action.text";
-					property.propertyValue = returnTa.text;
+					var t:RteHtmlParser = new RteHtmlParser();
+					t.ParseToHTML(rte.htmlText);
+					var str:String = t.StringFormat;
+					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.action.text.plain";
+					property.propertyValue = rte.text;
+					properties.addItem(property);	
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.action.text.rte";
+					property.propertyValue = rte.htmlText;
+					properties.addItem(property);	
 				} else if(discardRb.selected){
 					property = new FeatureRuleProperty();
 					property.propertyKey = "discard.action";
@@ -235,7 +269,7 @@
 			{
 				if(!returnRb.selected){
 					validationError=resourceManager.getString("attachmentblock","");
-					returnTa.errorString=resourceManager.getString("attachmentblock","");
+					rte.errorString=resourceManager.getString("attachmentblock","");
 				}
 			}
 
@@ -389,16 +423,11 @@
 						   selected="true"
 						   change="returnRb_changeHandler(event)"/>
 			<s:VGroup paddingLeft="18">
-				<s:Label
-					paddingTop="5"
-					text="{resourceManager.getString('attachmentblock','action.return.textarea.title')}"
-					fontStyle="italic"/>
-				<s:TextArea id="returnTa"
-							editable="true" 
-							width="350"
-							enabled="{returnRb.selected}"
-							text="{resourceManager.getString('attachmentblock','action.return.textarea.text')}"/>			
-
+				<mx:RichTextEditor id="rte" 
+								   width="400"
+								   title="{resourceManager.getString('attachmentblock','action.return.textarea.title')}"
+								   text="{resourceManager.getString('attachmentblock','action.return.textarea.text')}">
+				</mx:RichTextEditor>
 			</s:VGroup>
 		</s:VGroup>
 
