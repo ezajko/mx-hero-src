@@ -10,7 +10,6 @@ import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
@@ -129,7 +128,7 @@ public class Provider extends RulesByFeature{
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.bccusagedetection", "true");
 			mail.getHeaders().addHeader("X-mxHero-BCCUsageDetection", "rule="+ruleId);
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),email,null,"true",bccHeader+mail.getInitialData().getRecipient().getMail()+"<br/><br/>\n\n","top","both");
+			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{mail.getInitialData().getSender().getMail(),email,bccHeader,bccHeader,"true"} );
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccusagedetection","true" );
 		}
 		
