@@ -37,6 +37,40 @@ s|global
 	modal-transparency:0.1;
 }
 
+mx|RichTextEditor
+{
+	fontFamily: Arial;
+	textFieldClass: ClassReference("mx.core.UITextField");
+	backgroundAlpha:1;
+	backgroundColor:#FFFFFF;
+	titleStyleName:rteTitleStyle;
+	textAreaStyleName:rteTextAreaStyle;
+}
+
+.rteTitleStyle{
+	color:#CCCCCC;
+	fontStyle:italic;
+	fontSize:14;
+}
+
+.rteTextAreaStyle{
+	color:#000000;
+	backgroundAlpha:1;
+	backgroundColor:#FFFFFF;
+}
+
+mx|TextArea
+{
+	fontFamily: Arial;
+	textFieldClass: ClassReference("mx.core.UITextField");
+}
+
+mx|TextInput
+{
+	fontFamily: Arial;
+	textFieldClass: ClassReference("mx.core.UITextField");
+}
+
 mx|global
 {
 	font-size: 14;
