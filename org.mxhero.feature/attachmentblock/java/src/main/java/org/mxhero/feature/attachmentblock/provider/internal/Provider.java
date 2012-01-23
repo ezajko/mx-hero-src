@@ -9,7 +9,6 @@ import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
@@ -133,7 +132,7 @@ public class Provider extends RulesByFeature{
 
 			boolean droppedByAttachments=mail.getState().equals(MailState.DROP);
 			if(action!=null && action.equals(RETURN_ACTION) && droppedByAttachments){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,returnMessage,RulePhase.SEND,mail.getInitialData().getSender().getMail()} );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessage,returnMessage} );
 			}
 			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock", "rule="+ruleId+";blocked="+droppedByAttachments);
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments) );
