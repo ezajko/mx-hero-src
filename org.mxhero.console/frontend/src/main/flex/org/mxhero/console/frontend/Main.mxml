@@ -57,6 +57,7 @@
 			import flashx.textLayout.compose.TextLineRecycler;
 			
 			import mx.controls.Alert;
+			import mx.controls.RichTextEditor;
 			import mx.core.Application;
 			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
@@ -92,6 +93,7 @@
 			
 			import spark.components.TitleWindow;
 
+			private var rte:RichTextEditor = new RichTextEditor();
 			
 			private var titleWindows:TitleWindow;
 			
