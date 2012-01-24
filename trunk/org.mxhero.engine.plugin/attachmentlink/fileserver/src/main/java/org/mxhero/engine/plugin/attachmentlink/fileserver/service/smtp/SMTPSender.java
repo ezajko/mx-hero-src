@@ -56,7 +56,7 @@ public abstract class SMTPSender {
         	MimeMessage message = new MimeMessage(session);
         	message.setSender(new InternetAddress(configurationVO.getAdminMail()));
         	message.setFrom(new InternetAddress(configurationVO.getAdminMail()));
-        	message.setText(body);
+        	message.setContent(body, "text/html");
         	if(subject!=null){
         		message.setSubject(subject);
         	}else{
