@@ -22,24 +22,24 @@
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.RteHtmlParser;
 			
 			private var initialProperties:ArrayCollection;
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
-				returnTa.text=resourceManager.getString('bccpolicy','action.return.textarea.text');
 				loadData();
 			}
 			
 			public function isValid():Boolean{
 				if(returnRb.selected){
-					if(returnTa.text==null || StringUtil.trim(returnTa.text).length<1){
-						returnTa.errorString=resourceManager.getString('bccpolicy','error.return.message');
+					if(rte.text==null || StringUtil.trim(rte.text).length<1){
+						rte.errorString=resourceManager.getString('bccpolicy','error.return.message');
 						return false;
 					}
 				}
-				returnTa.errorString="";
+				rte.errorString="";
 				return true;
 			}
 			
@@ -54,7 +54,11 @@
 						discardRb.selected=true;
 					} else if(selectedAction=='return'){
 						returnRb.selected=true;
-						returnTa.text=PropertyHelper.getProperty(initialProperties,'return.message').propertyValue;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
+							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
+						}else{
+							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue;
+						}
 					}
 					if(PropertyHelper.getProperty(initialProperties,"lists.ignore").propertyValue=="true"){
 						listsCB.selected=true;
@@ -76,9 +80,21 @@
 				} else if(returnRb.selected){
 					property.propertyValue="return";
 					var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
-					returnMessage.propertyKey="return.message";
-					returnMessage.propertyValue=returnTa.text;
+					returnMessage = new FeatureRuleProperty();
+					returnMessage.propertyKey = "return.message";
+					var t:RteHtmlParser = new RteHtmlParser();
+					t.ParseToHTML(rte.htmlText);
+					var str:String = t.StringFormat;
+					returnMessage.propertyValue = t.XMLFormat;
 					properties.addItem(returnMessage);
+					returnMessage = new FeatureRuleProperty();
+					returnMessage.propertyKey = "return.message.plain";
+					returnMessage.propertyValue = rte.text;
+					properties.addItem(returnMessage);	
+					returnMessage = new FeatureRuleProperty();
+					returnMessage.propertyKey = "return.message.rte";
+					returnMessage.propertyValue = rte.htmlText;
+					properties.addItem(returnMessage);	
 				}
 				properties.addItem(property);
 				
@@ -95,7 +111,7 @@
 			}
 			
 			public function getValidationError():String{
-				return returnTa.errorString;
+				return rte.errorString;
 			}
 			
 			public function fixedTo():Boolean{
@@ -118,6 +134,7 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("bccpolicy")]
+		[ResourceBundle("textLayout")]
 	</fx:Metadata>
 	
 	<mx:Text fontStyle="italic" 
@@ -134,13 +151,12 @@
 						   selected="true"/>
 			<mx:Spacer/>
 			<s:VGroup paddingLeft="18">
-				<s:Label 
-					paddingTop="5"
-					text="{resourceManager.getString('bccpolicy','action.return.textarea.title')}"
-					fontStyle="italic"/>
-				<s:TextArea id="returnTa"
-							editable="{returnRb.selected}" 
-							width="350"/>			
+				<mx:RichTextEditor id="rte" 
+								   width="400"
+								   enabled="{returnRb.selected}"
+								   title="{resourceManager.getString('bccpolicy','action.return.textarea.title')}"
+								   text="{resourceManager.getString('bccpolicy','action.return.textarea.text')}">
+				</mx:RichTextEditor>	
 			</s:VGroup>
 		</s:VGroup>
 		<s:RadioButton id="discardRb" 

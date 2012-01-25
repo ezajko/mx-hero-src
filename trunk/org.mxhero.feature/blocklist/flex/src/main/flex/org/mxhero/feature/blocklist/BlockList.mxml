@@ -20,6 +20,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.commons.utils.RteHtmlParser;
 			import mx.collections.SortField;
 			import mx.collections.Sort;
 			import mx.validators.ValidationResult;
@@ -46,7 +47,6 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
-				returnTa.text=resourceManager.getString(MODULE_NAME,'action.return.textarea.text');
 				loadData();
 			}
 
@@ -110,13 +110,13 @@
 				emailsDg.errorString = "";
 				
 				if(returnRb.selected){
-					if(StringUtil.trim(returnTa.text).length<1){
+					if(StringUtil.trim(rte.text).length<1){
 						validationError = resourceManager.getString(MODULE_NAME,'error.return.message');
-						returnTa.errorString = validationError;
+						rte.errorString = validationError;
 						return false;
 					}
 				}
-				returnTa.errorString="";
+				rte.errorString="";
 				
 				validationError="";
 				return true;
@@ -139,7 +139,11 @@
 						discardRb.selected=true;
 					} else if(actionSelected=='return'){
 						returnRb.selected=true;
-						returnTa.text=PropertyHelper.getProperty(initialProperties,"return.text").propertyValue;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.text.rte")!=null){
+							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.text.rte").propertyValue;
+						}else{
+							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue;
+						}
 					}
 					if(PropertyHelper.getProperty(initialProperties,"two.way.flag")!=null
 						&& PropertyHelper.getProperty(initialProperties,"two.way.flag").propertyValue=="true"){
@@ -169,10 +173,22 @@
 				}else if(returnRb.selected){
 					property.propertyValue='return';
 					properties.addItem(property);
+					
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.text";
-					property.propertyValue = returnTa.text;
+					var t:RteHtmlParser = new RteHtmlParser();
+					t.ParseToHTML(rte.htmlText);
+					var str:String = t.StringFormat;
+					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text.plain";
+					property.propertyValue = rte.text;
+					properties.addItem(property);	
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text.rte";
+					property.propertyValue = rte.htmlText;
+					properties.addItem(property);	
 				}
 				
 				property = new FeatureRuleProperty();
@@ -300,13 +316,12 @@
 						   selected="true"/>
 			<mx:Spacer/>
 			<s:VGroup paddingLeft="18">
-				<s:Label 
-					paddingTop="5"
-					text="{resourceManager.getString(MODULE_NAME,'action.return.textarea.title')}"
-					fontStyle="italic"/>
-				<s:TextArea id="returnTa"
-							editable="true" 
-							width="350"/>			
+				<mx:RichTextEditor id="rte" 
+								   width="400"
+								   enabled="{returnRb.selected}"
+								   title="{resourceManager.getString(MODULE_NAME,'action.return.textarea.title')}"
+								   text="{resourceManager.getString(MODULE_NAME,'action.return.textarea.text')}">
+				</mx:RichTextEditor>			
 			</s:VGroup>
 		</s:VGroup>
 		<s:RadioButton id="discardRb" 

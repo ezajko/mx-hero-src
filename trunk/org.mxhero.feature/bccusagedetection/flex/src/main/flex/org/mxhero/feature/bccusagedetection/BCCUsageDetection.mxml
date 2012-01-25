@@ -22,6 +22,7 @@
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.RteHtmlParser;
 			
 			private var initialProperties:ArrayCollection;
 			private var errorMessage:String;
@@ -29,7 +30,6 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
-				returnTa.text=resourceManager.getString('bccusagedetection','action.return.textarea.default');
 				loadData();
 			}
 			
@@ -41,12 +41,12 @@
 					return false;
 				}
 				
-				if(returnTa.text==null || StringUtil.trim(returnTa.text).length<1){
-						returnTa.errorString=resourceManager.getString('bccusagedetection','error.return.message');
+				if(rte.text==null || StringUtil.trim(rte.text).length<1){
+					rte.errorString=resourceManager.getString('bccusagedetection','error.return.message');
 						errorMessage=resourceManager.getString('bccusagedetection','error.return.message');
 						return false;
 				}
-				returnTa.errorString="";
+				rte.errorString="";
 				errorMessage="";
 				return true;
 			}
@@ -63,7 +63,11 @@
 					}else{
 						listsCB.selected=false;
 					}
-					returnTa.text=PropertyHelper.getProperty(initialProperties,'bcc.header').propertyValue;
+					if(PropertyHelper.getProperty(this.initialProperties,"bcc.header.rte")!=null){
+						rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"bcc.header.rte").propertyValue;
+					}else{
+						rte.text= PropertyHelper.getProperty(this.initialProperties,"bcc.header").propertyValue;
+					}
 				}
 			}
 			
@@ -77,9 +81,20 @@
 				properties.addItem(property);
 				
 				property = new FeatureRuleProperty();
-				property.propertyKey="bcc.header";
-				property.propertyValue=returnTa.text;
+				property.propertyKey = "bcc.header";
+				var t:RteHtmlParser = new RteHtmlParser();
+				t.ParseToHTML(rte.htmlText);
+				var str:String = t.StringFormat;
+				property.propertyValue = t.XMLFormat;
 				properties.addItem(property);
+				property = new FeatureRuleProperty();
+				property.propertyKey = "bcc.header.plain";
+				property.propertyValue = rte.text;
+				properties.addItem(property);	
+				property = new FeatureRuleProperty();
+				property.propertyKey = "bcc.header.rte";
+				property.propertyValue = rte.htmlText;
+				properties.addItem(property);	
 				
 				property = new FeatureRuleProperty();
 				property.propertyKey = "lists.ignore";
@@ -131,12 +146,11 @@
 				<s:Label text="{resourceManager.getString('bccusagedetection','email.address.label')}"/>
 				<s:TextInput id="emailTi" width="300"/>
 			</s:HGroup>
-			<s:Label 
-				paddingTop="5"
-				text="{resourceManager.getString('bccusagedetection','action.return.textarea.title')}"
-				fontStyle="italic"/>
-			<s:TextArea id="returnTa"
-						width="350"/>	
+			<mx:RichTextEditor id="rte" 
+							   width="400"
+							   title="{resourceManager.getString('bccusagedetection','action.return.textarea.title')}"
+							   text="{resourceManager.getString('bccusagedetection','action.return.textarea.default')}">
+			</mx:RichTextEditor>		
 			<s:HGroup width="100%" verticalAlign="top">
 				<s:CheckBox id="listsCB" 
 							label=""

@@ -36,6 +36,7 @@
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.RteHtmlParser;
 			
 			public var validationError:String;
 			
@@ -44,7 +45,6 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
-				returnTa.text=resourceManager.getString('attachmentlink','action.return.textarea.text');
 				loadData();
 			}
 			
@@ -55,7 +55,7 @@
 					return false;
 				}
 				if(returnCb.selected){
-					if(StringUtil.trim(returnTa.text).length<1){
+					if(StringUtil.trim(rte.text).length<1){
 						validationError = resourceManager.getString('attachmentlink','error.return.message');
 						return false;
 					}
@@ -78,7 +78,12 @@
 					property=PropertyHelper.getProperty(initialProperties,'action.selection');
 					if(property!=null && property.propertyValue=='return'){
 						returnCb.selected=true;
-						returnTa.text=PropertyHelper.getProperty(initialProperties,'return.message').propertyValue;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
+							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
+						}else{
+							property = PropertyHelper.getProperty(this.initialProperties,"return.message");
+							rte.text= property.propertyValue;
+						}
 					} else {
 						returnCb.selected=false;
 					}
@@ -103,9 +108,20 @@
 					property.propertyValue='return';
 					properties.addItem(property);
 					property = new FeatureRuleProperty();
-					property.propertyKey='return.message';
-					property.propertyValue=returnTa.text;
+					property.propertyKey = "return.message";
+					var t:RteHtmlParser = new RteHtmlParser();
+					t.ParseToHTML(rte.htmlText);
+					var str:String = t.StringFormat;
+					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.message.plain";
+					property.propertyValue = rte.text;
+					properties.addItem(property);	
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.message.rte";
+					property.propertyValue = rte.htmlText;
+					properties.addItem(property);	
 				} 
 				
 				property = new FeatureRuleProperty();
@@ -158,14 +174,12 @@
 						   label="{resourceManager.getString('attachmentlink','action.return.label')}"
 						   selected="true"/>
 			<s:VGroup paddingLeft="18">
-				<s:Label 
-					paddingTop="5"
-					text="{resourceManager.getString('attachmentlink','action.return.textarea.title')}"
-					fontStyle="italic"/>
-				<s:TextArea id="returnTa"
-							editable="true" 
-							enabled="{returnCb.selected}"
-							width="350"/>			
+				<mx:RichTextEditor id="rte" 
+								   width="400"
+								   enabled="{returnCb.selected}"
+								   title="{resourceManager.getString('attachmentlink','action.return.textarea.title')}"
+								   text="{resourceManager.getString('attachmentlink','action.return.textarea.text')}">
+				</mx:RichTextEditor>		
 			</s:VGroup>
 		</s:VGroup>
 	</s:VGroup>
