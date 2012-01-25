@@ -19,6 +19,7 @@ public class Provider extends RulesByFeature{
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_RETURN = "return";
 	private static final String RETURN_TEXT = "return.text";
+	private static final String RETURN_TEXT_PLAIN = "return.text.plain";
 	private static final String OWN_DOMAIN_SELECTED = "own.domain.selected";
 	
 	@Override
@@ -28,6 +29,7 @@ public class Provider extends RulesByFeature{
 		String action = "";
 		boolean ownDomain = false;
 		String returnText = "";
+		String returnTextPlain = "";
 		Set<String> accounts = new HashSet<String>();
 		Set<String> domains = new HashSet<String>();
 		
@@ -43,13 +45,15 @@ public class Provider extends RulesByFeature{
 				}
 			} else if (property.getPropertyKey().equals(RETURN_TEXT)){
 				returnText = property.getPropertyValue();
+			} else if (property.getPropertyKey().equals(RETURN_TEXT_PLAIN)){
+				returnTextPlain = property.getPropertyValue();
 			} else if (property.getPropertyKey().equals(OWN_DOMAIN_SELECTED)){
 				ownDomain = Boolean.parseBoolean(property.getPropertyValue());
 			}
 		}
 		
 		coreRule.addEvaluation(new LDEvaluate(ownDomain, accounts, domains));
-		coreRule.addAction(new LDAction(coreRule.getId(), action, returnText, getNoReplyEmail(rule.getDomain())));
+		coreRule.addAction(new LDAction(coreRule.getId(), action, returnTextPlain, returnText, getNoReplyEmail(rule.getDomain())));
 		
 		return coreRule;
 	}
@@ -84,15 +88,17 @@ public class Provider extends RulesByFeature{
 		private Integer ruleId;
 		private String action;
 		private String returnText;
+		private String returnTextPlain;
 		private String replyMail;
 
-		public LDAction(Integer ruleId, String action, String returnText,
+		public LDAction(Integer ruleId, String action, String returnTextPlain, String returnText,
 				String replyMail) {
 			super();
 			this.ruleId = ruleId;
 			this.action = action;
 			this.returnText = returnText;
 			this.replyMail = replyMail;
+			this.returnTextPlain = returnTextPlain;
 		}
 
 		@Override
@@ -100,7 +106,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-LimitUserDestinations","rule="+ruleId);
 			mail.drop("org.mxhero.feature.limituserdestinations");
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnText,returnText );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnTextPlain,returnText );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.limituserdestinations.recipient",mail.getInitialData().getRecipient().getMail());
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.limituserdestinations");

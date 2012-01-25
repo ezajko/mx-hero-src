@@ -17,6 +17,7 @@ public class Provider extends RulesByFeature{
 	private static DecimalFormat formatter = new DecimalFormat("#0.00#");
 	private static final String MAX_SIZE_PROPERTY = "max.size";
 	private static final String RETURN_MESSAGE_PROPERTY = "return.message";
+	private static final String RETURN_MESSAGE_PLAIN_PROPERTY = "return.message.plain";
 	private static final String ACTION_SELECTION_PROPERTY = "action.selection";
 	private static final Double CODING_FACTOR = 1.3;
 	
@@ -27,6 +28,7 @@ public class Provider extends RulesByFeature{
 		Number maxSizeValue = null;
 		Integer effectiveMaxSize = null;
 		String returnMessage = null;
+		String returnMessagePlain = null;
 		String action = null;
 		
 		for(RuleProperty property : rule.getProperties()){
@@ -41,11 +43,13 @@ public class Provider extends RulesByFeature{
 				returnMessage = property.getPropertyValue();
 			} else if(property.getPropertyKey().equals(ACTION_SELECTION_PROPERTY)){
 				action = property.getPropertyValue();
+			} else if(property.getPropertyKey().equals(RETURN_MESSAGE_PLAIN_PROPERTY)){
+				returnMessagePlain = property.getPropertyValue();
 			}
 		}
 		
 		coreRule.addEvaluation(new EsEvaluate(coreRule.getGroup()));
-		coreRule.addAction(new ESAction(rule.getId(), coreRule.getGroup(), effectiveMaxSize, returnMessage, action, getNoReplyEmail(rule.getDomain())));
+		coreRule.addAction(new ESAction(rule.getId(), coreRule.getGroup(), effectiveMaxSize, returnMessagePlain, returnMessage, action, getNoReplyEmail(rule.getDomain())));
 		
 		return coreRule;
 	}
@@ -76,11 +80,12 @@ public class Provider extends RulesByFeature{
 		private String group;
 		private Integer effectiveMaxSize;
 		private String returnMessage;
+		private String returnMessagePlain;
 		private String action;
 		private String replyMail;
 
 		public ESAction(Integer ruleId, String group, Integer effectiveMaxSize,
-				String returnMessage, String action, String replyMail) {
+				String returnMessagePlain, String returnMessage, String action, String replyMail) {
 			super();
 			this.ruleId = ruleId;
 			this.group = group;
@@ -88,6 +93,7 @@ public class Provider extends RulesByFeature{
 			this.returnMessage = returnMessage;
 			this.action = action;
 			this.replyMail = replyMail;
+			this.returnMessagePlain = returnMessagePlain;
 		}
 
 		@Override
@@ -101,7 +107,7 @@ public class Provider extends RulesByFeature{
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.initialsizelimiter");
 			}
 			if(action.equalsIgnoreCase(ACTION_RETURN) && isDropped){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnMessage,returnMessage );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnMessagePlain,returnMessage );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.initialsizelimiter",Boolean.toString(isDropped) );
 		}

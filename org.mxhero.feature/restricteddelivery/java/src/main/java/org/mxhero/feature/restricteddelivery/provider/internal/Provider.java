@@ -19,6 +19,7 @@ public class Provider extends RulesByFeature{
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_RETURN = "return";
 	private static final String RETURN_TEXT = "return.text";
+	private static final String RETURN_TEXT_PLAIN = "return.text.plain";
 	private static final String OWN_DOMAIN_SELECTED = "own.domain.selected";
 
 	
@@ -29,6 +30,7 @@ public class Provider extends RulesByFeature{
 		String action = "";
 		boolean ownDomain = false;
 		String returnText = "";
+		String returnTextPlain = "";
 		Set<String> accounts = new HashSet<String>();
 		Set<String> domains = new HashSet<String>();
 		
@@ -44,13 +46,15 @@ public class Provider extends RulesByFeature{
 				}
 			} else if (property.getPropertyKey().equals(RETURN_TEXT)){
 				returnText = property.getPropertyValue();
+			} else if (property.getPropertyKey().equals(RETURN_TEXT_PLAIN)){
+				returnTextPlain = property.getPropertyValue();
 			} else if (property.getPropertyKey().equals(OWN_DOMAIN_SELECTED)){
 				ownDomain = Boolean.parseBoolean(property.getPropertyValue());
 			}
 		}
 		
 		coreRule.addEvaluation(new RDEvaluate(ownDomain, accounts, domains));
-		coreRule.addAction(new RDAction(coreRule.getId(), action, getNoReplyEmail(rule.getDomain()), returnText));
+		coreRule.addAction(new RDAction(coreRule.getId(), action, getNoReplyEmail(rule.getDomain()), returnTextPlain, returnText));
 		return coreRule;
 	}
 
@@ -87,14 +91,16 @@ public class Provider extends RulesByFeature{
 		private String action = "";
 		private String replyMail;
 		private String returnText = "";
+		private String returnTextPlain = "";
 		
 		public RDAction(Integer ruleId, String action, String replyMail,
-				String returnText) {
+				String returnTextPlain, String returnText) {
 			super();
 			this.ruleId = ruleId;
 			this.action = action;
 			this.replyMail = replyMail;
 			this.returnText = returnText;
+			this.returnTextPlain = returnTextPlain;
 		}
 
 		@Override
@@ -102,7 +108,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-RestrictedDelivery","rule="+ruleId);
 			mail.drop("org.mxhero.feature.restricteddelivery");
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnText,returnText );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnTextPlain,returnText );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.restricteddelivery.sender",mail.getInitialData().getSender().getMail());
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.restricteddelivery");
