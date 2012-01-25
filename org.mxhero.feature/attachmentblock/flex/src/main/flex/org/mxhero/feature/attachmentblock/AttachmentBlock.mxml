@@ -113,11 +113,8 @@
 				} else if (item.type=="extension"){
 					return resourceManager.getString("attachmentblock","type.extension.label");
 				}
-				
 				return item.type;
 			}
-
-			
 
 			protected function loadDefault_clickHandler(event:MouseEvent):void
 			{
