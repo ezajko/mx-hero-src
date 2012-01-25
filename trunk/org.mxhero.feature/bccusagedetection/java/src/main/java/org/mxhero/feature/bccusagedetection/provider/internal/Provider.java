@@ -25,6 +25,7 @@ public class Provider extends RulesByFeature{
 	private static String EMAIL_VALUE = "email.value";
 	private static String LIST_IGNORE = "lists.ignore";
 	private static String BCC_HEADER = "bcc.header";
+	private static String BCC_HEADER_PLAIN = "bcc.header.plain";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
@@ -32,6 +33,7 @@ public class Provider extends RulesByFeature{
 		Boolean ignoreList = false;
 		String email = null;
 		String bccHeader = "BCC:";
+		String bccHeaderPlain = "BCC:";
 		
 		for(RuleProperty property : rule.getProperties()){
 			if(property.getPropertyKey().equals(LIST_IGNORE)){
@@ -40,12 +42,14 @@ public class Provider extends RulesByFeature{
 				email = property.getPropertyValue();
 			}else if (property.getPropertyKey().equals(BCC_HEADER)){
 				bccHeader = property.getPropertyValue();
+			}else if (property.getPropertyKey().equals(BCC_HEADER_PLAIN)){
+				bccHeaderPlain = property.getPropertyValue();
 			}
 		}
 		
 		coreRule.addEvaluation(new FromInHeaders(rule.getFromDirection(), rule.getToDirection(), rule.getTwoWays()));
 		coreRule.addEvaluation(new BCCUDEval(ignoreList));
-		coreRule.addAction(new BCCUDAction(email, rule.getId(), bccHeader));
+		coreRule.addAction(new BCCUDAction(email, rule.getId(), bccHeader, bccHeaderPlain));
 		
 		return coreRule;
 	}
@@ -114,21 +118,23 @@ public class Provider extends RulesByFeature{
 	
 	
 	private class BCCUDAction implements Actionable{
-		String email = null;
-		Integer ruleId = null;
-		String bccHeader = null;
+		private String email = null;
+		private Integer ruleId = null;
+		private String bccHeader = null;
+		private String bccHeaderPlain=null;
 
-		public BCCUDAction(String email, Integer ruleId, String bccHeader) {
+		public BCCUDAction(String email, Integer ruleId, String bccHeader, String bccHeaderPlain) {
 			this.email = email;
 			this.ruleId = ruleId;
 			this.bccHeader = bccHeader;
+			this.bccHeaderPlain = bccHeaderPlain;
 		}
 
 		@Override
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.bccusagedetection", "true");
 			mail.getHeaders().addHeader("X-mxHero-BCCUsageDetection", "rule="+ruleId);
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{mail.getInitialData().getSender().getMail(),email,bccHeader,bccHeader,"true"} );
+			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{mail.getInitialData().getSender().getMail(),email,bccHeaderPlain,bccHeader,"true"} );
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccusagedetection","true" );
 		}
 		

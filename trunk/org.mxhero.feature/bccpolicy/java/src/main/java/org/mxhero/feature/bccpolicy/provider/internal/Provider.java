@@ -20,6 +20,7 @@ public class Provider extends RulesByFeature{
 	
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String RETURN_MESSAGE = "return.message";
+	private static final String RETURN_MESSAGE_PLAIN = "return.message.plain";
 	private static final String LIST_IGNORE = "lists.ignore";
 	private static final String RETURN_ACTION = "return";
 			
@@ -29,6 +30,7 @@ public class Provider extends RulesByFeature{
 	
 		String action = null;
 		String returnMessage = "";
+		String returnMessagePlain = "";
 		Boolean ignoreList = false;
 		
 		for(RuleProperty property : rule.getProperties()){
@@ -38,12 +40,14 @@ public class Provider extends RulesByFeature{
 				returnMessage = property.getPropertyValue();
 			}else if (property.getPropertyKey().equals(LIST_IGNORE)){
 				ignoreList = Boolean.parseBoolean(property.getPropertyValue());
+			}else if (property.getPropertyKey().equals(RETURN_MESSAGE_PLAIN)){
+				returnMessagePlain = property.getPropertyValue();
 			}
 		}
 		
 		coreRule.addEvaluation(new FromInHeaders(rule.getFromDirection(), rule.getToDirection(), rule.getTwoWays()));
 		coreRule.addEvaluation(new BCCPEvaluation(ignoreList));
-		coreRule.addAction(new BCCPEAction(action,returnMessage,rule.getId(),this.getNoReplyEmail(rule.getDomain())));
+		coreRule.addAction(new BCCPEAction(action,returnMessage,returnMessagePlain,rule.getId(),this.getNoReplyEmail(rule.getDomain())));
 		
 		return coreRule;
 	}
@@ -102,12 +106,14 @@ public class Provider extends RulesByFeature{
 
 		String action = null;
 		String returnMessage = "";
+		String returnMessagePlain = "";
 		Integer ruleId = null;
 		String noreplyMail = null;
 
-		public BCCPEAction(String action, String returnMessage, Integer ruleId, String noreplyMail) {
+		public BCCPEAction(String action, String returnMessage, String returnMessagePlain, Integer ruleId, String noreplyMail) {
 			this.action = action;
 			this.returnMessage = returnMessage;
+			this.returnMessagePlain = returnMessagePlain;
 			this.ruleId = ruleId;
 			this.noreplyMail = noreplyMail;
 		}
@@ -117,7 +123,7 @@ public class Provider extends RulesByFeature{
 			mail.drop("org.mxhero.feature.bccpolicy");
 			mail.getHeaders().addHeader("X-mxHero-BCCPolicy", "rule="+ruleId+";blocked=true");
 			if(action!=null && action.equals(RETURN_ACTION)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessage,returnMessage} );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessagePlain,returnMessage} );
 			}			
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccpolicy","true" );
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.bccpolicy");

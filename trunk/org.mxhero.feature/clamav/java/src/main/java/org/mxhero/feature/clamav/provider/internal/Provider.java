@@ -15,6 +15,7 @@ public class Provider extends RulesByFeature{
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_RETURN = "return";
 	private static final String RETURN_MESSAGE = "return.message";
+	private static final String RETURN_MESSAGE_PLAIN = "return.message.plain";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
@@ -22,17 +23,20 @@ public class Provider extends RulesByFeature{
 		
 		String action = null;
 		String message = "";
+		String messagePlain = "";
 		
 		for(RuleProperty property : rule.getProperties()){
 			if(property.getPropertyKey().equals(ACTION_SELECTION)){
 				action=property.getPropertyValue();
 			} else if(property.getPropertyKey().equals(RETURN_MESSAGE)){
 				message = property.getPropertyValue();
+			} else if(property.getPropertyKey().equals(RETURN_MESSAGE_PLAIN)){
+				messagePlain = property.getPropertyValue();
 			}
 		}
 		
 		coreRule.addEvaluation(new AVEvaluation());
-		coreRule.addAction(new AVAction(rule.getId(), message, getNoReplyEmail(rule.getDomain()), action));
+		coreRule.addAction(new AVAction(rule.getId(), messagePlain, message, getNoReplyEmail(rule.getDomain()), action));
 		
 		return coreRule;
 	}
@@ -54,14 +58,15 @@ public class Provider extends RulesByFeature{
 		private String returnText;
 		private String replyMail;
 		private String action;
+		private String messagePlain;
 		
-		public AVAction(Integer ruleId, String returnText, String replyMail,
+		public AVAction(Integer ruleId, String messagePlain, String returnText, String replyMail,
 				String action) {
-			super();
 			this.ruleId = ruleId;
 			this.returnText = returnText;
 			this.replyMail = replyMail;
 			this.action = action;
+			this.messagePlain = messagePlain;
 		}
 
 		@Override
@@ -70,7 +75,7 @@ public class Provider extends RulesByFeature{
 			mail.getProperties().put("org.mxhero.feature.clamav",ruleId.toString());
 			mail.getHeaders().addHeader("X-mxHero-ClamAV","rule="+ruleId.toString()+";result="+clamavResult.getText());
 			if(action.equalsIgnoreCase(ACTION_RETURN) && clamavResult.isTrue()){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnText,returnText );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),messagePlain,returnText );
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.clamav",Boolean.toString(clamavResult.isTrue()) );
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","virus.detected",Boolean.toString(clamavResult.isTrue()) );

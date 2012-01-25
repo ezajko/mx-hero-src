@@ -20,6 +20,7 @@ public class Provider extends RulesByFeature{
 	private static final String EMAIL_LIST = "email.list";
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String RETURN_TEXT = "return.text";
+	private static final String RETURN_TEXT_PLAIN = "return.text.plain";
 	private static final String TWO_WAY_FLAG = "two.way.flag";
 	
 	@Override
@@ -28,6 +29,7 @@ public class Provider extends RulesByFeature{
 		
 		String action = "";
 		String returnText = "";
+		String returnTextPlain = "";
 		Set<String> accounts = new HashSet<String>();
 		Set<String> domains = new HashSet<String>();
 		boolean twoWayFlag = false;
@@ -46,11 +48,13 @@ public class Provider extends RulesByFeature{
 				returnText = property.getPropertyValue();
 			} else if (property.getPropertyKey().equals(TWO_WAY_FLAG)){
 				twoWayFlag = Boolean.parseBoolean(property.getPropertyValue());
+			} if (property.getPropertyKey().equals(RETURN_TEXT_PLAIN)){
+				returnTextPlain = property.getPropertyValue();
 			}
 		}
 		coreRule.addEvaluation(new FromToEval(rule.getFromDirection(),rule.getToDirection(), twoWayFlag));
 		coreRule.addEvaluation(new BLEvaluation(coreRule.getGroup(),accounts,domains,twoWayFlag));
-		coreRule.addAction(new BLAction(rule.getId(), coreRule.getGroup(), returnText, getNoReplyEmail(rule.getDomain()), action));
+		coreRule.addAction(new BLAction(rule.getId(), coreRule.getGroup(), returnTextPlain, returnText, getNoReplyEmail(rule.getDomain()), action));
 		
 		return coreRule;
 	}
@@ -100,14 +104,16 @@ public class Provider extends RulesByFeature{
 		private Integer ruleId;
 		private String group;
 		private String returnText;
+		private String returnTextPlain;
 		private String replyMail;
 		private String action;
 		
-		public BLAction(Integer ruleId, String group, String returnText,
+		public BLAction(Integer ruleId, String group, String returnTextPlain, String returnText,
 				String replyMail, String action) {
 			this.ruleId = ruleId;
 			this.group = group;
 			this.returnText = returnText;
+			this.returnTextPlain = returnTextPlain;
 			this.replyMail = replyMail;
 			this.action = action;
 		}
@@ -118,7 +124,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-BlockList", "rule="+ruleId.toString());
 			mail.drop("org.mxhero.feature.blocklist");
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnText,returnText );
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnTextPlain,returnText );
 			}
 			if(mail.getProperties().containsKey("org.mxhero.feature.blocklist.sender")){
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.email",mail.getInitialData().getSender().getMail());
