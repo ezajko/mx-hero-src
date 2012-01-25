@@ -15,6 +15,7 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.RichTextEditor;
 			import mx.utils.URLUtil;
 			
 			import org.mxhero.console.commons.resources.ImageResources;
@@ -27,6 +28,7 @@
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
 			import org.mxhero.console.frontend.application.command.ProcessQueryCommand;
 			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
+			import mx.controls.RichTextEditor;
 			
 		]]>
 	</fx:Script>
@@ -132,7 +134,7 @@
 		<s:ChannelSet id="channelSet">
 			<s:channels>
 				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
-				<!--<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>-->
+				<!--<s:AMFChannel uri="{'http://test.mxhero.com:8080/mxhero/messagebroker/flex-amf'}"/>-->
 			</s:channels>
 		</s:ChannelSet>
 

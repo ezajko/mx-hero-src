@@ -72,12 +72,10 @@
 					return true;
 				} else if (currentState=="domain" &&
 							domainFT.ipeComboBox != null &&
-							domainFT.ipeComboBox.selectedItem!=null &&
 							domainFT.ipeComboBox.currentState=="show"){
 					return true;
 				} else if (currentState=="individual" && 
 							individualFT.ipeComboBox!=null &&
-							individualFT.ipeComboBox.selectedItem!=null &&
 							individualFT.ipeComboBox.currentState=="show"){
 					return true;
 				}
@@ -133,7 +131,7 @@
 						direction.domain=domainFT.ipeComboBox.selectedItem.domain.domain;
 						direction.account=null;
 						direction.group=null;
-					}else {
+					}else if(!forceManaged) {
 						direction.account=null;
 						direction.group=null;
 						direction.domain=null;
@@ -147,7 +145,7 @@
 						direction.account=individualFT.ipeComboBox.selectedItem.account.account;
 						direction.domain=individualFT.ipeComboBox.selectedItem.account.domain;
 						direction.group=null;
-					}else {
+					}else if(!forceManaged) {
 						direction.account=null;
 						direction.group=null;
 						direction.domain=null;
