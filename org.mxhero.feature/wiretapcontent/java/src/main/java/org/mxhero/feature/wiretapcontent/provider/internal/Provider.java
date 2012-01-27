@@ -21,6 +21,10 @@ public class Provider extends RulesByFeature{
 	private static final String EMAIL_VALUE_PROPERTY = "email.value";
 	private static final String AND_VALUE = "and";
 	private static final String OR_VALUE = "or";
+	private static final String FOUND_ACTION = "found.action";
+	private static final String FOUND_ACTION_COPY = "found.action";
+	private static final String FOUND_ACTION_REDIRECT = "found.action";
+	private static final String FOUND_ACTION_DROP = "found.action";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
@@ -29,6 +33,7 @@ public class Provider extends RulesByFeature{
 		String andor = null;
 		String emailCopy = null;
 		List<String> words = new ArrayList<String>();
+		String action = null;
 		
 		for(RuleProperty property : rule.getProperties()){
 			if(property.getPropertyKey().equals(ANDOR_SELECTION_PROPERTY)){
@@ -37,11 +42,13 @@ public class Provider extends RulesByFeature{
 				words.add(StringEscapeUtils.escapeJava(property.getPropertyValue()));
 			} else if(property.getPropertyKey().equals(EMAIL_VALUE_PROPERTY)){
 				emailCopy = property.getPropertyValue();
+			} else if(property.getPropertyKey().equals(FOUND_ACTION)){
+				action = property.getPropertyValue();
 			}
 		}
 
 		coreRule.addEvaluation(new WCEvaluate(andor, emailCopy, words));
-		coreRule.addAction(new WCAction(coreRule.getId(), emailCopy));
+		coreRule.addAction(new WCAction(coreRule.getId(), emailCopy, action));
 		
 		return coreRule;
 	}
@@ -75,18 +82,28 @@ public class Provider extends RulesByFeature{
 
 		private Integer ruleId;
 		private String emailCopy;
+		private String action;
 		
-		public WCAction(Integer ruleId, String emailCopy) {
+		public WCAction(Integer ruleId, String emailCopy, String action) {
 			super();
 			this.ruleId = ruleId;
 			this.emailCopy = emailCopy;
+			this.action = action;
 		}
 
 		@Override
 		public void exec(Mail mail) {
 			mail.getHeaders().addHeader("X-mxHero-WiretapContent","rule="+ruleId+";hidden_copied:"+emailCopy);
-			mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
+			if(action==null || action.equalsIgnoreCase(FOUND_ACTION_COPY)){
+				mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
+			}else if(action.equalsIgnoreCase(FOUND_ACTION_REDIRECT)){
+				mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
+				mail.drop("org.mxhero.feature.redirect");
+			}else if(action.equalsIgnoreCase(FOUND_ACTION_DROP)){
+				mail.drop("org.mxhero.feature.redirect");
+			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.wiretapcontent","true");
 		}
 		
