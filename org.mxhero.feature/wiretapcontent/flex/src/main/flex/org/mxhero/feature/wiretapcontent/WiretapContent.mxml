@@ -11,7 +11,9 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="andor"/>
+		<s:RadioButtonGroup id="actionGroup"/>
 		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
+		<mx:EmailValidator id="redirectV" required="true" source="{redirectTi}" property="text"/>
 	</fx:Declarations>
 
 	<fx:Script>
@@ -45,13 +47,22 @@
 					return false;
 				}
 				
-				var valResult:Array = emailV.validate().results;
-				if(valResult!=null && valResult.length>0){
-					errorMessage=emailTi.errorString;
-					return false;
+				if(copyRb.selected){
+					var valResult:Array = emailV.validate().results;
+					if(valResult!=null && valResult.length>0){
+						errorMessage=emailTi.errorString;
+						return false;
+					}
 				}
-				
 				emailTi.errorString="";
+				if(redirecRb.selected){
+					var redirectResult:Array = redirectV.validate().results;
+					if(redirectResult!=null && redirectResult.length>0){
+						errorMessage=redirectTi.errorString;
+						return false;
+					}
+				}
+				redirectTi.errorString="";
 				wordsDg.errorString="";
 				return true;
 			}
@@ -76,9 +87,23 @@
 						words.addItem(wordProperty.propertyValue);
 					}
 					
-					property=PropertyHelper.getProperty(initProperties,'email.value');
-					if(property!=null){
-						emailTi.text = property.propertyValue;
+					if(PropertyHelper.getProperty(initProperties,'found.action')!=null
+						&& PropertyHelper.getProperty(initProperties,'found.action').propertyValue!="copy"){
+						if(PropertyHelper.getProperty(initProperties,'found.action').propertyValue=="redirect"){
+							property=PropertyHelper.getProperty(initProperties,'email.value');
+							if(property!=null){
+								redirecRb.selected=true;
+								redirectTi.text = property.propertyValue;
+							}
+						}else if(PropertyHelper.getProperty(initProperties,'found.action').propertyValue=="drop"){
+							dropRb.selected=true;
+						}
+					}else{
+						property=PropertyHelper.getProperty(initProperties,'email.value');
+						if(property!=null){
+							emailTi.text = property.propertyValue;
+							copyRb.selected=true;
+						}
 					}
 				}
 			}
@@ -103,11 +128,33 @@
 					properties.addItem(property);
 				}
 				
-				property=new FeatureRuleProperty();
-				property.propertyKey='email.value';
-				property.propertyValue=emailTi.text;
-				
-				properties.addItem(property);
+				if(copyRb.selected){
+					property=new FeatureRuleProperty();
+					property.propertyKey='email.value';
+					property.propertyValue=emailTi.text;
+					properties.addItem(property);
+					
+					property=new FeatureRuleProperty();
+					property.propertyKey='found.action';
+					property.propertyValue='copy';
+					properties.addItem(property);
+				}else if(redirecRb.selected){
+					property=new FeatureRuleProperty();
+					property.propertyKey='email.value';
+					property.propertyValue=redirectTi.text;
+					properties.addItem(property);
+					
+					property=new FeatureRuleProperty();
+					property.propertyKey='found.action';
+					property.propertyValue='redirect';
+					properties.addItem(property);
+				}else if(dropRb.selected){
+					property=new FeatureRuleProperty();
+					property.propertyKey='found.action';
+					property.propertyValue='drop';
+					properties.addItem(property);
+				}
+
 				
 				return properties;
 			}
@@ -228,11 +275,34 @@
 	
 	<mx:Spacer/>
 
-	<s:Label text="{resourceManager.getString('wiretapcontent','second.title')}" fontSize="16" fontWeight="bold"/>
+	<s:Label text="When keywords found ..." fontSize="16" fontWeight="bold"/>
 	
-	<s:HGroup paddingLeft="20" verticalAlign="middle">
-		<s:Label text="{resourceManager.getString('wiretapcontent','email.copy')}"/>
-		<s:TextInput id="emailTi" width="200"/>
-	</s:HGroup>
+	<s:VGroup paddingLeft="20" verticalAlign="middle" gap="15">
+		<s:VGroup>
+			<s:RadioButton id="copyRb" 
+						   selected="true" 
+						   groupName="actionGroup"
+						   label="Copy email to the following address"/>
+			<s:HGroup paddingLeft="20">
+				<s:TextInput  id="emailTi" width="240"/>
+			</s:HGroup>
+		</s:VGroup>
+		
+		<s:VGroup>
+			<s:RadioButton id="redirecRb" 
+						   selected="false" 
+						   groupName="actionGroup"
+						   label="Redirec email to the following email"/>
+			<s:HGroup paddingLeft="20">
+				<s:TextInput  id="redirectTi" width="240"/>
+			</s:HGroup>
+		</s:VGroup>
+		<s:RadioButton id="dropRb" 
+					   selected="false" 
+					   groupName="actionGroup"
+					   label="Drop email"/>
+	</s:VGroup>
+	
+	
 	
 </mx:Module>
