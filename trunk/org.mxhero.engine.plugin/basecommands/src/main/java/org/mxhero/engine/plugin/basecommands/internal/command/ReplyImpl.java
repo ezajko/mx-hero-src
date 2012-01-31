@@ -126,6 +126,15 @@ public class ReplyImpl implements Reply {
 					replayMessage.setReplyTo(new InternetAddress[]{sender});
 					MimeMultipart mixed = new MimeMultipart();
 					MimeMultipart multipartText = new MimeMultipart("alternative");
+
+					if(args.length>TEXT_PARAM_NUMBER 
+							&& args[TEXT_PARAM_NUMBER]!=null
+							&& !args[TEXT_PARAM_NUMBER].isEmpty()){
+
+						BodyPart textBodyPart = new MimeBodyPart();
+						textBodyPart.setText(replaceTextVars(mail,args[TEXT_PARAM_NUMBER])+((noReplySignature!=null)?noReplySignature:""));
+						multipartText.addBodyPart(textBodyPart);
+					}
 					if(args.length>HTML_PARAM_NUMBER 
 							&& args[HTML_PARAM_NUMBER]!=null
 							&& !args[HTML_PARAM_NUMBER].isEmpty()){
@@ -138,15 +147,6 @@ public class ReplyImpl implements Reply {
 						htmlBodyPart.setContent(doc.outerHtml(),"text/html");
 						multipartText.addBodyPart(htmlBodyPart);
 					}
-					if(args.length>TEXT_PARAM_NUMBER 
-							&& args[TEXT_PARAM_NUMBER]!=null
-							&& !args[TEXT_PARAM_NUMBER].isEmpty()){
-
-						BodyPart textBodyPart = new MimeBodyPart();
-						textBodyPart.setText(replaceTextVars(mail,args[TEXT_PARAM_NUMBER])+((noReplySignature!=null)?noReplySignature:""));
-						multipartText.addBodyPart(textBodyPart);
-					}
-					
 					MimeBodyPart wrap = new MimeBodyPart();
 					wrap.setContent(multipartText); 
 					mixed.addBodyPart(wrap);
