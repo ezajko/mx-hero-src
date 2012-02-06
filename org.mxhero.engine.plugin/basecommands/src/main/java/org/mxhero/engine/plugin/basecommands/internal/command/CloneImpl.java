@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.mail.Address;
+import javax.mail.Message;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -41,6 +43,7 @@ public class CloneImpl implements Clone {
 	private static final int RECIPIENT_PARAM_NUMBER = 2;
 	private static final int OUTPUTSERVICE_PARAM_NUMBER = 3;
 	private static final int GENERATE_NEWMESSAGEID = 4;
+	private static final int OVERRIDE = 5;
 	
 	private static final String TMP_FILE_SUFFIX = ".eml";
 	private static final String TMP_FILE_PREFIX = "clone";
@@ -60,6 +63,7 @@ public class CloneImpl implements Clone {
 		String outputService = null;
 		MimeMail clonedMail = null;
 		result.setResult(false);
+		String override="none";
 		boolean generateNewMessageId = false;
 
 		if (args == null || args.length < MIM_PARAMANS) {
@@ -103,6 +107,14 @@ public class CloneImpl implements Clone {
 				log.debug("generate new Id");
 			}
 			
+			if(args.length > OVERRIDE && args[OVERRIDE]!=null){
+				if(args[OVERRIDE].equalsIgnoreCase("in")||
+					args[OVERRIDE].equalsIgnoreCase("out")||
+					args[OVERRIDE].equalsIgnoreCase("both")){
+					override = args[OVERRIDE].toLowerCase();
+				}
+			}
+			
 			if(!mail.getProperties().containsKey(Reply.class.getName())){
 				InputStream is = null;
 				OutputStream os = null;
@@ -118,12 +130,20 @@ public class CloneImpl implements Clone {
 						mail.getMessage().writeTo(os);
 						is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 					}
-					
+
 					clonedMail = new MimeMail((sender!=null)?sender.getAddress():"<>", recipient.getAddress(),is, outputService);
+					if(override.equalsIgnoreCase("in")){
+						mail.getMessage().setFrom(sender);
+						mail.getMessage().setReplyTo(new Address[]{recipient});
+					}else if(override.equalsIgnoreCase("out")){
+						mail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
+					}else if(override.equalsIgnoreCase("both")){
+						mail.getMessage().setFrom(sender);
+						mail.getMessage().setReplyTo(new Address[]{sender});
+					}
 					if(generateNewMessageId){
 						clonedMail.setMessageId(null);
 					}
-					clonedMail.setPhase(RulePhase.SEND);
 					clonedMail.getProperties().putAll(mail.getProperties());
 					clonedMail.getProperties().put(Reply.class.getName(), recipient.getAddress());
 				} catch (Exception e) {
