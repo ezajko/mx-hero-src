@@ -114,7 +114,7 @@ public class CloneImpl implements Clone {
 					override = args[OVERRIDE].toLowerCase();
 				}
 			}
-			
+			log.debug("override:"+override);
 			if(!mail.getProperties().containsKey(Reply.class.getName())){
 				InputStream is = null;
 				OutputStream os = null;
@@ -134,12 +134,17 @@ public class CloneImpl implements Clone {
 					clonedMail = new MimeMail((sender!=null)?sender.getAddress():"<>", recipient.getAddress(),is, outputService);
 					if(override.equalsIgnoreCase("in")){
 						mail.getMessage().setFrom(sender);
-						mail.getMessage().setReplyTo(new Address[]{recipient});
+						mail.getMessage().setReplyTo(new Address[]{sender});
+						log.debug("overriding from and replyTo:"+sender.getAddress());
 					}else if(override.equalsIgnoreCase("out")){
 						mail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
+						log.debug("overriding To:"+recipient.getAddress());
 					}else if(override.equalsIgnoreCase("both")){
 						mail.getMessage().setFrom(sender);
 						mail.getMessage().setReplyTo(new Address[]{sender});
+						mail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
+						log.debug("overriding To:"+recipient.getAddress());
+						log.debug("overriding from and replyTo:"+sender.getAddress());
 					}
 					if(generateNewMessageId){
 						clonedMail.setMessageId(null);
