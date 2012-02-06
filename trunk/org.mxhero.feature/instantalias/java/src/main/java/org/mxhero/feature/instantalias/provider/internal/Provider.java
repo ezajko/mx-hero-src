@@ -1,5 +1,7 @@
 package org.mxhero.feature.instantalias.provider.internal;
 
+import javax.mail.internet.InternetAddress;
+
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.business.Mail;
@@ -8,9 +10,8 @@ import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
-import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 
-public class Provider extends RulesByFeature {
+public class Provider extends RulesByFeatureWithFixed {
 
 	private static final String SEPARATION_CHARACTER = "separation.charater";
 
@@ -40,7 +41,8 @@ public class Provider extends RulesByFeature {
 					&& (separationCharacter != null
 							&& !separationCharacter.trim().isEmpty() && mail
 							.getInitialData().getRecipient().getMail()
-							.contains(separationCharacter.trim()));
+							.contains(separationCharacter.trim())
+							&& !mail.getInitialData().getRecipient().getMail().startsWith("org.mxhero.feature.instantalias"));
 		}
 	}
 
@@ -57,8 +59,25 @@ public class Provider extends RulesByFeature {
 		public void exec(Mail mail) {
 			int separatorInit=mail.getInitialData().getRecipient().getMail().indexOf(separationCharacter.trim());
 			int aliasEnd = mail.getInitialData().getRecipient().getMail().indexOf("@");
-			String realEmail=mail.getInitialData().getRecipient().getMail().substring(0, separatorInit).toString()
-					+mail.getInitialData().getRecipient().getMail().substring(aliasEnd).toString();
+			String account = mail.getInitialData().getRecipient().getMail().substring(0, separatorInit).toString();
+			String domain = mail.getInitialData().getRecipient().getMail().substring(aliasEnd+1).toString();
+			String alias = mail.getInitialData().getRecipient().getMail().substring(separatorInit+1, aliasEnd).toString();
+			String realEmail= account+"@"+domain;
+			String replyTo=null;
+			try{replyTo = mail.getHeaders().getHeaderValue("Reply-To");
+				replyTo = new InternetAddress(replyTo,false).getAddress();
+			}catch (Exception e){replyTo = null;}
+			if(replyTo==null || replyTo.trim().length()<3){
+				try{replyTo = mail.getHeaders().getHeaderValue("From");
+					replyTo = new InternetAddress(replyTo,false).getAddress();
+				}catch (Exception e){replyTo = null;}
+			}
+			if(replyTo==null || replyTo.trim().length()<3){
+				replyTo=mail.getInitialData().getSender().getMail();
+			}
+			replyTo = "org.mxhero.feature.instantalias"+REPLY_ALIAS+account+separationCharacter.trim()+alias+REPLY_ALIAS+domain+REPLY_ALIAS+replyTo;
+			mail.getHeaders().removeHeader("Reply-To");
+			mail.getHeaders().addHeader("Reply-To",replyTo);
 			mail.getHeaders().addHeader("X-mxHero-InstantAlias","rule="+ruleId+";alias="+mail.getInitialData().getRecipient().getMail());
 			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),realEmail);
 			mail.drop("org.mxhero.feature.instantalias");

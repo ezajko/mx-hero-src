@@ -12,6 +12,7 @@ public class TestSubstring {
 		String realEmail=mail.substring(0, separatorInit).toString()
 				+mail.substring(aliasEnd).toString();
 		System.out.println(realEmail);
+		System.out.println("org.mxhero.feature.instantalias+dsasdasdasdads".startsWith("org.mxhero.feature.instantalias"));
 	}
 	
 }
