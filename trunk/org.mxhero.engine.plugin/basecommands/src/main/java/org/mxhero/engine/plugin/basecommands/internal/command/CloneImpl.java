@@ -133,16 +133,20 @@ public class CloneImpl implements Clone {
 
 					clonedMail = new MimeMail((sender!=null)?sender.getAddress():"<>", recipient.getAddress(),is, outputService);
 					if(override.equalsIgnoreCase("in")){
-						mail.getMessage().setFrom(sender);
-						mail.getMessage().setReplyTo(new Address[]{sender});
+						clonedMail.getMessage().setFrom(sender);
+						clonedMail.getMessage().setReplyTo(new Address[]{sender});
 						log.debug("overriding from and replyTo:"+sender.getAddress());
 					}else if(override.equalsIgnoreCase("out")){
-						mail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
+						clonedMail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
 						log.debug("overriding To:"+recipient.getAddress());
 					}else if(override.equalsIgnoreCase("both")){
-						mail.getMessage().setFrom(sender);
-						mail.getMessage().setReplyTo(new Address[]{sender});
-						mail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
+						String nullString = null;
+						clonedMail.getMessage().setFrom(sender);
+						clonedMail.getMessage().setReplyTo(new Address[]{sender});
+						clonedMail.getMessage().setRecipients(Message.RecipientType.BCC, nullString);
+						clonedMail.getMessage().setRecipients(Message.RecipientType.CC, nullString);
+						clonedMail.getMessage().setRecipients(Message.RecipientType.TO, nullString);
+						clonedMail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
 						log.debug("overriding To:"+recipient.getAddress());
 						log.debug("overriding from and replyTo:"+sender.getAddress());
 					}
