@@ -12,10 +12,13 @@ import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 
 	protected static final String REPLY_ALIAS="--";
+	private static Logger log = LoggerFactory.getLogger(RulesByFeatureWithFixed.class);
 	private String group;
 	
 	@Override
@@ -52,8 +55,10 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 	private class IAFixedEval implements Evaluable{
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER) &&
+			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER) &&
 					mail.getInitialData().getRecipient().getMail().startsWith("org.mxhero.feature.instantalias");
+			log.debug("result:"+result);
+			return result;
 		}
 	}
 	
