@@ -56,19 +56,18 @@ public class Provider extends RulesByFeature{
 		@Override
 		public boolean eval(Mail mail) {
 			boolean result =  mail.getState().equalsIgnoreCase(MailState.DELIVER)
-			&& !mail.getProperties().containsKey("org.mxhero.feature.attachmentlink")
-			&& !mail.getProperties().containsKey("org.mxhero.feature.attachmenttrack")
 			&& mail.getHeaders()!=null
 			&& mail.getAttachments()!=null
 			&& mail.getAttachments().isAttached()
 			&& (mail.getSubject().getSubject().matches("(?i)\\s*\\[\\s*mxatt\\s*\\]\\s*.*") ||
 				HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE)!=null);
-			log.debug("eval="+result);
-			log.debug("has header="+mail.getHeaders().hasHeader(HEADER));
-			log.debug("is attached="+mail.getAttachments().isAttached());
-			log.debug("match subject="+mail.getSubject().getSubject().matches("(?i).*\\[\\s*mxatt\\s*\\]\\s*.*") );
-			log.debug("header value="+HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE));
-			
+			if(log.isDebugEnabled()){
+				log.debug("eval="+result);
+				log.debug("has header="+mail.getHeaders().hasHeader(HEADER));
+				log.debug("is attached="+mail.getAttachments().isAttached());
+				log.debug("match subject="+mail.getSubject().getSubject().matches("(?i).*\\[\\s*mxatt\\s*\\]\\s*.*") );
+				log.debug("header value="+HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE));
+			}
 			return result;
 		}
 	}
@@ -90,16 +89,22 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			Result result = mail.cmd("org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand",locale,Boolean.toString(notify),message);
-			if(!mail.getState().equalsIgnoreCase(MailState.REQUEUE)){
+			if(!mail.getProperties().containsKey("org.mxhero.feature.attachmentlink")
+				&& !mail.getProperties().containsKey("org.mxhero.feature.attachmenttrack")){
+				Result result = mail.cmd("org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand",locale,Boolean.toString(notify),message);
+				if(!mail.getState().equalsIgnoreCase(MailState.REQUEUE)){
+					mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst("(?i)\\s*\\[\\s*mxatt\\s*\\]\\s*", ""));
+					mail.getHeaders().addHeader("X-mxHero-AttachmentTrack","rule="+ruleId+";result="+result.isTrue());
+					mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
+					mail.getProperties().put("org.mxhero.feature.attachmenttrack", ruleId.toString());
+					mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmentlink",Boolean.toString(result.isResult()) );
+					mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmenttrack",Boolean.toString(result.isResult()) );
+					log.debug("exec, attached");
+				}
+			}else{
 				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst("(?i)\\s*\\[\\s*mxatt\\s*\\]\\s*", ""));
-				mail.getHeaders().addHeader("X-mxHero-AttachmentTrack","rule="+ruleId+";result="+result.isTrue());
-				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
-				mail.getProperties().put("org.mxhero.feature.attachmenttrack", ruleId.toString());
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmentlink",Boolean.toString(result.isResult()) );
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmenttrack",Boolean.toString(result.isResult()) );
-				log.debug("exec, attached");
 			}
+
 		}
 	}
 		
