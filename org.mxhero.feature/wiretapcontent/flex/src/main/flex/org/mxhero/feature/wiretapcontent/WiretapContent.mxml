@@ -275,14 +275,14 @@
 	
 	<mx:Spacer/>
 
-	<s:Label text="When keywords found ..." fontSize="16" fontWeight="bold"/>
+	<s:Label text="{resourceManager.getString('wiretapcontent','second.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup paddingLeft="20" verticalAlign="middle" gap="15">
 		<s:VGroup>
 			<s:RadioButton id="copyRb" 
 						   selected="true" 
 						   groupName="actionGroup"
-						   label="Copy email to the following address"/>
+						   label="{resourceManager.getString('wiretapcontent','copy.label')}"/>
 			<s:HGroup paddingLeft="20">
 				<s:TextInput  id="emailTi" width="240"/>
 			</s:HGroup>
@@ -292,7 +292,7 @@
 			<s:RadioButton id="redirecRb" 
 						   selected="false" 
 						   groupName="actionGroup"
-						   label="Redirec email to the following email"/>
+						   label="{resourceManager.getString('wiretapcontent','redirect.label')}"/>
 			<s:HGroup paddingLeft="20">
 				<s:TextInput  id="redirectTi" width="240"/>
 			</s:HGroup>
@@ -300,7 +300,7 @@
 		<s:RadioButton id="dropRb" 
 					   selected="false" 
 					   groupName="actionGroup"
-					   label="Drop email"/>
+					   label="{resourceManager.getString('wiretapcontent','drop.label')}"/>
 	</s:VGroup>
 	
 	
