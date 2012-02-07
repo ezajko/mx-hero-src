@@ -149,6 +149,7 @@ public class CloneImpl implements Clone {
 					if(generateNewMessageId){
 						clonedMail.setMessageId(null);
 					}
+					clonedMail.getMessage().saveChanges();
 					clonedMail.getProperties().putAll(mail.getProperties());
 					clonedMail.getProperties().put(Reply.class.getName(), recipient.getAddress());
 				} catch (Exception e) {
