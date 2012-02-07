@@ -124,7 +124,7 @@
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.instantalias' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.instantalias.alias' ) ";
 			
 			
 			public function setResult(queryId:String, result:*):void{
