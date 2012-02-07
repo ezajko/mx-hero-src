@@ -69,7 +69,7 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 			String[] emailComposition = mail.getInitialData().getRecipient().getMail().split(REPLY_ALIAS);
 			String sender = emailComposition[1]+"@"+emailComposition[2];
 			String recipient = mail.getInitialData().getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,sender,recipient,null,"true","both");
+			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,sender,recipient,null,"false","both");
 			mail.drop("org.mxhero.feature.redirect");
 		}
 	}
