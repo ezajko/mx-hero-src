@@ -140,13 +140,9 @@ public class CloneImpl implements Clone {
 						clonedMail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
 						log.debug("overriding To:"+recipient.getAddress());
 					}else if(override.equalsIgnoreCase("both")){
-						String nullString = null;
 						clonedMail.getMessage().setFrom(sender);
 						clonedMail.getMessage().setReplyTo(new Address[]{sender});
-						clonedMail.getMessage().setRecipients(Message.RecipientType.BCC, nullString);
-						clonedMail.getMessage().setRecipients(Message.RecipientType.CC, nullString);
-						clonedMail.getMessage().setRecipients(Message.RecipientType.TO, nullString);
-						clonedMail.getMessage().setRecipient(Message.RecipientType.TO, recipient);
+						clonedMail.getMessage().setRecipients(Message.RecipientType.TO, new Address[]{recipient});
 						log.debug("overriding To:"+recipient.getAddress());
 						log.debug("overriding from and replyTo:"+sender.getAddress());
 					}
