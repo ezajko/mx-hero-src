@@ -39,9 +39,8 @@ public class Provider extends RulesByFeatureWithFixed {
 		public boolean eval(Mail mail) {
 			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
 					&& (separationCharacter != null
-							&& !separationCharacter.trim().isEmpty() && mail
-							.getInitialData().getRecipient().getMail()
-							.contains(separationCharacter.trim())
+							&& !separationCharacter.trim().isEmpty() 
+							&& mail.getInitialData().getRecipient().getMail().contains(separationCharacter.trim())
 							&& !mail.getInitialData().getRecipient().getMail().startsWith("org.mxhero.feature.instantalias"));
 		}
 	}
