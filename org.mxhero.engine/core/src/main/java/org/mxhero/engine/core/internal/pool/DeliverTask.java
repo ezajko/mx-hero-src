@@ -45,7 +45,6 @@ public final class DeliverTask implements Runnable {
 		OutputService service;
 		boolean delivered = false;
 		try {
-
 			serviceReference = bc.getServiceReference(mail
 					.getResponseServiceId());
 			if (serviceReference != null) {
@@ -89,7 +88,7 @@ public final class DeliverTask implements Runnable {
 			}
 		}
 	}
-
+	
 	/**
 	 * @return the logStatService
 	 */

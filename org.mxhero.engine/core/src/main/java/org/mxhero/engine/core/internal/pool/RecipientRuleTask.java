@@ -1,6 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.MailState;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
@@ -9,7 +8,6 @@ import org.mxhero.engine.commons.statistic.LogRecord;
 import org.mxhero.engine.commons.statistic.LogStat;
 import org.mxhero.engine.commons.util.LogMail;
 import org.mxhero.engine.core.internal.CoreProperties;
-import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,11 +25,7 @@ public final class RecipientRuleTask implements Runnable {
 
 	private RuleBase base;
 
-	private UserFinder userFinderService;
-
 	private MimeMail mail;
-
-	private SessionFiller filler;
 
 	private RulesProcessor processor;
 
@@ -55,10 +49,9 @@ public final class RecipientRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public RecipientRuleTask(RuleBase base, MimeMail mail, UserFinder userFinderService, MimeMailQueueService queueService) {
+	public RecipientRuleTask(RuleBase base, MimeMail mail, MimeMailQueueService queueService) {
 		this.mail = mail;
 		this.base = base;
-		this.userFinderService = userFinderService;
 		this.queueService = queueService;
 	}
 
@@ -71,7 +64,7 @@ public final class RecipientRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			this.processor.process(base, filler, userFinderService, mail);
+			this.processor.process(base, mail.getBussinesObject());
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,getProperties().getProcessErrorStat(),
@@ -109,13 +102,6 @@ public final class RecipientRuleTask implements Runnable {
 						getProperties().getErrorFolder());
 			}
 		}
-	}
-
-	/**
-	 * @param filler
-	 */
-	public void setFiller(SessionFiller filler) {
-		this.filler = filler;
 	}
 
 	/**

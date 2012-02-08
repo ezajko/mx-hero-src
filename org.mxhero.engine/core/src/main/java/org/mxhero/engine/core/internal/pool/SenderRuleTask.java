@@ -1,6 +1,5 @@
 package org.mxhero.engine.core.internal.pool;
 
-import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.MailState;
 import org.mxhero.engine.commons.mail.business.RulePhase;
@@ -10,7 +9,6 @@ import org.mxhero.engine.commons.statistic.LogRecord;
 import org.mxhero.engine.commons.statistic.LogStat;
 import org.mxhero.engine.commons.util.LogMail;
 import org.mxhero.engine.core.internal.CoreProperties;
-import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +27,7 @@ public final class SenderRuleTask implements Runnable {
 
 	private MimeMail mail;
 
-	private UserFinder userFinderService;
-
 	private RulesProcessor processor;
-
-	private SessionFiller filler;
 
 	private LogRecord logRecordService;
 
@@ -55,11 +49,9 @@ public final class SenderRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public SenderRuleTask(RuleBase base, MimeMail mail,
-			UserFinder userFinderService, MimeMailQueueService queueService) {
+	public SenderRuleTask(RuleBase base, MimeMail mail, MimeMailQueueService queueService) {
 		this.mail = mail;
 		this.base = base;
-		this.userFinderService = userFinderService;
 		this.queueService = queueService;
 	}
 
@@ -72,7 +64,7 @@ public final class SenderRuleTask implements Runnable {
 	@Override
 	public void run() {
 		try {
-			processor.process(base, filler, userFinderService, mail);
+			this.processor.process(base, mail.getBussinesObject());
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
 				getLogStatService().log(mail,
@@ -81,7 +73,6 @@ public final class SenderRuleTask implements Runnable {
 			}
 			log.error("error while processing rules:"+ e.toString());
 			log.debug("error while processing rules", e);
-			
 		}
 
 		try {
@@ -119,13 +110,6 @@ public final class SenderRuleTask implements Runnable {
 						getProperties().getErrorFolder());
 			}
 		}
-	}
-
-	/**
-	 * @param filler
-	 */
-	public void setFiller(SessionFiller filler) {
-		this.filler = filler;
 	}
 
 	/**

@@ -1,8 +1,7 @@
-package org.mxhero.engine.core.internal.pool.filler;
+package org.mxhero.engine.core.internal.filler;
 
 import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.core.internal.mail.MailVO;
 
 /**
  * Used to set business objects to the KnowledgeSession.
@@ -18,6 +17,6 @@ public interface SessionFiller {
 	 * @param mail the object is used to construct the actual business objects.
 	 * @return returns the agenda for this mail.
 	 */
-	MailVO fill(UserFinder userfinder, MimeMail mail);
+	void fill(UserFinder userfinder, MimeMail mail);
 	
 }
