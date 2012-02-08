@@ -11,6 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
+import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.MailFlow;
 import org.mxhero.engine.commons.mail.business.MailState;
 import org.mxhero.engine.commons.mail.business.RulePhase;
@@ -63,6 +64,8 @@ public final class MimeMail {
 	private String flow = MailFlow.NONE;
 
 	private String statusReason;
+	
+	private Mail bussinesObject;
 
 	public static MimeMail createCustom(String from, String recipient, InputStream data,
 			String responseServiceId,Long sequence, Timestamp time) throws MessagingException{
@@ -358,6 +361,14 @@ public final class MimeMail {
 
 	public void setDeliverTries(int deliverTries) {
 		this.deliverTries = deliverTries;
+	}
+	
+	public Mail getBussinesObject() {
+		return bussinesObject;
+	}
+
+	public void setBussinesObject(Mail bussinesObject) {
+		this.bussinesObject = bussinesObject;
 	}
 
 	@Override
