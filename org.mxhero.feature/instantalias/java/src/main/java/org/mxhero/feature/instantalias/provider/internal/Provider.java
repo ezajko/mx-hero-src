@@ -41,7 +41,7 @@ public class Provider extends RulesByFeatureWithFixed {
 					&& (separationCharacter != null
 							&& !separationCharacter.trim().isEmpty() 
 							&& mail.getInitialData().getRecipient().getMail().contains(separationCharacter.trim())
-							&& !mail.getInitialData().getRecipient().getMail().startsWith("org.mxhero.feature.instantalias"));
+							&& !mail.getInitialData().getRecipient().getMail().startsWith(REPLY_START));
 		}
 	}
 
@@ -74,7 +74,7 @@ public class Provider extends RulesByFeatureWithFixed {
 			if(replyTo==null || replyTo.trim().length()<3){
 				replyTo=mail.getInitialData().getSender().getMail();
 			}
-			replyTo = "org.mxhero.feature.instantalias"+REPLY_ALIAS+account+separationCharacter.trim()+alias+REPLY_ALIAS+domain+REPLY_ALIAS+replyTo;
+			replyTo = REPLY_START+REPLY_ALIAS+account+separationCharacter.trim()+alias+REPLY_ALIAS+domain+REPLY_ALIAS+replyTo;
 			mail.getHeaders().removeHeader("Reply-To");
 			mail.getHeaders().addHeader("Reply-To",replyTo);
 			mail.getHeaders().addHeader("X-mxHero-InstantAlias","rule="+ruleId+";alias="+mail.getInitialData().getRecipient().getMail());

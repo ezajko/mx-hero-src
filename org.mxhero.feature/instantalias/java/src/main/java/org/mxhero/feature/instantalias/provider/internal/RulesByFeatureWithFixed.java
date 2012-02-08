@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 
 	protected static final String REPLY_ALIAS="--";
+	protected static final String REPLY_START="mxhero-instantalias";
+	
 	private static Logger log = LoggerFactory.getLogger(RulesByFeatureWithFixed.class);
 	private String group;
 	
@@ -56,7 +58,8 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 		@Override
 		public boolean eval(Mail mail) {
 			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER) &&
-					mail.getInitialData().getRecipient().getMail().startsWith("org.mxhero.feature.instantalias");
+					mail.getInitialData().getRecipient().getMail().startsWith(REPLY_START)
+					&& mail.getInitialData().getSender().getDomain().getManaged();
 			log.debug("result:"+result);
 			return result;
 		}
@@ -65,12 +68,22 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 	private class IAFixedAction implements Actionable{
 		@Override
 		public void exec(Mail mail) {
-			//"org.mxhero.feature.instantalias+"+alias+"+"+domain+"+"+replyTo;
 			String[] emailComposition = mail.getInitialData().getRecipient().getMail().split(REPLY_ALIAS);
-			String sender = emailComposition[1]+"@"+emailComposition[2];
-			String recipient = mail.getInitialData().getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,sender,recipient,null,"false","both");
-			mail.drop("org.mxhero.feature.redirect");
+			String senderDomain=emailComposition[2];
+			String senderAccount=emailComposition[1];
+			log.debug("senderDomain:"+senderDomain);
+			log.debug("senderAccount:"+senderAccount);
+			//if sender is from the domain of the alias and the account is in the alias
+			if(mail.getInitialData().getSender().getDomain().hasAlias(senderDomain)
+					&& senderAccount.startsWith(mail.getInitialData().getSender().getMail().split("@")[0])){
+					String sender = senderAccount+"@"+senderDomain;
+					String recipient = mail.getInitialData().getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
+					log.debug("sender:"+sender+", recipient:"+recipient);
+					mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,sender,recipient,null,"false","both");
+					mail.drop("org.mxhero.feature.redirect");
+			} else{
+				log.debug("no match");
+			}
 		}
 	}
 }
