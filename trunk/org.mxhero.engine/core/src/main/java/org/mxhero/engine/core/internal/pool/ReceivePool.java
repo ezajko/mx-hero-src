@@ -11,7 +11,7 @@ import org.mxhero.engine.commons.queue.QueueTaskPool;
 import org.mxhero.engine.commons.statistic.LogRecord;
 import org.mxhero.engine.commons.statistic.LogStat;
 import org.mxhero.engine.core.internal.CoreProperties;
-import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
+import org.mxhero.engine.core.internal.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
 import org.mxhero.engine.core.internal.rules.BaseLoader;
 import org.slf4j.Logger;
@@ -98,9 +98,10 @@ public final class ReceivePool extends QueueTaskPool implements Observer {
 				};
 			} else {
 				object.setPhase(RulePhase.RECEIVE);
-				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder().getBase(), object,
-						userFinderService, this.queueService);
-				task.setFiller(this.getFiller());
+				if(object.getBussinesObject()==null){
+					this.getFiller().fill(getUserFinderService(), object);
+				}
+				RecipientRuleTask task = new RecipientRuleTask(loader.getBuilder().getBase(), object, this.queueService);
 				task.setProcessor(this.getProcessor());
 				task.setLogRecordService(getLogRecordService());
 				task.setLogStatService(getLogStatService());

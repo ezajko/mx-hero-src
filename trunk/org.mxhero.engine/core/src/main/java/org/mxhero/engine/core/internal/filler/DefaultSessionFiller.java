@@ -1,4 +1,4 @@
-package org.mxhero.engine.core.internal.pool.filler;
+package org.mxhero.engine.core.internal.filler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,17 +21,17 @@ import org.mxhero.engine.core.internal.mail.MailVO;
  * 
  * @author mmarmol
  */
-public class PhaseSessionFiller implements SessionFiller {
+public class DefaultSessionFiller implements SessionFiller {
 
 	private static final char DIV_CHAR = '@';
 
 
 	/**
-	 * @see org.mxhero.engine.core.internal.pool.filler.SessionFiller#fill(org.drools.runtime.StatefulKnowledgeSession, org.mxhero.engine.domain.mail.finders.UserFinder, org.mxhero.engine.domain.mail.finders.DomainFinder, org.mxhero.engine.domain.mail.MimeMail)
+	 * @see org.mxhero.engine.core.internal.filler.SessionFiller#fill(org.drools.runtime.StatefulKnowledgeSession, org.mxhero.engine.domain.mail.finders.UserFinder, org.mxhero.engine.domain.mail.finders.DomainFinder, org.mxhero.engine.domain.mail.MimeMail)
 	 */
 	@Override
-	public MailVO fill(UserFinder userFinder, MimeMail mail) {
-		return new MailVO(mail,getInitialData(userFinder, mail));
+	public void fill(UserFinder userFinder, MimeMail mail) {
+		mail.setBussinesObject(new MailVO(mail,getInitialData(userFinder, mail)));
 	}
 
 	

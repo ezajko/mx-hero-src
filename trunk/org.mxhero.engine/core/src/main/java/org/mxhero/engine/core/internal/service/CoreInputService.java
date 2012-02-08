@@ -1,12 +1,16 @@
 package org.mxhero.engine.core.internal.service;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.commons.connector.InputService;
+import org.mxhero.engine.commons.connector.InputServiceFilter;
 import org.mxhero.engine.commons.connector.QueueFullException;
+import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
 import org.mxhero.engine.core.internal.CoreProperties;
+import org.mxhero.engine.core.internal.filler.SessionFiller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +30,13 @@ public final class CoreInputService implements InputService {
 	
 	private CoreProperties properties;
 	
+	private SessionFiller filler;
+	
+	private UserFinder userFinderService;
+	
+	@SuppressWarnings("rawtypes")
+	private List filters;
+	
 	/**
 	 * @see org.mxhero.engine.domain.connector.InputService#addMail(byte[], java.lang.String)
 	 */
@@ -36,12 +47,24 @@ public final class CoreInputService implements InputService {
 		}
 		
 		try {
-			added = queueService.store( mail.getPhase(), mail,WAIT_TIME, TimeUnit.MILLISECONDS );
+			added = queueService.store( mail.getPhase(), mail, WAIT_TIME, TimeUnit.MILLISECONDS );
 		} catch (InterruptedException e) {
 			log.error("interrupted while waiting:"+mail,e);
 		}
 		if(!added){
 			throw new QueueFullException();
+		}
+		if(mail.getBussinesObject()==null){
+			this.getFiller().fill(getUserFinderService(), mail);
+		}
+		for(Object filter : filters){
+			if(filter instanceof InputServiceFilter){
+				try{
+					((InputServiceFilter) filter).dofilter(mail);
+				}catch(Exception e){
+					log.warn("error while doing filter "+filter.getClass().getCanonicalName(),e);
+				}
+			}
 		}
 		log.info("STORED "+mail);
 		queueService.logState();
@@ -61,6 +84,32 @@ public final class CoreInputService implements InputService {
 
 	public void setProperties(CoreProperties properties) {
 		this.properties = properties;
+	}
+
+	public SessionFiller getFiller() {
+		return filler;
+	}
+
+	public void setFiller(SessionFiller filler) {
+		this.filler = filler;
+	}
+
+	public UserFinder getUserFinderService() {
+		return userFinderService;
+	}
+
+	public void setUserFinderService(UserFinder userFinderService) {
+		this.userFinderService = userFinderService;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List getFilters() {
+		return filters;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setFilters(List filters) {
+		this.filters = filters;
 	}
 
 }

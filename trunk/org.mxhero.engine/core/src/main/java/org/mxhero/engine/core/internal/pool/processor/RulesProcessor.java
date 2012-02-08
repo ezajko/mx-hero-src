@@ -1,9 +1,7 @@
 package org.mxhero.engine.core.internal.pool.processor;
 
-import org.mxhero.engine.commons.finders.UserFinder;
-import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.rules.RuleBase;
-import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 
 /**
  * Interface for the classes that implements the responsibility of processing
@@ -22,5 +20,5 @@ public interface RulesProcessor {
 	 * @param domainFinder passed to the filler
 	 * @param mail 
 	 */
-	void process(RuleBase base, SessionFiller filler, UserFinder userfinder, MimeMail mail);
+	void process(RuleBase base, Mail fact);
 }

@@ -1,12 +1,9 @@
 package org.mxhero.engine.core.internal.pool.processor;
 
-import org.mxhero.engine.commons.finders.UserFinder;
-import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.business.Mail;
 import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.commons.rules.RuleBase;
 import org.mxhero.engine.core.internal.CoreProperties;
-import org.mxhero.engine.core.internal.mail.MailVO;
-import org.mxhero.engine.core.internal.pool.filler.SessionFiller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +20,15 @@ public class DefaultRulesProcessor implements RulesProcessor{
 	
 	/**
 	 * Set the top and bottom agenda and the domain agenda after that fire the rules.
-	 * @see org.mxhero.engine.core.internal.pool.processor.RulesProcessor#process(org.drools.runtime.StatefulKnowledgeSession, org.mxhero.engine.core.internal.pool.filler.SessionFiller, org.mxhero.engine.domain.mail.finders.UserFinder, org.mxhero.engine.domain.mail.finders.DomainFinder, org.mxhero.engine.domain.mail.MimeMail)
+	 * @see org.mxhero.engine.core.internal.pool.processor.RulesProcessor#process(org.drools.runtime.StatefulKnowledgeSession, org.mxhero.engine.core.internal.filler.SessionFiller, org.mxhero.engine.domain.mail.finders.UserFinder, org.mxhero.engine.domain.mail.finders.DomainFinder, org.mxhero.engine.domain.mail.MimeMail)
 	 */
 	@Override
-	public void process(RuleBase base, SessionFiller filler,
-			UserFinder userfinder, MimeMail mail) {
+	public void process(RuleBase base, Mail fact) {
 
-		//Getting domin group and adding objects
+		//Getting domain group and adding objects
 		String domainAgendaGroup = null;
-		MailVO fact = filler.fill(userfinder, mail);
-		if(mail.getPhase().equals(RulePhase.SEND)){
-			domainAgendaGroup = mail.getSenderDomainId();
+		if(fact.getInitialData().getPhase().equals(RulePhase.SEND)){
+			domainAgendaGroup = fact.getInitialData().getSender().getDomain().getId();
 			//Adding default rules to start first
 			String bottomAgendaGroup = getProperties().getBottomGroupId();
 			if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
@@ -46,8 +41,8 @@ public class DefaultRulesProcessor implements RulesProcessor{
 				base.process(domainAgendaGroup, fact);
 			}
 			
-		} else if (mail.getPhase().equals(RulePhase.RECEIVE)){
-			domainAgendaGroup = mail.getRecipientDomainId();
+		} else if (fact.getInitialData().getPhase().equals(RulePhase.RECEIVE)){
+			domainAgendaGroup = fact.getInitialData().getRecipient().getDomain().getId();
 			//Adding domain agenda group
 			if(domainAgendaGroup!=null){
 				log.debug("firing rules for domain:"+domainAgendaGroup);
