@@ -25,6 +25,8 @@
 
 	<osgi:list id="rulesProviders" interface="org.mxhero.engine.commons.rules.provider.RulesProvider" cardinality="0..N"/>
 	
+	<osgi:list id="inputServiceFilters" interface="org.mxhero.engine.commons.connector.InputServiceFilter" cardinality="0..N"/>
+	
 	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.core"/>
 	
 	<bean id="coreProperties" class="org.mxhero.engine.core.internal.CoreProperties">
@@ -40,6 +42,9 @@
 	<bean id="coreInputService" class="org.mxhero.engine.core.internal.service.CoreInputService">
 		<property name="queueService" ref="queuesService"/>
 		<property name="properties" ref="coreProperties"/>
+		<property name="userFinderService" ref="userFinder"/>
+		<property name="filler" ref="psfiller"/>
+		<property name="filters" ref="inputServiceFilters"/>
 	</bean>
 
 	<bean id="bbuilder" class="org.mxhero.engine.core.internal.rules.BaseBuilder">
@@ -53,7 +58,7 @@
 		<property name="properties" ref="coreProperties"/>
 	</bean>
 
-	<bean id="psfiller" class="org.mxhero.engine.core.internal.pool.filler.PhaseSessionFiller"/>
+	<bean id="psfiller" class="org.mxhero.engine.core.internal.filler.DefaultSessionFiller"/>
 	
 	<bean id="drprocessor" class="org.mxhero.engine.core.internal.pool.processor.DefaultRulesProcessor">
 		<property name="properties" ref="coreProperties"/>
