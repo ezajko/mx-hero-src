@@ -22,9 +22,9 @@ public class Provider extends RulesByFeature{
 	private static final String AND_VALUE = "and";
 	private static final String OR_VALUE = "or";
 	private static final String FOUND_ACTION = "found.action";
-	private static final String FOUND_ACTION_COPY = "found.action";
-	private static final String FOUND_ACTION_REDIRECT = "found.action";
-	private static final String FOUND_ACTION_DROP = "found.action";
+	private static final String FOUND_ACTION_COPY = "copy";
+	private static final String FOUND_ACTION_REDIRECT = "redirect";
+	private static final String FOUND_ACTION_DROP = "drop";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
@@ -93,16 +93,15 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			mail.getHeaders().addHeader("X-mxHero-WiretapContent","rule="+ruleId+";hidden_copied:"+emailCopy);
 			if(action==null || action.equalsIgnoreCase(FOUND_ACTION_COPY)){
 				mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
 				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
 			}else if(action.equalsIgnoreCase(FOUND_ACTION_REDIRECT)){
 				mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
 				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
-				mail.drop("org.mxhero.feature.redirect");
+				mail.drop("org.mxhero.feature.wiretapcontent");
 			}else if(action.equalsIgnoreCase(FOUND_ACTION_DROP)){
-				mail.drop("org.mxhero.feature.redirect");
+				mail.drop("org.mxhero.feature.wiretapcontent");
 			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.wiretapcontent","true");
 		}
