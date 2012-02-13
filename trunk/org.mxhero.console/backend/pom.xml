@@ -37,24 +37,6 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.4</version>
-					<configuration>
-						<filesets>
-							<fileset>
-								<directory>src/main/webapp/WEB-INF/classes</directory>
-							</fileset>
-							<fileset>
-								<directory>src/main/webapp/WEB-INF/lib</directory>
-							</fileset>
-							<!-- <fileset> <directory>src/main/webapp/history</directory> </fileset> 
-								<fileset> <directory>src/main/webapp</directory> <includes> <include>*.html</include> 
-								<include>*.js</include> <include>*.swf</include> <include>*.zip</include> 
-								</includes> </fileset> -->
-						</filesets>
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
