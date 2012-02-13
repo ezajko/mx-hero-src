@@ -1,16 +1,27 @@
 package org.mxhero.engine.plugin.threadlight.internal.vo;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 public class ThreadRow {
 
+	private Long id;
 	private String messageId;
 	private String senderMail;
 	private Timestamp creationTime;
 	private String subject;
 	private String recipientMail;
 	private Timestamp replyTime;
+	private Set<ThreadRowFollower> followers;
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getMessageId() {
 		return messageId;
 	}
@@ -57,6 +68,14 @@ public class ThreadRow {
 
 	public void setReplyTime(Timestamp replyTime) {
 		this.replyTime = replyTime;
+	}
+
+	public Set<ThreadRowFollower> getFollowers() {
+		return followers;
+	}
+
+	public void setFollowers(Set<ThreadRowFollower> followers) {
+		this.followers = followers;
 	}
 
 }

@@ -6,6 +6,8 @@ import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 
 public class CachedThreadRowRepository implements ThreadRowRepository{
 
+	private ThreadRowRepository repository;
+	
 	@Override
 	public void findAll() {
 		// TODO Auto-generated method stub
@@ -40,6 +42,14 @@ public class CachedThreadRowRepository implements ThreadRowRepository{
 	public void remove(ThreadRow threadRow) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public ThreadRowRepository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(ThreadRowRepository repository) {
+		this.repository = repository;
 	}
 
 }
