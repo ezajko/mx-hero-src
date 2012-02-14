@@ -1,7 +1,8 @@
-package org.mxhero.engine.plugin.threadlight.internal.repository;
+package org.mxhero.engine.plugin.threadlight.internal.repository.jdbc;
 
 import java.util.Collection;
 
+import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 
 public class JdbcThreadRowRepository implements ThreadRowRepository{

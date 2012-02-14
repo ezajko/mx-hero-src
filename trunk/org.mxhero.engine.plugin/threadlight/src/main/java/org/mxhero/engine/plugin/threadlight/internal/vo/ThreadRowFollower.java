@@ -3,6 +3,7 @@ package org.mxhero.engine.plugin.threadlight.internal.vo;
 public class ThreadRowFollower {
 
 	private Long threadRowId;
+	private String messageId;
 	private String follower;
 	
 	public Long getThreadRowId() {
@@ -19,6 +20,14 @@ public class ThreadRowFollower {
 	
 	public void setFollower(String follower) {
 		this.follower = follower;
+	}
+	
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
 	}
 
 	@Override
