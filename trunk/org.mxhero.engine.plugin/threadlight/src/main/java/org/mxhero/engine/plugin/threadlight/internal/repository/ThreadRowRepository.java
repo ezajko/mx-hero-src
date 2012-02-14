@@ -8,7 +8,7 @@ public interface ThreadRowRepository {
 
 	void findAll();
 	
-	ThreadRow find(String messageId, String sender, String recipient);
+	Collection<ThreadRow> find(ThreadRow threadRow);
 	
 	void saveAll(Collection<ThreadRow> threadRow);
 	
@@ -17,5 +17,9 @@ public interface ThreadRowRepository {
 	void removeAll(Collection<ThreadRow> threadRow);
 	
 	void remove(ThreadRow threadRow);
+	
+	void addFollower(ThreadRow threadRow, String follower);
+	
+	void removeFollower(ThreadRow threadRow, String follower);
 
 }

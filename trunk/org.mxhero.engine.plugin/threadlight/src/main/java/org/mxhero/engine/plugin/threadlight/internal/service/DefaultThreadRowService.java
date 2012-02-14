@@ -1,62 +1,54 @@
 package org.mxhero.engine.plugin.threadlight.internal.service;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeUtility;
-
-import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 
 public class DefaultThreadRowService implements ThreadRowService{
 
 	private ThreadRowRepository repository;
-	private static final String IN_REPLY_HEADER = "In-Reply-To";
-	private static final String REFERENCES = "References";
 	
 	@Override
-	public void follow(ThreadRow threadRow) {
-		repository.save(threadRow);
+	public void follow(ThreadRow threadRow, String follower) {
+		if(threadRow!=null && follower!=null){
+			repository.save(threadRow);
+			repository.addFollower(threadRow, follower);
+		}
 	}
 
 	@Override
-	public ThreadRow reply(MimeMail mail) {
-		//in-reply-to
+	public ThreadRow reply(ThreadRow threadRow) {
 		ThreadRow replyRow = null;
-		try {
-			if(mail.getMessage().getHeader(IN_REPLY_HEADER)!=null){
-				//when replying the sender of the original thread is now the recipient and the recipient is now the sender 
-				replyRow = repository.find(mail.getMessage().getHeader(IN_REPLY_HEADER)[0], mail.getRecipientId(), mail.getSenderId());
+		if(threadRow!=null && threadRow.getMessageId()!=null & threadRow.getRecipientMail()!=null && threadRow.getSenderMail()!=null){
+			Collection<ThreadRow> reponse =  repository.find(threadRow);
+			if(reponse!=null && reponse.size()>0){
+				replyRow = reponse.iterator().next();
+				replyRow.setReplyTime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				repository.save(replyRow);
 			}
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//also check references
-		if(replyRow==null){
-			try {
-				String refs = null;
-				refs = mail.getMessage().getHeader(REFERENCES," ");
-				if(refs!=null){
-					for(String messageId : MimeUtility.unfold(refs).split(" ")){
-						replyRow = repository.find(messageId, mail.getRecipientId(), mail.getSenderId());
-						if(replyRow!=null){
-							break;
-						}
-					}
-				}
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		if(replyRow!=null){
-			//do magic
 		}
 		return replyRow;
+	}
+
+	@Override
+	public void unfollow(ThreadRow threadRow, String follower) {
+		if(threadRow!=null && follower!=null){
+			repository.removeFollower(threadRow, follower);
+		}
+	}
+
+	@Override
+	public Collection<ThreadRow> findByParameters(ThreadRow threadRow,
+			String follower) {
+		Collection<ThreadRow> reponse = null;
+		if(threadRow!=null){
+			reponse = this.repository.find(threadRow);
+		}
+		return reponse;
 	}
 
 	public ThreadRowRepository getRepository() {
@@ -66,19 +58,5 @@ public class DefaultThreadRowService implements ThreadRowService{
 	public void setRepository(ThreadRowRepository repository) {
 		this.repository = repository;
 	}
-
-	@Override
-	public void unfollow(ThreadRow threadRow, String follower) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Collection<ThreadRow> findByParameters(ThreadRow threadRow,
-			String follower) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
 

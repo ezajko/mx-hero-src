@@ -8,6 +8,14 @@ public class CachedThreadRowRepository implements ThreadRowRepository{
 
 	private ThreadRowRepository repository;
 	
+	public ThreadRowRepository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(ThreadRowRepository repository) {
+		this.repository = repository;
+	}
+
 	@Override
 	public void findAll() {
 		// TODO Auto-generated method stub
@@ -15,7 +23,7 @@ public class CachedThreadRowRepository implements ThreadRowRepository{
 	}
 
 	@Override
-	public ThreadRow find(String messageId, String sender, String recipient) {
+	public Collection<ThreadRow> find(ThreadRow threadRow) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -44,12 +52,16 @@ public class CachedThreadRowRepository implements ThreadRowRepository{
 		
 	}
 
-	public ThreadRowRepository getRepository() {
-		return repository;
+	@Override
+	public void addFollower(ThreadRow threadRow, String follower) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public void setRepository(ThreadRowRepository repository) {
-		this.repository = repository;
+	@Override
+	public void removeFollower(ThreadRow threadRow, String follower) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
