@@ -13,7 +13,7 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 	}
 
 	@Override
-	public ThreadRow find(String messageId, String sender, String recipient) {
+	public Collection<ThreadRow> find(ThreadRow threadRow) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -38,6 +38,18 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 
 	@Override
 	public void remove(ThreadRow threadRow) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addFollower(ThreadRow threadRow, String follower) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeFollower(ThreadRow threadRow, String follower) {
 		// TODO Auto-generated method stub
 		
 	}

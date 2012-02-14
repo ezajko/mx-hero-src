@@ -1,16 +1,14 @@
 package org.mxhero.engine.plugin.threadlight.internal.command;
 
 import java.sql.Timestamp;
-import java.util.HashSet;
 
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
-import org.mxhero.engine.plugin.threadlight.internal.service.ThreadRowService;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 
 public class AddThreadWatchImpl implements AddThreadWatch{
 
@@ -29,15 +27,11 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 		threadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
 		threadRow.setRecipientMail(mail.getRecipientId());
 		threadRow.setSenderMail(mail.getSenderId());
-		threadRow.setFollowers(new HashSet<ThreadRowFollower>());
-		ThreadRowFollower follower = new ThreadRowFollower();
-		follower.setFollower(args[0]);
-		threadRow.getFollowers().add(follower);
 		try {
 			threadRow.setSubject(mail.getMessage().getSubject());
 		} catch (MessagingException e) {}
 		//follow that thread
-		threadRowService.follow(threadRow);
+		threadRowService.follow(threadRow,args[0]);
 		result.setResult(true);
 		return result;
 	}

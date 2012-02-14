@@ -13,7 +13,17 @@ public class ThreadRow {
 	private String recipientMail;
 	private Timestamp replyTime;
 	private Set<ThreadRowFollower> followers;
+
 	
+	public ThreadRow() {
+	}
+
+	public ThreadRow(String messageId, String senderMail, String recipientMail) {
+		this.messageId = messageId;
+		this.senderMail = senderMail;
+		this.recipientMail = recipientMail;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -76,6 +86,45 @@ public class ThreadRow {
 
 	public void setFollowers(Set<ThreadRowFollower> followers) {
 		this.followers = followers;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((messageId == null) ? 0 : messageId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ThreadRow other = (ThreadRow) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ThreadRow [id=").append(id).append(", messageId=")
+				.append(messageId).append(", senderMail=").append(senderMail)
+				.append(", creationTime=").append(creationTime)
+				.append(", subject=").append(subject)
+				.append(", recipientMail=").append(recipientMail)
+				.append(", replyTime=").append(replyTime)
+				.append(", followers=").append(followers).append("]");
+		return builder.toString();
 	}
 
 }

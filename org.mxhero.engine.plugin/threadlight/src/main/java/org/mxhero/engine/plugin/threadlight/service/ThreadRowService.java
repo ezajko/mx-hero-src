@@ -1,15 +1,14 @@
-package org.mxhero.engine.plugin.threadlight.internal.service;
+package org.mxhero.engine.plugin.threadlight.service;
 
 import java.util.Collection;
 
-import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 
 public interface ThreadRowService {
 
-	void follow(ThreadRow threadRow);
+	void follow(ThreadRow threadRow, String follower);
 	
-	ThreadRow reply(MimeMail mail);
+	ThreadRow reply(ThreadRow threadRow);
 	
 	void unfollow(ThreadRow threadRow, String follower);
 	

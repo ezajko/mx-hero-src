@@ -1,14 +1,14 @@
 package org.mxhero.engine.plugin.threadlight.internal.connector;
 
-import java.util.Arrays;
-
 import javax.mail.MessagingException;
+import javax.mail.internet.MimeUtility;
 
 import org.mxhero.engine.commons.connector.InputServiceFilter;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.plugin.threadlight.ThreadLightHeaders;
-import org.mxhero.engine.plugin.threadlight.internal.service.ThreadRowService;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,24 +16,52 @@ public class ThreadLightFilter implements InputServiceFilter{
 
 	private ThreadRowService threadRowService;
 	private static Logger log = LoggerFactory.getLogger(ThreadLightFilter.class);
+	private static final String IN_REPLY_HEADER = "In-Reply-To";
+	private static final String REFERENCES = "References";
 	
 	@Override
 	public void dofilter(MimeMail mail) {
-		ThreadRow threadRow = threadRowService.reply(mail);
-		if(threadRow!=null){
+		ThreadRow replyRow = null;
+
+		try {
+			//in-reply-to
+			if(mail.getMessage().getHeader(IN_REPLY_HEADER)!=null){
+				//when replying the sender of the original thread is now the recipient and the recipient is now the sender 
+				replyRow = threadRowService.reply(new ThreadRow(mail.getMessage().getHeader(IN_REPLY_HEADER)[0], mail.getRecipientId(), mail.getSenderId()));
+			//check references field
+			}else{
+				String refs = null;
+				refs = mail.getMessage().getHeader(REFERENCES," ");
+				if(refs!=null){
+					for(String messageId : MimeUtility.unfold(refs).split(" ")){
+						replyRow = threadRowService.reply(new ThreadRow(messageId, mail.getRecipientId(), mail.getSenderId()));
+						if(replyRow!=null){
+							break;
+						}
+					}
+				}
+			}
+		} catch (MessagingException e) {
+			log.warn("error while checking reply",e);
+		}
+
+		if(replyRow!=null){
 			try {
 				mail.getMessage().removeHeader(ThreadLightHeaders.MESSAGE_ID);
+				mail.getMessage().removeHeader(ThreadLightHeaders.THREAD_ID);
 				mail.getMessage().removeHeader(ThreadLightHeaders.SENDER);
 				mail.getMessage().removeHeader(ThreadLightHeaders.RECIPIENT);
-				mail.getMessage().removeHeader(ThreadLightHeaders.FOLLOWERS);
-				mail.getMessage().addHeader(ThreadLightHeaders.MESSAGE_ID, threadRow.getMessageId());
-				mail.getMessage().addHeader(ThreadLightHeaders.SENDER, threadRow.getSenderMail());
-				mail.getMessage().addHeader(ThreadLightHeaders.RECIPIENT, threadRow.getRecipientMail());
-				if(threadRow.getFollowers()!=null){
-					String followers = Arrays.deepToString(threadRow.getFollowers().toArray()).replaceAll("[", "").replaceAll("]", "");
-					mail.getMessage().addHeader(ThreadLightHeaders.FOLLOWERS, followers);
+				mail.getMessage().removeHeader(ThreadLightHeaders.FOLLOWER);
+				mail.getMessage().addHeader(ThreadLightHeaders.MESSAGE_ID, replyRow.getMessageId());
+				mail.getMessage().addHeader(ThreadLightHeaders.SENDER, replyRow.getSenderMail());
+				mail.getMessage().addHeader(ThreadLightHeaders.RECIPIENT, replyRow.getRecipientMail());
+				mail.getMessage().addHeader(ThreadLightHeaders.THREAD_ID, replyRow.getId().toString());
+				if(replyRow.getFollowers()!=null){
+					for(ThreadRowFollower follower : replyRow.getFollowers()){
+						mail.getMessage().addHeader(ThreadLightHeaders.FOLLOWER, follower.getFollower());
+					}
 				}
-				log.debug("thread reply for "+threadRow.toString());
+				log.debug("thread reply for "+replyRow.toString());
 			} catch (MessagingException e) {
 				log.debug("error while setting headers",e);
 			}
