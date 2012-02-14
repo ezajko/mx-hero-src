@@ -1,10 +1,11 @@
-package org.mxhero.engine.plugin.threadlight.internal.repository;
+package org.mxhero.engine.plugin.threadlight.internal.repository.cached;
 
 import java.util.Collection;
 
+import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 
-public class CachedThreadRowRepository implements ThreadRowRepository{
+public class CachedJdbcThreadRowRepository implements ThreadRowRepository{
 
 	private ThreadRowRepository repository;
 	
