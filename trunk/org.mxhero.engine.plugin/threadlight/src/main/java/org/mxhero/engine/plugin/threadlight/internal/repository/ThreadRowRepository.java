@@ -1,25 +1,16 @@
 package org.mxhero.engine.plugin.threadlight.internal.repository;
 
-import java.util.Collection;
-
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 
 public interface ThreadRowRepository {
-
-	void findAll();
 	
-	Collection<ThreadRow> find(ThreadRow threadRow);
+	ThreadRow find(ThreadRowPk pk);
 	
-	void saveAll(Collection<ThreadRow> threadRow);
+	void saveThread(ThreadRow threadRow);
 	
-	void save(ThreadRow threadRow);
+	void addFollower(ThreadRowPk pk, String follower);
 	
-	void removeAll(Collection<ThreadRow> threadRow);
-	
-	void remove(ThreadRow threadRow);
-	
-	void addFollower(ThreadRow threadRow, String follower);
-	
-	void removeFollower(ThreadRow threadRow, String follower);
+	void removeFollower(ThreadRowPk pk, String follower);
 
 }

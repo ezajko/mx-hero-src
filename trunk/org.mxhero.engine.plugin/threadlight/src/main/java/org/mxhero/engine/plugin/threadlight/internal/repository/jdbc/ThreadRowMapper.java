@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.springframework.jdbc.core.RowMapper;
 
 public class ThreadRowMapper implements RowMapper<ThreadRow>{
@@ -31,9 +32,7 @@ public class ThreadRowMapper implements RowMapper<ThreadRow>{
 			row.setReplyTime(rs.getTimestamp(REPLY_TIME));
 		}
 		row.setId(rs.getLong(ID));
-		row.setMessageId(rs.getString(MESSAGE_ID));
-		row.setRecipientMail(rs.getString(RECIPIENT_MAIL));
-		row.setSenderMail(rs.getString(SENDER_MAIL));
+		row.setPk(new ThreadRowPk(rs.getString(MESSAGE_ID), rs.getString(SENDER_MAIL), rs.getString(RECIPIENT_MAIL)));
 		row.setSubject(rs.getString(SUBJECT));
 		
 		return row;

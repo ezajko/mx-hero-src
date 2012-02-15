@@ -8,6 +8,7 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.plugin.threadlight.ThreadLightHeaders;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +28,15 @@ public class ThreadLightFilter implements InputServiceFilter{
 			//in-reply-to
 			if(mail.getMessage().getHeader(IN_REPLY_HEADER)!=null){
 				//when replying the sender of the original thread is now the recipient and the recipient is now the sender 
-				replyRow = threadRowService.reply(new ThreadRow(mail.getMessage().getHeader(IN_REPLY_HEADER)[0], mail.getRecipientId(), mail.getSenderId()));
+				replyRow = threadRowService.reply(new ThreadRowPk(mail.getMessage().getHeader(IN_REPLY_HEADER)[0], mail.getRecipientId(), mail.getSenderId()));
 			//check references field
 			}else{
 				String refs = null;
 				refs = mail.getMessage().getHeader(REFERENCES," ");
 				if(refs!=null){
 					for(String messageId : MimeUtility.unfold(refs).split(" ")){
-						replyRow = threadRowService.reply(new ThreadRow(messageId, mail.getRecipientId(), mail.getSenderId()));
+						//when replying the sender of the original thread is now the recipient and the recipient is now the sender 
+						replyRow = threadRowService.reply(new ThreadRowPk(messageId, mail.getRecipientId(), mail.getSenderId()));
 						if(replyRow!=null){
 							break;
 						}
@@ -48,14 +50,12 @@ public class ThreadLightFilter implements InputServiceFilter{
 		if(replyRow!=null){
 			try {
 				mail.getMessage().removeHeader(ThreadLightHeaders.MESSAGE_ID);
-				mail.getMessage().removeHeader(ThreadLightHeaders.THREAD_ID);
 				mail.getMessage().removeHeader(ThreadLightHeaders.SENDER);
 				mail.getMessage().removeHeader(ThreadLightHeaders.RECIPIENT);
 				mail.getMessage().removeHeader(ThreadLightHeaders.FOLLOWER);
-				mail.getMessage().addHeader(ThreadLightHeaders.MESSAGE_ID, replyRow.getMessageId());
-				mail.getMessage().addHeader(ThreadLightHeaders.SENDER, replyRow.getSenderMail());
-				mail.getMessage().addHeader(ThreadLightHeaders.RECIPIENT, replyRow.getRecipientMail());
-				mail.getMessage().addHeader(ThreadLightHeaders.THREAD_ID, replyRow.getId().toString());
+				mail.getMessage().addHeader(ThreadLightHeaders.MESSAGE_ID, replyRow.getPk().getMessageId());
+				mail.getMessage().addHeader(ThreadLightHeaders.SENDER, replyRow.getPk().getSenderMail());
+				mail.getMessage().addHeader(ThreadLightHeaders.RECIPIENT, replyRow.getPk().getRecipientMail());
 				if(replyRow.getFollowers()!=null){
 					for(ThreadRowFollower follower : replyRow.getFollowers()){
 						mail.getMessage().addHeader(ThreadLightHeaders.FOLLOWER, follower.getFollower());

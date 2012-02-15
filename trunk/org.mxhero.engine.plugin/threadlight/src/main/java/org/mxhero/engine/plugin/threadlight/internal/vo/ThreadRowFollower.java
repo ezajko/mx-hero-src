@@ -1,11 +1,24 @@
 package org.mxhero.engine.plugin.threadlight.internal.vo;
 
-public class ThreadRowFollower {
+import java.io.Serializable;
 
+public class ThreadRowFollower implements Serializable{
+
+	private static final long serialVersionUID = -5636897231403470608L;
+	
 	private Long threadRowId;
-	private String messageId;
+	private ThreadRowPk threadPk;
 	private String follower;
 	
+	public ThreadRowFollower(){
+	}
+	
+	public ThreadRowFollower(Long threadRowId, ThreadRowPk threadPk, String follower) {
+		this.threadRowId = threadRowId;
+		this.threadPk = threadPk;
+		this.follower = follower;
+	}
+
 	public Long getThreadRowId() {
 		return threadRowId;
 	}
@@ -21,13 +34,13 @@ public class ThreadRowFollower {
 	public void setFollower(String follower) {
 		this.follower = follower;
 	}
-	
-	public String getMessageId() {
-		return messageId;
+
+	public ThreadRowPk getThreadPk() {
+		return threadPk;
 	}
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
+	public void setThreadPk(ThreadRowPk threadPk) {
+		this.threadPk = threadPk;
 	}
 
 	@Override
@@ -35,7 +48,7 @@ public class ThreadRowFollower {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((threadRowId == null) ? 0 : threadRowId.hashCode());
+				+ ((threadPk == null) ? 0 : threadPk.hashCode());
 		return result;
 	}
 
@@ -53,20 +66,14 @@ public class ThreadRowFollower {
 				return false;
 		} else if (!follower.equals(other.follower))
 			return false;
-		if (threadRowId == null) {
-			if (other.threadRowId != null)
+		if (threadPk == null) {
+			if (other.threadPk != null)
 				return false;
-		} else if (!threadRowId.equals(other.threadRowId))
+		} else if (!threadPk.equals(other.threadPk))
 			return false;
 		return true;
 	}
+	
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("ThreadRowFollower [threadRowId=").append(threadRowId)
-				.append(", follower=").append(follower).append("]");
-		return builder.toString();
-	}
 
 }
