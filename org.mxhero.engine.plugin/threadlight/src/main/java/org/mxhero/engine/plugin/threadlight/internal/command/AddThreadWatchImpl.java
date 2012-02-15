@@ -8,6 +8,7 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 
 public class AddThreadWatchImpl implements AddThreadWatch{
@@ -23,10 +24,8 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 		}
 		//creat thread row
 		ThreadRow threadRow = new ThreadRow();
-		threadRow.setMessageId(mail.getMessageId());
+		threadRow.setPk(new ThreadRowPk(mail.getMessageId(),mail.getRecipientId(),mail.getSenderId()));
 		threadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
-		threadRow.setRecipientMail(mail.getRecipientId());
-		threadRow.setSenderMail(mail.getSenderId());
 		try {
 			threadRow.setSubject(mail.getMessage().getSubject());
 		} catch (MessagingException e) {}

@@ -4,40 +4,49 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
 
+import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 
 public class DefaultThreadRowService implements ThreadRowService{
 
 	private ThreadRowRepository repository;
 	
+	private ThreadRowFinder finder;
+	
 	@Override
 	public void follow(ThreadRow threadRow, String follower) {
-		if(threadRow!=null && follower!=null){
-			repository.save(threadRow);
-			repository.addFollower(threadRow, follower);
+		if(threadRow!=null && threadRow.getPk()!=null && follower!=null){
+			if(repository.find(threadRow.getPk())==null){
+				ThreadRow newThreadRow = new ThreadRow();
+				newThreadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
+				newThreadRow.setPk(threadRow.getPk());
+				newThreadRow.setSubject(threadRow.getSubject());
+				repository.saveThread(newThreadRow);
+			}
+			repository.addFollower(threadRow.getPk(), follower);
 		}
 	}
 
 	@Override
-	public ThreadRow reply(ThreadRow threadRow) {
+	public ThreadRow reply(ThreadRowPk pk) {
 		ThreadRow replyRow = null;
-		if(threadRow!=null && threadRow.getMessageId()!=null & threadRow.getRecipientMail()!=null && threadRow.getSenderMail()!=null){
-			Collection<ThreadRow> reponse =  repository.find(threadRow);
-			if(reponse!=null && reponse.size()>0){
-				replyRow = reponse.iterator().next();
+		if(pk!=null && pk.getMessageId()!=null & pk.getRecipientMail()!=null && pk.getSenderMail()!=null){
+			replyRow =  repository.find(pk);
+			if(replyRow!=null){
 				replyRow.setReplyTime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-				repository.save(replyRow);
+				repository.saveThread(replyRow);
 			}
 		}
 		return replyRow;
 	}
 
 	@Override
-	public void unfollow(ThreadRow threadRow, String follower) {
-		if(threadRow!=null && follower!=null){
-			repository.removeFollower(threadRow, follower);
+	public void unfollow(ThreadRowPk pk, String follower) {
+		if(pk!=null && follower!=null){
+			repository.removeFollower(pk, follower);
 		}
 	}
 
@@ -46,7 +55,7 @@ public class DefaultThreadRowService implements ThreadRowService{
 			String follower) {
 		Collection<ThreadRow> reponse = null;
 		if(threadRow!=null){
-			reponse = this.repository.find(threadRow);
+			reponse = this.finder.findBySpecs(threadRow, follower);
 		}
 		return reponse;
 	}
