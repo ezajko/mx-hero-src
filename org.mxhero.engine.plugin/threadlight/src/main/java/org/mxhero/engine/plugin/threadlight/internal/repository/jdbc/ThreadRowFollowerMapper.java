@@ -8,8 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 public class ThreadRowFollowerMapper implements RowMapper<ThreadRowFollower>{
 
-	public static final String DATABASE="mxhero";
-	public static final String TABLE_NAME="thread_light_threads_follower";
+	public static final String DATABASE="threadlight";
+	public static final String TABLE_NAME="thread_rows_followers";
 	
 	public static final String THREAD_ID="thread_id";
 	public static final String FOLLOWER="follower";

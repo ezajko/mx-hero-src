@@ -25,7 +25,8 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 	private Set<ThreadRow> saveLater = new HashSet<ThreadRow>();
 	private Set<ThreadRowFollower> addLater = new HashSet<ThreadRowFollower>();
 	private Set<ThreadRowFollower> removeLater = new HashSet<ThreadRowFollower>();
-	private Long updateTime = 5000l;
+	private Long updateTime = 10000l;
+	private Long syncTimeInMinutes = 60l;
 	private static final long CHECK_TIME = 1000;
 	private Thread thread;
 	private boolean keepWorking = false;
@@ -38,15 +39,19 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 		this.repository = repository;
 	}
 
-	public void init(){
-		threads = finder.findAll();
+	public ThreadRowFinder getFinder() {
+		return finder;
 	}
 
+	public void setFinder(ThreadRowFinder finder) {
+		this.finder = finder;
+	}
+	
 	public void start(){
 		thread=new Thread(this);
 		keepWorking=true;
 		//First time so it starts with real data.
-		persist();
+		threads = finder.findAll();
 		thread.start();
 	}
 
@@ -57,19 +62,27 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 				thread.join();
 			} catch (InterruptedException e) {}
 		}
+		persist();
 	}
 
 	@Override
 	public void run() {
 		long lastUpdate = System.currentTimeMillis();
+		long lastReload = System.currentTimeMillis();
 		while(keepWorking){
 			try {
 				Thread.sleep(CHECK_TIME);
 			} catch (InterruptedException e) {}
-			if(lastUpdate+updateTime-System.currentTimeMillis()<0){
+			if(lastReload+(syncTimeInMinutes*60*1000)-System.currentTimeMillis()<0){
+				persist();
+				threads = finder.findAll();
+				lastUpdate=System.currentTimeMillis();
+				lastReload=System.currentTimeMillis();
+			}else if(lastUpdate+updateTime-System.currentTimeMillis()<0){
 				persist();
 				lastUpdate=System.currentTimeMillis();
 			}
+
 		}
 	}
 	
@@ -173,11 +186,12 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 	public void addFollower(ThreadRow threadRow, String follower) {
 		if(threadRow!=null && threadRow.getPk()!=null && follower!=null){
 			synchronized (this) {
-					if(threadRow.getFollowers()==null){
-						threadRow.setFollowers(new HashSet<ThreadRowFollower>());
+				ThreadRow savedThreadRow = threads.get(threadRow.getPk());
+					if(savedThreadRow.getFollowers()==null){
+						savedThreadRow.setFollowers(new HashSet<ThreadRowFollower>());
 					}
-					ThreadRowFollower threadFollower = new ThreadRowFollower(threadRow,follower);
-					threadRow.getFollowers().add(threadFollower);
+					ThreadRowFollower threadFollower = new ThreadRowFollower(savedThreadRow,follower);
+					savedThreadRow.getFollowers().add(threadFollower);
 					addLater.add(threadFollower);
 				}
 			}
@@ -195,6 +209,22 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 				}
 			}
 		}
+	}
+
+	public Long getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Long updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Long getSyncTimeInMinutes() {
+		return syncTimeInMinutes;
+	}
+
+	public void setSyncTimeInMinutes(Long syncTimeInMinutes) {
+		this.syncTimeInMinutes = syncTimeInMinutes;
 	}
 
 }
