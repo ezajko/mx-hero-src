@@ -26,7 +26,7 @@ public class DefaultThreadRowService implements ThreadRowService{
 				newThreadRow.setSubject(threadRow.getSubject());
 				repository.saveThread(newThreadRow);
 			}
-			repository.addFollower(threadRow.getPk(), follower);
+			repository.addFollower(threadRow, follower);
 		}
 	}
 
@@ -46,7 +46,7 @@ public class DefaultThreadRowService implements ThreadRowService{
 	@Override
 	public void unfollow(ThreadRowPk pk, String follower) {
 		if(pk!=null && follower!=null){
-			repository.removeFollower(pk, follower);
+			repository.removeFollower(repository.find(pk), follower);
 		}
 	}
 

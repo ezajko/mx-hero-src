@@ -19,8 +19,6 @@ public class ThreadRowFollowerMapper implements RowMapper<ThreadRowFollower>{
 			throws SQLException {
 		ThreadRowFollower follower = new ThreadRowFollower();
 		follower.setFollower(rs.getString(FOLLOWER));
-		follower.setThreadRowId(rs.getLong(THREAD_ID));
-		
 		return follower;
 	}
 }
