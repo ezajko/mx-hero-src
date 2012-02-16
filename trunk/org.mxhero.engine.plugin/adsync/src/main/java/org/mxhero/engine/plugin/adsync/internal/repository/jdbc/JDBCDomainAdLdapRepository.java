@@ -2,6 +2,7 @@ package org.mxhero.engine.plugin.adsync.internal.repository.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,7 +13,10 @@ import javax.sql.DataSource;
 
 import org.mxhero.engine.plugin.adsync.internal.domain.DomainAdLdap;
 import org.mxhero.engine.plugin.adsync.internal.repository.DomainAdLdapRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,10 +24,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import sun.util.logging.resources.logging;
+
 @Repository(value = "jdbcRepository")
 public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	
 	public static final String SYNC_TYPE="adladp";
+	private static final Logger log = LoggerFactory.getLogger(JDBCDomainAdLdapRepository.class);
 	
 	private NamedParameterJdbcTemplate template;
 	
@@ -197,7 +204,12 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		for(String mail : aliases){
 			String accountName = mail.split("@")[0].trim();
 			String domainName = mail.split("@")[1].trim();
-			template.getJdbcOperations().update(aliasSql, new Object[]{accountName,domainName,SYNC_TYPE,account,domainId});
+			try{
+				template.getJdbcOperations().update(aliasSql, new Object[]{accountName,domainName,SYNC_TYPE,account,domainId});
+			}catch(DataIntegrityViolationException e){
+				log.warn("while inserting aliases "+Arrays.deepToString(aliases.toArray()));
+				log.warn("duplicate alias for accountName:"+accountName+" domainName:"+domainName+" account:"+account+" domainId: "+domainId);
+			}
 		}
 	}
 	
