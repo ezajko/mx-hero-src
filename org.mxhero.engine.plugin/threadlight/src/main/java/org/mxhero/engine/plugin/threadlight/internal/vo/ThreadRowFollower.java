@@ -5,26 +5,16 @@ import java.io.Serializable;
 public class ThreadRowFollower implements Serializable{
 
 	private static final long serialVersionUID = -5636897231403470608L;
-	
-	private Long threadRowId;
-	private ThreadRowPk threadPk;
+
+	private ThreadRow threadRow;
 	private String follower;
 	
 	public ThreadRowFollower(){
 	}
 	
-	public ThreadRowFollower(Long threadRowId, ThreadRowPk threadPk, String follower) {
-		this.threadRowId = threadRowId;
-		this.threadPk = threadPk;
+	public ThreadRowFollower(ThreadRow threadRow, String follower) {
+		this.threadRow = threadRow;
 		this.follower = follower;
-	}
-
-	public Long getThreadRowId() {
-		return threadRowId;
-	}
-	
-	public void setThreadRowId(Long threadRowId) {
-		this.threadRowId = threadRowId;
 	}
 	
 	public String getFollower() {
@@ -35,12 +25,12 @@ public class ThreadRowFollower implements Serializable{
 		this.follower = follower;
 	}
 
-	public ThreadRowPk getThreadPk() {
-		return threadPk;
+	public ThreadRow getThreadRow() {
+		return threadRow;
 	}
 
-	public void setThreadPk(ThreadRowPk threadPk) {
-		this.threadPk = threadPk;
+	public void setThreadRow(ThreadRow threadRow) {
+		this.threadRow = threadRow;
 	}
 
 	@Override
@@ -48,7 +38,7 @@ public class ThreadRowFollower implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((threadPk == null) ? 0 : threadPk.hashCode());
+				+ ((threadRow == null) ? 0 : threadRow.hashCode());
 		return result;
 	}
 
@@ -66,14 +56,20 @@ public class ThreadRowFollower implements Serializable{
 				return false;
 		} else if (!follower.equals(other.follower))
 			return false;
-		if (threadPk == null) {
-			if (other.threadPk != null)
+		if (threadRow == null) {
+			if (other.threadRow != null)
 				return false;
-		} else if (!threadPk.equals(other.threadPk))
+		} else if (!threadRow.equals(other.threadRow))
 			return false;
 		return true;
 	}
-	
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ThreadRowFollower [follower=").append(follower)
+				.append("]");
+		return builder.toString();
+	}
 
 }
