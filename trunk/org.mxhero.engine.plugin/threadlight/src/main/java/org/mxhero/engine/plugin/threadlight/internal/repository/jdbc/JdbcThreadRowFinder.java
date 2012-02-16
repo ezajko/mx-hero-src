@@ -33,7 +33,53 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 
 	@Override
 	public Set<ThreadRow> findBySpecs(ThreadRow threadRow, String follower) {
-		// TODO Auto-generated method stub
+		String sql = SQL + " t ";
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		if(follower!=null){
+			sql = sql + " INNER JOIN `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"` f " +
+					" ON t."+ThreadRowMapper.ID+" = f."+ThreadRowFollowerMapper.THREAD_ID+" " +
+					" WHERE f."+ThreadRowFollowerMapper.FOLLOWER+" = :follower ";
+			source.addValue("follower", follower);
+		}else{
+			sql = sql + " WHERE 1=1 ";
+		}
+		if(threadRow!=null){
+			if(threadRow.getId()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.ID+" = :threadId";
+				source.addValue("threadId", threadRow.getId());
+			}
+			if(threadRow.getCreationTime()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.CREATION_TIME+" >= :creationTime";
+				source.addValue("creationTime", threadRow.getCreationTime());
+			}
+			if(threadRow.getReplyTime()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.REPLY_TIME+" >= :replyTime";
+				source.addValue("replyTime", threadRow.getReplyTime());
+			}else{
+				sql = sql + " AND t."+ThreadRowMapper.REPLY_TIME+" IS NULL ";
+			}
+			if(threadRow.getSubject()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.SUBJECT+" like :subject";
+				source.addValue("subject", threadRow.getSubject());
+			}
+			if(threadRow.getPk()!=null && threadRow.getPk().getMessageId()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.MESSAGE_ID+" = :messageId";
+				source.addValue("messageId", threadRow.getPk().getMessageId());
+			}
+			if(threadRow.getPk()!=null && threadRow.getPk().getSenderMail()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.SENDER_MAIL+" = :senderMail";
+				source.addValue("senderMail", threadRow.getPk().getSenderMail());
+			}
+			if(threadRow.getPk()!=null && threadRow.getPk().getRecipientMail()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.RECIPIENT_MAIL+" = :recipientMail";
+				source.addValue("recipientMail", threadRow.getPk().getRecipientMail());
+			}
+		}
+
+		List<ThreadRow> rowResults = template.query(sql, source,new ThreadRowMapper());
+		if(rowResults!=null && rowResults.size()>0){
+			return new HashSet<ThreadRow>(fill(rowResults).values());
+		}
 		return null;
 	}
 
