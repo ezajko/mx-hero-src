@@ -10,8 +10,8 @@ import org.springframework.jdbc.core.RowMapper;
 public class ThreadRowMapper implements RowMapper<ThreadRow>{
 
 
-	public static final String DATABASE="mxhero";
-	public static final String TABLE_NAME="thread_light_threads";
+	public static final String DATABASE="threadlight";
+	public static final String TABLE_NAME="thread_rows";
 	
 	public static final String ID="id";
 	public static final String MESSAGE_ID="message_id";

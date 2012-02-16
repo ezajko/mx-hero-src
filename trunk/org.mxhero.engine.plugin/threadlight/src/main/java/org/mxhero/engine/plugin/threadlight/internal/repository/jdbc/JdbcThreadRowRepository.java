@@ -10,7 +10,6 @@ import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,18 +17,18 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
-@Transactional(value="mxhero",readOnly=true)
+@Repository("jdbcRepository")
 public class JdbcThreadRowRepository implements ThreadRowRepository{
 
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
-	public JdbcThreadRowRepository(@Qualifier("mxheroDataSource")DataSource ds) {
+	public JdbcThreadRowRepository(DataSource ds) {
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public ThreadRow find(ThreadRowPk pk) {
 		ThreadRow threadRow = null;
 		String sql = " SELECT * FROM `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"`"
@@ -64,7 +63,7 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 	
 	
 	@Override
-	@Transactional(value="mxhero",readOnly=false)
+	@Transactional(readOnly=false)
 	public Long saveThread(ThreadRow threadRow) {
 		String sql = "INSERT INTO `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` " +
 				" (`"+ThreadRowMapper.CREATION_TIME+"`,`"+ThreadRowMapper.MESSAGE_ID+"`,`"+ThreadRowMapper.RECIPIENT_MAIL+"`,`"+ThreadRowMapper.SENDER_MAIL+"`,`"+ThreadRowMapper.SUBJECT+"`,`"+ThreadRowMapper.REPLY_TIME+"`) " +
@@ -83,7 +82,7 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 	}
 
 	@Override
-	@Transactional(value="mxhero",readOnly=false)
+	@Transactional(readOnly=false)
 	public void addFollower(ThreadRow threadRow, String follower) {
 		String sql = " INSERT INTO `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"` " +
 				" (`"+ThreadRowFollowerMapper.THREAD_ID+"`,`"+ThreadRowFollowerMapper.FOLLOWER+"`) "+
@@ -96,7 +95,7 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 	}
 
 	@Override
-	@Transactional(value="mxhero",readOnly=false)
+	@Transactional(readOnly=false)
 	public void removeFollower(ThreadRow threadRow, String follower) {
 		String sql = " DELETE FROM `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"` " +
 					" WHERE `"+ThreadRowFollowerMapper.THREAD_ID+"` = :threadId AND `"+ThreadRowFollowerMapper.FOLLOWER+"` = :follower ;";

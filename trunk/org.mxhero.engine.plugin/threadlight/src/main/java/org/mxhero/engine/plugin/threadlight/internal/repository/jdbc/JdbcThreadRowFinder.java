@@ -13,21 +13,20 @@ import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
-@Transactional(value="mxhero",readOnly=true)
+@Repository("jdbcFinder")
+@Transactional(readOnly=true)
 public class JdbcThreadRowFinder implements ThreadRowFinder{
 
 	private NamedParameterJdbcTemplate template;
 	private static final String SQL = " SELECT * FROM `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` ";
 	
 	@Autowired
-	public JdbcThreadRowFinder(@Qualifier("mxheroDataSource")DataSource ds) {
+	public JdbcThreadRowFinder(DataSource ds) {
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 
@@ -91,9 +90,8 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 	}
 
 	private Map<ThreadRowPk, ThreadRow> fill(List<ThreadRow> rowResults){
-		Map<ThreadRowPk, ThreadRow> threadRows = null;
+		Map<ThreadRowPk, ThreadRow> threadRows = new HashMap<ThreadRowPk, ThreadRow>();
 		if(rowResults!=null && rowResults.size()>0){
-			threadRows = new HashMap<ThreadRowPk, ThreadRow>();
 			for(ThreadRow threadRow : rowResults){
 				List<ThreadRowFollower> followresResult = findFollowers(threadRow.getId());
 				if(followresResult!=null && followresResult.size()>0){
