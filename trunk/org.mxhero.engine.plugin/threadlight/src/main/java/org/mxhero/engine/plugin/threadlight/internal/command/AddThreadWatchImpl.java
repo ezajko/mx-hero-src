@@ -10,10 +10,13 @@ import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddThreadWatchImpl implements AddThreadWatch{
 
 	private ThreadRowService threadRowService;
+	private static Logger log = LoggerFactory.getLogger(AddThreadWatchImpl.class);
 	
 	@Override
 	public Result exec(MimeMail mail, String... args) {
@@ -23,15 +26,20 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 			return result;
 		}
 		//creat thread row
-		ThreadRow threadRow = new ThreadRow();
-		threadRow.setPk(new ThreadRowPk(mail.getMessageId(),mail.getRecipientId(),mail.getSenderId()));
-		threadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
-		try {
-			threadRow.setSubject(mail.getMessage().getSubject());
-		} catch (MessagingException e) {}
-		//follow that thread
-		threadRowService.follow(threadRow,args[0]);
-		result.setResult(true);
+		try{
+			ThreadRow threadRow = new ThreadRow();
+			threadRow.setPk(new ThreadRowPk(mail.getMessageId(),mail.getRecipientId(),mail.getSenderId()));
+			threadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
+			try {
+				threadRow.setSubject(mail.getMessage().getSubject());
+			} catch (MessagingException e) {}
+			//follow that thread
+			threadRowService.follow(threadRow,args[0]);
+			log.debug("command follow "+threadRow);
+			result.setResult(true);
+		}catch(Exception e){
+			log.error("error while executing follow command",e);
+		}
 		return result;
 	}
 

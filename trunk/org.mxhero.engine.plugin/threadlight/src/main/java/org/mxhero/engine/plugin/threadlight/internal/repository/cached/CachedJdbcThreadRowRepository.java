@@ -52,6 +52,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 		keepWorking=true;
 		//First time so it starts with real data.
 		threads = finder.findAll();
+		log.debug("loaded "+threads.size()+" threads");
 		thread.start();
 	}
 
@@ -98,6 +99,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			addLater=new HashSet<ThreadRowFollower>();
 			removeLater=new HashSet<ThreadRowFollower>();
 		}
+		log.debug("persisting saveLater:"+oldSaveLater.size()+" followers:"+addLater.size()+" removeLater:"+removeLater.size());
 		for(ThreadRow toSync : oldSaveLater){
 			try{
 				toSync.setId(repository.saveThread(toSync));
