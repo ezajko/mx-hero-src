@@ -47,7 +47,7 @@
 		<s:VerticalLayout />
 	</s:layout>
 	<s:Scroller verticalScrollPolicy="on" width="100%" height="100%">
-		<s:HGroup width="100%" height="100%">
+		<s:HGroup width="600" height="100%">
 			<s:VGroup>
 				<mx:ModuleLoader id="moduleLoader"
 								 url="org/mxhero/feature/replytimeout/ReplyTimeout.swf" ready="moduleloader1_readyHandler(event)">
