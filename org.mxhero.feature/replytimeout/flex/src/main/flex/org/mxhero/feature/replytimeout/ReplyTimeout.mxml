@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.RteHtmlParser;
+			
+			private var initialProperties:ArrayCollection;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadData();
+			}
+			
+			public function isValid():Boolean{
+				if(rte.text==null || StringUtil.trim(rte.text).length<1){
+					rte.errorString=resourceManager.getString('replytimeout','error.return.message');
+					return false;
+				}
+				rte.errorString="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initialProperties=data;
+			}
+			
+			private function loadData():void{
+				if(initialProperties!=null){
+					var selectedAction:String=PropertyHelper.getProperty(initialProperties,'action.selection').propertyValue;
+					if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
+						rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
+					}else{
+						rte.text= PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue;
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				
+				var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "return.message";
+				var t:RteHtmlParser = new RteHtmlParser();
+				t.ParseToHTML(rte.htmlText);
+				var str:String = t.StringFormat;
+				returnMessage.propertyValue = t.XMLFormat;
+				properties.addItem(returnMessage);
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "return.message.plain";
+				returnMessage.propertyValue = rte.text;
+				properties.addItem(returnMessage);	
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "return.message.rte";
+				returnMessage.propertyValue = rte.htmlText;
+				properties.addItem(returnMessage);	
+
+				return properties;
+			}
+			
+			public function getValidationError():String{
+				return rte.errorString;
+			}
+			
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return false;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("replytimeout")]
+		[ResourceBundle("textLayout")]
+	</fx:Metadata>
+	
+	<s:HGroup width="100%" verticalAlign="middle" gap="0">
+		<s:Label text="{resourceManager.getString('replytimeout','note.text.pre')}" paddingRight="0"/>
+		<mx:LinkButton label="{resourceManager.getString('replytimeout','note.text.link')}" 
+					   fontWeight="bold" 
+					   paddingLeft="0" 
+					   paddingRight="0" 
+					   paddingBottom="0" 
+					   paddingTop="0"/>
+		<s:Label text="{resourceManager.getString('replytimeout','note.text.post')}" paddingLeft="0"/>
+		
+	</s:HGroup>
+	
+	<s:Label text="{resourceManager.getString('replytimeout','first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20" gap="20">
+			<s:VGroup paddingLeft="18">
+				<s:Label text="{resourceManager.getString('replytimeout','action.return.textarea.title')}"
+						 width="100%"/>
+				<mx:RichTextEditor id="rte" 
+								   width="400"
+								   title=""
+								   text="{resourceManager.getString('replytimeout','action.return.textarea.text')}">
+				</mx:RichTextEditor>	
+			</s:VGroup>
+	</s:VGroup>
+</mx:Module>
