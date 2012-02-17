@@ -77,6 +77,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			if(lastReload+(syncTimeInMinutes*60*1000)-System.currentTimeMillis()<0){
 				persist();
 				threads = finder.findAll();
+				log.debug("loaded "+threads.size()+" threads");
 				lastUpdate=System.currentTimeMillis();
 				lastReload=System.currentTimeMillis();
 			}else if(lastUpdate+updateTime-System.currentTimeMillis()<0){
