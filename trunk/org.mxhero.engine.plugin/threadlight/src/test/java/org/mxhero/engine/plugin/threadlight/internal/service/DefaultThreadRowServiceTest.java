@@ -32,7 +32,7 @@ public class DefaultThreadRowServiceTest {
 		threadRow.getPk().setSenderMail("sender@example.com");
 		
 		service.follow(threadRow, "follower-test");
-		cachedRepository.persist();
+		cachedRepository.persist(false);
 	}
 
 	public ThreadRowService getService() {
