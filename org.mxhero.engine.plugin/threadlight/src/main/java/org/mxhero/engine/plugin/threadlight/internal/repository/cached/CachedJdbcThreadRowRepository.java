@@ -97,8 +97,10 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			saveLater=new HashSet<ThreadRow>();
 			addLater=new HashSet<ThreadRowFollower>();
 			removeLater=new HashSet<ThreadRowFollower>();
-			threads = finder.findAll();
-			log.debug("loaded "+threads.size()+" threads");
+			if(reaload){
+				threads = finder.findAll();
+				log.debug("loaded "+threads.size()+" threads");
+			}
 		}
 		log.debug("persisting saveLater:"+oldSaveLater.size()+" followers:"+addLater.size()+" removeLater:"+removeLater.size());
 		for(ThreadRow toSync : oldSaveLater){
