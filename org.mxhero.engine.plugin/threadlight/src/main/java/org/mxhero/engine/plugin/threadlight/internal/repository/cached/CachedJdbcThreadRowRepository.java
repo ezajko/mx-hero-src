@@ -63,7 +63,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 				thread.join();
 			} catch (InterruptedException e) {}
 		}
-		persist();
+		persist(false);
 	}
 
 	@Override
@@ -75,20 +75,18 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 				Thread.sleep(CHECK_TIME);
 			} catch (InterruptedException e) {}
 			if(lastReload+(syncTimeInMinutes*60*1000)-System.currentTimeMillis()<0){
-				persist();
-				threads = finder.findAll();
-				log.debug("loaded "+threads.size()+" threads");
+				persist(true);
 				lastUpdate=System.currentTimeMillis();
 				lastReload=System.currentTimeMillis();
 			}else if(lastUpdate+updateTime-System.currentTimeMillis()<0){
-				persist();
+				persist(false);
 				lastUpdate=System.currentTimeMillis();
 			}
 
 		}
 	}
 	
-	public void persist(){
+	public void persist(boolean reaload){
 		Set<ThreadRow> oldSaveLater=null;
 		Set<ThreadRowFollower> oldAddLater=null;
 		Set<ThreadRowFollower> oldRemoveLater=null;
@@ -99,6 +97,8 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			saveLater=new HashSet<ThreadRow>();
 			addLater=new HashSet<ThreadRowFollower>();
 			removeLater=new HashSet<ThreadRowFollower>();
+			threads = finder.findAll();
+			log.debug("loaded "+threads.size()+" threads");
 		}
 		log.debug("persisting saveLater:"+oldSaveLater.size()+" followers:"+addLater.size()+" removeLater:"+removeLater.size());
 		for(ThreadRow toSync : oldSaveLater){
