@@ -12,6 +12,11 @@
 	<fx:Declarations>
 	</fx:Declarations>
 	
+	<mx:states>
+		<s:State name="default"/>
+		<s:State name="explain"/>
+	</mx:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
@@ -105,29 +110,48 @@
 		[ResourceBundle("textLayout")]
 	</fx:Metadata>
 	
-	<s:HGroup width="100%" verticalAlign="middle" gap="0">
-		<s:Label text="{resourceManager.getString('replytimeout','note.text.pre')}" paddingRight="0"/>
-		<mx:LinkButton label="{resourceManager.getString('replytimeout','note.text.link')}" 
-					   fontWeight="bold" 
-					   paddingLeft="0" 
-					   paddingRight="0" 
-					   paddingBottom="0" 
-					   paddingTop="0"/>
-		<s:Label text="{resourceManager.getString('replytimeout','note.text.post')}" paddingLeft="0"/>
-		
-	</s:HGroup>
-	
-	<s:Label text="{resourceManager.getString('replytimeout','first.title')}" fontSize="16" fontWeight="bold"/>
-	
-	<s:VGroup paddingLeft="20" gap="20">
-			<s:VGroup paddingLeft="18">
-				<s:Label text="{resourceManager.getString('replytimeout','action.return.textarea.title')}"
-						 width="100%"/>
-				<mx:RichTextEditor id="rte" 
-								   width="400"
-								   title=""
-								   text="{resourceManager.getString('replytimeout','action.return.textarea.text')}">
-				</mx:RichTextEditor>	
+		<s:VGroup excludeFrom="explain">
+			<s:HGroup width="100%" verticalAlign="middle" gap="0">
+				<s:Label text="{resourceManager.getString('replytimeout','note.text.pre')}" paddingRight="0"/>
+				<mx:LinkButton label="{resourceManager.getString('replytimeout','note.text.link')}" 
+							   fontWeight="bold" 
+							   paddingLeft="0" 
+							   paddingRight="0" 
+							   paddingBottom="0" 
+							   paddingTop="0"
+							   click="{currentState='explain'}"/>
+				<s:Label text="{resourceManager.getString('replytimeout','note.text.post')}" paddingLeft="0"/>
+				
+			</s:HGroup>
+			
+			<s:Label text="{resourceManager.getString('replytimeout','first.title')}" fontSize="16" fontWeight="bold"/>
+			
+			<s:VGroup paddingLeft="20" gap="20">
+				<s:VGroup paddingLeft="18">
+					<s:Label text="{resourceManager.getString('replytimeout','action.return.textarea.title')}"
+							 width="100%"/>
+					<mx:RichTextEditor id="rte" 
+									   width="400"
+									   title=""
+									   text="{resourceManager.getString('replytimeout','action.return.textarea.text')}">
+					</mx:RichTextEditor>	
+				</s:VGroup>
 			</s:VGroup>
-	</s:VGroup>
+		</s:VGroup>	
+		<s:VGroup excludeFrom="default">
+			<s:Label text="{resourceManager.getString('replytimeout','explain.client.support')}" 
+					 fontSize="16" fontWeight="bold" textDecoration="underline"/>
+			<mx:Text text="{resourceManager.getString('replytimeout','explain.client.support.text')}" 
+					 width="100%" minWidth="500"/>
+			<mx:Spacer/>
+			<s:Label text="{resourceManager.getString('replytimeout','explain.subject.shortcode')}" 
+					 fontSize="16" 
+					 fontWeight="bold"
+					 textDecoration="underline"/>
+			<mx:Text text="{resourceManager.getString('replytimeout','explain.subject.shortcode.text')}" width="100%" minWidth="500"/>
+			<s:HGroup width="100%" horizontalAlign="center">
+				<s:Button  fontWeight="bold" label="Close" click="{currentState='default'}"/>	
+			</s:HGroup>
+		</s:VGroup>
+
 </mx:Module>
