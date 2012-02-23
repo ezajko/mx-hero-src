@@ -17,7 +17,7 @@
 	<context:annotation-config />
 
 	<tx:annotation-driven transaction-manager="txManager" />
-	
+
 	<osgix:cm-properties id="cmProps"
 		persistent-id="org.mxhero.engine.plugin.threadlight">
 		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
@@ -26,14 +26,31 @@
 		<prop key="jdbcPassord">mxhero</prop>
 		<prop key="updateTime">10000</prop>
 		<prop key="syncTimeInMinutes">60</prop>
+		<prop key="idleConnectionTestPeriodInMinutes">1</prop>
+		<prop key="idleMaxAgeInMinutes">4</prop>
+		<prop key="maxConnectionsPerPartition">10</prop>
+		<prop key="minConnectionsPerPartition">5</prop>
+		<prop key="partitionCount">2</prop>
+		<prop key="acquireIncrement">2</prop>
+		<prop key="releaseHelperThreads">2</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
 		properties-ref="cmProps" />
 
+	<osgi:service ref="jdbcthreadRowService">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.plugin.threadlight.service.ThreadRowService</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.threadlight.internal.service.cachedThreadRowService" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<osgi:service ref="threadLightFilter">
 		<osgi:interfaces>
-	  		<value>org.mxhero.engine.commons.connector.InputServiceFilter</value>
+			<value>org.mxhero.engine.commons.connector.InputServiceFilter</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
@@ -43,8 +60,8 @@
 
 	<osgi:service ref="addThreadWatchCommand">
 		<osgi:interfaces>
-	  		<value>org.mxhero.engine.commons.mail.command.Command</value>
-	  		<value>org.mxhero.engine.plugin.threadlight.command.AddThreadWatch</value>
+			<value>org.mxhero.engine.commons.mail.command.Command</value>
+			<value>org.mxhero.engine.plugin.threadlight.command.AddThreadWatch</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
@@ -52,24 +69,33 @@
 		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="addThreadWatchCommand" class="org.mxhero.engine.plugin.threadlight.internal.command.AddThreadWatchImpl">
-		<property name="threadRowService" ref="threadRowService"/>
+	<bean id="addThreadWatchCommand"
+		class="org.mxhero.engine.plugin.threadlight.internal.command.AddThreadWatchImpl">
+		<property name="threadRowService" ref="cachedThreadRowService" />
 	</bean>
 
-	<bean id="threadLightFilter" class="org.mxhero.engine.plugin.threadlight.internal.connector.ThreadLightFilter">
-		<property name="threadRowService" ref="threadRowService"/>
+	<bean id="threadLightFilter"
+		class="org.mxhero.engine.plugin.threadlight.internal.connector.ThreadLightFilter">
+		<property name="threadRowService" ref="cachedThreadRowService" />
 	</bean>
 
-	<bean id="threadRowService" class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
-		<property name="repository" ref="cachedRepository"/>
+	<bean id="cachedThreadRowService"
+		class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
+		<property name="repository" ref="cachedRepository" />
 	</bean>
 
-	<bean id="cachedRepository" class="org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository"
+	<bean id="jdbcthreadRowService"
+		class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
+		<property name="repository" ref="jdbcRepository" />
+	</bean>
+
+	<bean id="cachedRepository"
+		class="org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository"
 		init-method="start" destroy-method="stop">
-		<property name="repository" ref="jdbcRepository"/>
-		<property name="finder" ref="jdbcFinder"/>
-		<property name="syncTimeInMinutes" value="${syncTimeInMinutes}"/>
-		<property name="updateTime" value="${updateTime}"/>
+		<property name="repository" ref="jdbcRepository" />
+		<property name="finder" ref="jdbcFinder" />
+		<property name="syncTimeInMinutes" value="${syncTimeInMinutes}" />
+		<property name="updateTime" value="${updateTime}" />
 	</bean>
 
 	<bean id="txManager"
@@ -77,12 +103,21 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+	<!-- BoneCP configuration -->
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
+		destroy-method="close">
+		<property name="poolName" value="org.mxhero.engine.plugin.threadlight.boneCP" />
 		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="url" value="${jdbcUrl}" />
+		<property name="jdbcUrl" value="${jdbcUrl}" />
 		<property name="username" value="${jdbcUserName}" />
 		<property name="password" value="${jdbcPassord}" />
+		<property name="idleConnectionTestPeriodInMinutes" value="1" />
+		<property name="idleMaxAgeInMinutes" value="4" />
+		<property name="maxConnectionsPerPartition" value="10" />
+		<property name="minConnectionsPerPartition" value="5" />
+		<property name="partitionCount" value="2" />
+		<property name="acquireIncrement" value="2" />
+		<property name="releaseHelperThreads" value="2" />
 	</bean>
 
 </beans>

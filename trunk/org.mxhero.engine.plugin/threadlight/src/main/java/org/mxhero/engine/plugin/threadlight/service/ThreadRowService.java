@@ -3,11 +3,12 @@ package org.mxhero.engine.plugin.threadlight.service;
 import java.util.Collection;
 
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 
 public interface ThreadRowService {
 
-	void follow(ThreadRow threadRow, String follower);
+	void follow(ThreadRow threadRow, ThreadRowFollower follower);
 	
 	ThreadRow reply(ThreadRowPk pk);
 	

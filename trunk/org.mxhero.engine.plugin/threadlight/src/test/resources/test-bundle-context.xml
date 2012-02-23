@@ -36,6 +36,7 @@
 		<property name="finder" ref="jdbcFinder"/>
 		<property name="syncTimeInMinutes" value="60"/>
 		<property name="updateTime" value="5000"/>
+		<property name="sinceInDays" value="30"/>
 	</bean>
 
 	<bean id="txManager"
@@ -43,12 +44,20 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://127.0.0.1/threadlight" />
-		<property name="username" value="mxhero" />
-		<property name="password" value="mxhero" />
+	<!-- BoneCP configuration -->
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+	   <property name="poolName" value="org.mxhero.engine.plugin.threadlight.boneCP"/>
+	   <property name="driverClass" value="com.mysql.jdbc.Driver" />
+	   <property name="jdbcUrl" value="jdbc:mysql://127.0.0.1/threadlight" />
+	   <property name="username" value="mxhero"/>
+	   <property name="password" value="mxhero"/>
+	   <property name="idleConnectionTestPeriodInMinutes" value="1"/>
+	   <property name="idleMaxAgeInMinutes" value="4"/>
+	   <property name="maxConnectionsPerPartition" value="10"/>
+	   <property name="minConnectionsPerPartition" value="5"/>
+	   <property name="partitionCount" value="2"/>
+	   <property name="acquireIncrement" value="2"/>
+	   <property name="releaseHelperThreads" value="2"/>
 	</bean>
 
 </beans>

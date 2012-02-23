@@ -20,6 +20,7 @@ public class ThreadRowMapper implements RowMapper<ThreadRow>{
 	public static final String SENDER_MAIL="sender_mail";
 	public static final String SUBJECT="message_subject";
 	public static final String REPLY_TIME="reply_time";
+	public static final String SNOOZE_TIME="snooze_time";
 	
 	@Override
 	public ThreadRow mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -30,6 +31,9 @@ public class ThreadRowMapper implements RowMapper<ThreadRow>{
 		}
 		if(rs.getTimestamp(REPLY_TIME)!=null){
 			row.setReplyTime(rs.getTimestamp(REPLY_TIME));
+		}
+		if(rs.getTimestamp(SNOOZE_TIME)!=null){
+			row.setSnoozeTime(rs.getTimestamp(SNOOZE_TIME));
 		}
 		row.setId(rs.getLong(ID));
 		row.setPk(new ThreadRowPk(rs.getString(MESSAGE_ID), rs.getString(SENDER_MAIL), rs.getString(RECIPIENT_MAIL)));
