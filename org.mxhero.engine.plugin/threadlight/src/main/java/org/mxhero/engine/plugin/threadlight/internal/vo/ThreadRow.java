@@ -14,6 +14,7 @@ public class ThreadRow implements Serializable{
 	private String subject;
 	private Timestamp replyTime;
 	private Set<ThreadRowFollower> followers;
+	private Timestamp snoozeTime;
 	
 	public Long getId() {
 		return id;
@@ -61,6 +62,14 @@ public class ThreadRow implements Serializable{
 
 	public void setFollowers(Set<ThreadRowFollower> followers) {
 		this.followers = followers;
+	}
+
+	public Timestamp getSnoozeTime() {
+		return snoozeTime;
+	}
+
+	public void setSnoozeTime(Timestamp snoozeTime) {
+		this.snoozeTime = snoozeTime;
 	}
 
 	@Override

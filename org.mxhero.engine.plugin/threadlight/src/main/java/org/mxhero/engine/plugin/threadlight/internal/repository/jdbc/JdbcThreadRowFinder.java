@@ -1,5 +1,6 @@
 package org.mxhero.engine.plugin.threadlight.internal.repository.jdbc;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,11 +24,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class JdbcThreadRowFinder implements ThreadRowFinder{
 
 	private NamedParameterJdbcTemplate template;
-	private static final String SQL = " SELECT * FROM `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` ";
+	private static final String SQL = " SELECT * FROM "+ThreadRowMapper.DATABASE+"."+ThreadRowMapper.TABLE_NAME+" ";
 	
 	@Autowired
 	public JdbcThreadRowFinder(DataSource ds) {
 		this.template = new NamedParameterJdbcTemplate(ds);
+	}
+
+	public Map<ThreadRowPk, ThreadRow> findBySpecsMap(Timestamp since) {
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		source.addValue("snoozeSince",since);
+		source.addValue("creationSince",since);
+		
+		
+		String sql = SQL + " WHERE ("+ThreadRowMapper.SNOOZE_TIME+" IS NOT NULL AND "+ThreadRowMapper.SNOOZE_TIME+" >= :snoozeSince) " +
+				" OR ("+ThreadRowMapper.SNOOZE_TIME+" IS NULL AND "+ThreadRowMapper.CREATION_TIME+" >= :creationSince )";
+		return fill(template.query(sql,source,new ThreadRowMapper()));
 	}
 
 	@Override
@@ -35,7 +47,7 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 		String sql = SQL + " t ";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		if(follower!=null){
-			sql = sql + " INNER JOIN `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"` f " +
+			sql = sql + " INNER JOIN "+ThreadRowFollowerMapper.DATABASE+"."+ThreadRowFollowerMapper.TABLE_NAME+" f " +
 					" ON t."+ThreadRowMapper.ID+" = f."+ThreadRowFollowerMapper.THREAD_ID+" " +
 					" WHERE f."+ThreadRowFollowerMapper.FOLLOWER+" = :follower ";
 			source.addValue("follower", follower);
@@ -46,6 +58,10 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 			if(threadRow.getId()!=null){
 				sql = sql + " AND t."+ThreadRowMapper.ID+" = :threadId";
 				source.addValue("threadId", threadRow.getId());
+			}
+			if(threadRow.getSnoozeTime()!=null){
+				sql = sql + " AND t."+ThreadRowMapper.SNOOZE_TIME+" >= :snoozeTime";
+				source.addValue("snoozeTime", threadRow.getSnoozeTime());
 			}
 			if(threadRow.getCreationTime()!=null){
 				sql = sql + " AND t."+ThreadRowMapper.CREATION_TIME+" >= :creationTime";
@@ -75,20 +91,14 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 			}
 		}
 
-		List<ThreadRow> rowResults = template.query(sql, source,new ThreadRowMapper());
+		Map<ThreadRowPk, ThreadRow> rowResults = fill(template.query(sql, source,new ThreadRowMapper()));
+
 		if(rowResults!=null && rowResults.size()>0){
-			return new HashSet<ThreadRow>(fill(rowResults).values());
+			return new HashSet<ThreadRow>(rowResults.values());
 		}
 		return null;
 	}
-
-
-	@Override
-	public Map<ThreadRowPk, ThreadRow> findAll() {
-		List<ThreadRow> rowResults = template.getJdbcOperations().query(SQL, new ThreadRowMapper());
-		return fill(rowResults);
-	}
-
+	
 	private Map<ThreadRowPk, ThreadRow> fill(List<ThreadRow> rowResults){
 		Map<ThreadRowPk, ThreadRow> threadRows = new HashMap<ThreadRowPk, ThreadRow>();
 		if(rowResults!=null && rowResults.size()>0){
@@ -108,7 +118,7 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 	}
 	
 	private List<ThreadRowFollower> findFollowers(Long threadRowId){
-		String sql = " SELECT `"+ThreadRowFollowerMapper.FOLLOWER+"` " +
+		String sql = " SELECT `"+ThreadRowFollowerMapper.FOLLOWER+"`, `"+ThreadRowFollowerMapper.PARAMETERS+"` " +
 					" FROM `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"`" +
 					" WHERE `"+ThreadRowFollowerMapper.THREAD_ID+"` = :threadId ;";
 		return template.query(sql, new MapSqlParameterSource("threadId",threadRowId), new ThreadRowFollowerMapper());

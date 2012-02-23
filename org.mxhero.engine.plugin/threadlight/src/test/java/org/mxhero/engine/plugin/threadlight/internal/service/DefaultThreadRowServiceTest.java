@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class DefaultThreadRowServiceTest {
 		threadRow.getPk().setRecipientMail("recipient@example.com");
 		threadRow.getPk().setSenderMail("sender@example.com");
 		
-		service.follow(threadRow, "follower-test");
+		service.follow(threadRow, new ThreadRowFollower(null,"test-follower"));
 		cachedRepository.persist(false);
 	}
 

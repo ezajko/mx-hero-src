@@ -8,6 +8,7 @@ public class ThreadRowFollower implements Serializable{
 
 	private ThreadRow threadRow;
 	private String follower;
+	private String folowerParameters;
 	
 	public ThreadRowFollower(){
 	}
@@ -31,6 +32,14 @@ public class ThreadRowFollower implements Serializable{
 
 	public void setThreadRow(ThreadRow threadRow) {
 		this.threadRow = threadRow;
+	}
+
+	public String getFolowerParameters() {
+		return folowerParameters;
+	}
+
+	public void setFolowerParameters(String folowerParameters) {
+		this.folowerParameters = folowerParameters;
 	}
 
 	@Override

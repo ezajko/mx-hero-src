@@ -1,6 +1,7 @@
 package org.mxhero.engine.plugin.threadlight.internal.repository.cached;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.ConcurrencyFailureException;
 
+/**
+ * This class just keep track of records that did not have a reply.
+ * If a record has a reply it will saved and them removed from the cache.
+ * @author mxhero
+ *
+ */
 public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runnable{
 
 	private static Logger log = LoggerFactory.getLogger(CachedJdbcThreadRowRepository.class);
@@ -27,9 +34,21 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 	private Set<ThreadRowFollower> removeLater = new HashSet<ThreadRowFollower>();
 	private Long updateTime = 10000l;
 	private Long syncTimeInMinutes = 60l;
+	private Integer sinceInDays = 30;
 	private static final long CHECK_TIME = 1000;
 	private Thread thread;
 	private boolean keepWorking = false;
+	
+	private Timestamp getSinceTime(){
+		if(sinceInDays!=null && sinceInDays >0){
+			Calendar sinceCalendar = Calendar.getInstance();
+			sinceCalendar.add(Calendar.DATE, -sinceInDays);
+			return new Timestamp(sinceCalendar.getTimeInMillis());
+		}else{
+			return null;
+		}
+		
+	}
 	
 	public ThreadRowRepository getRepository() {
 		return repository;
@@ -51,7 +70,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 		thread=new Thread(this);
 		keepWorking=true;
 		//First time so it starts with real data.
-		threads = finder.findAll();
+		threads = finder.findBySpecsMap(getSinceTime());
 		log.debug("loaded "+threads.size()+" threads");
 		thread.start();
 	}
@@ -98,7 +117,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			addLater=new HashSet<ThreadRowFollower>();
 			removeLater=new HashSet<ThreadRowFollower>();
 			if(reaload){
-				threads = finder.findAll();
+				threads = finder.findBySpecsMap(getSinceTime());
 				log.debug("loaded "+threads.size()+" threads");
 			}
 		}
@@ -107,36 +126,36 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			try{
 				toSync.setId(repository.saveThread(toSync));
 			}catch(ConcurrencyFailureException e){
-				log.warn(e.toString());
+				log.warn(e.getMessage());
 				synchronized (this) {
 					saveLater.add(toSync);
 				}
 			}catch(Exception e){
-				log.error(e.toString());
+				log.warn(e.toString());
 			}
 		}
 		for(ThreadRowFollower toSync : oldAddLater){
 			try{
-				repository.addFollower(toSync.getThreadRow(),toSync.getFollower());
+				repository.addFollower(toSync.getThreadRow(),toSync);
 			}catch(ConcurrencyFailureException e){
-				log.warn(e.toString());
+				log.warn(e.getMessage());
 				synchronized (this) {
 					addLater.add(toSync);
 				}
 			}catch(Exception e){
-				log.error(e.toString());
+				log.warn(e.getMessage());
 			}
 		}
 		for(ThreadRowFollower toSync : oldRemoveLater){
 			try{
 				repository.removeFollower(toSync.getThreadRow(),toSync.getFollower());
 			}catch(ConcurrencyFailureException e){
-				log.warn(e.toString());
+				log.warn(e.getMessage());
 				synchronized (this) {
 					removeLater.add(toSync);
 				}
 			}catch(Exception e){
-				log.error(e.toString());
+				log.warn(e.getMessage());
 			}
 		}
 		oldAddLater.clear();
@@ -169,14 +188,33 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 				//IF UPDATE
 				if(updatedThreadRow!=null){
 					updatedThreadRow.setReplyTime(threadRow.getReplyTime());
+					//remove threads that have a reply, 
+					//cacheRepository is used just for following new one 
+					//and replying old ones, those that had a reply
+					//should use jdbcRepository
+					if(updatedThreadRow.getReplyTime()!=null){
+						threads.remove(updatedThreadRow.getPk());
+					}
+					if(threadRow.getSnoozeTime()!=null){
+						updatedThreadRow.setSnoozeTime((Timestamp) threadRow.getSnoozeTime().clone());
+					}
 				//INSERT
 				}else{
 					updatedThreadRow = new ThreadRow();
-					updatedThreadRow.setCreationTime((Timestamp) threadRow.getCreationTime().clone());
+					if(threadRow.getCreationTime()!=null){
+						updatedThreadRow.setCreationTime((Timestamp) threadRow.getCreationTime().clone());
+					}else{
+						updatedThreadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
+					}					
 					updatedThreadRow.setPk(new ThreadRowPk(threadRow.getPk().getMessageId()
 							, threadRow.getPk().getSenderMail()
 							, threadRow.getPk().getRecipientMail()));
 					updatedThreadRow.setSubject(threadRow.getSubject());
+					if(threadRow.getSnoozeTime()!=null){
+						updatedThreadRow.setSnoozeTime((Timestamp) threadRow.getSnoozeTime().clone());
+					}else{
+						updatedThreadRow.setSnoozeTime(new Timestamp(System.currentTimeMillis()));
+					}
 				}
 				threads.put(updatedThreadRow.getPk(), updatedThreadRow);
 				saveLater.add(updatedThreadRow);
@@ -187,31 +225,40 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 	}
 
 	@Override
-	//TO DO
-	public void addFollower(ThreadRow threadRow, String follower) {
+	public void addFollower(ThreadRow threadRow, ThreadRowFollower follower) {
 		if(threadRow!=null && threadRow.getPk()!=null && follower!=null){
 			synchronized (this) {
+				ThreadRowFollower threadFollower = null;	
 				ThreadRow savedThreadRow = threads.get(threadRow.getPk());
+				if(savedThreadRow!=null){
 					if(savedThreadRow.getFollowers()==null){
 						savedThreadRow.setFollowers(new HashSet<ThreadRowFollower>());
 					}
-					ThreadRowFollower threadFollower = new ThreadRowFollower(savedThreadRow,follower);
+					threadFollower = new ThreadRowFollower(savedThreadRow,follower.getFollower());
+					threadFollower.setFolowerParameters(follower.getFolowerParameters());
 					savedThreadRow.getFollowers().add(threadFollower);
-					addLater.add(threadFollower);
+				}else{
+					threadFollower = new ThreadRowFollower(threadRow,follower.getFollower());
+					threadFollower.setFolowerParameters(follower.getFolowerParameters());
 				}
+				addLater.add(threadFollower);
 			}
+		}
 	}
 
 	@Override
-	//TO DO
 	public void removeFollower(ThreadRow threadRow, String follower) {
 		if(threadRow!=null && threadRow.getPk()!=null && follower!=null){
 			synchronized (this) {
-				if(threadRow!=null){
-					ThreadRowFollower threadFollower = new ThreadRowFollower(threadRow, follower);
-					threadRow.getFollowers().remove(threadFollower);
-					removeLater.add(threadFollower);
+				ThreadRowFollower threadFollower = null;
+				ThreadRow savedThreadRow = threads.get(threadRow.getPk());
+				if(savedThreadRow!=null){
+					threadFollower = new ThreadRowFollower(savedThreadRow, follower);
+					savedThreadRow.getFollowers().remove(threadFollower);
+				}else{
+					threadFollower = new ThreadRowFollower(threadRow, follower);
 				}
+				removeLater.add(threadFollower);
 			}
 		}
 	}
@@ -230,6 +277,14 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 
 	public void setSyncTimeInMinutes(Long syncTimeInMinutes) {
 		this.syncTimeInMinutes = syncTimeInMinutes;
+	}
+
+	public Integer getSinceInDays() {
+		return sinceInDays;
+	}
+
+	public void setSinceInDays(Integer sinceInDays) {
+		this.sinceInDays = sinceInDays;
 	}
 
 }

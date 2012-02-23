@@ -2,6 +2,10 @@
 # Use this file to add customized Bnd instructions for the bundle
 #-----------------------------------------------------------------
 
+Embed-Dependency:\
+guava;groupId=com.google.guava;inline=false,\
+bonecp;groupId=com.jolbox;inline=false
+
 Import-Package: \
 com.mysql.jdbc, \
 org.aopalliance.aop, \

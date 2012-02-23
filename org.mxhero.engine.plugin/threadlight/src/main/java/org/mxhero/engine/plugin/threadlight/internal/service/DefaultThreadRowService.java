@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class DefaultThreadRowService implements ThreadRowService{
 	private ThreadRowFinder finder;
 	
 	@Override
-	public void follow(ThreadRow threadRow, String follower) {
+	public void follow(ThreadRow threadRow, ThreadRowFollower follower) {
 		if(threadRow!=null && threadRow.getPk()!=null && follower!=null){
 			if(repository.find(threadRow.getPk())==null){
 				ThreadRow newThreadRow = new ThreadRow();

@@ -1,5 +1,6 @@
 package org.mxhero.engine.plugin.threadlight.internal.repository;
 
+import java.sql.Timestamp;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,5 +11,6 @@ public interface ThreadRowFinder {
 
 	Set<ThreadRow> findBySpecs(ThreadRow threadRow, String follower);
 	
-	Map<ThreadRowPk,ThreadRow> findAll();
+	Map<ThreadRowPk, ThreadRow> findBySpecsMap(Timestamp since);
+
 }

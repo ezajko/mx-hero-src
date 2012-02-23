@@ -55,7 +55,7 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 	}
 
 	private List<ThreadRowFollower> findFollowers(Long threadRowId){
-		String sql = " SELECT `"+ThreadRowFollowerMapper.FOLLOWER+"` " +
+		String sql = " SELECT `"+ThreadRowFollowerMapper.FOLLOWER+"`,  `"+ThreadRowFollowerMapper.PARAMETERS+"`" +
 					" FROM `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"`" +
 					" WHERE `"+ThreadRowFollowerMapper.THREAD_ID+"` = :threadId ;";
 		return template.query(sql, new MapSqlParameterSource("threadId",threadRowId), new ThreadRowFollowerMapper());
@@ -83,14 +83,17 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 
 	@Override
 	@Transactional(readOnly=false)
-	public void addFollower(ThreadRow threadRow, String follower) {
+	public void addFollower(ThreadRow threadRow, ThreadRowFollower follower) {
 		String sql = " INSERT INTO `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"` " +
-				" (`"+ThreadRowFollowerMapper.THREAD_ID+"`,`"+ThreadRowFollowerMapper.FOLLOWER+"`) "+
-				" VALUES(:threadId,:follower) " +
-				" ON DUPLICATE KEY UPDATE `"+ThreadRowFollowerMapper.FOLLOWER+"`=VALUES("+ThreadRowFollowerMapper.FOLLOWER+");";
+				" (`"+ThreadRowFollowerMapper.THREAD_ID+"`,`"+ThreadRowFollowerMapper.FOLLOWER+"`,`"+ThreadRowFollowerMapper.PARAMETERS+"`) "+
+				" VALUES(:threadId,:follower,:parameters) " +
+				" ON DUPLICATE KEY UPDATE " +
+				" `"+ThreadRowFollowerMapper.FOLLOWER+"`=VALUES("+ThreadRowFollowerMapper.FOLLOWER+")," +
+				" `"+ThreadRowFollowerMapper.PARAMETERS+"`=VALUES("+ThreadRowFollowerMapper.PARAMETERS+");";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		source.addValue("threadId", threadRow.getId());
-		source.addValue("follower", follower);
+		source.addValue("follower", follower.getFollower());
+		source.addValue("parameters", follower.getFolowerParameters());
 		template.update(sql, source);
 	}
 
