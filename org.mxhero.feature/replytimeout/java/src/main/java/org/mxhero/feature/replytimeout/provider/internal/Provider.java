@@ -29,6 +29,7 @@ public class Provider extends RulesByFeature  {
 	private static final String HEADER = "X-mxHero-Actions";
 	private static final String HEADER_VALUE = "replyTimeout";
 	private static final String REGEX = "(?i).*\\[\\s*mxreply\\s*.*\\]\\s*.*";
+	private static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
 	private static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dh]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
 	
 	@Override
@@ -161,6 +162,7 @@ public class Provider extends RulesByFeature  {
 						
 					}
 				}
+				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
 				if(!hasError && replyTimeoutDate!=null){
 					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch","org.mxhero.feature.replytimeout",replyTimeoutDate.getTime()+";"+locale);
 				}
@@ -168,7 +170,6 @@ public class Provider extends RulesByFeature  {
 				log.warn("unhandle error!",e);
 				hasError=true;
 			}
-			mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX, ""));
 		}
 		
 	}
