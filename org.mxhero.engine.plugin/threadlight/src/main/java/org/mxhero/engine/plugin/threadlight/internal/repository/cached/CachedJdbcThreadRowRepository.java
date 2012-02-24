@@ -118,7 +118,7 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			removeLater=new HashSet<ThreadRowFollower>();
 			if(reaload){
 				threads = finder.findBySpecsMap(getSinceTime());
-				log.debug("loaded "+threads.size()+" threads");
+				log.info("loaded "+threads.size()+" threads");
 			}
 		}
 		log.debug("persisting saveLater:"+oldSaveLater.size()+" followers:"+addLater.size()+" removeLater:"+removeLater.size());
