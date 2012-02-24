@@ -21,6 +21,7 @@
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
+			import mx.resources.ResourceManager;
 			import mx.utils.StringUtil;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
@@ -28,7 +29,14 @@
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
 			
+			[Embed(source="/images/warning.png")] 
+			[Bindable]
+			public static var WARNING:Class;
+			
 			private var initialProperties:ArrayCollection;
+			
+			[Bindable]
+			private var dateFormats:ArrayCollection = new ArrayCollection(['dd/mm','mm/dd']);
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
@@ -37,11 +45,6 @@
 			}
 			
 			public function isValid():Boolean{
-				if(rte.text==null || StringUtil.trim(rte.text).length<1){
-					rte.errorString=resourceManager.getString('replytimeout','error.return.message');
-					return false;
-				}
-				rte.errorString="";
 				return true;
 			}
 			
@@ -51,11 +54,13 @@
 			
 			private function loadData():void{
 				if(initialProperties!=null){
-					var selectedAction:String=PropertyHelper.getProperty(initialProperties,'action.selection').propertyValue;
-					if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
-						rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
-					}else{
-						rte.text= PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue;
+					var formatProperty:FeatureRuleProperty = PropertyHelper.getProperty(initialProperties,"date.format");
+					if(formatProperty!=null){
+						if(formatProperty.propertyValue=='dd/mm'){
+							dateFormatDdl.selectedIndex=0;
+						}else{
+							dateFormatDdl.selectedIndex=1;
+						}
 					}
 				}
 			}
@@ -63,44 +68,48 @@
 			public function getProperties():ArrayCollection{
 				var properties:ArrayCollection = new ArrayCollection();
 				
-				var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
-				returnMessage = new FeatureRuleProperty();
-				returnMessage.propertyKey = "return.message";
-				var t:RteHtmlParser = new RteHtmlParser();
-				t.ParseToHTML(rte.htmlText);
-				var str:String = t.StringFormat;
-				returnMessage.propertyValue = t.XMLFormat;
-				properties.addItem(returnMessage);
-				returnMessage = new FeatureRuleProperty();
-				returnMessage.propertyKey = "return.message.plain";
-				returnMessage.propertyValue = rte.text;
-				properties.addItem(returnMessage);	
-				returnMessage = new FeatureRuleProperty();
-				returnMessage.propertyKey = "return.message.rte";
-				returnMessage.propertyValue = rte.htmlText;
-				properties.addItem(returnMessage);	
-
+				var property:FeatureRuleProperty = new FeatureRuleProperty();
+				property = new FeatureRuleProperty();
+				property.propertyKey = "locale";
+				property.propertyValue = ResourceManager.getInstance().localeChain[0];;
+				properties.addItem(property);
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey="date.format";
+				property.propertyValue=dateFormatDdl.selectedItem;
+				properties.addItem(property);
+				
 				return properties;
 			}
 			
 			public function getValidationError():String{
-				return rte.errorString;
+				return "";
 			}
 			
 			public function fixedTo():Boolean{
-				return false;
+				return true;
 			}
 			
 			public function fixedFrom():Boolean{
-				return false;
+				return true;
 			}
 			
 			public function fixedToValue():String{
-				return "";
+				return "anyone";
 			}
 			
 			public function fixedFromValue():String{
-				return "";
+				return "owndomain";
+			}
+			
+			protected function explainLink_clickHandler(event:MouseEvent):void
+			{
+				if(currentState=='default'){
+					currentState='explain';
+				}else{
+					currentState='default';
+				}
+				
 			}
 		]]>
 	</fx:Script>
@@ -109,36 +118,27 @@
 		[ResourceBundle("replytimeout")]
 		[ResourceBundle("textLayout")]
 	</fx:Metadata>
-	
-		<s:VGroup excludeFrom="explain">
-			<s:HGroup width="100%" verticalAlign="middle" gap="0">
-				<s:Label text="{resourceManager.getString('replytimeout','note.text.pre')}" paddingRight="0"/>
-				<mx:LinkButton label="{resourceManager.getString('replytimeout','note.text.link')}" 
-							   fontWeight="bold" 
-							   paddingLeft="0" 
-							   paddingRight="0" 
-							   paddingBottom="0" 
-							   paddingTop="0"
-							   click="{currentState='explain'}"/>
-				<s:Label text="{resourceManager.getString('replytimeout','note.text.post')}" paddingLeft="0"/>
-				
+
+	<s:VGroup width="100%">
+		
+		<s:HGroup verticalAlign="bottom">
+			<s:HGroup verticalAlign="bottom" paddingBottom="2">
+				<mx:Image source="{WARNING}"/>
+				<s:Label text="{resourceManager.getString('replytimeout','warning.message')}"/>
 			</s:HGroup>
-			
-			<s:Label text="{resourceManager.getString('replytimeout','first.title')}" fontSize="16" fontWeight="bold"/>
-			
-			<s:VGroup paddingLeft="20" gap="20">
-				<s:VGroup paddingLeft="18">
-					<s:Label text="{resourceManager.getString('replytimeout','action.return.textarea.title')}"
-							 width="100%"/>
-					<mx:RichTextEditor id="rte" 
-									   width="400"
-									   title=""
-									   text="{resourceManager.getString('replytimeout','action.return.textarea.text')}">
-					</mx:RichTextEditor>	
-				</s:VGroup>
-			</s:VGroup>
-		</s:VGroup>	
-		<s:VGroup excludeFrom="default">
+			<mx:LinkButton 	id="explainLink"
+							label.default="{resourceManager.getString('replytimeout','label.explain')}" 
+						   label.explain="{resourceManager.getString('replytimeout','label.hide')}"
+						   click="explainLink_clickHandler(event)"
+						   fontWeight="bold"
+						   color="#70B2EE"
+						   paddingLeft="0" 
+						   paddingRight="0"
+						   textRollOverColor="#FFFFFF"
+						   textSelectedColor="#FFFFFF"/>
+		</s:HGroup>
+		<s:VGroup width="100%" excludeFrom="default" paddingLeft="30">
+			<mx:Spacer height="10"/>
 			<s:Label text="{resourceManager.getString('replytimeout','explain.client.support')}" 
 					 fontSize="16" fontWeight="bold" textDecoration="underline"/>
 			<mx:Text text="{resourceManager.getString('replytimeout','explain.client.support.text')}" 
@@ -149,9 +149,17 @@
 					 fontWeight="bold"
 					 textDecoration="underline"/>
 			<mx:Text text="{resourceManager.getString('replytimeout','explain.subject.shortcode.text')}" width="100%" minWidth="500"/>
-			<s:HGroup width="100%" horizontalAlign="center">
-				<s:Button  fontWeight="bold" label="Close" click="{currentState='default'}"/>	
-			</s:HGroup>
 		</s:VGroup>
+	</s:VGroup>		
+		<s:HGroup verticalAlign="bottom" paddingLeft="30">
+			<s:Label text="{resourceManager.getString('replytimeout','date.format.label')}"/>
+			<s:DropDownList id="dateFormatDdl" 
+							width="85" 
+							selectedIndex="0"
+							dataProvider="{dateFormats}"/>
+		</s:HGroup>
+		
+
+
 
 </mx:Module>
