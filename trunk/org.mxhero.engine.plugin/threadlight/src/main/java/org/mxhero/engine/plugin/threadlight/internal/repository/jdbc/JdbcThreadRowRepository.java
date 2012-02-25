@@ -9,6 +9,8 @@ import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowReposit
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository("jdbcRepository")
 public class JdbcThreadRowRepository implements ThreadRowRepository{
 
+	private static Logger log = LoggerFactory.getLogger(JdbcThreadRowRepository.class);
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
@@ -65,20 +68,39 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 	@Override
 	@Transactional(readOnly=false)
 	public Long saveThread(ThreadRow threadRow) {
-		String sql = "INSERT INTO `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` " +
-				" (`"+ThreadRowMapper.CREATION_TIME+"`,`"+ThreadRowMapper.MESSAGE_ID+"`,`"+ThreadRowMapper.RECIPIENT_MAIL+"`,`"+ThreadRowMapper.SENDER_MAIL+"`,`"+ThreadRowMapper.SUBJECT+"`,`"+ThreadRowMapper.REPLY_TIME+"`) " +
-				" VALUES(:creationTime,:messageId,:recipientMail,:senderMail,:subject,:replyTime) " +
-				" ON DUPLICATE KEY UPDATE `"+ThreadRowMapper.REPLY_TIME+"`=VALUES("+ThreadRowMapper.REPLY_TIME+");";
+		log.trace("saving "+threadRow);
 		MapSqlParameterSource source = new MapSqlParameterSource();
-		source.addValue("creationTime", threadRow.getCreationTime());
 		source.addValue("messageId", threadRow.getPk().getMessageId());
 		source.addValue("recipientMail", threadRow.getPk().getRecipientMail());
 		source.addValue("senderMail", threadRow.getPk().getSenderMail());
-		source.addValue("subject", threadRow.getSubject());
-		source.addValue("replyTime", threadRow.getReplyTime());
-		KeyHolder threadRowId = new GeneratedKeyHolder();
-		template.update(sql, source,threadRowId);
-		return threadRowId.getKey().longValue();
+		Long id = null;
+		ThreadRow baseRecord = find(threadRow.getPk());
+		if(baseRecord==null){
+			log.trace("inserting "+threadRow);
+			String sql = "INSERT INTO `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` " +
+					" (`"+ThreadRowMapper.CREATION_TIME+"`,`"+ThreadRowMapper.MESSAGE_ID+"`,`"+ThreadRowMapper.RECIPIENT_MAIL+"`,`"+ThreadRowMapper.SENDER_MAIL+"`,`"+ThreadRowMapper.SUBJECT+"`,`"+ThreadRowMapper.REPLY_TIME+"`,`"+ThreadRowMapper.SNOOZE_TIME+"`) " +
+					" VALUES(:creationTime,:messageId,:recipientMail,:senderMail,:subject,:replyTime,:snoozeTime) ;";
+			source.addValue("subject", threadRow.getSubject());
+			source.addValue("replyTime", threadRow.getReplyTime());
+			source.addValue("snoozeTime", threadRow.getSnoozeTime());
+			source.addValue("creationTime", threadRow.getCreationTime());
+			KeyHolder threadRowId = new GeneratedKeyHolder();
+			log.trace("inserted "+template.update(sql, source,threadRowId));
+			id = threadRowId.getKey().longValue();
+		}else{
+			log.trace("updating "+threadRow);
+			id=baseRecord.getId();
+			MapSqlParameterSource updateSource = new MapSqlParameterSource();
+			updateSource.addValue("replyTime", threadRow.getReplyTime());
+			updateSource.addValue("id", id);
+			String sql = "UPDATE `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` " +
+				" SET `"+ThreadRowMapper.REPLY_TIME+"` = :replyTime " +
+				" WHERE `"+ThreadRowMapper.ID+"` = :id";
+			log.trace("updated "+template.update(sql, updateSource));
+			
+		}
+		log.trace("id for "+threadRow+" is "+id);
+		return id;
 	}
 
 	@Override

@@ -37,10 +37,13 @@ public class DefaultThreadRowService implements ThreadRowService{
 	@Override
 	public ThreadRow reply(ThreadRowPk pk) {
 		ThreadRow replyRow = null;
+		log.trace("checking thread light reply "+pk);
 		if(pk!=null && pk.getMessageId()!=null & pk.getRecipientMail()!=null && pk.getSenderMail()!=null){
 			replyRow =  repository.find(pk);
+			log.trace("found from repository "+replyRow);
 			if(replyRow!=null){
 				replyRow.setReplyTime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				log.trace("saving to repository "+replyRow);
 				repository.saveThread(replyRow);
 				log.debug("reply "+replyRow);
 			}

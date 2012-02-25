@@ -97,4 +97,15 @@ public class ThreadRow implements Serializable{
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ThreadRow [id=").append(id).append(", pk=").append(pk)
+				.append(", creationTime=").append(creationTime)
+				.append(", subject=").append(subject).append(", replyTime=")
+				.append(replyTime).append(", followers=").append(followers)
+				.append(", snoozeTime=").append(snoozeTime).append("]");
+		return builder.toString();
+	}
+
 }

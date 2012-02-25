@@ -22,6 +22,7 @@ public class DefaultThreadRowServiceTest {
 	@Autowired
 	private CachedJdbcThreadRowRepository cachedRepository;
 	
+	
 	@Test
 	public void test(){
 		ThreadRow threadRow = new ThreadRow();
@@ -31,11 +32,14 @@ public class DefaultThreadRowServiceTest {
 		threadRow.getPk().setMessageId("MESSAGE-ID-"+System.currentTimeMillis());
 		threadRow.getPk().setRecipientMail("recipient@example.com");
 		threadRow.getPk().setSenderMail("sender@example.com");
-		
 		service.follow(threadRow, new ThreadRowFollower(null,"test-follower"));
+		
+		service.reply(threadRow.getPk());
+		
 		cachedRepository.persist(false);
 	}
 
+	
 	public ThreadRowService getService() {
 		return service;
 	}

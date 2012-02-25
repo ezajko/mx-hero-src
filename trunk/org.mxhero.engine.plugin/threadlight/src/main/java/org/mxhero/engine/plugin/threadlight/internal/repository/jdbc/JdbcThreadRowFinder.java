@@ -37,8 +37,9 @@ public class JdbcThreadRowFinder implements ThreadRowFinder{
 		source.addValue("creationSince",since);
 		
 		
-		String sql = SQL + " WHERE ("+ThreadRowMapper.SNOOZE_TIME+" IS NOT NULL AND "+ThreadRowMapper.SNOOZE_TIME+" >= :snoozeSince) " +
-				" OR ("+ThreadRowMapper.SNOOZE_TIME+" IS NULL AND "+ThreadRowMapper.CREATION_TIME+" >= :creationSince )";
+		String sql = SQL + " WHERE (("+ThreadRowMapper.SNOOZE_TIME+" IS NOT NULL AND "+ThreadRowMapper.SNOOZE_TIME+" >= :snoozeSince) " +
+				" OR ("+ThreadRowMapper.SNOOZE_TIME+" IS NULL AND "+ThreadRowMapper.CREATION_TIME+" >= :creationSince )) " +
+				" AND "+ThreadRowMapper.REPLY_TIME+" IS NULL";
 		return fill(template.query(sql,source,new ThreadRowMapper()));
 	}
 
