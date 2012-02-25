@@ -61,6 +61,7 @@ public class ThreadLightFilter implements InputServiceFilter{
 						mail.getMessage().addHeader(ThreadLightHeaders.FOLLOWER, follower.getFollower());
 					}
 				}
+				mail.getMessage().saveChanges();
 				log.debug("thread reply for "+replyRow.toString());
 			} catch (MessagingException e) {
 				log.debug("error while setting headers",e);

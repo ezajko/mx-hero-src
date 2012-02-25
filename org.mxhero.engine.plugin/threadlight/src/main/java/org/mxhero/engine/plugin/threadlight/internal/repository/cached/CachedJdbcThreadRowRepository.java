@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.mxhero.engine.commons.util.deepcopy.DeepCopy;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
+import org.mxhero.engine.plugin.threadlight.internal.util.DeepCopy;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
@@ -116,10 +116,6 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			saveLater=new HashSet<ThreadRow>();
 			addLater=new HashSet<ThreadRowFollower>();
 			removeLater=new HashSet<ThreadRowFollower>();
-			if(reaload){
-				threads = finder.findBySpecsMap(getSinceTime());
-				log.info("loaded "+threads.size()+" threads");
-			}
 		}
 		log.debug("persisting saveLater:"+oldSaveLater.size()+" followers:"+addLater.size()+" removeLater:"+removeLater.size());
 		for(ThreadRow toSync : oldSaveLater){
@@ -158,6 +154,12 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 				log.warn(e.getMessage());
 			}
 		}
+		if(reaload){
+			synchronized (this) {
+				threads = finder.findBySpecsMap(getSinceTime());
+				log.info("loaded "+threads.size()+" threads");
+			}
+		}
 		oldAddLater.clear();
 		oldRemoveLater.clear();
 		oldSaveLater.clear();
@@ -168,9 +170,12 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 	@Override
 	public ThreadRow find(ThreadRowPk pk) {
 		synchronized (this) {
+			log.trace("try to find in  "+threads.size());
 			ThreadRow result = threads.get(pk);
 			if(result!=null){
+				log.trace("found "+result);
 				result = (ThreadRow)DeepCopy.copy(result);
+				log.trace("deep copy "+result);
 			}
 			return result;
 		}
