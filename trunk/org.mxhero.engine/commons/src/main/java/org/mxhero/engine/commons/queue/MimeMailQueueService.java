@@ -6,7 +6,7 @@ import org.mxhero.engine.commons.mail.MimeMail;
 
 public interface MimeMailQueueService {
 
-	public boolean store(String phase, MimeMail mail, long timeout, TimeUnit unit)
+	public MimeMail store(String phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException;
 	
 	public void unstore(MimeMail mail);
