@@ -3,8 +3,8 @@ package org.mxhero.engine.core.internal.service;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.InputServiceFilter;
+import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
@@ -41,18 +41,9 @@ public final class CoreInputService implements InputService {
 	 * @see org.mxhero.engine.domain.connector.InputService#addMail(byte[], java.lang.String)
 	 */
 	public void addMail(MimeMail mail) throws QueueFullException{
-		boolean added = false;
+		MimeMail addedMail = null;
 		if (mail==null || mail.getResponseServiceId()==null){
 			throw new IllegalArgumentException("mail:"+mail);
-		}
-		
-		try {
-			added = queueService.store( mail.getPhase(), mail, WAIT_TIME, TimeUnit.MILLISECONDS );
-		} catch (InterruptedException e) {
-			log.error("interrupted while waiting:"+mail,e);
-		}
-		if(!added){
-			throw new QueueFullException();
 		}
 		if(mail.getBussinesObject()==null){
 			this.getFiller().fill(getUserFinderService(), mail);
@@ -66,7 +57,16 @@ public final class CoreInputService implements InputService {
 				}
 			}
 		}
-		log.info("STORED "+mail);
+		try {
+			addedMail = queueService.store( mail.getPhase(), mail, WAIT_TIME, TimeUnit.MILLISECONDS );
+		} catch (InterruptedException e) {
+			log.error("interrupted while waiting:"+mail,e);
+		}
+		if(addedMail==null){
+			throw new QueueFullException();
+		}
+
+		log.info("STORED "+addedMail);
 		queueService.logState();
 	}
 
