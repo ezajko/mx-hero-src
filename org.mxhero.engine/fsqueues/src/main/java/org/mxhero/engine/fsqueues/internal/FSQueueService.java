@@ -128,7 +128,7 @@ public class FSQueueService implements MimeMailQueueService {
 		check.init();
 	}
 	
-	public boolean store(String phase, MimeMail mail, long timeout, TimeUnit unit)
+	public MimeMail store(String phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException{
 		File storeFile=null;
 		File tmpFile=null;
@@ -137,6 +137,7 @@ public class FSQueueService implements MimeMailQueueService {
 		InputStream is = null;
 		FSMail fsmail = null;
 		boolean addedToQueue = false;
+		MimeMail newMail = null;
 		//this is not a strict condition at all
 		if(store.size()<config.getCapacity()){
 			try {
@@ -167,7 +168,7 @@ public class FSQueueService implements MimeMailQueueService {
 					tfos.flush();
 					fsmail.setTmpFile(tmpFile.getAbsolutePath());
 					is = new SharedTmpFileInputStream(tmpFile);
-					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
+					newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
 							is, 
 							mail.getResponseServiceId(), 
@@ -181,7 +182,7 @@ public class FSQueueService implements MimeMailQueueService {
 					mail.getMessage().writeTo(os);
 					os.flush();
 					is = new ByteArrayInputStream(os.toByteArray());
-					MimeMail newMail = MimeMail.createCustom(mail.getInitialSender()
+					newMail = MimeMail.createCustom(mail.getInitialSender()
 							, mail.getRecipient(), 
 							is, 
 							mail.getResponseServiceId(), 
@@ -198,7 +199,7 @@ public class FSQueueService implements MimeMailQueueService {
 						store.remove(fsmail.getKey());
 					}
 				}
-				return addedToQueue;
+				return newMail;
 			} catch (Exception e) {
 				log.error(mail.toString(),e);
 			} finally{
@@ -225,7 +226,7 @@ public class FSQueueService implements MimeMailQueueService {
 				}
 			}
 		}
-		return false;
+		return newMail;
 	}
 	
 	public void unstore(MimeMail mail){
