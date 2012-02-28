@@ -28,13 +28,19 @@
 
 	<bean id="threadRowService" class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
 		<property name="repository" ref="cachedRepository"/>
+		<property name="config" ref="config"/>
+		<property name="finder" ref="jdbcFinder"/>
 	</bean>
 
 	<bean id="cachedRepository" class="org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository"
 		init-method="start" destroy-method="stop">
 		<property name="repository" ref="jdbcRepository"/>
 		<property name="finder" ref="jdbcFinder"/>
-		<property name="syncTimeInMinutes" value="60"/>
+		<property name="config" ref="config"/>
+	</bean>
+
+	<bean id="config" class="org.mxhero.engine.plugin.threadlight.internal.ThreadLightConfig">
+	<property name="syncTimeInMinutes" value="60"/>
 		<property name="updateTime" value="5000"/>
 		<property name="sinceInDays" value="30"/>
 	</bean>

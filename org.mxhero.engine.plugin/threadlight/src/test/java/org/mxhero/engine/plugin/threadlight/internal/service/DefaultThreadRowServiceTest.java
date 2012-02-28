@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
 import org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
@@ -36,7 +37,15 @@ public class DefaultThreadRowServiceTest {
 		cachedRepository.persist(false);
 		service.reply(threadRow.getPk());
 		service.snooze(threadRow.getPk());
+		ThreadRow threadRowFilter = new ThreadRow();
+		PageResult<ThreadRow> result = service.findByParameters(null, null, -1, -1);
+		result = service.findByParameters(threadRowFilter, "test-follower", -1, -1);
+		threadRowFilter.setCreationTime(new Timestamp(System.currentTimeMillis()+service.watchDays()*24*60*60*1000));
+		threadRowFilter.setPk(new ThreadRowPk());
+		threadRowFilter.getPk().setMessageId(threadRow.getPk().getMessageId());
+		result = service.findByParameters(threadRowFilter, "test-follower", -1, -1);
 		cachedRepository.persist(false);
+		
 	}
 
 	
