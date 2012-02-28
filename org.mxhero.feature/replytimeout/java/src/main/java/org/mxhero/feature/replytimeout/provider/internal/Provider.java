@@ -32,6 +32,8 @@ public class Provider extends RulesByFeature  {
 	private static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
 	private static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dh]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
 	
+	private ReplyTimeoutConfig config;
+	
 	@Override
 	protected CoreRule createRule(Rule rule) {
 		CoreRule coreRule = this.getDefault(rule);
@@ -47,7 +49,7 @@ public class Provider extends RulesByFeature  {
 		}
 		
 		coreRule.addEvaluation(new RTOEval());
-		coreRule.addAction(new RTOAction(locale, dateFormat));
+		coreRule.addAction(new RTOAction(locale, dateFormat,this.getNoReplyEmail(rule.getDomain())));
 		
 		return coreRule;
 	}
@@ -75,16 +77,19 @@ public class Provider extends RulesByFeature  {
 		private String locale = "en_US";
 		private String dateFormat = "dd/mm";
 		private Calendar replyTimeoutDate = null;
+		private String noreplyMail = null;
 		
 		
-		public RTOAction(String locale, String dateFormat) {
+		public RTOAction(String locale, String dateFormat, String noreplyMail) {
 			this.locale = locale;
 			this.dateFormat = dateFormat;
+			this.noreplyMail = noreplyMail;
 		}
 
 		@Override
 		public void exec(Mail mail) {
 			boolean hasError = false;
+			
 			String[] headerParameters=HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE);
 			try{
 				if(headerParameters!=null && headerParameters.length>0){
@@ -170,10 +175,18 @@ public class Provider extends RulesByFeature  {
 				hasError=true;
 			}
 			if(hasError){
-				
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),null,config.getErrorTemplate(locale)} );
 			}
 		}
 		
+	}
+
+	public ReplyTimeoutConfig getConfig() {
+		return config;
+	}
+
+	public void setConfig(ReplyTimeoutConfig config) {
+		this.config = config;
 	}
 
 }

@@ -14,21 +14,38 @@
 
 	<context:annotation-config />
 
-	<osgi:reference id="rulesFinderService" interface="org.mxhero.engine.commons.feature.RulesFinder"/>
+	<osgix:cm-properties id="cmPropsConfig"
+		persistent-id="org.mxhero.engine.plugin.threadlight.config">
+		<prop key="updateTime">10000</prop>
+		<prop key="syncTimeInMinutes">5</prop>
+		<prop key="sinceInDays">60</prop>
+	</osgix:cm-properties>
+
+	<osgi:reference id="rulesFinderService"
+		interface="org.mxhero.engine.commons.feature.RulesFinder" />
 
 	<osgi:service ref="provider">
-	  	<osgi:interfaces>
-	  		<value>org.mxhero.engine.commons.rules.provider.RulesProvider</value>
-	  	</osgi:interfaces>
-	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.feature.replytimeout.provider.internal.Provider"/>
-   		</osgi:service-properties>
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.rules.provider.RulesProvider</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.feature.replytimeout.provider.internal.Provider" />
+		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="provider" class="org.mxhero.feature.replytimeout.provider.internal.Provider">
-		<property name="rulesFinder" ref="rulesFinderService"/>
-		<property name="component" value="org.mxhero.feature.replytimeout"/>
-		<property name="version" value="1"/>
+	<bean id="provider"
+		class="org.mxhero.feature.replytimeout.provider.internal.Provider">
+		<property name="rulesFinder" ref="rulesFinderService" />
+		<property name="component" value="org.mxhero.feature.replytimeout" />
+		<property name="version" value="1" />
+		<property name="config" ref="config" />
+	</bean>
+
+	<bean id="config"
+		class="org.mxhero.feature.replytimeout.provider.internal.ReplyTimeoutConfig">
+		<osgix:managed-properties persistent-id="org.mxhero.feature.replytimeout.provider"
+			autowire-on-update="true" />
 	</bean>
 
 </beans>
