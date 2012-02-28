@@ -17,7 +17,6 @@
 	<osgix:cm-properties id="cmPropsConfig"
 		persistent-id="org.mxhero.feature.replytimeout.provider">
 		<prop key="defaultLocale">en_US</prop>
-		<prop key="availableLocales">en_US</prop>
 		<prop key="errorFileStartName">/opt/mxhero/replytimout/error/template_</prop>
 		<prop key="errorFileEndName">.htm</prop>
 	</osgix:cm-properties>
