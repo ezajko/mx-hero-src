@@ -2,8 +2,6 @@ import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.MailDateFormat;
-
 import org.junit.Test;
 
 public class TestClass {

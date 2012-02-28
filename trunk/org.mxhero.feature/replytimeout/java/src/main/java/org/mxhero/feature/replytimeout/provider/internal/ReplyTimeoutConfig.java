@@ -18,7 +18,7 @@ public class ReplyTimeoutConfig {
 	private static Logger log = LoggerFactory.getLogger(ReplyTimeoutConfig.class);
 	
 	private String defaultLocale = "en_US";
-	private String[] availableLocales = {"en_US"};
+	private String[] availableLocales = {};
 	private String errorFileStartName = "/opt/mxhero/replytimout/error/template_";
 	private String errorFileEndName = ".htm";
 	private Map<String, String> errorMap;
@@ -31,10 +31,11 @@ public class ReplyTimeoutConfig {
 		errorMap = new HashMap<String, String>();
 		errorMap.put(defaultLocale,  getDefault());
 		for(String locale : availableLocales){
+			String file = errorFileStartName+locale+errorFileEndName;
 			try {
-				errorMap.put(locale,  readFileAsString(errorFileStartName+locale+errorFileEndName));
+				errorMap.put(locale,  readFileAsString(file));
 			} catch (IOException e) {
-				log.error("could not read file",e);
+				log.error("could not read file "+file);
 			}
 		}
 	}
