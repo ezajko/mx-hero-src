@@ -6,9 +6,9 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,9 +92,10 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 			id=baseRecord.getId();
 			MapSqlParameterSource updateSource = new MapSqlParameterSource();
 			updateSource.addValue("replyTime", threadRow.getReplyTime());
+			updateSource.addValue("snoozeTime", threadRow.getSnoozeTime());
 			updateSource.addValue("id", id);
 			String sql = "UPDATE `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` " +
-				" SET `"+ThreadRowMapper.REPLY_TIME+"` = :replyTime " +
+				" SET `"+ThreadRowMapper.REPLY_TIME+"` = :replyTime, `"+ThreadRowMapper.SNOOZE_TIME+"` = :snoozeTime " +
 				" WHERE `"+ThreadRowMapper.ID+"` = :id";
 			log.trace("updated "+template.update(sql, updateSource));
 			

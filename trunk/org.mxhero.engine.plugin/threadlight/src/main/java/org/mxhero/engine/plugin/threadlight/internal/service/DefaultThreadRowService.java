@@ -2,22 +2,25 @@ package org.mxhero.engine.plugin.threadlight.internal.service;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Collection;
 
+import org.mxhero.engine.plugin.threadlight.internal.ThreadLightConfig;
+import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultThreadRowService implements ThreadRowService{
 
-	private ThreadRowRepository repository;
 	private static Logger log = LoggerFactory.getLogger(DefaultThreadRowService.class);
+	
+	private ThreadRowRepository repository;
 	private ThreadRowFinder finder;
+	private ThreadLightConfig config;
 	
 	@Override
 	public void follow(ThreadRow threadRow, ThreadRowFollower follower) {
@@ -60,16 +63,26 @@ public class DefaultThreadRowService implements ThreadRowService{
 	}
 
 	@Override
-	public Collection<ThreadRow> findByParameters(ThreadRow threadRow,
-			String follower) {
-		Collection<ThreadRow> reponse = null;
+	public PageResult<ThreadRow> findByParameters(ThreadRow threadRow,
+			String follower, int pageNo, int pageSize) {
+		PageResult<ThreadRow> reponse = null;
 		if(threadRow!=null){
-			reponse = this.finder.findBySpecs(threadRow, follower);
-			log.debug("found "+reponse.size()+" for "+threadRow);
+			reponse = this.finder.findBySpecs(threadRow, follower,pageNo, pageSize);
+			log.debug("found "+reponse.getTotalRecordsNumber()+" for "+threadRow);
 		}
 		return reponse;
 	}
 
+	@Override
+	public void snooze(ThreadRowPk pk) {
+		if(pk!=null){
+			ThreadRow row = new ThreadRow();
+			row.setPk(pk);
+			row.setSnoozeTime(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			repository.saveThread(row);
+		}
+	}
+	
 	public ThreadRowRepository getRepository() {
 		return repository;
 	}
@@ -77,5 +90,27 @@ public class DefaultThreadRowService implements ThreadRowService{
 	public void setRepository(ThreadRowRepository repository) {
 		this.repository = repository;
 	}
+
+	public ThreadLightConfig getConfig() {
+		return config;
+	}
+
+	public void setConfig(ThreadLightConfig config) {
+		this.config = config;
+	}
+
+	public ThreadRowFinder getFinder() {
+		return finder;
+	}
+
+	public void setFinder(ThreadRowFinder finder) {
+		this.finder = finder;
+	}
+
+	@Override
+	public Integer watchDays() {
+		return config.getSinceInDays();
+	}
+
 }
 

@@ -6,10 +6,10 @@ import javax.mail.internet.MimeUtility;
 import org.mxhero.engine.commons.connector.InputServiceFilter;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.plugin.threadlight.ThreadLightHeaders;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

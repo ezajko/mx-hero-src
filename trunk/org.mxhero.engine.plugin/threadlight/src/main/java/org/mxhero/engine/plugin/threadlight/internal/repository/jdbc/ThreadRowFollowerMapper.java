@@ -3,7 +3,7 @@ package org.mxhero.engine.plugin.threadlight.internal.repository.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
 import org.springframework.jdbc.core.RowMapper;
 
 public class ThreadRowFollowerMapper implements RowMapper<ThreadRowFollower>{
