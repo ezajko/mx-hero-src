@@ -88,8 +88,7 @@ public class Provider extends RulesByFeature  {
 
 		@Override
 		public void exec(Mail mail) {
-			boolean hasError = false;
-			
+			boolean hasError=false;
 			String[] headerParameters=HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE);
 			try{
 				if(headerParameters!=null && headerParameters.length>0){
@@ -106,31 +105,18 @@ public class Provider extends RulesByFeature  {
 						if(mail.getHeaders().hasHeader("Date")){
 							try {
 								calendar=Calendar.getInstance();
-								Date date = MailDateFormat.getDateInstance().parse(mail.getHeaders().getHeaderValue("Date"));
+								Date date =new MailDateFormat().parse(mail.getHeaders().getHeaderValue("Date"));
 								calendar.setTime(date);
-							} catch (ParseException e) {
-								log.warn(e.toString());
-								hasError=true;
-							}
+							} catch (ParseException e) {}
 						}
 						if(dateParameters.endsWith("d")){
-							try{
-								int addDays = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
-								calendar=Calendar.getInstance();
-								calendar.add(Calendar.DATE, addDays);
-							}catch(Exception e){
-								log.warn(e.toString());
-								hasError=true;
-							}
+							int addDays = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+							calendar=Calendar.getInstance();
+							calendar.add(Calendar.DATE, addDays);
 						}else if(dateParameters.endsWith("h")){
-							try{
-								int addHours = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
-								calendar=Calendar.getInstance();
-								calendar.add(Calendar.HOUR_OF_DAY, addHours);
-							}catch(Exception e){
-								log.warn(e.toString());
-								hasError=true;
-							}
+							int addHours = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+							calendar=Calendar.getInstance();
+							calendar.add(Calendar.HOUR_OF_DAY, addHours);
 						}else{
 							calendar=Calendar.getInstance();
 							int day=calendar.get(Calendar.DAY_OF_MONTH);
@@ -139,21 +125,11 @@ public class Provider extends RulesByFeature  {
 							int newMonth=0;
 	
 							if(dateFormat.equalsIgnoreCase("dd/mm")){
-								try{
-									newDay=Integer.parseInt(dateParameters.split("/")[0]);
-									newMonth=Integer.parseInt(dateParameters.split("/")[1]);
-								}catch(Exception e){
-									log.warn(e.toString());
-									hasError=true;
-								}
+								newDay=Integer.parseInt(dateParameters.split("/")[0]);
+								newMonth=Integer.parseInt(dateParameters.split("/")[1]);
 							}else{
-								try{
-									newDay=Integer.parseInt(dateParameters.split("/")[1]);
-									newMonth=Integer.parseInt(dateParameters.split("/")[0]);
-								}catch(Exception e){
-									log.warn(e.toString());
-									hasError=true;
-								}
+								newDay=Integer.parseInt(dateParameters.split("/")[1]);
+								newMonth=Integer.parseInt(dateParameters.split("/")[0]);
 							}
 							if(newMonth<month || (newMonth==month && newDay<day)){
 								calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)+1);
@@ -167,15 +143,17 @@ public class Provider extends RulesByFeature  {
 					}
 				}
 				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
-				if(!hasError && replyTimeoutDate!=null){
+				if(replyTimeoutDate!=null){
 					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch","org.mxhero.feature.replytimeout",replyTimeoutDate.getTimeInMillis()+";"+locale);
 				}
 			}catch(Exception e){
 				log.warn("unhandle error!",e);
 				hasError=true;
 			}
-			if(hasError){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),null,config.getErrorTemplate(locale)} );
+			if(hasError || replyTimeoutDate==null){
+				String text = config.getErrorTemplate(locale);
+				log.debug("sending replyText="+text);
+				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),text,text} );
 			}
 		}
 		
