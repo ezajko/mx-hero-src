@@ -3,6 +3,7 @@ package org.mxhero.feature.replytimeout.provider.internal;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -74,7 +75,7 @@ public class Provider extends RulesByFeature  {
 		
 		private String locale = "en_US";
 		private String dateFormat = "dd/mm";
-		private Date replyTimeoutDate = null;
+		private Calendar replyTimeoutDate = null;
 		
 		
 		public RTOAction(String locale, String dateFormat) {
@@ -88,24 +89,21 @@ public class Provider extends RulesByFeature  {
 			String[] headerParameters=HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE);
 			try{
 				if(headerParameters!=null && headerParameters.length>0){
-					try {
-						replyTimeoutDate = new MailDateFormat().parse(headerParameters[0]);
-					} catch (ParseException e) {
-						log.warn(e.toString());
-						hasError = true;
-					}
+					replyTimeoutDate=Calendar.getInstance();
+					replyTimeoutDate.setTimeInMillis(Long.parseLong(headerParameters[0].trim()));
 					if(headerParameters.length>1 && headerParameters[1].trim().length()>0){
-						locale=headerParameters[1].trim();
+						locale=headerParameters[2].trim();
 					}
 				}else{
-					
 					Matcher matcher = Pattern.compile(REGEX_STRICT).matcher(mail.getSubject().getSubject());
 					if(matcher.find()){
 						String dateParameters = matcher.group().trim().replaceFirst("\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
-						Calendar calendar =  Calendar.getInstance();
+						Calendar calendar =  null;
 						if(mail.getHeaders().hasHeader("Date")){
 							try {
-								calendar.setTime(new MailDateFormat().parse(mail.getHeaders().getHeaderValue("Date")));
+								calendar=Calendar.getInstance();
+								Date date = MailDateFormat.getDateInstance().parse(mail.getHeaders().getHeaderValue("Date"));
+								calendar.setTime(date);
 							} catch (ParseException e) {
 								log.warn(e.toString());
 								hasError=true;
@@ -114,8 +112,8 @@ public class Provider extends RulesByFeature  {
 						if(dateParameters.endsWith("d")){
 							try{
 								int addDays = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+								calendar=Calendar.getInstance();
 								calendar.add(Calendar.DATE, addDays);
-								replyTimeoutDate=calendar.getTime();
 							}catch(Exception e){
 								log.warn(e.toString());
 								hasError=true;
@@ -123,13 +121,14 @@ public class Provider extends RulesByFeature  {
 						}else if(dateParameters.endsWith("h")){
 							try{
 								int addHours = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+								calendar=Calendar.getInstance();
 								calendar.add(Calendar.HOUR_OF_DAY, addHours);
-								replyTimeoutDate=calendar.getTime();
 							}catch(Exception e){
 								log.warn(e.toString());
 								hasError=true;
 							}
 						}else{
+							calendar=Calendar.getInstance();
 							int day=calendar.get(Calendar.DAY_OF_MONTH);
 							int month=calendar.get(Calendar.MONTH);
 							int newDay=0;
@@ -157,18 +156,22 @@ public class Provider extends RulesByFeature  {
 							}
 							calendar.set(Calendar.MONTH, newMonth);
 							calendar.set(Calendar.DAY_OF_MONTH, newDay);
-							replyTimeoutDate=calendar.getTime();
 						}
-						
+						if(calendar!=null){
+							replyTimeoutDate=calendar;
+						}
 					}
 				}
 				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
 				if(!hasError && replyTimeoutDate!=null){
-					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch","org.mxhero.feature.replytimeout",replyTimeoutDate.getTime()+";"+locale);
+					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch","org.mxhero.feature.replytimeout",replyTimeoutDate.getTimeInMillis()+";"+locale);
 				}
 			}catch(Exception e){
 				log.warn("unhandle error!",e);
 				hasError=true;
+			}
+			if(hasError){
+				
 			}
 		}
 		
