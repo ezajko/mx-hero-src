@@ -36,7 +36,7 @@ public class RuleBase {
 						}
 						rule.process(mail);
 					}catch(Exception e){
-						log.error("Error while processing rule"+rule);
+						log.error("Error while processing rule"+rule,e);
 					}
 				}
 			}
