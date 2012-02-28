@@ -32,6 +32,7 @@ public class JdbcThreadRowFinder extends BaseJdbcDao<ThreadRow> implements Threa
 	@Autowired
 	public JdbcThreadRowFinder(DataSource ds) {
 		this.template = new NamedParameterJdbcTemplate(ds);
+		super.setNamedParameterJdbcTemplate(template);
 	}
 
 	public Map<ThreadRowPk, ThreadRow> findBySpecsMap(Timestamp since) {
@@ -134,7 +135,7 @@ public class JdbcThreadRowFinder extends BaseJdbcDao<ThreadRow> implements Threa
 			}
 		}
 		
-		return null;
+		return result;
 	}
 	
 	private List<ThreadRowFollower> findFollowers(Long threadRowId){
