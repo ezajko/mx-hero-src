@@ -1,10 +1,9 @@
 package org.mxhero.engine.plugin.threadlight.service;
 
-import java.util.Collection;
-
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
+import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 
 public interface ThreadRowService {
 
@@ -14,5 +13,9 @@ public interface ThreadRowService {
 	
 	void unfollow(ThreadRowPk pk, String follower);
 	
-	Collection<ThreadRow> findByParameters(ThreadRow threadRow, String follower);
+	void snooze(ThreadRowPk pk);
+	
+	PageResult<ThreadRow> findByParameters(ThreadRow threadRow, String follower, int pageNo, int pageSize);
+	
+	Integer watchDays();
 }

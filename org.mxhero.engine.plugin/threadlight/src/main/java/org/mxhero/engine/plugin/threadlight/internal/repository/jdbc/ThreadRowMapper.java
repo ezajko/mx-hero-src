@@ -3,8 +3,8 @@ package org.mxhero.engine.plugin.threadlight.internal.repository.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.springframework.jdbc.core.RowMapper;
 
 public class ThreadRowMapper implements RowMapper<ThreadRow>{

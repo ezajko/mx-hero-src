@@ -1,4 +1,4 @@
-package org.mxhero.engine.plugin.threadlight.internal.vo;
+package org.mxhero.engine.plugin.threadlight.vo;
 
 import java.io.Serializable;
 

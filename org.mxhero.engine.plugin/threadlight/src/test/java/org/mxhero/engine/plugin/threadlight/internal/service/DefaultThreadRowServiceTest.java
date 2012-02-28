@@ -5,10 +5,10 @@ import java.sql.Timestamp;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,9 +33,9 @@ public class DefaultThreadRowServiceTest {
 		threadRow.getPk().setRecipientMail("recipient@example.com");
 		threadRow.getPk().setSenderMail("sender@example.com");
 		service.follow(threadRow, new ThreadRowFollower(null,"test-follower"));
-		
+		cachedRepository.persist(false);
 		service.reply(threadRow.getPk());
-		
+		service.snooze(threadRow.getPk());
 		cachedRepository.persist(false);
 	}
 

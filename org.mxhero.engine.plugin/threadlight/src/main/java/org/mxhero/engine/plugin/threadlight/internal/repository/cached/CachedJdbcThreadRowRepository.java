@@ -6,12 +6,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.mxhero.engine.plugin.threadlight.internal.ThreadLightConfig;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
 import org.mxhero.engine.plugin.threadlight.internal.util.DeepCopy;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRow;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowFollower;
-import org.mxhero.engine.plugin.threadlight.internal.vo.ThreadRowPk;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.ConcurrencyFailureException;
@@ -32,17 +33,15 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 	private Set<ThreadRow> saveLater = new HashSet<ThreadRow>();
 	private Set<ThreadRowFollower> addLater = new HashSet<ThreadRowFollower>();
 	private Set<ThreadRowFollower> removeLater = new HashSet<ThreadRowFollower>();
-	private Long updateTime = 10000l;
-	private Long syncTimeInMinutes = 60l;
-	private Integer sinceInDays = 30;
 	private static final long CHECK_TIME = 1000;
 	private Thread thread;
 	private boolean keepWorking = false;
+	private ThreadLightConfig config;
 	
 	private Timestamp getSinceTime(){
-		if(sinceInDays!=null && sinceInDays >0){
+		if(config.getSinceInDays()!=null && config.getSinceInDays() >0){
 			Calendar sinceCalendar = Calendar.getInstance();
-			sinceCalendar.add(Calendar.DATE, -sinceInDays);
+			sinceCalendar.add(Calendar.DATE, -config.getSinceInDays());
 			return new Timestamp(sinceCalendar.getTimeInMillis());
 		}else{
 			return null;
@@ -93,11 +92,11 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 			try {
 				Thread.sleep(CHECK_TIME);
 			} catch (InterruptedException e) {}
-			if(lastReload+(syncTimeInMinutes*60*1000)-System.currentTimeMillis()<0){
+			if(lastReload+(config.getSyncTimeInMinutes()*60*1000)-System.currentTimeMillis()<0){
 				persist(true);
 				lastUpdate=System.currentTimeMillis();
 				lastReload=System.currentTimeMillis();
-			}else if(lastUpdate+updateTime-System.currentTimeMillis()<0){
+			}else if(lastUpdate+config.getUpdateTime()-System.currentTimeMillis()<0){
 				persist(false);
 				lastUpdate=System.currentTimeMillis();
 			}
@@ -268,28 +267,12 @@ public class CachedJdbcThreadRowRepository implements ThreadRowRepository, Runna
 		}
 	}
 
-	public Long getUpdateTime() {
-		return updateTime;
+	public ThreadLightConfig getConfig() {
+		return config;
 	}
 
-	public void setUpdateTime(Long updateTime) {
-		this.updateTime = updateTime;
-	}
-
-	public Long getSyncTimeInMinutes() {
-		return syncTimeInMinutes;
-	}
-
-	public void setSyncTimeInMinutes(Long syncTimeInMinutes) {
-		this.syncTimeInMinutes = syncTimeInMinutes;
-	}
-
-	public Integer getSinceInDays() {
-		return sinceInDays;
-	}
-
-	public void setSinceInDays(Integer sinceInDays) {
-		this.sinceInDays = sinceInDays;
+	public void setConfig(ThreadLightConfig config) {
+		this.config = config;
 	}
 
 }

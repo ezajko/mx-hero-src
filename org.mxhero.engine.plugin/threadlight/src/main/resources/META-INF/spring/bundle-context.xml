@@ -24,8 +24,6 @@
 		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/threadlight</prop>
 		<prop key="jdbcUserName">mxhero</prop>
 		<prop key="jdbcPassord">mxhero</prop>
-		<prop key="updateTime">10000</prop>
-		<prop key="syncTimeInMinutes">60</prop>
 		<prop key="idleConnectionTestPeriodInMinutes">1</prop>
 		<prop key="idleMaxAgeInMinutes">4</prop>
 		<prop key="maxConnectionsPerPartition">10</prop>
@@ -33,6 +31,13 @@
 		<prop key="partitionCount">2</prop>
 		<prop key="acquireIncrement">2</prop>
 		<prop key="releaseHelperThreads">2</prop>
+	</osgix:cm-properties>
+	
+	<osgix:cm-properties id="cmPropsConfig"
+		persistent-id="org.mxhero.engine.plugin.threadlight.config">
+		<prop key="updateTime">10000</prop>
+		<prop key="syncTimeInMinutes">5</prop>
+		<prop key="sinceInDays">60</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
@@ -69,6 +74,11 @@
 		</osgi:service-properties>
 	</osgi:service>
 
+	<bean id="config" class="org.mxhero.engine.plugin.threadlight.internal.ThreadLightConfig">
+		<osgix:managed-properties persistent-id="org.mxhero.engine.plugin.threadlight.config"
+				autowire-on-update="true" />
+	</bean>
+
 	<bean id="addThreadWatchCommand"
 		class="org.mxhero.engine.plugin.threadlight.internal.command.AddThreadWatchImpl">
 		<property name="threadRowService" ref="cachedThreadRowService" />
@@ -82,20 +92,23 @@
 	<bean id="cachedThreadRowService"
 		class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
 		<property name="repository" ref="cachedRepository" />
+		<property name="config" ref="config"/>
+		<property name="finder" ref="jdbcFinder"/>
 	</bean>
 
 	<bean id="jdbcthreadRowService"
 		class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
 		<property name="repository" ref="jdbcRepository" />
+		<property name="finder" ref="jdbcFinder"/>
+		<property name="config" ref="config"/>
 	</bean>
 
 	<bean id="cachedRepository"
 		class="org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository"
 		init-method="start" destroy-method="stop">
-		<property name="repository" ref="jdbcRepository" />
-		<property name="finder" ref="jdbcFinder" />
-		<property name="syncTimeInMinutes" value="${syncTimeInMinutes}" />
-		<property name="updateTime" value="${updateTime}" />
+		<property name="repository" ref="jdbcRepository"/>
+		<property name="finder" ref="jdbcFinder"/>
+		<property name="config" ref="config"/>
 	</bean>
 
 	<bean id="txManager"
