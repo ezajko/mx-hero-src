@@ -83,6 +83,11 @@ public class DefaultThreadRowService implements ThreadRowService{
 		}
 	}
 	
+	@Override
+	public Integer watchDays() {
+		return config.getSinceInDays();
+	}
+	
 	public ThreadRowRepository getRepository() {
 		return repository;
 	}
@@ -105,11 +110,6 @@ public class DefaultThreadRowService implements ThreadRowService{
 
 	public void setFinder(ThreadRowFinder finder) {
 		this.finder = finder;
-	}
-
-	@Override
-	public Integer watchDays() {
-		return config.getSinceInDays();
 	}
 
 }
