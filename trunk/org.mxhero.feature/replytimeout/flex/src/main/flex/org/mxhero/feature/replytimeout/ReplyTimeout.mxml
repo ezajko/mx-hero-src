@@ -152,7 +152,7 @@
 		</s:VGroup>
 	</s:VGroup>		
 		<s:HGroup verticalAlign="bottom" paddingLeft="30">
-			<s:Label text="{resourceManager.getString('replytimeout','date.format.label')}"/>
+			<s:Label text="{resourceManager.getString('replytimeout','date.format.label')}" fontWeight="bold"/>
 			<s:DropDownList id="dateFormatDdl" 
 							width="85" 
 							selectedIndex="0"
