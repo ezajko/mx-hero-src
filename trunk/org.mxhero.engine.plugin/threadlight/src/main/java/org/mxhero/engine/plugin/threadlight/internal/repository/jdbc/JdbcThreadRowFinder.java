@@ -10,9 +10,9 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
-import org.mxhero.engine.plugin.threadlight.internal.pagination.jdbc.BaseJdbcDao;
-import org.mxhero.engine.plugin.threadlight.internal.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
+import org.mxhero.engine.plugin.threadlight.pagination.jdbc.BaseJdbcDao;
+import org.mxhero.engine.plugin.threadlight.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
