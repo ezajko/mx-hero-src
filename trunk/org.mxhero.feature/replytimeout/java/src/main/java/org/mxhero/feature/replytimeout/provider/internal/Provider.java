@@ -33,7 +33,7 @@ public class Provider extends RulesByFeature  {
 	private static final String HEADER_VALUE = "replyTimeout";
 	private static final String REGEX = "(?i).*\\[\\s*mxreply\\s*.*\\]\\s*.*";
 	private static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
-	private static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dh]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
+	private static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dhm]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
 	
 	private ReplyTimeoutConfig config;
 	
@@ -116,18 +116,16 @@ public class Provider extends RulesByFeature  {
 						}
 						if(dateParameters.endsWith("d")){
 							int addDays = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
-							if(addDays<0){
-								addDays=addDays*(-1);
-							}
 							calendar=Calendar.getInstance();
 							calendar.add(Calendar.DATE, addDays);
 						}else if(dateParameters.endsWith("h")){
 							int addHours = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
-							if(addHours<0){
-								addHours=addHours*(-1);
-							}
 							calendar=Calendar.getInstance();
 							calendar.add(Calendar.HOUR_OF_DAY, addHours);
+						}else if(dateParameters.endsWith("m")){
+							int addMinutes = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+							calendar=Calendar.getInstance();
+							calendar.add(Calendar.MINUTE, addMinutes);							
 						}else{
 							calendar=Calendar.getInstance();
 							int day=calendar.get(Calendar.DAY_OF_MONTH);
