@@ -3,7 +3,7 @@ package org.mxhero.engine.plugin.threadlight.internal.repository;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
+import org.mxhero.engine.plugin.threadlight.pagination.common.PageResult;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 

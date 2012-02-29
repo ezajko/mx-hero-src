@@ -3,7 +3,7 @@ package org.mxhero.engine.plugin.threadlight.pagination.jdbc;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageInfo;
+import org.mxhero.engine.plugin.threadlight.pagination.common.PageInfo;
 import org.springframework.jdbc.core.RowMapper;
 
 public class JdbcPageInfo extends PageInfo<Map, String> {

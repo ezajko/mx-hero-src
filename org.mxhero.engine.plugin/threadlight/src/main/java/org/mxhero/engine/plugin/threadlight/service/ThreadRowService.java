@@ -1,6 +1,6 @@
 package org.mxhero.engine.plugin.threadlight.service;
 
-import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
+import org.mxhero.engine.plugin.threadlight.pagination.common.PageResult;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
