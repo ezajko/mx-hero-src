@@ -1,4 +1,4 @@
-package org.mxhero.engine.plugin.threadlight.internal.pagination.jdbc;
+package org.mxhero.engine.plugin.threadlight.pagination.jdbc;
 
 import java.util.HashMap;
 import java.util.Map;

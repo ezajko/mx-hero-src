@@ -1,4 +1,4 @@
-package org.mxhero.engine.plugin.threadlight.internal.pagination.jdbc;
+package org.mxhero.engine.plugin.threadlight.pagination.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
