@@ -44,6 +44,7 @@ public class DefaultThreadRowServiceTest {
 		threadRowFilter.setPk(new ThreadRowPk());
 		threadRowFilter.getPk().setMessageId(threadRow.getPk().getMessageId());
 		result = service.findByParameters(threadRowFilter, "test-follower", -1, -1);
+		service.unfollow(threadRow.getPk(), "test-follower");
 		cachedRepository.persist(false);
 		
 	}
