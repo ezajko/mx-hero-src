@@ -31,9 +31,9 @@ public class Provider extends RulesByFeature  {
 	private static final String DATE_FORMAT_PROPERTY="date.format";
 	private static final String HEADER = "X-mxHero-Actions";
 	private static final String HEADER_VALUE = "replyTimeout";
-	private static final String REGEX = "(?i).*\\[\\s*mxreply\\s*.*\\]\\s*.*";
-	private static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
-	private static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dhm]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
+	public static final String REGEX = "(?i).*\\[\\s*mxreply\\s*.*\\]\\s*.*";
+	public static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
+	public static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dhm]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
 	
 	private ReplyTimeoutConfig config;
 	
@@ -155,7 +155,7 @@ public class Provider extends RulesByFeature  {
 					dateString=Calendar.getInstance().getTime().toString();
 				}
 				if(replyTimeoutDate!=null){
-					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch",FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail);
+					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch",FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail+";"+dateString);
 				}
 			}catch(Exception e){
 				log.warn("unhandle error!",e);
