@@ -4,9 +4,9 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 
 import org.mxhero.engine.plugin.threadlight.internal.ThreadLightConfig;
-import org.mxhero.engine.plugin.threadlight.internal.pagination.common.PageResult;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowFinder;
 import org.mxhero.engine.plugin.threadlight.internal.repository.ThreadRowRepository;
+import org.mxhero.engine.plugin.threadlight.pagination.common.PageResult;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
