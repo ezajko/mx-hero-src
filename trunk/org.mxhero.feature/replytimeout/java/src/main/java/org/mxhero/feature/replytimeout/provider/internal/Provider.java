@@ -81,6 +81,7 @@ public class Provider extends RulesByFeature  {
 		private String dateFormat = "dd/mm";
 		private Calendar replyTimeoutDate = null;
 		private String noreplyMail = null;
+		private String dateString = null;
 		
 		
 		public RTOAction(String locale, String dateFormat, String noreplyMail) {
@@ -107,6 +108,7 @@ public class Provider extends RulesByFeature  {
 						Calendar calendar =  null;
 						if(mail.getHeaders().hasHeader("Date")){
 							try {
+								dateString=mail.getHeaders().getHeaderValue("Date");
 								calendar=Calendar.getInstance();
 								Date date =new MailDateFormat().parse(mail.getHeaders().getHeaderValue("Date"));
 								calendar.setTime(date);
@@ -114,10 +116,16 @@ public class Provider extends RulesByFeature  {
 						}
 						if(dateParameters.endsWith("d")){
 							int addDays = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+							if(addDays<0){
+								addDays=addDays*(-1);
+							}
 							calendar=Calendar.getInstance();
 							calendar.add(Calendar.DATE, addDays);
 						}else if(dateParameters.endsWith("h")){
 							int addHours = Integer.parseInt(dateParameters.substring(0,dateParameters.length()-1).replaceAll("-", ""));
+							if(addHours<0){
+								addHours=addHours*(-1);
+							}
 							calendar=Calendar.getInstance();
 							calendar.add(Calendar.HOUR_OF_DAY, addHours);
 						}else{
@@ -144,6 +152,9 @@ public class Provider extends RulesByFeature  {
 							replyTimeoutDate=calendar;
 						}
 					}
+				}
+				if(dateString==null){
+					dateString=Calendar.getInstance().getTime().toString();
 				}
 				if(replyTimeoutDate!=null){
 					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch",FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail);
