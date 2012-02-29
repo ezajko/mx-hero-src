@@ -2,7 +2,6 @@ package org.mxhero.feature.replytimeout.provider.internal.noreplycheck.message;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +21,7 @@ import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.business.RulePhase;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
+import org.mxhero.feature.replytimeout.provider.internal.Provider;
 import org.mxhero.feature.replytimeout.provider.internal.config.ReplyTimeoutConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +32,7 @@ public class MessageSender {
 
 	private static final String RECIPIENT_KEY = "mxrecipient";
 	private static final String SUBJECT_KEY = "subject";
+	private static final String TIMEOUT_KEY = "timeout";
 	private static final String DATE_KEY = "date";
 
 	private ReplyTimeoutConfig config;
@@ -43,6 +44,8 @@ public class MessageSender {
 					.getFolowerParameters().split(";")[2];
 			String locale = row.getFollowers().iterator().next()
 					.getFolowerParameters().split(";")[1];
+			String dateMail = row.getFollowers().iterator().next()
+					.getFolowerParameters().split(";")[3];			
 			MimeMessage replayMessage = new MimeMessage(
 					Session.getInstance(new Properties()));
 			replayMessage.setSender(new InternetAddress(senderMail, false));
@@ -52,7 +55,7 @@ public class MessageSender {
 							senderMail, false) });
 			replayMessage.setRecipient(RecipientType.TO, new InternetAddress(
 					row.getPk().getSenderMail(), false));
-			replayMessage.setSubject(row.getSubject());
+			replayMessage.setSubject("[TIMEOUT] "+row.getSubject().replaceFirst(Provider.REGEX_REMOVE, ""));
 			replayMessage.setHeader("In-Reply-To", row.getPk().getMessageId());
 			replayMessage.setHeader("References", row.getPk().getMessageId());
 
@@ -62,13 +65,13 @@ public class MessageSender {
 			BodyPart textBodyPart = new MimeBodyPart();
 			textBodyPart.setText(Jsoup.parse(
 					replaceTextVars(row.getSubject(), row.getPk()
-							.getRecipientMail(), config.getNoReplyTemplate(locale),new Date(row.getCreationTime().getTime()))).text());
+							.getRecipientMail(), config.getNoReplyTemplate(locale),dateMail)).text());
 			multipartText.addBodyPart(textBodyPart);
 
 			BodyPart htmlBodyPart = new MimeBodyPart();
 			htmlBodyPart.setContent(
 					replaceTextVars(row.getSubject(), row.getPk()
-							.getRecipientMail(), config.getNoReplyTemplate(locale),new Date(row.getCreationTime().getTime())), "text/html");
+							.getRecipientMail(), config.getNoReplyTemplate(locale),dateMail), "text/html");
 			multipartText.addBodyPart(htmlBodyPart);
 
 			MimeBodyPart wrap = new MimeBodyPart();
@@ -110,7 +113,7 @@ public class MessageSender {
 	}
 
 	private String replaceTextVars(String subject, String recipient,
-			String content, Date date) {
+			String content, String date) {
 		String tagregex = "\\$\\{[^\\{]*\\}";
 		Pattern p2 = Pattern.compile(tagregex);
 		StringBuffer sb = new StringBuffer();
@@ -123,9 +126,15 @@ public class MessageSender {
 			if (key.equalsIgnoreCase(RECIPIENT_KEY)) {
 				m2.appendReplacement(sb, recipient);
 			} else if (key.equalsIgnoreCase(SUBJECT_KEY)) {
-				m2.appendReplacement(sb, subject);
+				m2.appendReplacement(sb, subject.replaceFirst(Provider.REGEX_REMOVE, ""));
 			} else if (key.equalsIgnoreCase(DATE_KEY)) {
-				m2.appendReplacement(sb, date.toString());
+				m2.appendReplacement(sb, date);
+			}else if (key.equalsIgnoreCase(TIMEOUT_KEY)) {
+				Matcher matcher = Pattern.compile(Provider.REGEX_STRICT).matcher(subject);
+				if(matcher.find()){
+					String dateParameters = matcher.group().trim().replaceFirst("\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
+					m2.appendReplacement(sb, dateParameters);
+				}
 			}
 		}
 		sb.append(content.substring(lastIndex));
