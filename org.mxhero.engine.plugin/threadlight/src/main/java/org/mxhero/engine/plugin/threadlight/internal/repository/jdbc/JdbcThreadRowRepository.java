@@ -130,13 +130,13 @@ public class JdbcThreadRowRepository implements ThreadRowRepository{
 		source.addValue("follower", follower);
 		template.update(sql, source);
 		
-		String removeUnfollowedThread = "DELETE FROM `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` r " +
+		String removeUnfollowedThread = "DELETE FROM `"+ThreadRowMapper.DATABASE+"`.`"+ThreadRowMapper.TABLE_NAME+"` " +
 				" WHERE "+ThreadRowMapper.ID+" = :id " +
 				" AND NOT EXISTS (SELECT 1 FROM `"+ThreadRowFollowerMapper.DATABASE+"`.`"+ThreadRowFollowerMapper.TABLE_NAME+"` " +
 				" WHERE "+ThreadRowFollowerMapper.THREAD_ID+" = :threadId);";
 		MapSqlParameterSource threadSource = new MapSqlParameterSource("id",threadRow.getId());
 		threadSource.addValue("threadId", threadRow.getId());
-		template.update(removeUnfollowedThread,new MapSqlParameterSource());
+		template.update(removeUnfollowedThread,threadSource);
 	}
 
 }
