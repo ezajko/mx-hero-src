@@ -17,12 +17,15 @@ import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.commons.util.HeaderUtils;
+import org.mxhero.feature.replytimeout.provider.internal.config.ReplyTimeoutConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Provider extends RulesByFeature  {
 
 	private static Logger log = LoggerFactory.getLogger(Provider.class);
+	
+	public static final String FOLLOWER_ID = "org.mxhero.feature.replytimeout";
 	
 	private static final String LOCALE_PROPERTY="locale";
 	private static final String DATE_FORMAT_PROPERTY="date.format";
@@ -142,9 +145,8 @@ public class Provider extends RulesByFeature  {
 						}
 					}
 				}
-				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
 				if(replyTimeoutDate!=null){
-					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch","org.mxhero.feature.replytimeout",replyTimeoutDate.getTimeInMillis()+";"+locale);
+					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch",FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail);
 				}
 			}catch(Exception e){
 				log.warn("unhandle error!",e);
@@ -155,6 +157,7 @@ public class Provider extends RulesByFeature  {
 				log.debug("sending replyText="+text);
 				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),text,text} );
 			}
+			mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
 		}
 		
 	}
