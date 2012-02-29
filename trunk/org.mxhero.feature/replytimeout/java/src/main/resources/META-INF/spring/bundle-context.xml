@@ -14,15 +14,14 @@
 
 	<context:annotation-config />
 
-	<osgix:cm-properties id="cmPropsConfig"
-		persistent-id="org.mxhero.feature.replytimeout.provider">
-		<prop key="defaultLocale">en_US</prop>
-		<prop key="errorFileStartName">/opt/mxhero/replytimout/error/template_</prop>
-		<prop key="errorFileEndName">.htm</prop>
-	</osgix:cm-properties>
+	<osgi:reference id="inputService"
+		interface="org.mxhero.engine.commons.connector.InputService" />
 
 	<osgi:reference id="rulesFinderService"
 		interface="org.mxhero.engine.commons.feature.RulesFinder" />
+		
+	<osgi:reference id="threadRowService"
+		interface="org.mxhero.engine.plugin.threadlight.service.ThreadRowService" />
 
 	<osgi:service ref="provider">
 		<osgi:interfaces>
@@ -43,10 +42,23 @@
 	</bean>
 
 	<bean id="config"
-		class="org.mxhero.feature.replytimeout.provider.internal.ReplyTimeoutConfig"
+		class="org.mxhero.feature.replytimeout.provider.internal.config.ReplyTimeoutConfig"
 		init-method="init">
 		<osgix:managed-properties persistent-id="org.mxhero.feature.replytimeout.provider"
 			autowire-on-update="true" />
+	</bean>
+	
+	<bean id="runner" class="org.mxhero.feature.replytimeout.provider.internal.noreplycheck.NoreplyCheckRunner"
+		init-method="start"
+		destroy-method="stop">
+		<property name="config" ref="config"/>
+		<property name="sender" ref="messageSender"/>
+		<property name="service" ref="threadRowService"/>
+	</bean>
+	
+	<bean id="messageSender" class="org.mxhero.feature.replytimeout.provider.internal.noreplycheck.message.MessageSender">
+		<property name="config" ref="config"/>
+		<property name="service" ref="inputService"/>
 	</bean>
 
 </beans>
