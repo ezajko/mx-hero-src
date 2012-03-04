@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
 
-    <display-name>mxHero</display-name>
-    
+	<display-name>mxHero</display-name>
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			/WEB-INF/spring/*-config.xml
 		</param-value>
 	</context-param>
-	
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-    </filter>
 
-    <filter-mapping>
-      <filter-name>springSecurityFilterChain</filter-name>
-      <url-pattern>/*</url-pattern>
-    </filter-mapping>
-	
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>AbsoluteSendRedirectFilter</filter-name>
+		<filter-class>org.mxhero.console.backend.infrastructure.AbsoluteSendRedirectFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AbsoluteSendRedirectFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-	
+
 	<listener>
 		<listener-class>flex.messaging.HttpFlexSession</listener-class>
 	</listener>
-	
+
 	<servlet>
 		<servlet-name>flex</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -37,9 +46,9 @@
 	</servlet>
 
 	<servlet-mapping>
-    	<servlet-name>flex</servlet-name>
-    	<url-pattern>/messagebroker/*</url-pattern>
- 	</servlet-mapping>
+		<servlet-name>flex</servlet-name>
+		<url-pattern>/messagebroker/*</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>preauth</servlet-name>
@@ -51,7 +60,7 @@
 		<url-pattern>/preauth</url-pattern>
 	</servlet-mapping>
 
-     <welcome-file-list>
+	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
