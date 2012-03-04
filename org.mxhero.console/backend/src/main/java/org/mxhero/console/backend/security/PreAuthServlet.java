@@ -55,7 +55,7 @@ public class PreAuthServlet extends HttpServlet {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		}
-		resp.sendRedirect("/");
+		resp.sendRedirect(request.getContextPath()+"/");
 	}
 	
 	private String getPrincipal(Object loginName, Object domain, Object timestamp, Object expires, Object preauth){
