@@ -13,12 +13,10 @@ import org.mxhero.console.backend.vo.GroupVO;
 import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("groupService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcGroupService")
 public class JdbcGroupService implements GroupService{
 
 	public static final String GROUP_ALREADY_EXISTS="group.already.exists";

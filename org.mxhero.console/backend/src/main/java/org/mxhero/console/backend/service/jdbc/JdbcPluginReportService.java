@@ -8,14 +8,11 @@ import javax.sql.DataSource;
 import org.mxhero.console.backend.service.PluginReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
-@Service("pluginReportService")
-@RemotingDestination(channels = { "flex-amf" })
+@Repository("jdbcPluginReportService")
 public class JdbcPluginReportService implements PluginReportService{
 
 	private JdbcTemplate jdbcTemplate;

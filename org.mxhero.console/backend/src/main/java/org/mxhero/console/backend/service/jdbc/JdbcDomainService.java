@@ -25,14 +25,12 @@ import org.mxhero.console.backend.infrastructure.ADSource;
 import org.mxhero.console.backend.infrastructure.ADSource.Account;
 import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Service("domainService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcDomainService")
 public class JdbcDomainService implements DomainService {
 
 	public static final String DOMAIN_ALREADY_EXISTS="domain.already.exists";

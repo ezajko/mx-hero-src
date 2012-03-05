@@ -10,12 +10,10 @@ import org.mxhero.console.backend.service.RuleService;
 import org.mxhero.console.backend.vo.FeatureRuleVO;
 import org.mxhero.console.backend.vo.FeatureVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("ruleService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcRuleService")
 public class JdbcRuleService implements RuleService{
 
 	private static final String FEATURE_NOT_FOUND="feature.not.found";

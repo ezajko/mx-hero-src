@@ -13,12 +13,10 @@ import org.mxhero.console.backend.vo.ConfigurationVO;
 import org.mxhero.console.backend.vo.SystemPropertyVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractMessageSource;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service("configurationService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcConfigurationService")
 public class JdbcConfigurationService implements ConfigurationService{
 
 	private static final String MAIL_TEST_SUBJECT="mail.test.subject";
