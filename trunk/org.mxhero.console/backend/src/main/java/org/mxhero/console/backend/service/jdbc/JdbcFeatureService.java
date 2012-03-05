@@ -11,11 +11,9 @@ import org.mxhero.console.backend.vo.CategoryVO;
 import org.mxhero.console.backend.vo.FeatureVO;
 import org.mxhero.console.backend.vo.SystemPropertyVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service("featureService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcFeatureService")
 public class JdbcFeatureService implements FeatureService {
 
 	private static final String UNCLASSIFIED_ID = "feature.category.unclassified.id";
@@ -26,7 +24,7 @@ public class JdbcFeatureService implements FeatureService {
 	
 	private FeatureRuleRepository ruleRepository;
 
-	@Autowired
+	@Autowired(required=true)
 	public JdbcFeatureService(SystemPropertyRepository propertyRepository,
 			FeatureRepository featureRepository,
 			FeatureRuleRepository ruleRepository) {

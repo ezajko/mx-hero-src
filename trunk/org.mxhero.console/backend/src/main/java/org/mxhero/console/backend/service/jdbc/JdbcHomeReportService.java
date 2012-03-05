@@ -14,13 +14,11 @@ import org.mxhero.console.backend.vo.MessagesCompositionVO;
 import org.mxhero.console.backend.vo.MxHeroDataVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service("homeReportService")
-@RemotingDestination(channels = { "flex-amf" })
+@Repository("jdbcHomeReportService")
 public class JdbcHomeReportService implements HomeReportService{
 
 

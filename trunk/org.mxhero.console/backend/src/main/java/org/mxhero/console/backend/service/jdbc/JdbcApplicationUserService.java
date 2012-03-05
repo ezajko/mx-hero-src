@@ -13,15 +13,14 @@ import org.mxhero.console.backend.service.ConfigurationService;
 import org.mxhero.console.backend.vo.ApplicationUserVO;
 import org.mxhero.console.backend.vo.ConfigurationVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.support.AbstractMessageSource;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service("applicationUserService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcApplicationUserService")
 public class JdbcApplicationUserService implements ApplicationUserService {
 
 	private final static String MAIL_NOT_FOUND="mail.not.found";
@@ -50,7 +49,7 @@ public class JdbcApplicationUserService implements ApplicationUserService {
 			UserRepository userRepository,
 			DomainRepository domainRepository,
 			AbstractMessageSource ms,
-			ConfigurationService configurationService,
+			@Qualifier("jdbcConfigurationService")ConfigurationService configurationService,
 			DomainAdLdapRepository adLdapRepository) {
 		super();
 		this.encoder = encoder;

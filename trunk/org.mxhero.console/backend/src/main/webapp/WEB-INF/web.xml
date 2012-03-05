@@ -60,6 +60,16 @@
 		<url-pattern>/preauth</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>jaxws-servlet</servlet-name>
+		<servlet-class>com.sun.xml.ws.transport.http.servlet.WSSpringServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>jaxws-servlet</servlet-name>
+		<url-pattern>/api/*</url-pattern>
+	</servlet-mapping>
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

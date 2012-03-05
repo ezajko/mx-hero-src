@@ -12,13 +12,10 @@ import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.flex.remoting.RemotingDestination;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
-@Service("emailAccountService")
-@RemotingDestination(channels={"flex-amf"})
+@Repository("jdbcEmailAccountService")
 public class JdbcEmailAccountService implements EmailAccountService{
 
 	public static final String EMAIL_ALREADY_EXISTS="email.already.exists";

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://jax-ws.dev.java.net/spring/core
+		http://jax-ws.dev.java.net/spring/core.xsd
+		http://jax-ws.dev.java.net/spring/servlet
+		http://jax-ws.dev.java.net/spring/servlet.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+	<wss:binding url="/api/domain">
+		<wss:service>
+			<ws:service bean="#domainWs" />
+		</wss:service>
+	</wss:binding>
+
+	<wss:binding url="/api/rule">
+		<wss:service>
+			<ws:service bean="#ruleWs" />
+		</wss:service>
+	</wss:binding>
+
+	<wss:binding url="/api/user">
+		<wss:service>
+			<ws:service bean="#userWs" />
+		</wss:service>
+	</wss:binding>
+
+	<!-- Web service methods -->
+	<bean id="domainWs" class="org.mxhero.console.backend.ws.DomainEndPoint"/>
+	<bean id="ruleWs" class="org.mxhero.console.backend.ws.RuleEndPoint"/>
+	<bean id="userWs" class="org.mxhero.console.backend.ws.UserEndPoint"/>
+	
+</beans>

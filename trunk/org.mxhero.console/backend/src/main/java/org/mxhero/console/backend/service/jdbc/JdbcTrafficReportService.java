@@ -9,13 +9,11 @@ import javax.sql.DataSource;
 import org.mxhero.console.backend.service.TrafficReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.flex.remoting.RemotingDestination;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service("trafficReportService")
-@RemotingDestination(channels = { "flex-amf" })
+@Repository("jdbcTrafficReportService")
 public class JdbcTrafficReportService implements TrafficReportService {
 
 	private NamedParameterJdbcTemplate template;
