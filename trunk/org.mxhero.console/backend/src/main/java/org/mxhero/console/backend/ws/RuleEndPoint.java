@@ -7,6 +7,7 @@ import javax.jws.WebService;
 import org.mxhero.console.backend.service.RuleService;
 import org.mxhero.console.backend.vo.FeatureRuleVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @WebService
 public class RuleEndPoint {
@@ -14,7 +15,7 @@ public class RuleEndPoint {
 	private RuleService ruleService;
 	
 	@Autowired
-	public RuleEndPoint(RuleService ruleService) {
+	public RuleEndPoint(@Qualifier("jdbcRuleService")RuleService ruleService) {
 		this.ruleService = ruleService;
 	}
 
