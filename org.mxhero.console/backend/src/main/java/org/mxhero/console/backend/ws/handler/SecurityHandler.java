@@ -55,47 +55,6 @@ public class SecurityHandler implements SOAPHandler<SOAPMessageContext> {
 
 		if (outboundProperty.booleanValue()) {
 			isSoapRequestHandle = true;
-
-			/* ************************************************************************
-			 * If you are manipulating outgoing header then you need to add this
-			 * code
-			 * 
-			 * ******************************************************************
-			 * ******* try { SOAPMessage message = context.getMessage();
-			 * 
-			 * SOAPPart sp = message.getSOAPPart();
-			 * 
-			 * SOAPEnvelope envelope = sp.getEnvelope();
-			 * 
-			 * SOAPHeader header = envelope.addHeader();
-			 * 
-			 * SOAPElement security = header.addChildElement("Security", "wsse",
-			 * "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
-			 * );
-			 * 
-			 * SOAPElement usernameToken =
-			 * security.addChildElement("UsernameToken", "wsse");
-			 * usernameToken.addAttribute(new QName("xmlns:wsu"),
-			 * "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
-			 * );
-			 * 
-			 * SOAPElement username = usernameToken.addChildElement("Username",
-			 * "wsse"); username.addTextNode("TestUser");
-			 * 
-			 * SOAPElement password = usernameToken.addChildElement("Password",
-			 * "wsse"); password.setAttribute("Type",
-			 * "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText"
-			 * ); password.addTextNode("TestPassword");
-			 * 
-			 * //Print out the outbound SOAP message to System.out
-			 * message.writeTo(System.out); System.out.println("");
-			 * 
-			 * 
-			 * 
-			 * }catch (Exception e) { e.printStackTrace();
-			 * 
-			 * }
-			 */
 		} else {
 			try {
 
