@@ -4,8 +4,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+	<http pattern="/api/domain" security="none" />
+
 	<http entry-point-ref="entryPoint" authentication-manager-ref="authenticationManager">
-		<anonymous enabled="false"/>
+		<anonymous enabled="false" />
 	</http>
 
 	<beans:bean id="entryPoint"
@@ -18,10 +20,10 @@
 		class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
 	<global-method-security secured-annotations="enabled"
-		jsr250-annotations="enabled" authentication-manager-ref="authenticationManager"/>
+		jsr250-annotations="enabled" authentication-manager-ref="authenticationManager" />
 
 	<authentication-manager alias="authenticationManager">
-		<authentication-provider user-service-ref="jdbcUserDetailsService" >
+		<authentication-provider user-service-ref="jdbcUserDetailsService">
 			<password-encoder hash="md5" />
 		</authentication-provider>
 		<authentication-provider ref="preauthAuthProvider" />

@@ -9,6 +9,7 @@ import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.mxhero.console.backend.vo.DomainVO;
 import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @WebService
 public class DomainEndPoint {
@@ -16,7 +17,7 @@ public class DomainEndPoint {
 	private DomainService domainService;
 	
 	@Autowired
-	public DomainEndPoint(DomainService domainService) {
+	public DomainEndPoint(@Qualifier("jdbcDomainService")DomainService domainService) {
 		this.domainService = domainService;
 	}
 	

@@ -26,6 +26,7 @@
 		<filter-name>AbsoluteSendRedirectFilter</filter-name>
 		<filter-class>org.mxhero.console.backend.infrastructure.AbsoluteSendRedirectFilter</filter-class>
 	</filter>
+	
 	<filter-mapping>
 		<filter-name>AbsoluteSendRedirectFilter</filter-name>
 		<url-pattern>/*</url-pattern>
