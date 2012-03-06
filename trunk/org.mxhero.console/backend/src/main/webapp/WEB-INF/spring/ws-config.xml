@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" xmlns:sws="http://www.springframework.org/schema/web-services"
+	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
@@ -10,41 +10,42 @@
 		http://jax-ws.dev.java.net/spring/servlet
 		http://jax-ws.dev.java.net/spring/servlet.xsd
 		http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context-3.1.xsd
-						http://www.springframework.org/schema/web-services 
-						http://www.springframework.org/schema/web-services/web-services-2.0.xsd">
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-	<bean id="wsSecurityInterceptor"
-		class="org.springframework.ws.soap.security.wss4j.Wss4jSecurityInterceptor">
-		<property name="validationActions" value="UsernameToken" />
-		<property name="validationCallbackHandler" ref="callbackHandler" />
-	</bean>
 
-	<bean id="callbackHandler"
-		class="org.springframework.ws.soap.security.wss4j.callback.SimplePasswordValidationCallbackHandler">
-		<property name="users">
-			<props>
-				<prop key="admin">password</prop>
-			</props>
-		</property>
+	<bean id="securityHandler" class="org.mxhero.console.backend.ws.handler.SecurityHandler">
+		<property name="password" value="6x5ItobNGPW31x4"/>
+		<property name="userName" value="apiuser"/>
 	</bean>
 
 	<wss:binding url="/api/domain">
 		<wss:service>
-			<ws:service bean="#domainWs" />
+			<ws:service bean="#domainWs">
+				<ws:handlers>
+					<ref bean="securityHandler"/>
+				</ws:handlers>
+			</ws:service>
 		</wss:service>
 	</wss:binding>
 
 	<wss:binding url="/api/rule">
 		<wss:service>
-			<ws:service bean="#ruleWs" />
-		</wss:service>
+			<ws:service bean="#ruleWs">
+				<ws:handlers>
+					<ref bean="securityHandler"/>
+				</ws:handlers>
+			</ws:service>
+		</wss:service>		
 	</wss:binding>
 
 	<wss:binding url="/api/user">
 		<wss:service>
-			<ws:service bean="#userWs" />
-		</wss:service>
+			<ws:service bean="#userWs">
+				<ws:handlers>
+					<ref bean="securityHandler"/>
+				</ws:handlers>
+			</ws:service>
+		</wss:service>		
 	</wss:binding>
 
 	<!-- Web service methods -->
