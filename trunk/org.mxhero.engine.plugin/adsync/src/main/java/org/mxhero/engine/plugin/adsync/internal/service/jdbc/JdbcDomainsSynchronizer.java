@@ -99,11 +99,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 				for(String deleteAccount : deleteSet){
 					repository.deleteAccount(deleteAccount, domain);
 				}
-				for(String account : deleteSet){
-					if(account.equalsIgnoreCase("alex.marques")){
-						continue;
-					}
-				}
+
 				for(Account account : accounts){
 					if(!account.getMails().contains(account.getUid()+"@"+domain)){
 						account.getMails().add(account.getUid()+"@"+domain);
