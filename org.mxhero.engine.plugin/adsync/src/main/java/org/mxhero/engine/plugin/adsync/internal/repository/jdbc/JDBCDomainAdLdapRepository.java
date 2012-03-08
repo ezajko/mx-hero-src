@@ -75,7 +75,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		String sql = " SELECT domain " +
 				" FROM domain_adldap " +
 				" WHERE next_update < now() " +
-				" AND data_source = '"+SYNC_TYPE+"'";
+				" AND directory_type IN ('zimbra','exchange','ldap')";
 		return template.getJdbcOperations().queryForList(sql, String.class);
 	}
 
