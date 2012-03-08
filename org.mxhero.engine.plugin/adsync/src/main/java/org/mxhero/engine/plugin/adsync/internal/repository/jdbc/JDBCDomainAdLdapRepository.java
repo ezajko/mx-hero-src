@@ -24,8 +24,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.util.logging.resources.logging;
-
 @Repository(value = "jdbcRepository")
 public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	
@@ -76,7 +74,8 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	public List<String> findDomainsToSync(){
 		String sql = " SELECT domain " +
 				" FROM domain_adldap " +
-				" WHERE next_update < now() ";
+				" WHERE next_update < now() " +
+				" AND data_source = '"+SYNC_TYPE+"'";
 		return template.getJdbcOperations().queryForList(sql, String.class);
 	}
 
