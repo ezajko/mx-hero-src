@@ -71,6 +71,11 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		return null;
 	}
 	
+	public List<String> findDomainAliases(String domainId){
+		String sql = " SELECT alias FROM domains_aliases WHERE domain = :domainId";
+		return template.queryForList(sql, new MapSqlParameterSource("domainId", domainId),String.class);
+	}
+	
 	public List<String> findDomainsToSync(){
 		String sql = " SELECT domain " +
 				" FROM domain_adldap " +

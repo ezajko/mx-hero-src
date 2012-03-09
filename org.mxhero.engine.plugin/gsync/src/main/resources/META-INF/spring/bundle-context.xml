@@ -20,6 +20,7 @@
 		<prop key="jdbcPassord">mxhero</prop>
 		<prop key="senderMail">adsync@mxhero.com</prop>
 		<prop key="outputService">org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService</prop>
+		<prop key="useAliases">true</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
@@ -44,6 +45,7 @@
 		<property name="inputService" ref="inputService"/>
 		<property name="outputService" value="${outputService}"/>
 		<property name="senderMail" value="${senderMail}"/>
+		<property name="useAliases" value="${useAliases}"/>
 	</bean>
 
 	<bean id="txManager"
