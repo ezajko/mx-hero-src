@@ -38,6 +38,8 @@
 			
 			private var ldapVG:ValidatorGroup = new ValidatorGroup();
 			
+			private var gappsVG:ValidatorGroup = new ValidatorGroup();
+			
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
 				if(checkValid()){
@@ -71,7 +73,7 @@
 			}
 
 			[Bindable]
-			protected var resources:ArrayCollection = new ArrayCollection(['none','exchange','zimbra','ldap']);
+			protected var resources:ArrayCollection = new ArrayCollection(['none','exchange','zimbra','ldap','gapps']);
 			
 
 			protected function typeDdl_valueCommitHandler(event:FlexEvent):void
@@ -117,6 +119,9 @@
 				ldapVG.addValidator(passwordV);
 				ldapVG.addValidator(filterV);
 				ldapVG.addValidator(baseV);
+				
+				gappsVG.addValidator(userV);
+				gappsVG.addValidator(passwordV);
 				
 				//if this is an empty entity
 				if(adLdap.directoryType==null){
@@ -188,6 +193,7 @@
 		<s:State name="zimbra"/>
 		<s:State name="exchange"/>
 		<s:State name="ldap"/>
+		<s:State name="gapps"/>
 		<s:State name="result"/>
 	</s:states> 
 	
@@ -212,7 +218,7 @@
 								change="typeDdl_changeHandler(event)"
 								labelFunction="{typeDdl_labelFunc}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none,result">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none,result,gapps">
 				<s:HGroup verticalAlign="middle">
 					<s:Label text="ldap://"/>
 					<s:TextInput id="addressTi" text="@{adLdap.addres}"/>
@@ -227,13 +233,13 @@
 			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none,result">
 				<s:TextInput id="passwordTi" width="100%" text="@{adLdap.password}" displayAsPassword="true"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra,result">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra,result,gapps">
 				<s:TextArea id="filterTi" width="100%" heightInLines="3" text="@{adLdap.filter}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none,result">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none,result,gapps">
 				<s:TextArea id="baseTi" width="100%" heightInLines="3" text="@{adLdap.base}"/>
 			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none,result">
+			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none,result,gapps">
 				<s:TextArea id="dnAuthenticate" width="100%" heightInLines="3" text="@{adLdap.dnAuthenticate}"/>
 			</mx:FormItem>
 			<mx:FormItem width="100%" excludeFrom="none,result">
@@ -252,7 +258,7 @@
 			<s:Button id="testBtt" 
 					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.TEST_LABEL)}" 
 					  click="testBtt_clickHandler(event)"
-					  excludeFrom="none,result"
+					  excludeFrom="none,result,gapps"
 					  buttonMode="true"/>
 			<s:Button id="saveBtt" 
 					  label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
