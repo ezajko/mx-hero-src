@@ -71,9 +71,6 @@ public class SecurityHandler implements SOAPHandler<SOAPMessageContext> {
 				SOAPHeader sh = envelope.getHeader();
 				isSoapRequestHandle = processSOAPHeader(sh);
 
-				 message.writeTo(System.out);
-				 System.out.println("");
-
 				if (!isSoapRequestHandle) {
 
 					SOAPElement errorMessage = sh.addChildElement(
