@@ -1,0 +1,24 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: \
+com.google.gdata.client.media;resolution:=optional, \
+com.google.gdata.data.media;resolution:=optional, \
+com.google.gdata.data.media.mediarss;resolution:=optional, \
+com.mysql.jdbc, \
+org.springframework.orm*;resolution:=optional, \
+org.aopalliance.aop, \
+org.springframework.aop, \
+org.springframework.aop.framework, *
+
+
+Embed-Dependency: \
+org.springframework.ldap;groupId=org.springframework.ldap;inline=false, \
+gdata-client;groupId=com.google.gdata;inline=false, \
+gdata-client-meta;groupId=com.google.gdata;inline=false, \
+gdata-core;groupId=com.google.gdata;inline=false, \
+gdata-base;groupId=com.google.gdata;inline=false, \
+gdata-appsforyourdomain;groupId=com.google.gdata;inline=false, \
+gdata-appsforyourdomain-meta;groupId=com.google.gdata;inline=false, \
+google-collections;groupId=com.google.collections;inline=false 
