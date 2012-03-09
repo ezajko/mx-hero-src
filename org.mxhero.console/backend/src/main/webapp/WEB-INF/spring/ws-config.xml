@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:ws="http://jax-ws.dev.java.net/spring/core"
 	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet" 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -14,8 +15,6 @@
 
 
 	<bean id="securityHandler" class="org.mxhero.console.backend.ws.handler.SecurityHandler">
-		<property name="password" value="6x5ItobNGPW31x4"/>
-		<property name="userName" value="apiuser"/>
 	</bean>
 
 	<wss:binding url="/api/domain">
