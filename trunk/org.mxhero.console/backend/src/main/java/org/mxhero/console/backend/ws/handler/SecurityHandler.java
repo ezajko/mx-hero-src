@@ -16,24 +16,30 @@ import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 import org.apache.log4j.Logger;
+import org.mxhero.console.backend.repository.SystemPropertyRepository;
+import org.mxhero.console.backend.vo.SystemPropertyVO;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SecurityHandler implements SOAPHandler<SOAPMessageContext> {
 
-	private String userName = "admin";
-
-	private String password = "password";
-
+	private final static String API_USER_NAME = "api.username";
+	private final static String API_PASSWORD = "api.password";
 	private static Logger log = Logger.getLogger(SecurityHandler.class);
-
 	/** The Constant USERNAME_TOKEN_STRING. */
 	private static final String USERNAME_TOKEN_STRING = "UsernameToken";
-
 	/** The Constant USERNAME_STRING. */
 	private static final String USERNAME_STRING = "Username";
-
 	/** The Constant PASSWORD_STRING. */
 	private static final String PASSWORD_STRING = "Password";
-
+	
+	private long lastUpdate = 0;
+	private String userName = "api";
+	private String password = "api";
+	private long updateInterval = 10000;
+	
+	@Autowired(required=true)
+	private SystemPropertyRepository systemRepository;
+	
 	public Set<QName> getHeaders() {
 		return null;
 	}
@@ -211,27 +217,44 @@ public class SecurityHandler implements SOAPHandler<SOAPMessageContext> {
 		return authenticated;
 
 	}
+	
+	public SystemPropertyRepository getSystemRepository() {
+		return systemRepository;
+	}
 
-	public String getUserName() {
+	public void setSystemRepository(SystemPropertyRepository systemRepository) {
+		this.systemRepository = systemRepository;
+	}
+
+	private String getUserName() {
+		updateApiData();
 		return userName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	private void updateApiData(){
+		if(lastUpdate+updateInterval-System.currentTimeMillis()<0){
+			lastUpdate=System.currentTimeMillis();
+			SystemPropertyVO userprop =systemRepository.findById(API_USER_NAME);
+			if(userprop!=null && userprop.getPropertyValue()!=null){
+				userName=userprop.getPropertyValue();
+			}
+			SystemPropertyVO passprop =systemRepository.findById(API_PASSWORD);
+			if(passprop!=null && passprop.getPropertyValue()!=null){
+				password=passprop.getPropertyValue();
+			}
+		}
 	}
-
-	public String getPassword() {
+	
+	private String getPassword() {
+		updateApiData();
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	private boolean getUserAuth(String username, String password) {
 
-		if (this.userName.equalsIgnoreCase(username)
-				&& this.password.equals(password)) {
+		if (getUserName().equalsIgnoreCase(username)
+				&& getPassword().equals(password)) {
 			return true;
 		}
 
