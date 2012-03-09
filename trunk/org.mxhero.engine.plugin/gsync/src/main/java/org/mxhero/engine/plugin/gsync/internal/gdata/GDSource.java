@@ -24,14 +24,16 @@ public class GDSource {
 	private String consumerKey;
 	private String consumerSecret;
 	private String domain;
+	private List<String> aliases;
 	
-	public GDSource(String consumerKey, String consumerSecret, String domain) {
+	public GDSource(String consumerKey, String consumerSecret, String domain, List<String> aliases) {
 		if(consumerKey==null || consumerSecret==null || domain==null){
 			throw new IllegalArgumentException("Null Parameter");
 		}
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
 		this.domain = domain;
+		this.aliases = aliases;
 	}
 
 	public List<Account> getAllPersonNames() throws Exception {
@@ -49,7 +51,13 @@ public class GDSource {
 			if(!accountsMap.containsKey(userEntry.getLogin().getUserName())){
 				accountsMap.put(userEntry.getLogin().getUserName(), new HashSet<String>());
 			}
-			accountsMap.get(userEntry.getLogin().getUserName()).add(userEntry.getLogin().getUserName()+"@"+domain);
+			if(aliases!=null && aliases.size()>0){
+				for(String domainAlias : aliases){
+					accountsMap.get(userEntry.getLogin().getUserName()).add(userEntry.getLogin().getUserName()+"@"+domainAlias);
+				}
+			}else{
+				accountsMap.get(userEntry.getLogin().getUserName()).add(userEntry.getLogin().getUserName()+"@"+domain);
+			}
 			log.debug(" UserName: "+userEntry.getLogin().getUserName());
 		}
 		
@@ -57,7 +65,13 @@ public class GDSource {
 			Account groupAccount = new Account();
 			groupAccount.setUid(group.getProperty("groupId").split("@")[0]);
 			groupAccount.setMails(new HashSet<String>());
-			groupAccount.getMails().add(group.getProperty("groupId"));
+			if(aliases!=null && aliases.size()>0){
+				for(String domainAlias : aliases){
+					groupAccount.getMails().add(group.getProperty("groupId").split("@")[0]+"@"+domainAlias);
+				}
+			}else{
+				groupAccount.getMails().add(group.getProperty("groupId"));
+			}
 			accounts.add(groupAccount);
 			log.debug("Mail-List: "+group.getProperty("groupId"));
 		}
@@ -66,7 +80,13 @@ public class GDSource {
 			if(!accountsMap.containsKey(nicknameEntry.getLogin().getUserName())){
 				accountsMap.put(nicknameEntry.getLogin().getUserName(), new HashSet<String>());
 			}
-			accountsMap.get(nicknameEntry.getLogin().getUserName()).add(nicknameEntry.getNickname().getName()+"@"+domain);
+			if(aliases!=null && aliases.size()>0){
+				for(String domainAlias : aliases){
+					accountsMap.get(nicknameEntry.getLogin().getUserName()).add(nicknameEntry.getNickname().getName()+"@"+domainAlias);
+				}
+			}else{
+				accountsMap.get(nicknameEntry.getLogin().getUserName()).add(nicknameEntry.getNickname().getName()+"@"+domain);
+			}
 			log.debug("Nickname: "+nicknameEntry.getNickname().getName()+" UserName: "+nicknameEntry.getLogin().getUserName());
 		}
 		

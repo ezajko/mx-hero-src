@@ -29,6 +29,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 	private String senderMail = SENDER_MAIL;
 	private String outputService = OUTPUT_SERVICE;
 	private DomainAdLdapRepository repository;
+	private Boolean useAliases = false;
 
 	@Autowired(required = true)
 	public JdbcDomainsSynchronizer(DomainAdLdapRepository repository) {
@@ -48,10 +49,13 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 				log.error("domain " + domain + " not found");
 				return;
 			}
-
+			List<String> domainAliases = null;
+			if(useAliases){
+				domainAliases = repository.findDomainAliases(domain);
+			}
 			GDSource source;
 			source = new GDSource(domainAd.getUser(), domainAd.getPassword(),
-					domain);
+					domain, domainAliases);
 			List<Account> accounts = null;
 			accounts = source.getAllPersonNames();
 
@@ -144,6 +148,14 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 
 	public void setOutputService(String outputService) {
 		this.outputService = outputService;
+	}
+
+	public Boolean getUseAliases() {
+		return useAliases;
+	}
+
+	public void setUseAliases(Boolean useAliases) {
+		this.useAliases = useAliases;
 	}
 
 }
