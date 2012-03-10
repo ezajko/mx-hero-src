@@ -65,13 +65,13 @@ public class FlexDomainService implements DomainService{
 	@Override
 	@Secured("ROLE_DOMAIN_ADMIN")
 	public void removeAdLdap(String domainId) {
-		this.removeAdLdap(domainId);
+		this.service.removeAdLdap(domainId);
 	}
 
 	@Override
 	@Secured("ROLE_DOMAIN_ADMIN")
 	public DomainAdLdapVO refreshAdLdap(String domainId) {
-		return this.refreshAdLdap(domainId);
+		return this.service.refreshAdLdap(domainId);
 	}
 
 	@Override

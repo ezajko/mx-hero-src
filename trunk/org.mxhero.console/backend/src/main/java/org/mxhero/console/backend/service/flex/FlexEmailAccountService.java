@@ -44,7 +44,7 @@ public class FlexEmailAccountService implements EmailAccountService{
 	@Override
 	@Secured("ROLE_DOMAIN_ADMIN")
 	public void edit(EmailAccountVO emailAccountVO) {
-		this.edit(emailAccountVO);
+		this.service.edit(emailAccountVO);
 	}
 
 	@Override
