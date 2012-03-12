@@ -65,7 +65,7 @@
 						account.dataSource=EmailAccount.MANUAL;
 						model.insertAccount(account);
 					}
-					if(currentState=="edit"){
+					if(currentState=="edit" || currentState=="managed"){
 						model.updateDomain(account);
 					}
 				}

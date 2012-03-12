@@ -60,6 +60,11 @@
 					if(ldapVG.isValid){
 						isValid=true;
 					}
+				}else if(currentState=='gapps'){
+					this.gappsVG.validate();
+					if(gappsVG.isValid){
+						isValid=true;
+					}
 				}else if(currentState=='none'){
 					isValid=true;
 				}

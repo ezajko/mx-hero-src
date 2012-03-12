@@ -211,14 +211,18 @@ package org.mxhero.console.configurations.presentation.accounts
 			isLoading=true;
 		}
 		
-
-		
 		[CommandResult]
 		public function updateResult (result:*, event:EditEmailAccountEvent) : void {
 			isLoading=false;
 			findAccounts(accounts.actualPage,PAGE_SIZE);
 			PopUpManager.removePopUp(accountShow);
 			accountShow.cancelBtt_clickHandler(null);
+		}
+		
+		[CommandError]
+		public function updateError (faultEvent:FaultEvent, event:EditEmailAccountEvent) : void {
+			isLoading=false;
+			PopUpManager.removePopUp(accountShow);
 		}
 
 		private function findAccounts(pageNo:Number,pageSize:Number):void{
