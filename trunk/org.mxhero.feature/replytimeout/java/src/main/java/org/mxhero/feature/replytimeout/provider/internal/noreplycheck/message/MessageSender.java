@@ -132,7 +132,7 @@ public class MessageSender {
 			}else if (key.equalsIgnoreCase(TIMEOUT_KEY)) {
 				Matcher matcher = Pattern.compile(Provider.REGEX_STRICT).matcher(subject);
 				if(matcher.find()){
-					String dateParameters = matcher.group().trim().replaceFirst("\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
+					String dateParameters = matcher.group().trim().replaceFirst("(?i)\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
 					m2.appendReplacement(sb, dateParameters);
 				}
 			}
