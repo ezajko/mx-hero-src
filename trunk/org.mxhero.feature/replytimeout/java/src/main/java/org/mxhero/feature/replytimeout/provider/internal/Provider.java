@@ -2,6 +2,7 @@ package org.mxhero.feature.replytimeout.provider.internal;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +33,7 @@ public class Provider extends RulesByFeature  {
 	private static final String HEADER = "X-mxHero-Actions";
 	private static final String HEADER_VALUE = "replyTimeout";
 	public static final String REGEX = "(?i).*\\[\\s*mxreply\\s*.*\\]\\s*.*";
+	public static final String REGEX_DEFAULT_DAY = "(?i).*\\[\\s*mxreply\\s*\\]\\s*.*";
 	public static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
 	public static final String REGEX_STRICT = "(?i)\\s*\\[\\s*mxreply\\s+(\\d+)\\s*([dhm]|[\\.\\/\\-])\\s*(\\d*)\\s*\\]\\s*";
 	
@@ -61,16 +63,27 @@ public class Provider extends RulesByFeature  {
 
 		@Override
 		public boolean eval(Mail mail) {
-			boolean result =  	mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean conditions =  	mail.getState().equalsIgnoreCase(MailState.DELIVER)
 					&& mail.getHeaders()!=null
 					&& (mail.getSubject().getSubject().matches(REGEX) ||
 					HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE)!=null);
+			boolean isInTO = false;
+			Collection<String> toRecipients = mail.getRecipients().getToRecipients();
+			if(toRecipients!=null){
+				for(String recipient : toRecipients){
+					if(mail.getInitialData().getRecipient().hasAlias(recipient)){
+						isInTO=true;
+						break;
+					}
+				}
+			}
 			if(log.isDebugEnabled()){
-				log.debug("eval="+result);
+				log.debug("conditions="+conditions);
+				log.debug("isInTO="+isInTO);
 				log.debug("match subject="+mail.getSubject().getSubject().matches(REGEX) );
 				log.debug("header value="+HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE));
 			}
-			return result;
+			return conditions && isInTO;
 		}
 		
 	}
@@ -104,7 +117,7 @@ public class Provider extends RulesByFeature  {
 				}else{
 					Matcher matcher = Pattern.compile(REGEX_STRICT).matcher(mail.getSubject().getSubject());
 					if(matcher.find()){
-						String dateParameters = matcher.group().trim().replaceFirst("\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
+						String dateParameters = matcher.group().trim().replaceFirst("(?i)\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
 						Calendar calendar =  null;
 						if(mail.getHeaders().hasHeader("Date")){
 							try {
@@ -149,12 +162,21 @@ public class Provider extends RulesByFeature  {
 						if(calendar!=null){
 							replyTimeoutDate=calendar;
 						}
+					}else{
+						//default day
+						if(Pattern.compile(REGEX_DEFAULT_DAY).matcher(mail.getSubject().getSubject()).find()){
+							int addDays = 1;
+							Calendar calendar=Calendar.getInstance();
+							calendar.add(Calendar.DATE, addDays);
+							replyTimeoutDate=calendar;
+						}
 					}
 				}
 				if(dateString==null){
 					dateString=Calendar.getInstance().getTime().toString();
 				}
 				if(replyTimeoutDate!=null){
+					mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.replytimeout",""+replyTimeoutDate.getTimeInMillis());
 					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch",FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail+";"+dateString);
 				}
 			}catch(Exception e){
