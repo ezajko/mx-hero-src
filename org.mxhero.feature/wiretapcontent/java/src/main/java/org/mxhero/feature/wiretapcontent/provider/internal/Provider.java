@@ -3,6 +3,9 @@ package org.mxhero.feature.wiretapcontent.provider.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
@@ -13,9 +16,12 @@ import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Provider extends RulesByFeature{
 
+	private static Logger log = LoggerFactory.getLogger(Provider.class);
 	private static final String ANDOR_SELECTION_PROPERTY = "andor.selection";
 	private static final String WORD_LIST_PROPERTY = "word.list";
 	private static final String EMAIL_VALUE_PROPERTY = "email.value";
@@ -47,7 +53,7 @@ public class Provider extends RulesByFeature{
 			}
 		}
 
-		coreRule.addEvaluation(new WCEvaluate(andor, emailCopy, words));
+		coreRule.addEvaluation(new WCEvaluate(andor, words));
 		coreRule.addAction(new WCAction(coreRule.getId(), emailCopy, action));
 		
 		return coreRule;
@@ -56,13 +62,11 @@ public class Provider extends RulesByFeature{
 	private class WCEvaluate implements Evaluable{
 
 		private String andor;
-		private String emailCopy;
 		private List<String> words;
 		
-		public WCEvaluate(String andor, String emailCopy, List<String> words) {
+		public WCEvaluate(String andor, List<String> words) {
 			super();
 			this.andor = andor;
-			this.emailCopy = emailCopy;
 			this.words = words;
 		}
 
@@ -71,7 +75,6 @@ public class Provider extends RulesByFeature{
 			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
 			&& mail.getHeaders()!=null
 			&& mail.getBody()!=null
-			&& !mail.getProperties().containsKey("redirected:"+emailCopy)
 			&&(andor!=null && ((andor.equals(AND_VALUE)&&(mail.getBody().textHasAll(words)||mail.getBody().htmlTextHasAll(words)))
 								||(andor.equals(OR_VALUE)&&(mail.getBody().textHasAny(words)||mail.getBody().textHasAny(words)))));
 		}
@@ -94,11 +97,29 @@ public class Provider extends RulesByFeature{
 		@Override
 		public void exec(Mail mail) {
 			if(action==null || action.equalsIgnoreCase(FOUND_ACTION_COPY)){
-				mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
+				for(String individualMail : emailCopy.split(",")){
+					try {
+						InternetAddress emailAddress = new InternetAddress(individualMail,false);
+						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
+							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
+							mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailAddress.getAddress());							
+						}
+					} catch (AddressException e) {
+						log.warn("wrong email address",e);
+					}
+				}
 			}else if(action.equalsIgnoreCase(FOUND_ACTION_REDIRECT)){
-				mail.getProperties().put("redirected:"+emailCopy,ruleId.toString());
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailCopy);
+				for(String individualMail : emailCopy.split(",")){
+					try {
+						InternetAddress emailAddress = new InternetAddress(individualMail,false);
+						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
+							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
+							mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailAddress.getAddress());
+						}
+					} catch (AddressException e) {
+						log.warn("wrong email address",e);
+					}
+				}				
 				mail.drop("org.mxhero.feature.wiretapcontent");
 			}else if(action.equalsIgnoreCase(FOUND_ACTION_DROP)){
 				mail.drop("org.mxhero.feature.wiretapcontent");
