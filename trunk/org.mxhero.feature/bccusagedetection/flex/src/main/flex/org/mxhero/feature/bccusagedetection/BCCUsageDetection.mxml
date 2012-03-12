@@ -10,7 +10,8 @@
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
 	<fx:Declarations>
-		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
+		<mx:StringValidator id="requiredV" required="true" source="{emailTi}" property="text"/>
+		<mx:EmailValidator id="emailV"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -18,11 +19,13 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
+			import org.mxhero.console.commons.utils.StringUtils;
 			
 			private var initialProperties:ArrayCollection;
 			private var errorMessage:String;
@@ -35,12 +38,33 @@
 			
 			public function isValid():Boolean{
 				var valArray:Array;
-				valArray=emailV.validate().results;
+				valArray=requiredV.validate().results;
 				if(valArray!=null && valArray.length>0){
-					errorMessage=emailTi.errorString;
+					errorMessage= (valArray[0] as ValidationResult).errorMessage;
+					emailTi.errorString=errorMessage;
 					return false;
 				}
-				
+				var valid:String="";
+				for each(var email:String in emailTi.text.split(",")){
+					
+					if( StringUtils.trim(email).length>0){
+						valArray=emailV.validate(email).results;
+						if(valArray!=null && valArray.length>0){
+							errorMessage=(valArray[0] as ValidationResult).errorMessage;
+							emailTi.errorString=errorMessage;
+							return false;
+						}
+						valid=valid+","+StringUtils.trim(email);
+					}
+				}
+				emailTi.text=valid.substr(1,valid.length);
+				valArray=requiredV.validate().results;
+				if(valArray!=null && valArray.length>0){
+					errorMessage= (valArray[0] as ValidationResult).errorMessage;
+					emailTi.errorString=errorMessage;
+					return false;
+				}
+				emailTi.errorString="";
 				if(rte.text==null || StringUtil.trim(rte.text).length<1){
 					rte.errorString=resourceManager.getString('bccusagedetection','error.return.message');
 						errorMessage=resourceManager.getString('bccusagedetection','error.return.message');
