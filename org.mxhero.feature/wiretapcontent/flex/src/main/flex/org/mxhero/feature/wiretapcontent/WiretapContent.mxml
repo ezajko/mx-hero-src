@@ -12,8 +12,9 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="andor"/>
 		<s:RadioButtonGroup id="actionGroup"/>
-		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
-		<mx:EmailValidator id="redirectV" required="true" source="{redirectTi}" property="text"/>
+		<mx:EmailValidator id="emailV" />
+		<mx:StringValidator id="requiredCopyV" required="true" source="{emailTi}" property="text"/>
+		<mx:StringValidator id="requiredRedirectV" required="true" source="{redirectTi}" property="text"/>
 	</fx:Declarations>
 
 	<fx:Script>
@@ -21,10 +22,12 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.StringUtils;
 			
 			[Bindable]
 			public var words:ArrayCollection = new ArrayCollection();
@@ -40,7 +43,7 @@
 			}
 
 			public function isValid():Boolean{
-				
+				var valArray:Array;
 				if(words.length<1){
 					errorMessage=resourceManager.getString('wiretapcontent','no.words.error');
 					wordsDg.errorString=errorMessage;
@@ -48,20 +51,62 @@
 				}
 				
 				if(copyRb.selected){
-					var valResult:Array = emailV.validate().results;
-					if(valResult!=null && valResult.length>0){
-						errorMessage=emailTi.errorString;
+					valArray=requiredCopyV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						errorMessage= (valArray[0] as ValidationResult).errorMessage;
+						emailTi.errorString=errorMessage;
+						return false;
+					}
+					var valid:String="";
+					for each(var email:String in emailTi.text.split(",")){
+						if( StringUtils.trim(email).length>0){
+							valArray=emailV.validate(email).results;
+							if(valArray!=null && valArray.length>0){
+								errorMessage=(valArray[0] as ValidationResult).errorMessage
+								emailTi.errorString=errorMessage;
+								return false;
+							}
+							valid=valid+","+StringUtils.trim(email);
+						}
+					}
+					emailTi.text=valid.substr(1,valid.length);
+					valArray=requiredCopyV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						errorMessage= (valArray[0] as ValidationResult).errorMessage;
+						emailTi.errorString=errorMessage;
 						return false;
 					}
 				}
 				emailTi.errorString="";
+				
 				if(redirecRb.selected){
-					var redirectResult:Array = redirectV.validate().results;
-					if(redirectResult!=null && redirectResult.length>0){
-						errorMessage=redirectTi.errorString;
+					valArray=requiredRedirectV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						errorMessage= (valArray[0] as ValidationResult).errorMessage;
+						redirectTi.errorString=errorMessage;
+						return false;
+					}
+					var validR:String="";
+					for each(var emailR:String in redirectTi.text.split(",")){
+						if( StringUtils.trim(emailR).length>0){
+							valArray=emailV.validate(emailR).results;
+							if(valArray!=null && valArray.length>0){
+								errorMessage=(valArray[0] as ValidationResult).errorMessage
+								redirectTi.errorString=errorMessage;
+								return false;
+							}
+							validR=validR+","+StringUtils.trim(emailR);
+						}
+					}
+					redirectTi.text=validR.substr(1,validR.length);
+					valArray=requiredRedirectV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						errorMessage= (valArray[0] as ValidationResult).errorMessage;
+						redirectTi.errorString=errorMessage;
 						return false;
 					}
 				}
+				emailTi.errorString="";
 				redirectTi.errorString="";
 				wordsDg.errorString="";
 				return true;
