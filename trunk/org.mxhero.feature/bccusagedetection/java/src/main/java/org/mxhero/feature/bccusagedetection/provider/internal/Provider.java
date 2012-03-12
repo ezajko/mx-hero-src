@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.mail.Message;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
@@ -134,7 +136,14 @@ public class Provider extends RulesByFeature{
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.bccusagedetection", "true");
 			mail.getHeaders().addHeader("X-mxHero-BCCUsageDetection", "rule="+ruleId);
-			mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{mail.getInitialData().getSender().getMail(),email,bccHeaderPlain,bccHeader,"true"} );
+			for(String individualMail : email.split(",")){
+				try {
+					InternetAddress emailAddress = new InternetAddress(individualMail,false);
+					mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{mail.getInitialData().getSender().getMail(),emailAddress.getAddress(),bccHeaderPlain,bccHeader,"true"} );
+				} catch (AddressException e) {
+					log.warn("wrong email address",e);
+				}
+			}
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccusagedetection","true" );
 		}
 		
