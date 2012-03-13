@@ -5,7 +5,7 @@
 		   creationComplete="creationCompleteHandler(event)"
 		   verticalGap="20"
 		   paddingTop="30"
-		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*">
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
@@ -98,10 +98,10 @@
 			public function isValid():Boolean{
 				if(emails.length<1 && !ownDomainCb.selected){
 					validationError = resourceManager.getString(MODULE_NAME,'error.emails.empty');
-					emailsDg.errorString = validationError;
+					fdg.emailsDg.errorString = validationError;
 					return false;
 				}
-				emailsDg.errorString = "";
+				fdg.emailsDg.errorString = "";
 				
 				if(returnRb.selected){
 					if(StringUtil.trim(rte.text).length<1){
@@ -150,7 +150,7 @@
 				var properties:ArrayCollection = new ArrayCollection();
 				var property:FeatureRuleProperty;
 				
-				for each(var object:Object in emails){
+				for each(var object:Object in emails.source){
 					property = new FeatureRuleProperty();
 					property.propertyKey = "email.list";
 					property.propertyValue = object.toString();
@@ -241,40 +241,7 @@
 			</s:HGroup>
 		</mx:Form>
 		
-		<mx:DataGrid id="emailsDg"
-					 dataProvider="{emails}" 
-					 width="100%"
-					 height="250">
-			<mx:columns>
-				<mx:DataGridColumn dataField="email" headerText="{resourceManager.getString(MODULE_NAME,'email.label.text')}"/>
-				<mx:DataGridColumn width="48" sortable="false">
-					<mx:itemRenderer>
-						<fx:Component>
-							<mx:HBox width="100%" horizontalAlign="center">
-								<fx:Script>
-									<![CDATA[
-										import flash.events.MouseEvent;
-										
-										[Bindable]
-										[Embed(source="/org/mxhero/feature/restricteddelivery/delete.png")]
-										public static var DELETE:Class;
-										
-										protected function remove_clickHandler(event:MouseEvent):void
-										{
-											outerDocument.emails.removeItemAt(outerDocument.emails.getItemIndex(outerDocument.emailsDg.selectedItem));
-										}
-									]]>
-								</fx:Script>
-								<mx:Image source="{DELETE}"
-										  buttonMode="true"
-										  toolTip="{resourceManager.getString('limituserdestination','remove.tooltip')}"
-										  click="remove_clickHandler(event)"/>
-							</mx:HBox>		  
-						</fx:Component>
-					</mx:itemRenderer>
-				</mx:DataGridColumn>
-			</mx:columns>
-		</mx:DataGrid>	
+		<fdg:FilterDataGrid width="100%" id="fdg" dataProvider="{emails}"/>
 		
 		<mx:Spacer height="20"/>
 		<s:HGroup width="100%" verticalAlign="top">

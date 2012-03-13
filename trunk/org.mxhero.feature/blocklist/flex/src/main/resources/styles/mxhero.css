@@ -33,14 +33,12 @@
 s|global
 {
 	font-size: 14;
-	font-family: Ubuntu;
 	modal-transparency:0.1;
 }
 
 mx|global
 {
 	font-size: 14;
-	font-family: Ubuntu;
 	modal-transparency:0.1;
 	textFieldClass: ClassReference("mx.core.UIFTETextField");
 }
@@ -48,7 +46,6 @@ mx|global
 mx|global
 {
 	font-size: 14;
-	font-family: Ubuntu;
 	modal-transparency:0.1;
 	textFieldClass: ClassReference("mx.core.UIFTETextField");
 }
