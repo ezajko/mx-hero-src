@@ -34,6 +34,7 @@ public class MessageSender {
 	private static final String SUBJECT_KEY = "subject";
 	private static final String TIMEOUT_KEY = "timeout";
 	private static final String DATE_KEY = "date";
+	private static final String DEFAULT_TIMEOUT = "1d";
 
 	private ReplyTimeoutConfig config;
 	private InputService service;
@@ -134,6 +135,8 @@ public class MessageSender {
 				if(matcher.find()){
 					String dateParameters = matcher.group().trim().replaceFirst("(?i)\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
 					m2.appendReplacement(sb, dateParameters);
+				}else{
+					m2.appendReplacement(sb, DEFAULT_TIMEOUT);
 				}
 			}
 		}
