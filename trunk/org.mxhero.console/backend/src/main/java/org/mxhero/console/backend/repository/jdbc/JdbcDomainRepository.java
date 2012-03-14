@@ -150,7 +150,7 @@ public class JdbcDomainRepository extends BaseJdbcDao<DomainVO> implements Domai
 			List<String> existsAliases = findAliases(domainVO.getDomain());
 			if(existsAliases!=null && existsAliases.size()>0){
 				Set<String> deleteAliases = new HashSet<String>(existsAliases);
-				deleteAliases.removeAll(existsAliases);
+				deleteAliases.removeAll(insertAliases);
 				for(String aliasToDelete : deleteAliases){
 					deleteAlias(domainVO.getDomain(), aliasToDelete);
 				}
