@@ -88,6 +88,9 @@ public class Provider extends RulesByFeature{
 			&& mail.getAttachments()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.attachementblock:"+group);
 			log.debug("result="+result);
+			if(log.isDebugEnabled()){
+				log.debug(mail.getAttachments().toString());
+			}
 			return result;
 		}
 		
