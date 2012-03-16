@@ -10,7 +10,8 @@
 
   <properties>
     <org.osgi.service.http.port>9090</org.osgi.service.http.port>
-    <felix.fileinstall.dir>C:/Users/chelo/Documents/mxherodev/engine/plugins,C:/Users/chelo/Documents/mxherodev/engine/configurations/properties</felix.fileinstall.dir>
+    <felix.fileinstall.dir>C:/Users/mxhero/Documents/workspaces/engine/engine/plugins,C:/Users/mxhero/Documents/workspaces/engine/engine/configurations/properties</felix.fileinstall.dir>
+    <bundles.configuration.location>C:/Users/mxhero/Documents/workspaces/engine/engine/configurations</bundles.configuration.location>
     <felix.fileinstall.bundles.new.start>true</felix.fileinstall.bundles.new.start>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
