@@ -149,7 +149,7 @@ package org.mxhero.console.configurations.presentation.groups
 
 		[CommandResult]
 		public function loadMembersResult (result:*, event:LoadEmailAccountsByGroupEvent) : void {
-			isLoading=true;
+			isLoading=false;
 			this.groupAccounts=result;
 		}
 		
