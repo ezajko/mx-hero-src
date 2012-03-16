@@ -1,6 +1,7 @@
 package org.mxhero.feature.attachmentblock.provider.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,9 +14,12 @@ import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Provider extends RulesByFeature{
 
+	private static Logger log = LoggerFactory.getLogger(Provider.class);
 	private static final String DISCARD_ACTION = "discard.action";
 	private static final String RETURN_ACTION = "return.action";
 	private static final String FILE_EXTENSION = "file.extension";
@@ -79,11 +83,12 @@ public class Provider extends RulesByFeature{
 		
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
 			&& mail.getHeaders()!=null
 			&& mail.getAttachments()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.attachementblock:"+group);
-
+			log.debug("result="+result);
+			return result;
 		}
 		
 	}
@@ -103,7 +108,6 @@ public class Provider extends RulesByFeature{
 		public ABAction(String group, Integer ruleId, String noreplyMail, String action,
 				String returnMessage,String returnMessagePlain, List<String> extensions,
 				List<String> names, List<String> types) {
-			super();
 			this.group = group;
 			this.ruleId = ruleId;
 			this.noreplyMail = noreplyMail;
@@ -120,29 +124,36 @@ public class Provider extends RulesByFeature{
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.attachementblock:"+group, ruleId.toString());
 			if(extensions.size()>0){
+				log.debug("cheking extensions="+Arrays.deepToString(extensions.toArray()));
 				if(mail.getState().equals(MailState.DELIVER) && mail.getAttachments().hasMatchingExtension(extensions)){
 					mail.drop("org.mxhero.feature.attachmentblock");
+					log.debug("droped by extension");
 				}
 			}
 			if(names.size()>0){
+				log.debug("cheking names="+Arrays.deepToString(names.toArray()));
 				if(mail.getState().equals(MailState.DELIVER) && mail.getAttachments().hasMatchingName(names)){
 					mail.drop("org.mxhero.feature.attachmentblock");
+					log.debug("droped by names");
 				}
 			}
 			if(types.size()>0){
+				log.debug("cheking types="+Arrays.deepToString(types.toArray()));
 				if(mail.getState().equals(MailState.DELIVER) && mail.getAttachments().hasMatchingType(types)){
-					
 					mail.drop("org.mxhero.feature.attachmentblock");
+					log.debug("droped by types");
 				}
 			}
 
 			boolean droppedByAttachments=mail.getState().equals(MailState.DROP);
 			if(action!=null && action.equals(RETURN_ACTION) && droppedByAttachments){
+				log.debug("return message");
 				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessagePlain,returnMessage} );
 			}
 			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock", "rule="+ruleId+";blocked="+droppedByAttachments);
 			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments) );
 			if(droppedByAttachments){
+				log.debug("bloqued stat");
 				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.attachementblock");
 			}
 		}
