@@ -10,17 +10,20 @@
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
 	<fx:Declarations>
-		<mx:EmailValidator id="emailV" required="true" source="{emailTi}" property="text"/>
+		<mx:EmailValidator id="emailV" />
+		<mx:StringValidator id="requiredV" required="true" source="{emailTi}" property="text"/>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.StringUtils;
 			
 			private var errorMessage:String;
 			
@@ -34,12 +37,19 @@
 			
 			public function isValid():Boolean{
 				var valArray:Array;
-				valArray=emailV.validate().results;
-				if(valArray!=null && valArray.length>0){
-					errorMessage=emailTi.errorString;
-					return false;
+				var valid:String="";
+				for each(var email:String in emailTi.text.split(",")){
+					if( StringUtils.trim(email).length>0){
+						valArray=emailV.validate(email).results;
+						if(valArray!=null && valArray.length>0){
+							emailTi.errorString=(valArray[0] as ValidationResult).errorMessage;
+							return false;
+						}
+						valid=valid+","+StringUtils.trim(email);
+					}
 				}
-				errorMessage="";
+				emailTi.text=valid.substr(1,valid.length);
+				emailTi.errorString="";
 				return true;
 			}
 			
