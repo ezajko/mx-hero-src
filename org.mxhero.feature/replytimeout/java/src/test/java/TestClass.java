@@ -1,8 +1,12 @@
-import java.text.ParseException;
+
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.ParseException;
+
 import org.junit.Test;
+import org.mxhero.engine.commons.util.HeaderUtils;
 
 public class TestClass {
 
@@ -16,6 +20,7 @@ public class TestClass {
 			System.out.println(matcher.group().trim().replaceFirst("\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", ""));
 		}
 		System.out.println("*"+input.replaceAll(regex, "")+"*");
+		System.out.println(Arrays.deepToString(HeaderUtils.parseParameters("replyTimeout=\\\"\\\\\"123123123123\\\\\",\\\\\"en_US\\\\\"\\\"","replyTimeout")));
 	}
 	
 }
