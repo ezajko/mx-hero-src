@@ -115,7 +115,7 @@ public class Provider extends RulesByFeature  {
 					replyTimeoutDate=Calendar.getInstance();
 					replyTimeoutDate.setTimeInMillis(Long.parseLong(headerParameters[0].trim()));
 					if(headerParameters.length>1 && headerParameters[1].trim().length()>0){
-						locale=headerParameters[2].trim();
+						locale=headerParameters[1].trim();
 					}
 				}else{
 					Matcher matcher = Pattern.compile(REGEX_STRICT).matcher(mail.getSubject().getSubject());
