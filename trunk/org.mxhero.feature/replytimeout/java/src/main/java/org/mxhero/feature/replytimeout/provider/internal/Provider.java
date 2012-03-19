@@ -83,6 +83,9 @@ public class Provider extends RulesByFeature  {
 				log.debug("match subject="+mail.getSubject().getSubject().matches(REGEX) );
 				log.debug("header value="+HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE));
 			}
+			if(conditions && !isInTO){
+				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
+			}
 			return conditions && isInTO;
 		}
 		
