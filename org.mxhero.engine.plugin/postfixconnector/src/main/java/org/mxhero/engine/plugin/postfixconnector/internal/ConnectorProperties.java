@@ -5,6 +5,10 @@ import java.net.UnknownHostException;
 
 public class ConnectorProperties {
 
+	public final static String RET_HEADER="X-mxHero-Dsn-Ret";
+	public final static String NOTIFY_HEADER="X-mxHero-Dsn-Notify";
+	public final static String ID_HEADER="X-mxHero-Id";
+	
 	private String mailSmtpHost = "127.0.0.1";
 	private Integer mailSmtpPort = 5555;
 	private String smtpHost = "127.0.0.1";

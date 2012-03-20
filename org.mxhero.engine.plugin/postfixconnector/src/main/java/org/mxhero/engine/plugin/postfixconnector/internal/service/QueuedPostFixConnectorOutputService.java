@@ -8,6 +8,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.mailster.smtp.command.impl.MailCommand;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.util.LogMail;
 import org.mxhero.engine.plugin.postfixconnector.internal.ConnectorProperties;
@@ -45,7 +46,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 
 		String from = (mail.getInitialSender()!=null && mail.getInitialSender().trim().length()>0)?mail.getInitialSender():"<>";
 		props.put("mail.smtp.from", from);
-		Session session = Session.getInstance(props);
 	    MimeMessage msg = null;
 		try {
 			msg = mail.getMessage();
@@ -54,7 +54,33 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 			}else{
 				msg.removeHeader("Sender");
 			}
-			
+			String[] notifyHeaders = msg.getHeader(ConnectorProperties.NOTIFY_HEADER);
+			String[] id = msg.getHeader(ConnectorProperties.ID_HEADER);
+
+			String retValue = null;
+			String notifyValue = null;
+
+			if(id!=null 
+					&& id.length>0 
+					&& id[0]!=null 
+					&& !id[0].trim().isEmpty()
+					&& notifyHeaders!=null 
+					&& notifyHeaders.length>0 
+					&& notifyHeaders[0]!=null 
+					&& !notifyHeaders[0].trim().isEmpty()){
+				String mailId = mail.getTime().getTime()+"-"+mail.getSequence();
+				if(mailId.trim().equalsIgnoreCase(id[0].trim())){
+					notifyValue=notifyHeaders[0].trim();
+					String[] retHeaders = msg.getHeader(ConnectorProperties.RET_HEADER);
+					if(retHeaders!=null && retHeaders.length>0 && retHeaders[0]!=null && !retHeaders[0].trim().isEmpty()){
+						retValue = retHeaders[0].trim();
+					}else{
+						retValue = MailCommand.RET_HDRS;
+					}
+					props.put("mail.smtp.dsn.ret", retValue);
+					props.put("mail.smtp.dsn.notify", notifyValue);
+				}
+			}
 			try{
 				msg.saveChanges();
 			}catch (Exception e){
@@ -66,7 +92,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 				}
 				throw new RuntimeException(e);
 			}
-			
+			Session session = Session.getInstance(props);
 		    Transport t = session.getTransport("smtp");
 		    t.connect();
 		    InternetAddress recipient=null;

@@ -3,5 +3,5 @@
 #-----------------------------------------------------------------
 
 Embed-Dependency:\
- smtp;groupId=org.mailster;inline=false,\
+ smtp;groupId=org.mxhero.mailster;inline=false,\
  jcifs;groupId=org.samba.jcifs;inline=false
