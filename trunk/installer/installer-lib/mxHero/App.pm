@@ -121,7 +121,7 @@ sub upgrade
 	}
 
 	## FRONTEND
-	return 0 if (! &_installNewWARs($errorRef));
+	return 0 if (! &_installNewWARs($errorRef, $oldVersion));
 
 	return 1;
 }
@@ -171,12 +171,34 @@ sub _cascadeUpgrade
 		}
 	}
 
+	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.3.1.RELEASE') <= 0)
+	{
+		my @filesToCopy = ('org.mxhero.engine.plugin.gsync.cfg', 'org.mxhero.engine.plugin.threadlight.cfg', 'org.mxhero.feature.replytimeout.provider.cfg');
+		for my $file (@filesToCopy)
+		{
+			copy ("$myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/configuration/properties/$file", "$myConfig{MXHERO_PATH}/configuration/properties/$file");
+		}
+	}
+
 	return 1;
 }
 
 sub _installNewWARs
 {
 	my $errorRef = $_[0];
+	my $oldVersion = $_[1];
+
+	if ($oldVersion)
+	{
+		opendir (TWP, $myConfig{TOMCAT_WEBAPPS_PATH});
+		for my $file (readdir(TWP))
+		{
+			next unless ($file =~ /^(.+?)(?:\.war)$/);
+			next unless (-d $myConfig{TOMCAT_WEBAPPS_PATH} . '/' . $1);
+			rename ($myConfig{TOMCAT_WEBAPPS_PATH} . '/' . $1, $myConfig{TOMCAT_WEBAPPS_PATH} . '-' . $oldVersion . '-' . $1);
+		}
+		closedir (TWP);
+	}
 	
 	myPrint T("Installing mxHero frontend files..."), "\n";
 	if ((system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/web/*.war $myConfig{TOMCAT_WEBAPPS_PATH}")) != 0)
