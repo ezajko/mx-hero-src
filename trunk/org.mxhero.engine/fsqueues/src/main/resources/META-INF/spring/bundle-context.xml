@@ -14,8 +14,20 @@
 
 	<context:annotation-config />
 
+	<osgix:cm-properties id="cmProps"
+		persistent-id="org.mxhero.engine.fsqueues" />
+		
+		<context:property-placeholder properties-ref="cmProps" />
+
 	<bean id="config" class="org.mxhero.engine.fsqueues.internal.FSConfig">
-		<osgix:managed-properties persistent-id="org.mxhero.engine.fsqueues" autowire-on-update="true" />
+		<property name="capacity" value="${capacity}"/>
+		<property name="deferredSize" value="${deferredSize}"/>
+		<property name="loadPath" value="${loadPath}"/>
+		<property name="storePath" value="${storePath}"/>
+		<property name="storePrefix" value="${storePrefix}"/>
+		<property name="suffix" value="${suffix}"/>
+		<property name="tmpPath" value="${tmpPath}"/>
+		<property name="tmpPrefix" value="${tmpPrefix}"/>
 	</bean>
 
 	<osgi:service ref="queueService">
