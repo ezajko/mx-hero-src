@@ -14,8 +14,6 @@
 
 	<context:annotation-config />
 
-	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.fsqueues"/>
-
 	<bean id="config" class="org.mxhero.engine.fsqueues.internal.FSConfig">
 		<osgix:managed-properties persistent-id="org.mxhero.engine.fsqueues" autowire-on-update="true" />
 	</bean>
@@ -30,7 +28,7 @@
 	</osgi:service>
 
 	<bean id="queueService" class="org.mxhero.engine.fsqueues.internal.FSQueueService"
-		init-method="init" destroy-method="stop">
+		init-method="init" destroy-method="stop" lazy-init="true">
 		<constructor-arg ref="config" />
 	</bean>
 
