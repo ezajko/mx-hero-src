@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- Enable annotation scanning. -->
+	<context:component-scan base-package="org.mxhero.webapi" />
+
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="xml" value="application/xml" />
+			</map>
+		</property>
+
+		<property name="defaultViews">
+			<list>
+				<!-- JSON View -->
+				<bean
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+				</bean>
+				<!-- JAXB XML View -->
+				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+					<constructor-arg>
+						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+							<property name="classesToBeBound">
+								<list>
+									<value>org.mxhero.webapi.entity.ApplicationUser</value>
+									<value>org.mxhero.webapi.entity.Connector</value>
+									<value>org.mxhero.webapi.entity.Domain</value>
+									<value>org.mxhero.webapi.entity.Account</value>
+									<value>org.mxhero.webapi.entity.Property</value>
+									<value>org.mxhero.webapi.entity.RuleDirections</value>
+									<value>org.mxhero.webapi.entity.RuleDirection</value>
+									<value>org.mxhero.webapi.entity.ActivityData</value>
+									<value>org.mxhero.webapi.entity.ResultPage</value>
+									<value>org.mxhero.webapi.entity.ResultQuery</value>
+									<value>org.mxhero.webapi.entity.ResultRow</value>
+									<value>org.mxhero.webapi.entity.UploadAccounts</value>
+								</list>
+							</property>
+						</bean>
+					</constructor-arg>
+				</bean>
+			</list>
+		</property>
+		<property name="ignoreAcceptHeader" value="true" />
+	</bean>
+
+	<!-- Should be defined last! -->
+	<mvc:annotation-driven />
+
+</beans>
