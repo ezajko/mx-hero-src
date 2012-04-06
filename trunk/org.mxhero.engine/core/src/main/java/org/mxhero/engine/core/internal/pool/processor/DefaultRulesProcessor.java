@@ -1,7 +1,6 @@
 package org.mxhero.engine.core.internal.pool.processor;
 
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.RuleBase;
 import org.mxhero.engine.core.internal.CoreProperties;
 
@@ -27,8 +26,8 @@ public class DefaultRulesProcessor implements RulesProcessor{
 
 		//Getting domain group and adding objects
 		String domainAgendaGroup = null;
-		if(fact.getInitialData().getPhase().equals(RulePhase.SEND)){
-			domainAgendaGroup = fact.getInitialData().getSender().getDomain().getId();
+		if(fact.getPhase().equals(Mail.Phase.send)){
+			domainAgendaGroup = fact.getSender().getDomain().getId();
 			//Adding default rules to start first
 			String bottomAgendaGroup = getProperties().getBottomGroupId();
 			if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
@@ -41,8 +40,8 @@ public class DefaultRulesProcessor implements RulesProcessor{
 				base.process(domainAgendaGroup, fact);
 			}
 			
-		} else if (fact.getInitialData().getPhase().equals(RulePhase.RECEIVE)){
-			domainAgendaGroup = fact.getInitialData().getRecipient().getDomain().getId();
+		} else if (fact.getPhase().equals(Mail.Phase.receive)){
+			domainAgendaGroup = fact.getRecipient().getDomain().getId();
 			//Adding domain agenda group
 			if(domainAgendaGroup!=null){
 				log.debug("firing rules for domain:"+domainAgendaGroup);

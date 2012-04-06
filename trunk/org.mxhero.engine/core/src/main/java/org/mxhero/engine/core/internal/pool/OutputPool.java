@@ -4,11 +4,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
-import org.mxhero.engine.commons.queue.QueueTaskPool;
 import org.mxhero.engine.commons.statistic.LogStat;
 import org.mxhero.engine.core.internal.CoreProperties;
+import org.mxhero.engine.core.internal.pool.task.DeliverTask;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
  * @author mmarmol
  */
 public final class OutputPool extends QueueTaskPool implements Observer {
-
-	public static final String PHASE=RulePhase.OUT;
 	
 	private static Logger log = LoggerFactory.getLogger(OutputPool.class);
 		
@@ -35,7 +33,7 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 	 * @param bc
 	 */
 	public OutputPool(BundleContext bc, MimeMailQueueService queueService){
-		super(PHASE,queueService);
+		super(Mail.Phase.out,queueService);
 		if (bc==null){
         	throw new IllegalArgumentException();
         }
@@ -63,7 +61,7 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 	}
 
 	/**
-	 * @see org.mxhero.engine.domain.pool.QueueTaskPool#createTask(java.lang.Object)
+	 * @see org.mxhero.engine.core.internal.pool.domain.pool.QueueTaskPool#createTask(java.lang.Object)
 	 */
 	@Override
 	protected Runnable createTask(MimeMail mail) {

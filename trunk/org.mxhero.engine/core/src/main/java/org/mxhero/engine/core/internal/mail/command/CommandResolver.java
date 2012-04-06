@@ -1,6 +1,7 @@
 package org.mxhero.engine.core.internal.mail.command;
 
 import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 
 
@@ -19,5 +20,5 @@ public interface CommandResolver {
 	 * @param args parameters for the command
 	 * @return result of the execution
 	 */
-	Result resolve(MimeMail mail, String commandId, String... args);
+	Result resolve(MimeMail mail, String commandId, NamedParameters parameters);
 }
