@@ -2,9 +2,9 @@ package org.mxhero.engine.plugin.dbfinder.internal.service;
 
 import java.util.HashSet;
 
+import org.mxhero.engine.commons.domain.Domain;
+import org.mxhero.engine.commons.domain.User;
 import org.mxhero.engine.commons.finders.UserFinder;
-import org.mxhero.engine.commons.mail.business.Domain;
-import org.mxhero.engine.commons.mail.business.User;
 import org.mxhero.engine.plugin.dbfinder.internal.repository.UserRepository;
 import org.mxhero.engine.plugin.dbfinder.internal.util.Cloner;
 import org.slf4j.Logger;

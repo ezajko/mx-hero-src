@@ -8,8 +8,8 @@ import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
-import org.mxhero.engine.commons.mail.business.Domain;
-import org.mxhero.engine.commons.mail.business.User;
+import org.mxhero.engine.commons.domain.Domain;
+import org.mxhero.engine.commons.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
