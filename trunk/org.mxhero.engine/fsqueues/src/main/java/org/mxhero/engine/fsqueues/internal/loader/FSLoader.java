@@ -8,7 +8,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.fsqueues.internal.FSConfig;
 import org.mxhero.engine.fsqueues.internal.FSQueueService;
 import org.mxhero.engine.fsqueues.internal.util.Files;
@@ -48,14 +48,14 @@ public class FSLoader {
 	}
 	
 	private void work(){
-		loadPhase(RulePhase.SEND.toLowerCase());
-		loadPhase(RulePhase.RECEIVE.toLowerCase());
-		loadPhase(RulePhase.OUT.toLowerCase());
+		for(Mail.Phase phase : Mail.Phase.values()){
+			loadPhase(phase);
+		}
 	}
 
-	private void loadPhase( String phase){
+	private void loadPhase(Mail.Phase phase){
 		try{
-			File pathFile = new File(config.getLoadPathFile(),phase);
+			File pathFile = new File(config.getLoadPathFile(),phase.name());
 			if(pathFile.exists() && pathFile.isDirectory()){
 				File[] mailFiles = pathFile.listFiles();
 				for(File mailFile : mailFiles){

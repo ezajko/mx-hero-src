@@ -17,7 +17,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.fsqueues.internal.FSQueueService;
 import org.mxhero.engine.fsqueues.internal.entity.DelayedMail;
 import org.mxhero.engine.fsqueues.internal.entity.FSMail;
@@ -30,14 +30,14 @@ public class AbandonedCheck {
 
 	private static Logger log = LoggerFactory.getLogger(AbandonedCheck.class);
 	private Map<FSMailKey,FSMail> store;
-	private Map<String, DelayQueue<DelayedMail>> queues;
+	private Map<Mail.Phase, DelayQueue<DelayedMail>> queues;
 	private FSQueueService srv;
 	private boolean weekWorking=true;
 	private long checkTime=180*1000;
 	private static final long MAX_TIME_IN_STORE = 20*60*1000;
 	private static final int TRIES=3;
 	
-	public AbandonedCheck(Map<FSMailKey, FSMail> store, FSQueueService srv, Map<String, DelayQueue<DelayedMail>> queues) {
+	public AbandonedCheck(Map<FSMailKey, FSMail> store, FSQueueService srv, Map<Mail.Phase, DelayQueue<DelayedMail>> queues) {
 		this.store = store;
 		this.srv = srv;
 		this.queues = queues;
@@ -68,7 +68,7 @@ public class AbandonedCheck {
 	
 	public boolean exists(FSMail fsMail){
 		DelayedMail mail = new DelayedMail(fsMail.getKey().getTime(), fsMail.getKey().getSequence());
-		for(String phase : queues.keySet()){
+		for(Mail.Phase phase : queues.keySet()){
 			if(queues.get(phase).contains(mail)){
 				log.warn("mail delayed in phase:"+phase);
 				return true;
@@ -129,7 +129,7 @@ public class AbandonedCheck {
 									outputService, 
 									fsMail.getKey().getSequence(), 
 									fsMail.getKey().getTime());
-							srv.put(RulePhase.SEND, mail);
+							srv.put(Mail.Phase.send, mail);
 							log.info("mail again on queue "+mail);
 						}catch (Exception e){
 							log.error("inserting email again",e);
