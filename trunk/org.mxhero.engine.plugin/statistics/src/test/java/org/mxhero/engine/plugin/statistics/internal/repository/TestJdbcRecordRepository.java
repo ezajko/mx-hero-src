@@ -5,9 +5,7 @@ import java.util.Calendar;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mxhero.engine.commons.mail.business.MailFlow;
-import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.plugin.statistics.internal.entity.Record;
 import org.mxhero.engine.plugin.statistics.internal.entity.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +25,15 @@ public class TestJdbcRecordRepository {
 	public void test(){
 		Record record = new Record();
 		record.setBytesSize(10);
-		record.setFlow(MailFlow.BOTH);
+		record.setFlow(Mail.Flow.both.name());
 		record.setFrom("Y@Y");
 		record.setInsertDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		record.setMessageId("12345@123123");
-		record.setPhase(RulePhase.SEND);
+		record.setPhase(Mail.Phase.send.name());
 		record.setRecipient("R@RR");
 		record.setRecipientDomainId("RR");
 		record.setRecipientId("RID@RR");
-		record.setState(MailState.DELIVER);
+		record.setState(Mail.Status.deliver.name());
 		record.setSubject("SUB");
 		record.setStateReason("UPS!");
 		record.setSender("S@SS");
