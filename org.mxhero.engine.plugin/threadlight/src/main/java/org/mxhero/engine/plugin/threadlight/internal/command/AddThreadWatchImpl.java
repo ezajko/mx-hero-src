@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
@@ -20,18 +21,20 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 	private static Logger log = LoggerFactory.getLogger(AddThreadWatchImpl.class);
 	
 	@Override
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
 		String follower = null;
-		String parameters = null;
+		String followerParameters = null;
 		//mail can not be null
-		if(mail==null || args == null || args.length<1 || args[0] == null || args[0].trim().isEmpty()){
+		if(mail==null || parameters == null || (parameters.get(AddThreadWatch.FOLLOWER)==null ||
+												parameters.get(AddThreadWatch.FOLLOWER_PARAMETERS)==null)){
+			log.debug("wrong parameters");
+			result.setAnError(true);
+			result.setMessage("wrong parameters");
 			return result;
 		}
-		follower=args[0];
-		if(args.length>1){
-			parameters=args[1];
-		}
+		follower=parameters.get(AddThreadWatch.FOLLOWER);
+		followerParameters=parameters.get(AddThreadWatch.FOLLOWER_PARAMETERS);
 		//creat thread row
 		try{
 			ThreadRow threadRow = new ThreadRow();
@@ -44,10 +47,10 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 			//follow that thread
 			ThreadRowFollower threadFollower = new ThreadRowFollower();
 			threadFollower.setFollower(follower);
-			threadFollower.setFolowerParameters(parameters);
+			threadFollower.setFolowerParameters(followerParameters);
 			threadRowService.follow(threadRow,threadFollower);
 			log.debug("command follow "+threadRow);
-			result.setResult(true);
+			result.setConditionTrue(true);
 		}catch(Exception e){
 			log.error("error while executing follow command",e);
 		}
