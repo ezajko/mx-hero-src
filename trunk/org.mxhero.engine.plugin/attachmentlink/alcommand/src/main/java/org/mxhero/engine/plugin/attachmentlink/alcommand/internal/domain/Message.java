@@ -23,8 +23,10 @@ import javax.mail.internet.MimeUtility;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
 
 
@@ -62,13 +64,16 @@ public class Message {
 		this.messageAttachRecipient = new HashSet<MessageAttachRecipient>();
 	}
 	
-	public Message(MimeMail mail, String[] args) throws MessagingException{
+	public Message(MimeMail mail, NamedParameters parameters) throws MessagingException{
 		this();
 		this.mail = mail;
-		this.locale =  new Locale(args[0]);
-		this.processAckDownloadMail = Boolean.valueOf(args[1]);
-		if(args.length>2)this.messageAckDownloadMail = args[2];
-		this.sender = mail.getInitialSender();
+		String locale = parameters.get(AlCommand.LOCALE);
+		Boolean notify = parameters.get(AlCommand.NOTIFY);
+		String notifyMessage = parameters.get(AlCommand.NOTIFY_MESSAGE);
+		this.locale =  new Locale(locale);
+		this.processAckDownloadMail = notify;
+		this.messageAckDownloadMail = notifyMessage;
+		this.sender = mail.getSender();
 		this.messagePlatformId = mail.getMessageId();
 		this.subject = mail.getMessage().getSubject();
 	}
@@ -183,24 +188,24 @@ public class Message {
 	}
 
 	public void requeueMessage() {
-		getResult().setResult(false);
-		getResult().setText(MailState.REQUEUE);
-		mail.setStatus(MailState.REQUEUE);
+		getResult().setConditionTrue(false);
+		getResult().setAnError(false);
+		getResult().setMessage(Mail.Status.requeue.toString());
+		mail.setStatus(Mail.Status.requeue);
 		throw new RequeueingException();
 	}
 
 	public void successMessage() {
-		getResult().setResult(true);
-		getResult().setText("Attachment Processed");
+		getResult().setConditionTrue(true);
+		getResult().setMessage("Attachment Processed");
 		int size = getMessageAttachRecipient().size();
-		getResult().setLongField(size);
-		getResult().setDoubleField(Integer.valueOf(size).doubleValue());
+		getResult().setParameters(new NamedParameters("size",size));
 	}
 
 	public void continueProcessing() {
 		if(!hasAttachments()){
-			getResult().setResult(false);
-			getResult().setText("The mail has no attachments");
+			getResult().setConditionTrue(false);
+			getResult().setMessage("The mail has no attachments");
 		}
 	}
 
