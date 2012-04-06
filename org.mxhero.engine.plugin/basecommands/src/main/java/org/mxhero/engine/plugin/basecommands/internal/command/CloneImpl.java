@@ -9,13 +9,13 @@ import java.io.OutputStream;
 
 import javax.mail.Address;
 import javax.mail.Message;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.basecommands.command.Clone;
 import org.mxhero.engine.plugin.basecommands.command.Reply;
@@ -36,14 +36,6 @@ import org.slf4j.LoggerFactory;
 public class CloneImpl implements Clone {
 
 	private static Logger log = LoggerFactory.getLogger(CloneImpl.class);
-
-	private static final int MIM_PARAMANS = 3;
-	private static final int PHASE_PARAM_NUMBER = 0;
-	private static final int SENDER_PARAM_NUMBER = 1;
-	private static final int RECIPIENT_PARAM_NUMBER = 2;
-	private static final int OUTPUTSERVICE_PARAM_NUMBER = 3;
-	private static final int GENERATE_NEWMESSAGEID = 4;
-	private static final int OVERRIDE = 5;
 	
 	private static final String TMP_FILE_SUFFIX = ".eml";
 	private static final String TMP_FILE_PREFIX = "clone";
@@ -56,64 +48,53 @@ public class CloneImpl implements Clone {
 	 *      java.lang.String[])
 	 */
 	@Override
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
+		MimeMail clonedMail = null;
 		InternetAddress sender = null;
 		InternetAddress recipient = null;
-		String outputService = null;
-		MimeMail clonedMail = null;
-		result.setResult(false);
-		String override="none";
-		boolean generateNewMessageId = false;
+		String outputService = parameters.get(Clone.OUTPUT_SERVICE);
+		Mail.Phase phase = parameters.get(Clone.PHASE);
+		String override= parameters.get(Clone.OVERRIDE);
+		Boolean generateNewMessageId = parameters.get(Clone.GENERATE_ID);
 
-		if (args == null || args.length < MIM_PARAMANS) {
+		if(parameters==null || !parameters.hasParameter(Clone.RECIPIENT)){
 			log.warn("wrong ammount of params.");
+			result.setMessage("wrong ammount of params.");
 			return result;
-		} else if (args[PHASE_PARAM_NUMBER] == null
-				|| !(args[PHASE_PARAM_NUMBER].equalsIgnoreCase(RulePhase.SEND) || args[PHASE_PARAM_NUMBER]
-						.equalsIgnoreCase(RulePhase.RECEIVE))) {
-			log.warn("wrong params.");
-			return result;
-		} else if (args[RECIPIENT_PARAM_NUMBER] == null
-				|| args[RECIPIENT_PARAM_NUMBER].isEmpty()) {
-			log.warn("wrong params.");
-			return result;
-		} else {
+		}
+
 			try {
-				if(args[SENDER_PARAM_NUMBER]!=null && !args[SENDER_PARAM_NUMBER].isEmpty()){
-					sender = new InternetAddress(args[SENDER_PARAM_NUMBER]);
+				String senderEmail = parameters.get(Clone.SENDER);
+				if(senderEmail!=null){
+					sender = new InternetAddress(senderEmail,false);
+				}else{
+					sender = new InternetAddress(mail.getSender(),false);
 				}
-			} catch (AddressException e) {
+				String recipientEmail = parameters.get(Clone.RECIPIENT);
+				recipient = new InternetAddress(recipientEmail,false);
+				if(outputService==null){
+					outputService = mail.getResponseServiceId();
+				}
+				if(phase==null){
+					phase=mail.getPhase();
+				}
+				if(override == null || 
+						(!override.equalsIgnoreCase("in")&&
+						!override.equalsIgnoreCase("out")&&
+						!override.equalsIgnoreCase("both"))){
+					override = "none";
+				}
+				if(generateNewMessageId==null){
+					generateNewMessageId = false;
+				}	
+			} catch (Exception e) {
 				log.warn("wrong sender address");
+				result.setMessage("wrong paramters: "+e.getMessage());
+				result.setAnError(true);
 				return result;
-			}
-			try {
-				recipient = new InternetAddress(args[RECIPIENT_PARAM_NUMBER]);
-			} catch (AddressException e) {
-				log.warn("wrong recipient address");
-				return result;
-			}
-
-			if (args.length > OUTPUTSERVICE_PARAM_NUMBER
-					&& args[OUTPUTSERVICE_PARAM_NUMBER] != null
-					&& !args[OUTPUTSERVICE_PARAM_NUMBER].isEmpty()) {
-				outputService = args[OUTPUTSERVICE_PARAM_NUMBER];
-			} else {
-				outputService = mail.getResponseServiceId();
-			}
-
-			if(args.length > GENERATE_NEWMESSAGEID){
-				generateNewMessageId=Boolean.parseBoolean(args[GENERATE_NEWMESSAGEID]);
-				log.debug("generate new Id");
 			}
 			
-			if(args.length > OVERRIDE && args[OVERRIDE]!=null){
-				if(args[OVERRIDE].equalsIgnoreCase("in")||
-					args[OVERRIDE].equalsIgnoreCase("out")||
-					args[OVERRIDE].equalsIgnoreCase("both")){
-					override = args[OVERRIDE].toLowerCase();
-				}
-			}
 			log.debug("override:"+override);
 			if(!mail.getProperties().containsKey(Reply.class.getName())){
 				InputStream is = null;
@@ -154,6 +135,9 @@ public class CloneImpl implements Clone {
 					clonedMail.getProperties().put(Reply.class.getName(), recipient.getAddress());
 				} catch (Exception e) {
 					log.warn("error while creating cloned message");
+					result.setAnError(true);
+					result.setConditionTrue(false);
+					result.setMessage(e.getMessage());
 					return result;
 				} finally{
 					if(os!=null){
@@ -176,11 +160,9 @@ public class CloneImpl implements Clone {
 					return result;
 				}
 			}
-			result.setResult(true);
+			result.setConditionTrue(true);
+			return result;
 		}
-
-		return result;
-	}
 
 	/**
 	 * @return

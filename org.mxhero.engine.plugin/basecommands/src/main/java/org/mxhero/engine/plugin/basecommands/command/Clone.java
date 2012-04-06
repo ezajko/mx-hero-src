@@ -10,4 +10,11 @@ import org.mxhero.engine.commons.mail.command.Command;
  */
 public interface Clone extends Command {
 
+	String PHASE = "phase";
+	String SENDER = "sender";
+	String RECIPIENT = "recipient";
+	String OUTPUT_SERVICE = "outputService";
+	String GENERATE_ID = "generateId";
+	String OVERRIDE = "override";
+	
 }

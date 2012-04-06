@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin</groupId>
 	<artifactId>basecommands</artifactId>
-	<version>1.2.2</version>
+	<version>1.5.0</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -78,7 +78,7 @@
 			<type>pom</type>
 			<groupId>org.mxhero.engine.build</groupId>
 			<artifactId>provision</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>org.mxhero.engine</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.2.0</version>
+			<version>1.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

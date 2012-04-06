@@ -10,4 +10,10 @@ import org.mxhero.engine.commons.mail.command.Command;
  */
 public interface Create extends Command {
 
+	String SENDER = "sender";
+	String RECIPIENTS = "recipients";
+	String SUBJECT = "subject";
+	String TEXT = "text";
+	String OUTPUT_SERVICE = "outputService";
+	
 }
