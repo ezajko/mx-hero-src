@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.clamd.internal.command;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import javax.mail.BodyPart;
@@ -15,7 +14,7 @@ import net.taldius.clamav.ScannerException;
 import net.taldius.clamav.impl.NetworkScanner;
 
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.clamd.command.ClamavScan;
 import org.slf4j.Logger;
@@ -33,10 +32,6 @@ public class SingleClamavScan implements ClamavScan {
 
 	private static Logger log = LoggerFactory.getLogger(SingleClamavScan.class);
 
-	private static final int REMOVE_PARAM_NUMBER = 0;
-	private static final int HEADER_PARAM_NUMBER = 1;
-	private static final int HEADER_NAME_PARAM_NUMBER = 2;
-
 	private static final String FOUND_STRING = "FOUND";
 	private static final String STATUS_CLEAN = "clean";
 	private static final String STATUS_INFECTED = "infected";
@@ -51,96 +46,87 @@ public class SingleClamavScan implements ClamavScan {
 	private Integer connectionTimeOut = 30000;
 	private String hostName = "localhost";
 	private Integer port = 6665;
-	private String  virusHeader = DEFAULT_VIRUS_HEADER;
+	private String virusHeader = DEFAULT_VIRUS_HEADER;
 
-	private boolean remove = false;
-	
+	private Boolean remove = false;
+
 	/**
 	 * @see org.mxhero.engine.domain.mail.command.Command#exec(org.mxhero.engine.domain.mail.MimeMail,
 	 *      java.lang.String[])
 	 */
 	@Override
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
-		result.setResult(false);
-		boolean addHeader = true;
+		Boolean addHeader = true;
 		String headerName = DEFAULT_VIRUS_HEADER;
-		if (getVirusHeader()!=null && !getVirusHeader().isEmpty()) {
+		if (getVirusHeader() != null && !getVirusHeader().isEmpty()) {
 			headerName = getVirusHeader();
 		}
 
 		Collection<String> results = new ArrayList<String>();
-		if (args == null || args[REMOVE_PARAM_NUMBER] == null) {
+		if (parameters == null) {
 			log.warn("wrong ammount of params");
+			result.setAnError(true);
+			result.setMessage("wrong ammount of params");
 			return result;
-		} else {
-			if (!args[REMOVE_PARAM_NUMBER].equalsIgnoreCase(Boolean.TRUE
-					.toString())
-					&& !args[REMOVE_PARAM_NUMBER]
-							.equalsIgnoreCase(Boolean.FALSE.toString())) {
-				log.warn("invalid format");
-				return result;
-			} else {
-				remove = Boolean.parseBoolean(args[REMOVE_PARAM_NUMBER]);
-			}
 		}
-		if (args.length > 1
-				&& args[HEADER_PARAM_NUMBER] != null
-				&& (args[HEADER_PARAM_NUMBER].equalsIgnoreCase(Boolean.TRUE
-						.toString()) || args[HEADER_PARAM_NUMBER]
-						.equalsIgnoreCase(Boolean.FALSE.toString()))) {
-			addHeader = Boolean.parseBoolean(args[HEADER_PARAM_NUMBER]);
+
+		remove = parameters.get(ClamavScan.REMOVE_INFECTED);
+		if (remove == null) {
+			remove = false;
 		}
-		if (args.length > 2 && args[HEADER_NAME_PARAM_NUMBER] != null
-				&& !args[HEADER_NAME_PARAM_NUMBER].isEmpty()) {
-			headerName = args[HEADER_NAME_PARAM_NUMBER];
+		addHeader = parameters.get(ClamavScan.ADD_HEADER);
+		if (addHeader == null) {
+			addHeader = true;
+		}
+		headerName = parameters.get(ClamavScan.HEADER_NAME);
+		if (headerName == null) {
+			headerName = DEFAULT_VIRUS_HEADER;
 		}
 
 		try {
 			if (addHeader) {
 				mail.getMessage().setHeader(headerName, STATUS_NOT_SCANNED);
 			}
-
 			scanAndremove(mail.getMessage(), null, results);
-			
 			if (results.size() > 0 && !remove) {
-				result.setResult(true);
+				result.setConditionTrue(true);
 				if (addHeader) {
 					mail.getMessage().setHeader(headerName, STATUS_INFECTED);
-					mail.setStatus(MailState.DROP);
-					mail.setStatusReason(headerName+":"+STATUS_INFECTED);
 				}
 			} else {
 				if (addHeader) {
 					mail.getMessage().setHeader(headerName, STATUS_CLEAN);
 				}
 			}
-			result.setLongField(results.size());
-			result.setText(Arrays.toString(results.toArray()));
+			result.setParameters(new NamedParameters("results", results));
 			mail.getMessage().saveChanges();
-
-		} catch (MessagingException e) {
-			log.error("error while scanning", e);
-		} catch (IOException e) {
-			log.error("error while scanning", e);
-		} catch (ScannerException e) {
-			log.error("error while scanning", e);
+		} catch (Exception e) {
+			log.warn("error while scanning:"+ e.getMessage());
+			result.setAnError(true);
+			result.setMessage(e.getMessage());
 		}
-
 		return result;
 	}
 
 	/**
-	 * This method is used to scan individual attachments and remove them if they are infected.
-	 * @param part part been analyzed for attachments.
-	 * @param parent parent of the part that should be a multipart or null.
-	 * @param results for each file analyzed we return the name, type and result of the analysis.
+	 * This method is used to scan individual attachments and remove them if
+	 * they are infected.
+	 * 
+	 * @param part
+	 *            part been analyzed for attachments.
+	 * @param parent
+	 *            parent of the part that should be a multipart or null.
+	 * @param results
+	 *            for each file analyzed we return the name, type and result of
+	 *            the analysis.
 	 * @throws MessagingException
 	 * @throws IOException
-	 * @throws ScannerException 
+	 * @throws ScannerException
 	 */
 	private void scanAndremove(Part part, Multipart parent,
-			Collection<String> results) throws MessagingException, IOException, ScannerException {
+			Collection<String> results) throws MessagingException, IOException,
+			ScannerException {
 		if (part.isMimeType(MULTIPART_TYPE)) {
 			Multipart mp = (Multipart) part.getContent();
 			Collection<BodyPart> childs = new ArrayList<BodyPart>();
@@ -166,18 +152,18 @@ public class SingleClamavScan implements ClamavScan {
 						Part.ATTACHMENT)))
 				|| (part.getContentType() != null && part.getContentType()
 						.trim().startsWith(APPLICATION_TYPE))) {
-			
-			NetworkScanner  scanner = new NetworkScanner();
+
+			NetworkScanner scanner = new NetworkScanner();
 			scanner.setClamdHost(getHostName());
 			scanner.setClamdPort(getPort());
 			scanner.setConnectionTimeout(getConnectionTimeOut());
 			scanner.performScan(part.getInputStream());
 			String scanResult = scanner.getMessage();
-			
+
 			if (scanResult.substring(
 					scanResult.length() - FOUND_STRING.length()).equals(
 					FOUND_STRING)) {
-				if(remove){
+				if (remove) {
 					parent.removeBodyPart((BodyPart) part);
 				}
 				results.add("type:" + part.getContentType() + "; fileName:"

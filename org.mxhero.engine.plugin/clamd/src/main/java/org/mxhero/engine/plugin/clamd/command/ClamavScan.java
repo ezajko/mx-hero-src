@@ -8,4 +8,8 @@ import org.mxhero.engine.commons.mail.command.Command;
  */
 public interface ClamavScan extends Command{
 
+	String REMOVE_INFECTED = "removeInfected";
+	String ADD_HEADER = "addHeader";
+	String HEADER_NAME = "headerName";
+	
 }
