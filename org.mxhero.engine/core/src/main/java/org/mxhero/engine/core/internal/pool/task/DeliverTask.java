@@ -1,8 +1,8 @@
-package org.mxhero.engine.core.internal.pool;
+package org.mxhero.engine.core.internal.pool.task;
 
 import org.mxhero.engine.commons.connector.OutputService;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
 import org.mxhero.engine.commons.statistic.LogStat;
 import org.mxhero.engine.core.internal.CoreProperties;
@@ -71,7 +71,7 @@ public final class DeliverTask implements Runnable {
 				if(getProperties().getQueueRetries()<1 
 						|| mail.getDeliverTries()<getProperties().getQueueRetries()){
 					mail.setDeliverTries(mail.getDeliverTries()+1);
-					queueService.delayAndPut(RulePhase.OUT, mail, mail.getDeliverTries()*getProperties().getQueueDelayTime());
+					queueService.delayAndPut(Mail.Phase.out, mail, mail.getDeliverTries()*getProperties().getQueueDelayTime());
 					log.info("Mail added to queue again:" + mail);
 				}else{
 					log.info("Mail take out to later deliver:" + mail);

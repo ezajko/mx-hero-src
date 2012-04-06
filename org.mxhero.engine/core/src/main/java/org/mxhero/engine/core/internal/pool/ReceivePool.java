@@ -5,14 +5,14 @@ import java.util.Observer;
 
 import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
-import org.mxhero.engine.commons.queue.QueueTaskPool;
 import org.mxhero.engine.commons.statistic.LogRecord;
 import org.mxhero.engine.commons.statistic.LogStat;
 import org.mxhero.engine.core.internal.CoreProperties;
 import org.mxhero.engine.core.internal.filler.SessionFiller;
 import org.mxhero.engine.core.internal.pool.processor.RulesProcessor;
+import org.mxhero.engine.core.internal.pool.task.RecipientRuleTask;
 import org.mxhero.engine.core.internal.rules.BaseLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory;
  * @author mmarmol
  */
 public final class ReceivePool extends QueueTaskPool implements Observer {
-
-	public static final String PHASE=RulePhase.RECEIVE;
 	
 	private static Logger log = LoggerFactory.getLogger(ReceivePool.class);
 
@@ -50,7 +48,7 @@ public final class ReceivePool extends QueueTaskPool implements Observer {
 	 * Creates the object and pass to super the queue.
 	 */
 	public ReceivePool(MimeMailQueueService queueService) {
-		super(PHASE,queueService);
+		super(Mail.Phase.receive,queueService);
 		this.queueService=queueService;
 	}
 
@@ -74,7 +72,7 @@ public final class ReceivePool extends QueueTaskPool implements Observer {
 	}
 
 	/**
-	 * @see org.mxhero.engine.domain.pool.QueueTaskPool#createTask(java.lang.Object)
+	 * @see org.mxhero.engine.core.internal.pool.domain.pool.QueueTaskPool#createTask(java.lang.Object)
 	 */
 	@Override
 	protected Runnable createTask(MimeMail object) {
@@ -89,7 +87,7 @@ public final class ReceivePool extends QueueTaskPool implements Observer {
 					public void run() {
 						log.warn("Rule database is not ready " + mail);
 						try {
-							queueService.delayAndPut(PHASE, mail, getProperties().getQueueDelayTime());
+							queueService.delayAndPut(ReceivePool.this.getPhase(), mail, getProperties().getQueueDelayTime());
 						} catch (InterruptedException e1) {
 							log.debug("error while reEnqueue email ",e1);
 							log.error("error while reEnqueue email "+e1.toString());
@@ -97,7 +95,7 @@ public final class ReceivePool extends QueueTaskPool implements Observer {
 					}
 				};
 			} else {
-				object.setPhase(RulePhase.RECEIVE);
+				object.setPhase(this.getPhase());
 				if(object.getBussinesObject()==null){
 					this.getFiller().fill(getUserFinderService(), object);
 				}
@@ -115,7 +113,7 @@ public final class ReceivePool extends QueueTaskPool implements Observer {
 				@Override
 				public void run() {
 					try {
-						queueService.delayAndPut(PHASE, mail, getProperties().getQueueDelayTime());
+						queueService.delayAndPut(ReceivePool.this.getPhase(), mail, getProperties().getQueueDelayTime());
 					} catch (InterruptedException e) {
 						log.debug("Error sending mail to queue again " + mail,e);
 						log.error("Error sending mail to queue again " + mail + e.getClass().getCanonicalName() +": " + e.getMessage());

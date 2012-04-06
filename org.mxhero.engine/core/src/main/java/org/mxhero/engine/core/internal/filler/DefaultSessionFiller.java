@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
+import org.mxhero.engine.commons.domain.Domain;
+import org.mxhero.engine.commons.domain.User;
 import org.mxhero.engine.commons.finders.UserFinder;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.Domain;
-import org.mxhero.engine.commons.mail.business.MailFlow;
-import org.mxhero.engine.commons.mail.business.User;
-import org.mxhero.engine.core.internal.mail.InitialDataVO;
-import org.mxhero.engine.core.internal.mail.MailUtils;
-import org.mxhero.engine.core.internal.mail.MailVO;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.api.Recipients.RecipientType;
+import org.mxhero.engine.core.internal.mail.CMail;
+import org.mxhero.engine.core.internal.mail.CRecipients;
 
 /**
  * This class add the business objects to the session.
@@ -31,7 +30,7 @@ public class DefaultSessionFiller implements SessionFiller {
 	 */
 	@Override
 	public void fill(UserFinder userFinder, MimeMail mail) {
-		mail.setBussinesObject(new MailVO(mail,getInitialData(userFinder, mail)));
+		mail.setBussinesObject(getInitialData(userFinder, mail));
 	}
 
 	
@@ -41,8 +40,8 @@ public class DefaultSessionFiller implements SessionFiller {
 	 * @param mail
 	 * @return
 	 */
-	private InitialDataVO getInitialData(UserFinder userFinder, MimeMail mail){
-		InitialDataVO initialData = null;
+	private CMail getInitialData(UserFinder userFinder, MimeMail mail){
+		CMail cMail = null;
 		String fromId = null;
 		String fromDomainId = null;
 		User sender = null;
@@ -53,7 +52,7 @@ public class DefaultSessionFiller implements SessionFiller {
 		Domain recipientDomain = null;
 		
 		if (mail != null) {
-			mail.setSenderId(mail.getInitialSender().trim());
+			mail.setSenderId(mail.getSender().trim());
 			mail.setRecipientId(mail.getRecipient().trim());
 			mail.setSenderDomainId(mail.getSenderId().substring(mail.getSenderId().indexOf(DIV_CHAR) + 1).trim());
 			mail.setRecipientDomainId(mail.getRecipientId().substring(mail.getRecipientId().indexOf(DIV_CHAR) + 1).trim());
@@ -153,13 +152,13 @@ public class DefaultSessionFiller implements SessionFiller {
 			}
 			
 			if(sender.getDomain().getManaged() && recipient.getDomain().getManaged()){
-				mail.setFlow(MailFlow.BOTH);
+				mail.setFlow(Mail.Flow.both);
 			}else if(sender.getDomain().getManaged()){
-				mail.setFlow(MailFlow.OUT);
+				mail.setFlow(Mail.Flow.out);
 			}else if(recipient.getDomain().getManaged()){
-				mail.setFlow(MailFlow.IN);
+				mail.setFlow(Mail.Flow.in);
 			}else {
-				mail.setFlow(MailFlow.NONE);
+				mail.setFlow(Mail.Flow.none);
 			}
 			
 			mail.setSenderGroup(sender.getGroup());
@@ -167,17 +166,14 @@ public class DefaultSessionFiller implements SessionFiller {
 			
 			List<User> recipientsInHeader = new ArrayList<User>();
 			
-			try {
-				for(String address : MailUtils.toStringCollection(mail.getMessage().getAllRecipients())){
-					recipientsInHeader.add(getUser(userFinder,address));
-				}
-			} catch (MessagingException e) {
+			for(String address : new CRecipients(mail).getRecipients(RecipientType.all)){
+				recipientsInHeader.add(getUser(userFinder,address));
 			}
 			
-			initialData = new InitialDataVO(mail, sender, recipient, from, recipientsInHeader);
+			cMail = new CMail(mail, sender, recipient, from, recipientsInHeader);
 		}
 		
-		return initialData;
+		return cMail;
 	}
 
 

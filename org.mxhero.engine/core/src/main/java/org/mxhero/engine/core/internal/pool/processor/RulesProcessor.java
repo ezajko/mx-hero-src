@@ -1,6 +1,6 @@
 package org.mxhero.engine.core.internal.pool.processor;
 
-import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.RuleBase;
 
 /**

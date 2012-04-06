@@ -1,7 +1,7 @@
-package org.mxhero.engine.core.internal.pool;
+package org.mxhero.engine.core.internal.pool.task;
 
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
 import org.mxhero.engine.commons.rules.RuleBase;
 import org.mxhero.engine.commons.statistic.LogRecord;
@@ -13,15 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This task is in charge of processing mail that are in the receive phase of
- * the rules.
+ * This task is in charge of processing mail that are in the send phase of the
+ * rules.
  * 
  * @author mmarmol
  */
-public final class RecipientRuleTask implements Runnable {
+public final class SenderRuleTask implements Runnable {
 
-	private static Logger log = LoggerFactory
-			.getLogger(RecipientRuleTask.class);
+	private static Logger log = LoggerFactory.getLogger(SenderRuleTask.class);
 
 	private RuleBase base;
 
@@ -29,16 +28,16 @@ public final class RecipientRuleTask implements Runnable {
 
 	private RulesProcessor processor;
 
-	private CoreProperties properties;
-
 	private LogRecord logRecordService;
 
 	private LogStat logStatService;
-	
+
+	private CoreProperties properties;
+
 	private MimeMailQueueService queueService;
 
 	/**
-	 * Creates the object
+	 * Creates the object.
 	 * 
 	 * @param base
 	 *            base where the rule are
@@ -49,15 +48,15 @@ public final class RecipientRuleTask implements Runnable {
 	 * @param userFinderService
 	 *            service to find the mail user in this case recipient
 	 */
-	public RecipientRuleTask(RuleBase base, MimeMail mail, MimeMailQueueService queueService) {
+	public SenderRuleTask(RuleBase base, MimeMail mail, MimeMailQueueService queueService) {
 		this.mail = mail;
 		this.base = base;
 		this.queueService = queueService;
 	}
 
 	/**
-	 * Logs the mail and call the RulesProcessor, if an error occurs it will try
-	 * to add a stat.
+	 * Logs the mail and call the RulesProcessor and finally call the Spliter.
+	 * if an error occurs it will try to add a stat.
 	 * 
 	 * @see java.lang.Runnable#run()
 	 */
@@ -67,31 +66,42 @@ public final class RecipientRuleTask implements Runnable {
 			this.processor.process(base, mail.getBussinesObject());
 		} catch (Exception e) {
 			if (getLogStatService() != null) {
-				getLogStatService().log(mail,getProperties().getProcessErrorStat(),
+				getLogStatService().log(mail,
+						getProperties().getProcessErrorStat(),
 						e.toString());
 			}
-			log.error("error while processing rules:"+e.toString());
+			log.error("error while processing rules:"+ e.toString());
 			log.debug("error while processing rules", e);
 		}
-		try{
+
+		try {
+			/*
+			 * added again into input queue so it gets called for recipient
+			 * processing
+			 */
 			try{
 				if (getLogRecordService() != null) {
 					getLogRecordService().log(mail);
 				}
 			}catch(Exception e){
-				log.error("error while saving stats ",e);
+				log.error("error while saving stats"+e.toString());
 			}
 			
-			if (mail.getStatus().equalsIgnoreCase(MailState.REQUEUE)){
-				mail.setStatus(MailState.DELIVER);
-				queueService.delayAndPut(ReceivePool.PHASE, mail, getProperties().getQueueDelayTime());
-				log.info("REQUEUED email "+mail);
-			} else if (mail.getStatus().equalsIgnoreCase(MailState.DROP)) {
+			if (mail.getStatus().equals(Mail.Status.requeue)) {
+				mail.setStatus(Mail.Status.deliver);
+				queueService.delayAndPut(Mail.Phase.send, mail, getProperties().getQueueDelayTime());
+				log.info("REQUEUED "+mail);
+			} else if (mail.getStatus().equals(Mail.Status.drop)) {
 				queueService.unstore(mail);
-				log.info("DROPPED email "+mail);
-			} else {
-				mail.setStatus(MailState.DELIVER);
-				queueService.put(OutputPool.PHASE, mail);
+				log.info("DROPPED "+mail);
+			} else if (mail.getStatus().equals(Mail.Status.redirect)) {
+				queueService.unstore(mail);
+				log.info("REDIRECT "+mail);
+			} else  {
+				mail.setStatus(Mail.Status.deliver);
+				mail.getMessage().saveChanges();
+				mail.setPhase(Mail.Phase.receive);
+				queueService.put(Mail.Phase.receive, mail);
 			}
 		} catch (Exception e) {
 			log.error("error while sending email to next phase:"+e.toString());
@@ -127,6 +137,21 @@ public final class RecipientRuleTask implements Runnable {
 	}
 
 	/**
+	 * @return the properties
+	 */
+	public CoreProperties getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @param properties
+	 *            the properties to set
+	 */
+	public void setProperties(CoreProperties properties) {
+		this.properties = properties;
+	}
+
+	/**
 	 * @return the logRecordService
 	 */
 	public LogRecord getLogRecordService() {
@@ -139,14 +164,6 @@ public final class RecipientRuleTask implements Runnable {
 	 */
 	public void setLogRecordService(LogRecord logRecordService) {
 		this.logRecordService = logRecordService;
-	}
-
-	public CoreProperties getProperties() {
-		return properties;
-	}
-
-	public void setProperties(CoreProperties properties) {
-		this.properties = properties;
 	}
 
 }

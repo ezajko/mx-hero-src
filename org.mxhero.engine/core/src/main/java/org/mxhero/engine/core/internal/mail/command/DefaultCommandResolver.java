@@ -2,8 +2,9 @@ package org.mxhero.engine.core.internal.mail.command;
 
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.Command;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.core.internal.mail.MailVO;
+import org.mxhero.engine.core.internal.mail.CMail;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public class DefaultCommandResolver implements CommandResolver {
 	 *      java.lang.String, java.lang.String[])
 	 */
 	@Override
-	public Result resolve(MimeMail mail, String commandId, String... args) {
+	public Result resolve(MimeMail mail, String commandId, NamedParameters parameters) {
 
 		ServiceReference serviceReference = bc.getServiceReference(commandId);
 		Command command = null;
@@ -45,7 +46,7 @@ public class DefaultCommandResolver implements CommandResolver {
 			}
 			command = (Command) bc.getService(serviceReference);
 			if (command != null) {
-				result = command.exec(mail, args);
+				result = command.exec(mail, parameters);
 			}
 			bc.ungetService(serviceReference);
 		}
@@ -54,9 +55,9 @@ public class DefaultCommandResolver implements CommandResolver {
 	}
 
 	/**
-	 * utility method used to set this resolver in the mailvo object.
+	 * utility method used to set this resolver in the CMail object.
 	 */
 	public void setResolver() {
-		MailVO.setFinder(this);
+		CMail.setResolver(this);
 	}
 }
