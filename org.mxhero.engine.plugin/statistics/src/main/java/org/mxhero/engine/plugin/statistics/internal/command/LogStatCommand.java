@@ -1,6 +1,7 @@
 package org.mxhero.engine.plugin.statistics.internal.command;
 
 import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.statistics.command.LogStat;
 import org.mxhero.engine.plugin.statistics.internal.entity.Stat;
@@ -21,19 +22,18 @@ public class LogStatCommand implements LogStat{
 	 * @see org.mxhero.engine.domain.mail.command.Command#exec(org.mxhero.engine.domain.mail.MimeMail, java.lang.String[])
 	 */
 	@Override
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
-		result.setResult(false);
 		
-		if (args==null || args.length!=2 || args[0]==null || args[0].isEmpty() ){
+		if (parameters==null || (parameters.get(LogStat.KEY)!=null||
+								parameters.get(LogStat.VALUE)!=null) ){
 			log.warn("wrong params");
 			return result;
 		}
-
-		Stat stat = utils.createStat(mail, args[0], (args[1]==null)?"":args[1]);
+		Stat stat = utils.createStat(mail, parameters.get(LogStat.KEY).toString(), parameters.get(LogStat.VALUE).toString());
 		try{
 			getRepository().saveStat(stat);
-			result.setResult(true);
+			result.setConditionTrue(true);
 		} catch(Exception e) {
 			log.warn("Error while persisting "+stat,e);
 		}

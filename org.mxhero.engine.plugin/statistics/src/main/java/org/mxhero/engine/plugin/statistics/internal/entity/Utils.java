@@ -40,10 +40,10 @@ public final class Utils {
 		record.setServerName(serverName);
 		record.setSequence(mail.getSequence());
 		record.setInsertDate(mail.getTime());
-		record.setPhase(mail.getPhase());
-		record.setState(mail.getStatus());
+		record.setPhase(mail.getPhase().name());
+		record.setState(mail.getStatus().name());
 		record.setStateReason(mail.getStatusReason());
-		record.setSender(mail.getInitialSender());
+		record.setSender(mail.getSender());
 		record.setRecipient(mail.getRecipient());
 		record.setBccRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.BCC));
 		record.setCcRecipients(getRecipientsByTypeString(mail.getMessage(),RecipientType.CC));
@@ -53,15 +53,15 @@ public final class Utils {
 		if (mail.getSenderId()!=null){
 			record.setSenderId(mail.getSenderId());
 		} else {
-			record.setSenderId(mail.getInitialSender());
+			record.setSenderId(mail.getSender());
 		}
 		if(mail.getSenderDomainId()!=null){
 			record.setSenderDomainId(mail.getSenderDomainId());
 		} else {
 			if (record.getSenderId()!=null){
 				record.setSenderDomainId(record.getSenderId().substring(record.getSenderId().indexOf(DIV_CHAR) + 1));
-			} else if (mail.getInitialSender()!=null){
-				record.setSenderDomainId(mail.getInitialSender().substring(mail.getInitialSender().indexOf(DIV_CHAR) + 1));
+			} else if (mail.getSender()!=null){
+				record.setSenderDomainId(mail.getSender().substring(mail.getSender().indexOf(DIV_CHAR) + 1));
 			}
 		}
 
@@ -79,7 +79,7 @@ public final class Utils {
 				record.setRecipientDomainId(mail.getRecipient().substring(mail.getRecipient().indexOf(DIV_CHAR) + 1));
 			}
 		}
-		record.setFlow(mail.getFlow());
+		record.setFlow(mail.getFlow().name());
 		
 		record.setMessageId(mail.getMessageId());
 		
@@ -93,9 +93,9 @@ public final class Utils {
 			record.setFrom("<>");
 		}
 		if(record.getFrom()==null || record.getFrom().trim().length()<1){
-			record.setFrom(mail.getInitialSender());
+			record.setFrom(mail.getSender());
 		}
-		record.setSender(mail.getInitialSender());
+		record.setSender(mail.getSender());
 
 		try {
 			record.setSubject(mail.getMessage().getSubject());
@@ -120,7 +120,7 @@ public final class Utils {
 		Stat stat = new Stat();
 		stat.setServerName(serverName);
 		stat.setKey(key);
-		stat.setPhase(mail.getPhase());
+		stat.setPhase(mail.getPhase().name());
 		stat.setInsertDate(mail.getTime());
 		stat.setSequence(mail.getSequence());
 		stat.setValue(value);
