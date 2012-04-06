@@ -1,8 +1,8 @@
 package org.mxhero.engine.commons.rules;
 
+import org.mxhero.engine.commons.domain.User;
 import org.mxhero.engine.commons.feature.RuleDirection;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.User;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,13 +31,13 @@ public class FromInHeaders implements Evaluable{
 			returnValue= DirectionEval.evalFrom(from, mail) && evalInHeaders(to, mail);
 		}
 		if(log.isTraceEnabled()){
-			log.trace(" sender:"+mail.getInitialData().getSender()
+			log.trace(" sender:"+mail.getSender()
 					+" senderDomain:"
-					+mail.getInitialData().getSender().getDomain()
+					+mail.getSender().getDomain()
 					+" recipient:"
-					+mail.getInitialData().getRecipient()
+					+mail.getRecipient()
 					+" recipientDomain:"
-					+mail.getInitialData().getRecipient().getDomain()
+					+mail.getRecipient().getDomain()
 					+" getMailFromRuleDirection(from):"
 					+DirectionEval.getMailFromRuleDirection(from)
 					+"getMailFromRuleDirection(to):"
@@ -47,8 +47,8 @@ public class FromInHeaders implements Evaluable{
 	}
 	
 	private boolean evalInHeaders(RuleDirection toDirection, Mail mail){
-		if(mail.getInitialData().getRecipientsInHeaders()!=null){
-			for(User user : mail.getInitialData().getRecipientsInHeaders()){
+		if(mail.getRecipientsInHeaders()!=null){
+			for(User user : mail.getRecipientsInHeaders()){
 				if(evalUser(toDirection,mail,user)){
 					return true;
 				}
@@ -62,8 +62,8 @@ public class FromInHeaders implements Evaluable{
 			return true;
 		} else if(to.getDirectionType().equals(DirectionEval.ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return !(user.getDomain().hasAlias(mail.getInitialData().getSender().getDomain().getAliases()) 
-					|| user.getDomain().hasAlias(mail.getInitialData().getFromSender().getDomain().getAliases()));
+			return !(user.getDomain().hasAlias(mail.getSender().getDomain().getAliases()) 
+					|| user.getDomain().hasAlias(mail.getFromSender().getDomain().getAliases()));
 		}else if(to.getDirectionType().equals(DirectionEval.ALLDOMAINS)){
 			/*is this side managed?*/
 			return user.getDomain().getManaged();

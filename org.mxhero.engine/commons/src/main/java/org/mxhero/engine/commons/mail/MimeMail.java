@@ -11,10 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailFlow;
-import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 
 
 /**
@@ -29,7 +26,7 @@ public final class MimeMail {
 
 	private Timestamp time;
 
-	private String initialSender;
+	private String sender;
 
 	private String recipient;
 	
@@ -57,11 +54,11 @@ public final class MimeMail {
 	
 	private String messageId;
 
-	private String phase = RulePhase.SEND;
+	private Mail.Phase phase = Mail.Phase.send;
 
-	private String status = MailState.DELIVER;
+	private Mail.Status status = Mail.Status.deliver;
 	
-	private String flow = MailFlow.NONE;
+	private Mail.Flow flow = Mail.Flow.none;
 
 	private String statusReason;
 	
@@ -81,7 +78,7 @@ public final class MimeMail {
 		this.recipient = recipient;
 		this.recipientId = recipient;
 		this.recipientDomainId = getDomain(recipient);
-		this.initialSender = from;
+		this.sender = from;
 		this.senderId = from;
 		this.senderDomainId = getDomain(from);
 		try {
@@ -141,7 +138,7 @@ public final class MimeMail {
 		this.recipient = recipient;
 		this.recipientId = recipient;
 		this.recipientDomainId = getDomain(recipient);
-		this.initialSender = from;
+		this.sender = from;
 		this.senderId = from;
 		this.senderDomainId = getDomain(from);
 	}
@@ -149,8 +146,8 @@ public final class MimeMail {
 	/**
 	 * @return
 	 */
-	public String getInitialSender() {
-		return initialSender;
+	public String getSender() {
+		return sender;
 	}
 
 	/**
@@ -160,12 +157,6 @@ public final class MimeMail {
 		return recipient;
 	}
 
-	/**
-	 * @param recipient
-	 */
-	public void setRecipient(String recipient) {
-		this.recipient = recipient;
-	}
 
 	/**
 	 * @return
@@ -184,14 +175,14 @@ public final class MimeMail {
 	/**
 	 * @return
 	 */
-	public String getPhase() {
+	public Mail.Phase getPhase() {
 		return phase;
 	}
 
 	/**
 	 * @param phase
 	 */
-	public void setPhase(String phase) {
+	public void setPhase(Mail.Phase phase) {
 		this.phase = phase;
 	}
 
@@ -219,7 +210,7 @@ public final class MimeMail {
 	/**
 	 * @return the status
 	 */
-	public String getStatus() {
+	public Mail.Status getStatus() {
 		return status;
 	}
 
@@ -227,7 +218,7 @@ public final class MimeMail {
 	 * @param status
 	 *            the status to set
 	 */
-	public void setStatus(String status) {
+	public void setStatus(Mail.Status status) {
 		this.status = status;
 	}
 
@@ -326,11 +317,11 @@ public final class MimeMail {
 		this.properties = properties;
 	}
 	
-	public String getFlow() {
+	public Mail.Flow getFlow() {
 		return flow;
 	}
 
-	public void setFlow(String flow) {
+	public void setFlow(Mail.Flow flow) {
 		this.flow = flow;
 	}
 
@@ -405,8 +396,8 @@ public final class MimeMail {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("MimeMail [sequence=").append(sequence)
-				.append(", time=").append(time).append(", initialSender=")
-				.append(initialSender).append(", recipient=").append(recipient)
+				.append(", time=").append(time).append(", sender=")
+				.append(sender).append(", recipient=").append(recipient)
 				.append(", initialSize=").append(initialSize)
 				.append(", phase=").append(phase).append(", status=")
 				.append(status).append(", flow=").append(flow).append("]");

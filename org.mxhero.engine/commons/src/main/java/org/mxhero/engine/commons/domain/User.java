@@ -1,6 +1,8 @@
-package org.mxhero.engine.commons.mail.business;
+package org.mxhero.engine.commons.domain;
 
 import java.util.Collection;
+
+
 
 /**
  * Represents a user inside the platform so it can be used inside rules.
@@ -15,6 +17,8 @@ public class User {
 	private Domain domain;
 	
 	private String group;
+	
+	private Collection<String> addressBook;
 	
 	private Boolean managed;
 
@@ -75,7 +79,54 @@ public class User {
 	public void setGroup(String group) {
 		this.group = group;
 	}
+	
+	public Collection<String> getAddressBook() {
+		return addressBook;
+	}
 
+	public void setAddressBook(Collection<String> addressBook) {
+		this.addressBook = addressBook;
+	}
+	
+	public boolean hasAlias(String... emails){
+		if(emails == null || emails.length<1){
+			return false;
+		}
+		
+		if(this.getAliases()==null){
+			for(String email : emails){
+				if(this.getMail().equalsIgnoreCase(email)){
+					return true;
+				}
+			}
+			return false;
+		}else{
+			for(String email : emails){
+				if(this.getAliases().contains(email)){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	public boolean hasEmailOnAddressBook(String... emails){
+		if(emails == null || emails.length<1){
+			return false;
+		}
+		
+		if(this.getAddressBook()!=null){
+			for(String email : emails){
+				if(this.getAddressBook().contains(email)){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -83,52 +134,6 @@ public class User {
 		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
 		result = prime * result + ((group == null) ? 0 : group.hashCode());
 		return result;
-	}
-
-	public boolean hasAlias(String email){
-		if(this.getAliases()==null){
-			if(this.getMail()!=null){
-				this.getMail().equalsIgnoreCase(email);
-			}
-			return false;
-		}
-		return this.getAliases().contains(email);
-	}
-	
-	public boolean hasAlias( String[] emails){
-		if(this.getAliases()==null){
-			for(String email : emails){
-				if(this.getMail().equalsIgnoreCase(email)){
-					return true;
-				}
-			}
-			return false;
-		}else{
-			for(String email : emails){
-				if(this.getAliases().contains(email)){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean hasAlias(Collection<String> emails){
-		if(this.getAliases()==null){
-			for(String email : emails){
-				if(this.getMail().equalsIgnoreCase(email)){
-					return true;
-				}
-			}
-			return false;
-		}else{
-			for(String email : emails){
-				if(this.getAliases().contains(email)){
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	@Override
