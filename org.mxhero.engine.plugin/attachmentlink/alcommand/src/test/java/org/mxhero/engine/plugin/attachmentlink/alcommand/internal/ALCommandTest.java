@@ -55,8 +55,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -96,57 +98,57 @@ public class ALCommandTest {
 	public void testCommandOneAttach() {
 		Result result = testMailOneHTMLAttachment("juanpablo.royo@gmail.com",
 				"AAAA", 1);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandTwoAttach() {
 		Result result = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 2);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandThreeAttach() {
 		Result result = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 3);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandFourAttach() {
 		Result result = testMailOneHTMLAttachment("juanpablo.royo@gmail.com", "AAAA", 4);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandTwoSameAttachReprocessed() {
 		Result result = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 1);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 		Result result1 = testMailOneHTMLAttachment("juan@juan.com", "BBBB", 2);
-		assertTrue(result1.isResult());
+		assertTrue(result1.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandTwoSameMailReprocessed() {
 		Result result = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 1);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 		Result result1 = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 1);
-		assertTrue(result1.isResult());
+		assertTrue(result1.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandTwoDifferentRecipient() {
 		Result result = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 1);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 		Result result1 = testMailOneHTMLAttachment("pepe@pepe.com", "AAAA", 1);
-		assertTrue(result1.isResult());
+		assertTrue(result1.isConditionTrue());
 	}
 
 	@Test
 	public void testCommandTwoDifferentRecipientMoreThanOneAttachment() {
 		Result result = testMailOneHTMLAttachment("juan@juan.com", "AAAA", 3);
-		assertTrue(result.isResult());
+		assertTrue(result.isConditionTrue());
 		Result result1 = testMailOneHTMLAttachment("pepe@pepe.com", "AAAA", 3);
-		assertTrue(result1.isResult());
+		assertTrue(result1.isConditionTrue());
 	}
 
 //	@Test
@@ -190,9 +192,9 @@ public class ALCommandTest {
 			for (Future<ResultWrapper> future : invokeAll) {
 				assertTrue(future.isDone());
 				ResultWrapper result = future.get();
-				if (!result.getResult().isResult()) {
+				if (!result.getResult().isConditionTrue()) {
 					countFails++;
-					assertEquals(MailState.REQUEUE, result.getResult().getText());
+					assertEquals(Mail.Status.requeue.toString(), result.getResult().getMessage());
 				}
 			}
 			assertTrue(countFails == 1);
@@ -257,14 +259,14 @@ public class ALCommandTest {
 				assertTrue("Id: " + id + " - Future doesnt end the job", future
 						.isDone());
 				ResultWrapper result = future.get();
-				if (!result.getResult().isResult()) {
+				if (!result.getResult().isConditionTrue()) {
 					countFails++;
 					emailRequeue = result.getEmail();
 					messageId = result.getMessageId();
 					assertEquals("Id: " + id + " - Message state was "
-							+ result.getResult().getText()
-							+ " and expected REQUEUE", MailState.REQUEUE, result
-							.getResult().getText());
+							+ result.getResult().getMessage()
+							+ " and expected REQUEUE", Mail.Status.requeue.toString(), result
+							.getResult().getMessage());
 				} else {
 					countSuccess++;
 				}
@@ -289,7 +291,7 @@ public class ALCommandTest {
 				while (!submit.isDone())
 					;
 				assertTrue("Id: " + id, submit.isDone());
-				assertTrue("Id: " + id, submit.get().getResult().isResult());
+				assertTrue("Id: " + id, submit.get().getResult().isConditionTrue());
 			}
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -327,7 +329,7 @@ public class ALCommandTest {
 			assertTrue(invokeAll.size() == 100);
 			for (Future<ResultWrapper> future : invokeAll) {
 				assertTrue(future.isDone());
-				assertTrue(future.get().getResult().isResult());
+				assertTrue(future.get().getResult().isConditionTrue());
 			}
 			long millis1 = System.currentTimeMillis();
 			System.out.println("Time after "+millis1);
@@ -353,12 +355,14 @@ public class ALCommandTest {
 			data.writeTo(os);
 			ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 			MimeMail mail = new MimeMail("", "juan@juan.com", is, "AAAAA");
-			mail.setRecipient("juan@juan.com");
 			mail.setSenderId("juan@juan.com");
 			mail.setSenderDomainId("juan.com");
 			mail.setMessageId(idEmail);
-			result = command.exec(mail, "es","true","baljfdsjfldsjflsa");
-			if (result.isResult()) {
+			NamedParameters parameters = new NamedParameters(AlCommand.LOCALE,"es");
+			parameters.put(AlCommand.NOTIFY, true);
+			parameters.put(AlCommand.NOTIFY_MESSAGE, "sdasdadsads");
+			result = command.exec(mail, parameters);
+			if (result.isConditionTrue()) {
 				Object content = mail.getMessage().getContent();
 				if (content instanceof Multipart) {
 					Multipart multi = (Multipart) content;
@@ -408,9 +412,12 @@ public class ALCommandTest {
 //			sendMail(data);
 			MimeMail mail = new MimeMail("", recipient, is, "AAAAA");
 			mail.setMessageId(idMail);
-			result = command.exec(mail, "es","true","baljfdsjfldsjflsa");
+			NamedParameters parameters = new NamedParameters(AlCommand.LOCALE,"es");
+			parameters.put(AlCommand.NOTIFY, true);
+			parameters.put(AlCommand.NOTIFY_MESSAGE, "sdasdadsads");
+			result = command.exec(mail, parameters);
 //			sendMail(mail.getMessage());
-			if (result.isResult()) {
+			if (result.isConditionTrue()) {
 				Object content = mail.getMessage().getContent();
 				if (content instanceof Multipart) {
 					Multipart multi = (Multipart) content;
@@ -538,10 +545,12 @@ public class ALCommandTest {
 
 			String recipient = "juanpablo.royo@gmail.com";
 			MimeMail mail = new MimeMail("", recipient, is, idMail);
-			
+			NamedParameters parameters = new NamedParameters(AlCommand.LOCALE,"es");
+			parameters.put(AlCommand.NOTIFY, true);
+			parameters.put(AlCommand.NOTIFY_MESSAGE, "sdasdadsads");
 			mail.setMessageId(idMail);
-			result = command.exec(mail, "es","true","baljfdsjfldsjflsa");
-			if (result.isResult()) {
+			result = command.exec(mail, parameters);
+			if (result.isConditionTrue()) {
 				Object content = mail.getMessage().getContent();
 				if (content instanceof Multipart) {
 					Multipart multi = (Multipart) content;

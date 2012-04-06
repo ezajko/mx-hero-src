@@ -2,6 +2,7 @@ package org.mxhero.engine.plugin.attachmentlink.alcommand.internal;
 
 
 import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentProcessor;
@@ -23,11 +24,11 @@ public class AlCommandImpl implements AlCommand{
 	@Value("${evaluate.message.as.attachment}")
 	private boolean messageToBeEvaluateAsAttach;
 
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
 		Message message = null;
 		try {
-			message = new Message(mail,args);
+			message = new Message(mail,parameters);
 			if(message.getMessagePlatformId()==null)throw new Exception("Message has not unique ID");
 			message.setMsgToBeEvaluateAsAttach(messageToBeEvaluateAsAttach);
 			processor.processMessage(message);
@@ -36,8 +37,9 @@ public class AlCommandImpl implements AlCommand{
 			result = message.getResult();
 		} catch (Exception e) {
 			e.printStackTrace();
-			result.setResult(false);
-			result.setText("");
+			result.setAnError(true);
+			result.setConditionTrue(false);
+			result.setMessage("");
 			log.error(mail.toString(),e.getMessage());
 		}finally{
 			if(message != null)processor.finishProcessing(message);
