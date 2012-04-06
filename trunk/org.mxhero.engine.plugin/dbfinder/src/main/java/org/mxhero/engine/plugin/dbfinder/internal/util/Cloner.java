@@ -2,8 +2,8 @@ package org.mxhero.engine.plugin.dbfinder.internal.util;
 
 import java.util.HashSet;
 
-import org.mxhero.engine.commons.mail.business.Domain;
-import org.mxhero.engine.commons.mail.business.User;
+import org.mxhero.engine.commons.domain.Domain;
+import org.mxhero.engine.commons.domain.User;
 
 public abstract class Cloner {
 

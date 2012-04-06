@@ -2,8 +2,8 @@ package org.mxhero.engine.plugin.dbfinder.internal.repository;
 
 import java.util.Map;
 
-import org.mxhero.engine.commons.mail.business.Domain;
-import org.mxhero.engine.commons.mail.business.User;
+import org.mxhero.engine.commons.domain.Domain;
+import org.mxhero.engine.commons.domain.User;
 
 public class CachedUserRepository implements UserRepository, Runnable{
 
