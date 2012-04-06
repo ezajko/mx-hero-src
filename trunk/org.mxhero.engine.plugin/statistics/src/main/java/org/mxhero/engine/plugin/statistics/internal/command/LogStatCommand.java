@@ -25,9 +25,11 @@ public class LogStatCommand implements LogStat{
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
 		
-		if (parameters==null || (parameters.get(LogStat.KEY)!=null||
-								parameters.get(LogStat.VALUE)!=null) ){
+		if (parameters==null || (parameters.get(LogStat.KEY)==null||
+								parameters.get(LogStat.VALUE)==null) ){
 			log.warn("wrong params");
+			result.setAnError(true);
+			result.setMessage("wrong params");
 			return result;
 		}
 		Stat stat = utils.createStat(mail, parameters.get(LogStat.KEY).toString(), parameters.get(LogStat.VALUE).toString());
