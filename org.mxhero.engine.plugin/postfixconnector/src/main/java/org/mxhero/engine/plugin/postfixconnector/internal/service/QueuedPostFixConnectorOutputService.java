@@ -44,7 +44,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 		
 		log.debug("Email received:" + mail);
 
-		String from = (mail.getInitialSender()!=null && mail.getInitialSender().trim().length()>0)?mail.getInitialSender():"<>";
+		String from = (mail.getSender()!=null && mail.getSender().trim().length()>0)?mail.getSender():"<>";
 		props.put("mail.smtp.from", from);
 	    MimeMessage msg = null;
 		try {
