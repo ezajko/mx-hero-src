@@ -1,7 +1,7 @@
 package org.mxhero.engine.commons.rules;
 
 import org.mxhero.engine.commons.feature.RuleDirection;
-import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +37,13 @@ public class FromToEval implements Evaluable{
 			returnValue= DirectionEval.evalFrom(from, mail) && DirectionEval.evalTo(to, mail);
 		}
 		if(log.isTraceEnabled()){
-			log.trace(" sender:"+mail.getInitialData().getSender()
+			log.trace(" sender:"+mail.getSender()
 					+" senderDomain:"
-					+mail.getInitialData().getSender().getDomain()
+					+mail.getSender().getDomain()
 					+" recipient:"
-					+mail.getInitialData().getRecipient()
+					+mail.getRecipient()
 					+" recipientDomain:"
-					+mail.getInitialData().getRecipient().getDomain()
+					+mail.getRecipient().getDomain()
 					+" getMailFromRuleDirection(from):"
 					+DirectionEval.getMailFromRuleDirection(from)
 					+"getMailFromRuleDirection(to):"

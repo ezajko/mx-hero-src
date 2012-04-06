@@ -1,4 +1,4 @@
-package org.mxhero.engine.commons.mail.business;
+package org.mxhero.engine.commons.domain;
 
 import java.util.Collection;
 /**

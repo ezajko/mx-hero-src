@@ -3,7 +3,7 @@ package org.mxhero.engine.commons.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

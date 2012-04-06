@@ -15,5 +15,5 @@ public interface Command {
 	 * @param args parameters
 	 * @return result or the execution
 	 */
-	Result exec(MimeMail mail, String... args);
+	Result exec(MimeMail mail, NamedParameters parameters);
 }

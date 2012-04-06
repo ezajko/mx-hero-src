@@ -1,7 +1,7 @@
 package org.mxhero.engine.commons.rules;
 
 import org.mxhero.engine.commons.feature.RuleDirection;
-import org.mxhero.engine.commons.mail.business.Mail;
+import org.mxhero.engine.commons.mail.api.Mail;
 
 public abstract class DirectionEval {
 
@@ -17,25 +17,25 @@ public abstract class DirectionEval {
 			return true;
 		}else if(from.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return !(mail.getInitialData().getSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases()) 
-					|| mail.getInitialData().getFromSender().getDomain().hasAlias(mail.getInitialData().getRecipient().getDomain().getAliases()));
+			return !(mail.getSender().getDomain().hasAlias(mail.getRecipient().getDomain().getAliases()) 
+					|| mail.getFromSender().getDomain().hasAlias(mail.getRecipient().getDomain().getAliases()));
 		}else if(from.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
-			return mail.getInitialData().getFromSender().getDomain().getManaged() || mail.getInitialData().getSender().getDomain().getManaged();
+			return mail.getFromSender().getDomain().getManaged() || mail.getSender().getDomain().getManaged();
 		}else if(from.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			return mail.getInitialData().getFromSender().getDomain().hasAlias(getDomainFromRuleDirection(from)) || mail.getInitialData().getSender().getDomain().hasAlias(getDomainFromRuleDirection(from));
+			return mail.getFromSender().getDomain().hasAlias(getDomainFromRuleDirection(from)) || mail.getSender().getDomain().hasAlias(getDomainFromRuleDirection(from));
 		}else if(from.getDirectionType().equals(GROUP)){
 			/*group name and domain has to match*/
-			return (mail.getInitialData().getFromSender().getGroup()!=null 
-						&& mail.getInitialData().getFromSender().getGroup().equalsIgnoreCase(from.getGroup()) 
-						&& mail.getInitialData().getFromSender().getDomain().getId().equalsIgnoreCase(from.getDomain())) 
-					|| (mail.getInitialData().getSender().getGroup()!=null 
-							&& mail.getInitialData().getSender().getGroup().equalsIgnoreCase(from.getGroup()) 
-							&& mail.getInitialData().getSender().getDomain().getId().equalsIgnoreCase(from.getDomain()));
+			return (mail.getFromSender().getGroup()!=null 
+						&& mail.getFromSender().getGroup().equalsIgnoreCase(from.getGroup()) 
+						&& mail.getFromSender().getDomain().getId().equalsIgnoreCase(from.getDomain())) 
+					|| (mail.getSender().getGroup()!=null 
+							&& mail.getSender().getGroup().equalsIgnoreCase(from.getGroup()) 
+							&& mail.getSender().getDomain().getId().equalsIgnoreCase(from.getDomain()));
 		}else if(from.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			return mail.getInitialData().getFromSender().hasAlias(getMailFromRuleDirection(from)) || mail.getInitialData().getSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from));
+			return mail.getFromSender().hasAlias(getMailFromRuleDirection(from)) || mail.getSender().getMail().equalsIgnoreCase(getMailFromRuleDirection(from));
 		}
 		return false;
 	}
@@ -46,22 +46,22 @@ public abstract class DirectionEval {
 			return true;
 		} else if(to.getDirectionType().equals(ANYONEELSE)){
 			/*anyone not in the other side domain*/
-			return !(mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getSender().getDomain().getAliases()) 
-					|| mail.getInitialData().getRecipient().getDomain().hasAlias(mail.getInitialData().getFromSender().getDomain().getAliases()));
+			return !(mail.getRecipient().getDomain().hasAlias(mail.getSender().getDomain().getAliases()) 
+					|| mail.getRecipient().getDomain().hasAlias(mail.getFromSender().getDomain().getAliases()));
 		}else if(to.getDirectionType().equals(ALLDOMAINS)){
 			/*is this side managed?*/
-			return mail.getInitialData().getRecipient().getDomain().getManaged();
+			return mail.getRecipient().getDomain().getManaged();
 		}else if(to.getDirectionType().equals(DOMAIN)){
 			/*domain id is equal to*/
-			return mail.getInitialData().getRecipient().getDomain().hasAlias(getDomainFromRuleDirection(to));
+			return mail.getRecipient().getDomain().hasAlias(getDomainFromRuleDirection(to));
 		}else if(to.getDirectionType().equals(GROUP)){
 			/*group */
-			return mail.getInitialData().getRecipient().getGroup()!=null 
-			&& mail.getInitialData().getRecipient().getGroup().equalsIgnoreCase(to.getGroup()) 
-			&& mail.getInitialData().getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
+			return mail.getRecipient().getGroup()!=null 
+			&& mail.getRecipient().getGroup().equalsIgnoreCase(to.getGroup()) 
+			&& mail.getRecipient().getDomain().getId().equalsIgnoreCase(to.getDomain());
 		}else if(to.getDirectionType().equals(INDIVIDUAL)){
 			/* user from this side is equal to*/
-			return mail.getInitialData().getRecipient().hasAlias(getMailFromRuleDirection(to));
+			return mail.getRecipient().hasAlias(getMailFromRuleDirection(to));
 		}
 		return false;
 	}

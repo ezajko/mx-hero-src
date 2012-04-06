@@ -1,6 +1,6 @@
 package org.mxhero.engine.commons.finders;
 
-import org.mxhero.engine.commons.mail.business.User;
+import org.mxhero.engine.commons.domain.User;
 
 /**
  * This interface is used to find users and pass their object to the platform for
