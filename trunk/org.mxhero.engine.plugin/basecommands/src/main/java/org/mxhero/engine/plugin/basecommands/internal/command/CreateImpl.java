@@ -15,7 +15,8 @@ import javax.mail.internet.MimeMessage.RecipientType;
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.basecommands.command.Create;
 import org.slf4j.Logger;
@@ -36,13 +37,6 @@ public class CreateImpl implements Create {
 
 	public static final String DIV_CHARACTER = ",";
 
-	private static final int MIM_PARAMS = 5;
-	private static final int SENDER_PARAM_NUMBER = 0;
-	private static final int RECIPIENTS_PARAM_NUMBER = 1;
-	private static final int SUBJECT_PARAM_NUMBER = 2;
-	private static final int TEXT_PARAM_NUMBER = 3;
-	private static final int OUTSERVICE_PARAM_NUMBER = 4;
-
 	private InputService service;
 
 	/**
@@ -50,89 +44,102 @@ public class CreateImpl implements Create {
 	 *      java.lang.String[])
 	 */
 	@Override
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 
+		MimeMessage newMessage = null;
+		MimeMail newMail = null;
 		Result result = new Result();
 		InternetAddress sender = null;
 		Collection<InternetAddress> recipients = new ArrayList<InternetAddress>();
-		MimeMessage newMessage = null;
-		MimeMail newMail = null;
+		String subject = null;
+		String ouputService = null;
+		String text = null;
 
-		result.setResult(false);
-
-		if (args == null || args.length < MIM_PARAMS) {
+		if (parameters == null
+				|| (!parameters.hasParameter(Create.SENDER)
+						&& !parameters.hasParameter(Create.RECIPIENTS) && !parameters
+							.hasParameter(Create.SUBJECT))
+				&& !parameters.hasParameter(Create.TEXT)
+				&& !parameters.hasParameter(Create.OUTPUT_SERVICE)) {
 			log.warn("wrong ammount of params.");
+			result.setAnError(true);
+			result.setMessage("wrong ammount of params.");
 			return result;
-		} else {
-			for (String param : args) {
-				if (param == null || param.trim().isEmpty()) {
-					log.warn("wrong params.");
-					return result;
-				}
-			}
-			try {
-				sender = new InternetAddress(args[SENDER_PARAM_NUMBER]);
-			} catch (AddressException e) {
-				log.warn("sender address is wrong");
-				return result;
-			}
-			for (String recipient : args[RECIPIENTS_PARAM_NUMBER]
-					.split(DIV_CHARACTER)) {
+		}
+
+		try {
+			String senderEmail = parameters.get(Create.SENDER);
+			sender = new InternetAddress(senderEmail, false);
+			String recipientEmail = parameters.get(Create.RECIPIENTS);
+			for (String recipient : recipientEmail.split(DIV_CHARACTER)) {
 				try {
-					InternetAddress rcptAddress = new InternetAddress(recipient);
+					InternetAddress rcptAddress = new InternetAddress(
+							recipient, false);
 					recipients.add(rcptAddress);
 				} catch (AddressException e) {
-					log.warn("recipient is not valid");
+					log.warn("recipient is not valid " + recipient);
 				}
 			}
-			if (recipients.size() < 1) {
-				log.warn("there is no recipients for this mail");
-				return result;
-			}
-			InternetAddress[] recipientsArray = new InternetAddress[recipients.size()];
-			int i = 0;
-			for (InternetAddress address : recipients) {
-				recipientsArray[i] = address;
-				i++;
-			}
-			
-			for (InternetAddress recipient : recipientsArray){
-				try {
-					newMessage = new MimeMessage(Session.getDefaultInstance(null));
-					newMessage.setSender(sender);
-					newMessage.setFrom(sender);
-					newMessage.setReplyTo(new InternetAddress[] { sender });
-					newMessage.addRecipients(RecipientType.TO, recipientsArray);
-					newMessage.setSubject(args[SUBJECT_PARAM_NUMBER]);
-					newMessage.setText(args[TEXT_PARAM_NUMBER]);
-					newMessage.setSentDate(Calendar.getInstance().getTime());
-					newMessage.saveChanges();
-					ByteArrayOutputStream os = new ByteArrayOutputStream();
-					newMessage.writeTo(os);
-					ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
-					newMail = new MimeMail(sender.toString(), recipient.toString(),
-							is, args[OUTSERVICE_PARAM_NUMBER]);
-					newMail.setPhase(RulePhase.SEND);
-					
-					if (service == null) {
-						log.warn("core input service is not online");
-						return result;
-					}
-					try {
-						service.addMail(newMail);
-					} catch (QueueFullException e) {
-						log.error("queue is full", e);
-						return result;
-					}
+			ouputService = parameters.get(Create.OUTPUT_SERVICE);
+			subject = parameters.get(Create.SUBJECT);
+			text = parameters.get(Create.TEXT);
+		} catch (Exception e) {
+			log.warn("wrong parameters");
+			result.setAnError(true);
+			result.setMessage(e.getMessage());
+			return result;
+		}
 
-				} catch (Exception e) {
-					log.warn("error while creating new message", e);
+		if (recipients.size() < 1) {
+			log.warn("there is no recipients for this mail");
+			result.setAnError(true);
+			result.setMessage("there is no recipients for this mail");
+			return result;
+		}
+		
+		InternetAddress[] recipientsArray = recipients
+				.toArray(new InternetAddress[0]);
+
+		for (InternetAddress recipient : recipientsArray) {
+			try {
+				newMessage = new MimeMessage(Session.getDefaultInstance(null));
+				newMessage.setSender(sender);
+				newMessage.setFrom(sender);
+				newMessage.setReplyTo(new InternetAddress[] { sender });
+				newMessage.addRecipients(RecipientType.TO, recipientsArray);
+				newMessage.setSubject(subject);
+				newMessage.setText(text);
+				newMessage.setSentDate(Calendar.getInstance().getTime());
+				newMessage.saveChanges();
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				newMessage.writeTo(os);
+				ByteArrayInputStream is = new ByteArrayInputStream(
+						os.toByteArray());
+				newMail = new MimeMail(sender.toString(), recipient.toString(),
+						is, ouputService);
+				newMail.setPhase(Mail.Phase.send);
+
+				if (service == null) {
+					log.warn("core input service is not online");
+					result.setAnError(true);
+					result.setMessage("core input service is not online");
 					return result;
 				}
-			}
+				try {
+					service.addMail(newMail);
+				} catch (QueueFullException e) {
+					log.error("queue is full", e);
+					result.setAnError(true);
+					result.setMessage("queue is full");
+					return result;
+				}
 
-			result.setResult(true);
+			} catch (Exception e) {
+				log.warn("error while creating new message", e);
+				return result;
+			}
 		}
+		result.setConditionTrue(true);
 		return result;
 	}
 

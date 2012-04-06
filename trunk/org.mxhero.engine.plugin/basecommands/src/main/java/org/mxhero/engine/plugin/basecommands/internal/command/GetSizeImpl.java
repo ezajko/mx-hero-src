@@ -3,12 +3,12 @@ package org.mxhero.engine.plugin.basecommands.internal.command;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Enumeration;
-import java.util.Locale;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.basecommands.command.GetSize;
 import org.slf4j.Logger;
@@ -25,14 +25,11 @@ public class GetSizeImpl implements GetSize {
 
 	private static Logger log = LoggerFactory.getLogger(GetSizeImpl.class);
 
-	private static final int FORMAT_TYPE_PARAM_NUMBER = 0;
-
-	public static final char BYTES = 'b';
-	public static final char KBYTES = 'k';
+	public static final String BYTES = "b";
+	public static final String KBYTES = "k";
 	private static final long KBYTES_BYTES = 1024;
-	public static final char MEGABYTES = 'm';
+	public static final String MEGABYTES = "m";
 	private static final long MEGABYTES_BYTES = 1024 * 1024;
-	private static final char WRONG_FORMAT = 0;
 	private static final long WRONG_SIZE = -1;
 	private static final long CRLF_SIZE = 2;
 
@@ -41,40 +38,37 @@ public class GetSizeImpl implements GetSize {
 	 *      java.lang.String[])
 	 */
 	@Override
-	public Result exec(MimeMail mail, String... args) {
+	public Result exec(MimeMail mail, NamedParameters parameters) {
 		long size = WRONG_SIZE;
 		Result result = new Result();
-		char formatBytes = KBYTES;
-
-		if (args != null && args.length > 0) {
-			if (args[FORMAT_TYPE_PARAM_NUMBER].length() == 1) {
-				formatBytes = args[FORMAT_TYPE_PARAM_NUMBER].toLowerCase(
-						Locale.ENGLISH).charAt(0);
-				if (!(formatBytes == BYTES || formatBytes == KBYTES || formatBytes == MEGABYTES)) {
-					formatBytes = WRONG_FORMAT;
-				}
-			} else {
-				formatBytes = WRONG_FORMAT;
-			}
+		
+		String formatBytes = parameters.get(GetSize.FORMAT);
+		if(formatBytes==null || (!formatBytes.equalsIgnoreCase(BYTES)&&
+								!formatBytes.equalsIgnoreCase(KBYTES)&&
+								!formatBytes.equalsIgnoreCase(MEGABYTES))){
+			log.warn("format is incorrect should be b|B|k|K|m|M");
+			result.setConditionTrue(false);
+			result.setAnError(true);
+			result.setMessage("format is incorrect should be b|B|k|K|m|M");
+			return result;
 		}
-		if (formatBytes == WRONG_FORMAT) {
-			log.warn("format is incorrect should be b|B|k|K|m|M ");
-		} else {
-			size = calculateMessageSize(mail.getMessage());
-			if (formatBytes == KBYTES) {
-				size = size / KBYTES_BYTES;
-			} else if (formatBytes == MEGABYTES) {
-				size = size / MEGABYTES_BYTES;
-			}
+
+		size = calculateMessageSize(mail.getMessage());
+		if (formatBytes == KBYTES) {
+			size = size / KBYTES_BYTES;
+		} else if (formatBytes == MEGABYTES) {
+			size = size / MEGABYTES_BYTES;
 		}
 
 		if (size != WRONG_SIZE) {
-			result.setResult(true);
-		} else {
-			result.setResult(false);
+			result.setConditionTrue(true);
+			result.setAnError(false);
+			result.setMessage(Long.toString(size) + formatBytes);
+			result.setParameters(new NamedParameters("size", size));
+		} else {			
+			result.setConditionTrue(false);
+			result.setAnError(true);
 		}
-		result.setLongField(size);
-		result.setText(Long.toString(size) + formatBytes);
 		log.debug(result.toString());
 		return result;
 	}

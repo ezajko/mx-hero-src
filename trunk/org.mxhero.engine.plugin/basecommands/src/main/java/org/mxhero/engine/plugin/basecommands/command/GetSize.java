@@ -10,4 +10,6 @@ import org.mxhero.engine.commons.mail.command.Command;
  */
 public interface GetSize extends Command {
 
+	String FORMAT = "format";
+	
 }
