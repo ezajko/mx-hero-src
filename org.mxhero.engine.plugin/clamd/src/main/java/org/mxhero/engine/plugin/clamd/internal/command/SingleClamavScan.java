@@ -59,6 +59,7 @@ public class SingleClamavScan implements ClamavScan {
 		Result result = new Result();
 		Boolean addHeader = true;
 		String headerName = DEFAULT_VIRUS_HEADER;
+		
 		if (getVirusHeader() != null && !getVirusHeader().isEmpty()) {
 			headerName = getVirusHeader();
 		}
@@ -81,7 +82,7 @@ public class SingleClamavScan implements ClamavScan {
 		}
 		headerName = parameters.get(ClamavScan.HEADER_NAME);
 		if (headerName == null) {
-			headerName = DEFAULT_VIRUS_HEADER;
+			headerName = getVirusHeader();
 		}
 
 		try {
