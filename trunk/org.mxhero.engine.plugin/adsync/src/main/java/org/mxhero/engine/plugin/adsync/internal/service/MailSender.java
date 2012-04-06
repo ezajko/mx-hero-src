@@ -12,7 +12,7 @@ import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public abstract class MailSender {
 				ByteArrayInputStream is = new ByteArrayInputStream(os.toByteArray());
 				MimeMail newMail = new MimeMail(sender.toString(), recipient.toString(),
 						is, outputService);
-				newMail.setPhase(RulePhase.SEND);
+				newMail.setPhase(Mail.Phase.send);
 				inputService.addMail(newMail);
 			}catch(Exception e){
 				log.warn("Error while sending email",e);
