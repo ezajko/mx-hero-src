@@ -26,6 +26,10 @@ import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class AbandonedCheck {
 
 	private static Logger log = LoggerFactory.getLogger(AbandonedCheck.class);
@@ -37,12 +41,20 @@ public class AbandonedCheck {
 	private static final long MAX_TIME_IN_STORE = 20*60*1000;
 	private static final int TRIES=3;
 	
+	/**
+	 * @param store
+	 * @param srv
+	 * @param queues
+	 */
 	public AbandonedCheck(Map<FSMailKey, FSMail> store, FSQueueService srv, Map<Mail.Phase, DelayQueue<DelayedMail>> queues) {
 		this.store = store;
 		this.srv = srv;
 		this.queues = queues;
 	}
 	
+	/**
+	 * 
+	 */
 	public void init(){
 		new Thread(new Runnable() {
 			public void run() {
@@ -62,10 +74,17 @@ public class AbandonedCheck {
 		}).start();
 	}
 	
+	/**
+	 * 
+	 */
 	public void stop(){
 		weekWorking=false;
 	}
 	
+	/**
+	 * @param fsMail
+	 * @return
+	 */
 	public boolean exists(FSMail fsMail){
 		DelayedMail mail = new DelayedMail(fsMail.getKey().getTime(), fsMail.getKey().getSequence());
 		for(Mail.Phase phase : queues.keySet()){
@@ -77,6 +96,9 @@ public class AbandonedCheck {
 		return false;
 	}
 	
+	/**
+	 * 
+	 */
 	private void work(){
 		Collection<FSMail> fsmails = null;
 		MimeMail mail = null;

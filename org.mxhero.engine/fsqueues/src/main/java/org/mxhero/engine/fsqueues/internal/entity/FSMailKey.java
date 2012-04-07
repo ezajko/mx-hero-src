@@ -2,29 +2,49 @@ package org.mxhero.engine.fsqueues.internal.entity;
 
 import java.sql.Timestamp;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FSMailKey {
 
 	private Long sequence;
 
 	private Timestamp time;
 	
+	/**
+	 * @param sequence
+	 * @param time
+	 */
 	public FSMailKey(Long sequence, Timestamp time) {
 		this.sequence = sequence;
 		this.time = time;
 	}
 
+	/**
+	 * @return
+	 */
 	public Long getSequence() {
 		return sequence;
 	}
 
+	/**
+	 * @param sequence
+	 */
 	public void setSequence(Long sequence) {
 		this.sequence = sequence;
 	}
 
+	/**
+	 * @return
+	 */
 	public Timestamp getTime() {
 		return time;
 	}
 
+	/**
+	 * @param time
+	 */
 	public void setTime(Timestamp time) {
 		this.time = time;
 	}

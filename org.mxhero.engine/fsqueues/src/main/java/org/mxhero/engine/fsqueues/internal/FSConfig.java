@@ -2,6 +2,10 @@ package org.mxhero.engine.fsqueues.internal;
 
 import java.io.File;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FSConfig {
 
 	private static final String FILE_EXTENSION=".eml";
@@ -23,10 +27,16 @@ public class FSConfig {
 	private File tmpPathFile;
 	private File loadPathFile;
 	
+	/**
+	 * @return
+	 */
 	public int getCapacity() {
 		return capacity;
 	}
 
+	/**
+	 * @param capacity
+	 */
 	public void setCapacity(int capacity) {
 		if(capacity<1){
 			throw new IllegalArgumentException("capacity must be higher than 1");
@@ -34,10 +44,16 @@ public class FSConfig {
 		this.capacity = capacity;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getDeferredSize() {
 		return deferredSize;
 	}
 
+	/**
+	 * @param deferredSize
+	 */
 	public void setDeferredSize(int deferredSize) {
 		if(deferredSize<1){
 			throw new IllegalArgumentException("deferredSize must be higher than 1");
@@ -45,30 +61,51 @@ public class FSConfig {
 		this.deferredSize = deferredSize;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getStorePrefix() {
 		return storePrefix;
 	}
 
+	/**
+	 * @param storePrefix
+	 */
 	public void setStorePrefix(String storePrefix) {
 		this.storePrefix = storePrefix;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getTmpPrefix() {
 		return tmpPrefix;
 	}
 
+	/**
+	 * @param tmpPrefix
+	 */
 	public void setTmpPrefix(String tmpPrefix) {
 		this.tmpPrefix = tmpPrefix;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getSuffix() {
 		return suffix;
 	}
 
+	/**
+	 * @param suffix
+	 */
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
 
+	/**
+	 * @param storePath
+	 */
 	public void setStorePath(String storePath){
 		if(storePath==null || storePath.trim().length()<1){
 			throw new IllegalArgumentException("not valid storePath:"+storePath);
@@ -89,14 +126,23 @@ public class FSConfig {
 		this.storePath=storePath;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getStorePath() {
 		return storePath;
 	}
 	
+	/**
+	 * @return
+	 */
 	public File getStorePathFile() {
 		return storePathFile;
 	}
 
+	/**
+	 * @param tmpPath
+	 */
 	public void setTmpPath(String tmpPath) {
 		if(tmpPath==null || tmpPath.trim().length()<1){
 			throw new IllegalArgumentException("not valid tmpPath:"+tmpPath);
@@ -117,15 +163,23 @@ public class FSConfig {
 		this.tmpPath=tmpPath;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getTmpPath() {
 		return tmpPath;
 	}
 
+	/**
+	 * @return
+	 */
 	public File getTmpPathFile() {
 		return tmpPathFile;
 	}
 
-	
+	/**
+	 * @param loadPath
+	 */
 	public void setLoadPath(String loadPath) {
 		if(loadPath==null || loadPath.trim().length()<1){
 			throw new IllegalArgumentException("not valid loadPath:"+loadPath);
@@ -146,10 +200,16 @@ public class FSConfig {
 		this.loadPath=loadPath;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getLoadPath() {
 		return loadPath;
 	}
 
+	/**
+	 * @return
+	 */
 	public File getLoadPathFile() {
 		return loadPathFile;
 	}

@@ -6,8 +6,17 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class Files {
 
+	/**
+	 * @param fromFile
+	 * @param toFile
+	 * @throws IOException
+	 */
 	public static void copy(File fromFile, File toFile) throws IOException{
 	    FileInputStream from = null;
 	    FileOutputStream to = null;
@@ -29,6 +38,11 @@ public class Files {
 	    }
 	}
 
+	/**
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
 	public static byte[] fileToArray(File file) throws IOException{
 		FileInputStream in = null;
 		ByteArrayOutputStream byteOut = null;
@@ -49,7 +63,5 @@ public class Files {
 				}
 			}
 	}
-	
-
 	
 }
