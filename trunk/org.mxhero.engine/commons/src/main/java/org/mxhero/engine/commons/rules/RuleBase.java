@@ -13,6 +13,10 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mxhero
+ *
+ */
 public class RuleBase {
 
 	private static Logger log = LoggerFactory.getLogger(RuleBase.class);
@@ -21,6 +25,10 @@ public class RuleBase {
 	
 	private boolean isReady = false;
 	
+	/**
+	 * @param group
+	 * @param mail
+	 */
 	public void process(String group, Mail mail){
 		if(!isReady){
 			ready();
@@ -45,6 +53,9 @@ public class RuleBase {
 		}
 	}
 	
+	/**
+	 * @param rules
+	 */
 	public void addRules(Map<String, Set<CoreRule>> rules){
 		if(rules!=null){
 			for(String group : rules.keySet()){
@@ -53,6 +64,10 @@ public class RuleBase {
 		}
 	}
 	
+	/**
+	 * @param group
+	 * @param rules
+	 */
 	public void addRules(String group, Collection<CoreRule> rules){
 		if(rules!=null){
 			for(CoreRule rule : rules){
@@ -61,6 +76,10 @@ public class RuleBase {
 		}
 	}
 	
+	/**
+	 * @param group
+	 * @param rule
+	 */
 	public void addRule(String group, CoreRule rule){
 		if(isReady){
 			throw new RuntimeException("Data base closed, you can not add new rules");
@@ -74,6 +93,9 @@ public class RuleBase {
 		coreRules.get(group).add(rule);
 	}
 	
+	/**
+	 * 
+	 */
 	private synchronized void ready(){
 		//prepare the rule base
 		if(!isReady){
@@ -86,10 +108,16 @@ public class RuleBase {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public int getGroups(){
 		return coreRules.size();
 	}
 	
+	/**
+	 * @return
+	 */
 	public int getRules(){
 		int size = 0;
 		for(String group : coreRules.keySet()){

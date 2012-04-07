@@ -3,6 +3,10 @@ package org.mxhero.engine.commons.rules;
 import org.mxhero.engine.commons.feature.RuleDirection;
 import org.mxhero.engine.commons.mail.api.Mail;
 
+/**
+ * @author mmarmol
+ *
+ */
 public abstract class DirectionEval {
 
 	public static final String DOMAIN = "domain";
@@ -12,6 +16,11 @@ public abstract class DirectionEval {
 	public static final String ANYONEELSE = "anyoneelse";
 	public static final String ALLDOMAINS = "alldomains";
 	
+	/**
+	 * @param from
+	 * @param mail
+	 * @return
+	 */
 	public static boolean evalFrom(RuleDirection from, Mail mail){
 		if(from.getDirectionType().equals(ANYONE)){
 			return true;
@@ -41,6 +50,11 @@ public abstract class DirectionEval {
 	}
 	
 	
+	/**
+	 * @param to
+	 * @param mail
+	 * @return
+	 */
 	public static boolean evalTo(RuleDirection to, Mail mail){
 		if(to.getDirectionType().equals(ANYONE)){
 			return true;
@@ -66,6 +80,10 @@ public abstract class DirectionEval {
 		return false;
 	}
 	
+	/**
+	 * @param direction
+	 * @return
+	 */
 	public static String getDomainFromRuleDirection(RuleDirection direction){
 			if(direction.getDomain()==null){
 				return direction.getFreeValue();
@@ -74,6 +92,10 @@ public abstract class DirectionEval {
 			}
 	}
 	
+	/**
+	 * @param direction
+	 * @return
+	 */
 	public static String getMailFromRuleDirection(RuleDirection direction){
 		String mail = null;
 		if(direction.getDirectionType().equalsIgnoreCase(INDIVIDUAL)){

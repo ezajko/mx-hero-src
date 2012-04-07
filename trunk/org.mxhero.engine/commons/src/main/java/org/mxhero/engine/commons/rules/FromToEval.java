@@ -5,6 +5,10 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FromToEval implements Evaluable{
 
 	private static Logger log = LoggerFactory.getLogger(FromToEval.class);
@@ -20,12 +24,20 @@ public class FromToEval implements Evaluable{
 	private RuleDirection to;
 	private Boolean twoWays;
 	
+	/**
+	 * @param from
+	 * @param to
+	 * @param twoWays
+	 */
 	public FromToEval(RuleDirection from, RuleDirection to, Boolean twoWays){
 		this.from=from;
 		this.to=to;
 		this.twoWays=twoWays;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.rules.Evaluable#eval(org.mxhero.engine.commons.mail.api.Mail)
+	 */
 	@Override
 	public boolean eval(Mail mail) {
 
@@ -54,6 +66,9 @@ public class FromToEval implements Evaluable{
 	
 
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

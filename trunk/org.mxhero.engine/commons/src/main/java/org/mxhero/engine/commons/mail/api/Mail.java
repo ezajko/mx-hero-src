@@ -44,6 +44,7 @@ public interface Mail {
 	
 	/**
 	 * @param commandServiceId
+	 * @param params
 	 * @return
 	 */
 	public Result cmd(String commandServiceId, NamedParameters params);

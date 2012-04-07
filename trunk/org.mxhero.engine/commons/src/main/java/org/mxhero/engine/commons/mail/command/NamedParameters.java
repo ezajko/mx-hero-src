@@ -3,13 +3,24 @@ package org.mxhero.engine.commons.mail.command;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 
+ * @author mmarmol
+ */
 public class NamedParameters {
 
 	protected final Map<String, Object> nameToInstance = new HashMap<String, Object>();
 
+	/**
+	 * 
+	 */
 	public NamedParameters(){
 	}
 	
+	/**
+	 * @param name
+	 * @param parameter
+	 */
 	public NamedParameters(String name, Object parameter){
 		nameToInstance.put(name, parameter);
 	}
@@ -43,14 +54,24 @@ public class NamedParameters {
 		}
 	}
 	
+	/**
+	 * @return
+	 */
 	public int getSize(){
 		return nameToInstance.size();
 	}
 	
+	/**
+	 * @param name
+	 * @return
+	 */
 	public boolean hasParameter(String name){
 		return nameToInstance.containsKey(name);
 	}
 
+	/**
+	 * @return
+	 */
 	public Map<String, Object> getNameToInstance() {
 		return nameToInstance;
 	}
