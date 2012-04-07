@@ -5,6 +5,10 @@ import java.util.Map;
 import org.mxhero.engine.commons.domain.Domain;
 import org.mxhero.engine.commons.domain.User;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class CachedUserRepository implements UserRepository, Runnable{
 
 	private UserRepository repository;
@@ -35,6 +39,9 @@ public class CachedUserRepository implements UserRepository, Runnable{
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void start(){
 		thread=new Thread(this);
 		keepWorking=true;
@@ -43,6 +50,9 @@ public class CachedUserRepository implements UserRepository, Runnable{
 		thread.start();
 	}
 
+	/**
+	 * 
+	 */
 	public void stop(){
 		keepWorking=false;	
 		if(thread!=null){
@@ -66,6 +76,9 @@ public class CachedUserRepository implements UserRepository, Runnable{
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void update(){
 		Map<String, Domain> newDomains = repository.getDomains();
 		Map<String, User> newUsers = repository.getUsers();
@@ -75,18 +88,30 @@ public class CachedUserRepository implements UserRepository, Runnable{
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public UserRepository getRepository() {
 		return repository;
 	}
 
+	/**
+	 * @param repository
+	 */
 	public void setRepository(UserRepository repository) {
 		this.repository = repository;
 	}
 
+	/**
+	 * @return
+	 */
 	public Long getUpdateTime() {
 		return updateTime;
 	}
 
+	/**
+	 * @param updateTime
+	 */
 	public void setUpdateTime(Long updateTime) {
 		this.updateTime = updateTime;
 	}

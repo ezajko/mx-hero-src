@@ -5,8 +5,22 @@ import java.util.HashSet;
 import org.mxhero.engine.commons.domain.Domain;
 import org.mxhero.engine.commons.domain.User;
 
+/**
+ * @author mmarmol
+ *
+ */
 public abstract class Cloner {
 
+	/**
+	 * 
+	 */
+	private Cloner(){
+	}
+	
+	/**
+	 * @param domain
+	 * @return
+	 */
 	public static Domain clone(Domain domain){
 		Domain clonedDomain = null;
 		if(domain!=null){
@@ -21,6 +35,10 @@ public abstract class Cloner {
 		return clonedDomain;
 	}
 	
+	/**
+	 * @param user
+	 * @return
+	 */
 	public static User clone(User user){
 		User clonedUser = null;
 			if(user!=null){

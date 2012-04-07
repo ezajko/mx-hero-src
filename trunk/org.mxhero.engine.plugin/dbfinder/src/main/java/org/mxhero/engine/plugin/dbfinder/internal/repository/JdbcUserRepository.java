@@ -16,16 +16,26 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author mmarmol
+ *
+ */
 @Repository("jdbcUserRepository")
 public class JdbcUserRepository implements UserRepository{
 
 	private NamedParameterJdbcTemplate template;
 	
+	/**
+	 * @param ds
+	 */
 	@Autowired
 	public JdbcUserRepository(DataSource ds){
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.plugin.dbfinder.internal.repository.UserRepository#getDomains()
+	 */
 	@Transactional(readOnly=true)
 	public Map<String, Domain> getDomains(){
 		String domainSql = "SELECT domain, alias FROM domains_aliases";
@@ -50,6 +60,10 @@ public class JdbcUserRepository implements UserRepository{
 		return domainMap;
 	}
 	
+	/**
+	 * @param domainMap
+	 * @return
+	 */
 	@Transactional(readOnly=true)
 	private Map<String, User> getUsers(Map<String, Domain> domainMap){
 		Map<String, User> aliasesMap = new HashMap<String, User>();	
@@ -91,6 +105,9 @@ public class JdbcUserRepository implements UserRepository{
 		return aliasesMap;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.plugin.dbfinder.internal.repository.UserRepository#getUsers()
+	 */
 	@Override
 	public Map<String, User> getUsers() {
 		return this.getUsers(getDomains());

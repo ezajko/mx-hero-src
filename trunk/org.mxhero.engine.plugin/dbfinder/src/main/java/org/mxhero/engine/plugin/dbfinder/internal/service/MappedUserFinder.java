@@ -10,11 +10,18 @@ import org.mxhero.engine.plugin.dbfinder.internal.util.Cloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class MappedUserFinder implements UserFinder
 {
 	private static Logger log = LoggerFactory.getLogger(MappedUserFinder.class);
 	private UserRepository repository;
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.finders.UserFinder#getUser(java.lang.String)
+	 */
 	@Override
 	public User getUser(String mailAdress) {
 		String formatedMail = null;
@@ -51,10 +58,16 @@ public class MappedUserFinder implements UserFinder
 		return user;
 	}
 
+	/**
+	 * @return
+	 */
 	public UserRepository getRepository() {
 		return repository;
 	}
 
+	/**
+	 * @param repository
+	 */
 	public void setRepository(UserRepository repository) {
 		this.repository = repository;
 	}
