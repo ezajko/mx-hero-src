@@ -2,6 +2,10 @@ package org.mxhero.engine.plugin.featuresfp.internal.entity;
 
 import org.mxhero.engine.commons.feature.RuleProperty;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class RulePropertyEntity implements RuleProperty {
 
 	private String key;

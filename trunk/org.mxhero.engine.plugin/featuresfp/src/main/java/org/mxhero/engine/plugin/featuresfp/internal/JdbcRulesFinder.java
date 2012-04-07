@@ -24,15 +24,25 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 
+/**
+ * @author mmarmol
+ *
+ */
 public class JdbcRulesFinder implements RulesFinder{
 
 	private NamedParameterJdbcTemplate template;
 	
+	/**
+	 * @param ds
+	 */
 	@Autowired
 	public JdbcRulesFinder(DataSource ds){
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.feature.RulesFinder#find(java.lang.String, java.lang.Integer)
+	 */
 	@Override
 	@Transactional(readOnly=true)
 	public Feature find(String componet, Integer version) {
@@ -62,6 +72,10 @@ public class JdbcRulesFinder implements RulesFinder{
 		return feature;
 	}
 
+	/**
+	 * @param ruleId
+	 * @return
+	 */
 	private Collection<RuleEntity> getRules(Integer ruleId){
 		String rulesSql = "SELECT id, admin_order, domain_id, enabled, two_ways, from_direction_id, to_direction_id " +
 				" FROM features_rules WHERE feature_id = :featureId";
@@ -95,6 +109,10 @@ public class JdbcRulesFinder implements RulesFinder{
 	}
 	
 	
+	/**
+	 * @param ruleId
+	 * @return
+	 */
 	private Collection<RulePropertyEntity> getProperties(Integer ruleId){
 		Collection<RulePropertyEntity> properties;
 		String sqlProperties = "SELECT property_key, property_value " +
@@ -112,6 +130,10 @@ public class JdbcRulesFinder implements RulesFinder{
 		return properties;
 	}
 	
+	/**
+	 * @param directionId
+	 * @return
+	 */
 	private RuleDirectionEntity getDirection(Integer directionId){
 		String sqlDirection = "SELECT id, account, directiom_type, domain, free_value, group_name " +
 				" FROM features_rules_directions WHERE id = :directionId";

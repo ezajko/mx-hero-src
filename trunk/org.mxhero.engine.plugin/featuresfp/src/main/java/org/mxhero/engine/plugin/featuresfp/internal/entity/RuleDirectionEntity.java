@@ -2,6 +2,10 @@ package org.mxhero.engine.plugin.featuresfp.internal.entity;
 
 import org.mxhero.engine.commons.feature.RuleDirection;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class RuleDirectionEntity implements RuleDirection {
 
 	private Integer id;
