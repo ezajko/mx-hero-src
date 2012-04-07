@@ -18,7 +18,8 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.plugin.basecommands.command.Create;
+import org.mxhero.engine.plugin.basecommands.command.create.Create;
+import org.mxhero.engine.plugin.basecommands.command.create.CreateParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +40,7 @@ public class CreateImpl implements Create {
 
 	private InputService service;
 
-	/**
-	 * @see org.mxhero.engine.domain.mail.command.Command#exec(org.mxhero.engine.domain.mail.MimeMail,
-	 *      java.lang.String[])
-	 */
+
 	@Override
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 
@@ -54,13 +52,12 @@ public class CreateImpl implements Create {
 		String subject = null;
 		String ouputService = null;
 		String text = null;
-
-		if (parameters == null
-				|| (!parameters.hasParameter(Create.SENDER)
-						&& !parameters.hasParameter(Create.RECIPIENTS) && !parameters
-							.hasParameter(Create.SUBJECT))
-				&& !parameters.hasParameter(Create.TEXT)
-				&& !parameters.hasParameter(Create.OUTPUT_SERVICE)) {
+		CreateParameters createParameters = new CreateParameters(parameters);
+		if (createParameters.getSender()==null
+			|| createParameters.getRecipients()==null
+			|| createParameters.getOutputService()==null
+			|| createParameters.getSubject()==null
+			|| createParameters.getText()==null) {
 			log.warn("wrong ammount of params.");
 			result.setAnError(true);
 			result.setMessage("wrong ammount of params.");
@@ -68,9 +65,9 @@ public class CreateImpl implements Create {
 		}
 
 		try {
-			String senderEmail = parameters.get(Create.SENDER);
+			String senderEmail = createParameters.getSender();
 			sender = new InternetAddress(senderEmail, false);
-			String recipientEmail = parameters.get(Create.RECIPIENTS);
+			String recipientEmail = createParameters.getRecipients();
 			for (String recipient : recipientEmail.split(DIV_CHARACTER)) {
 				try {
 					InternetAddress rcptAddress = new InternetAddress(
@@ -80,9 +77,9 @@ public class CreateImpl implements Create {
 					log.warn("recipient is not valid " + recipient);
 				}
 			}
-			ouputService = parameters.get(Create.OUTPUT_SERVICE);
-			subject = parameters.get(Create.SUBJECT);
-			text = parameters.get(Create.TEXT);
+			ouputService = createParameters.getOutputService();
+			subject = createParameters.getSubject();
+			text = createParameters.getText();
 		} catch (Exception e) {
 			log.warn("wrong parameters");
 			result.setAnError(true);

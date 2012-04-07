@@ -24,7 +24,8 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.plugin.basecommands.command.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
 import org.mxhero.engine.plugin.basecommands.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,12 +70,11 @@ public class ReplyImpl implements Reply {
 		String plainText = null;
 		String htmlText = null;
 		Boolean includeMessage = null;
-
-		if (parameters == null
-				|| (!parameters.hasParameter(Reply.SENDER)
-						&& !parameters.hasParameter(Reply.RECIPIENT)
-						&& !parameters.hasParameter(Reply.PLAIN_TEXT) && !parameters
-							.hasParameter(Reply.HTML_TEXT))) {
+		ReplyParameters replyParameters = new ReplyParameters(parameters);
+		if (replyParameters.getSender()==null
+				|| replyParameters.getRecipient() == null
+				|| replyParameters.getPlainText() == null
+				|| replyParameters.getHtmlText() == null) {
 			log.warn("wrong ammount of params.");
 			result.setAnError(true);
 			result.setMessage("wrong ammount of params");
@@ -82,17 +82,17 @@ public class ReplyImpl implements Reply {
 		}
 
 		try {
-			String senderEmail = parameters.get(Reply.SENDER);
+			String senderEmail = replyParameters.getSender();
 			sender = new InternetAddress(senderEmail, false);
-			String recipientEmail = parameters.get(Reply.RECIPIENT);
+			String recipientEmail = replyParameters.getRecipient();
 			recipient = new InternetAddress(recipientEmail, false);
-			outputService = parameters.get(Reply.OUTPUT_SERVICE);
+			outputService = replyParameters.getOutputService();
 			if (outputService == null) {
 				outputService = mail.getResponseServiceId();
 			}
-			plainText = parameters.get(Reply.PLAIN_TEXT);
-			htmlText = parameters.get(Reply.HTML_TEXT);
-			includeMessage = parameters.get(Reply.INCLUDE_MESSAGE);
+			plainText = replyParameters.getPlainText();
+			htmlText = replyParameters.getHtmlText();
+			includeMessage = replyParameters.getIncludeMessage();
 			if (includeMessage == null) {
 				includeMessage = false;
 			}
