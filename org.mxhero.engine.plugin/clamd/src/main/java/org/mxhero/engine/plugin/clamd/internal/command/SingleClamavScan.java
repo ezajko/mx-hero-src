@@ -17,6 +17,8 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.clamd.command.ClamavScan;
+import org.mxhero.engine.plugin.clamd.command.ClamavScanParameters;
+import org.mxhero.engine.plugin.clamd.command.ClamavScanResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +58,7 @@ public class SingleClamavScan implements ClamavScan {
 	 */
 	@Override
 	public Result exec(MimeMail mail, NamedParameters parameters) {
-		Result result = new Result();
+		ClamavScanResult result = new ClamavScanResult();
 		Boolean addHeader = true;
 		String headerName = DEFAULT_VIRUS_HEADER;
 		
@@ -71,16 +73,17 @@ public class SingleClamavScan implements ClamavScan {
 			result.setMessage("wrong ammount of params");
 			return result;
 		}
+		ClamavScanParameters csParameters = new ClamavScanParameters(parameters);
 
-		remove = parameters.get(ClamavScan.REMOVE_INFECTED);
+		remove = csParameters.getRemoveInfected();
 		if (remove == null) {
 			remove = false;
 		}
-		addHeader = parameters.get(ClamavScan.ADD_HEADER);
+		addHeader = csParameters.getAddHeader();
 		if (addHeader == null) {
 			addHeader = true;
 		}
-		headerName = parameters.get(ClamavScan.HEADER_NAME);
+		headerName = csParameters.getHeaderName();
 		if (headerName == null) {
 			headerName = getVirusHeader();
 		}
@@ -100,7 +103,7 @@ public class SingleClamavScan implements ClamavScan {
 					mail.getMessage().setHeader(headerName, STATUS_CLEAN);
 				}
 			}
-			result.setParameters(new NamedParameters("results", results));
+			result.setScanResults(results);
 			mail.getMessage().saveChanges();
 		} catch (Exception e) {
 			log.warn("error while scanning:"+ e.getMessage());
