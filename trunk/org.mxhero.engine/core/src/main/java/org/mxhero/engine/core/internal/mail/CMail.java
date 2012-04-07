@@ -21,6 +21,10 @@ import org.mxhero.engine.core.internal.mail.command.CommandResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class CMail implements Mail{
 
 	private static Logger log = LoggerFactory.getLogger(CMail.class);
@@ -36,6 +40,13 @@ public class CMail implements Mail{
 	private Headers headers;
 	private Recipients recipients;
 	
+	/**
+	 * @param mimeMail
+	 * @param sender
+	 * @param recipient
+	 * @param fromSender
+	 * @param recipientsInHeaders
+	 */
 	public CMail(MimeMail mimeMail, User sender, User recipient,
 			User fromSender, List<User> recipientsInHeaders) {
 		this.mimeMail = mimeMail;

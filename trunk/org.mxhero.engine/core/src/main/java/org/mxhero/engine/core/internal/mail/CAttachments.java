@@ -12,12 +12,19 @@ import org.mxhero.engine.commons.mail.api.Attachments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class CAttachments implements Attachments {
 
 	private static Logger log = LoggerFactory.getLogger(CAttachments.class);
 	
 	private MimeMail mimeMail;
 
+	/**
+	 * @param mimeMail
+	 */
 	public CAttachments(MimeMail mimeMail) {
 		this.mimeMail = mimeMail;
 	}

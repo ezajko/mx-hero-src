@@ -7,12 +7,19 @@ import org.mxhero.engine.commons.mail.api.Body;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class CBody implements Body{
 
 	private static Logger log = LoggerFactory.getLogger(CBody.class);
 	
 	private MimeMail mimeMail;
 
+	/**
+	 * @param mimeMail
+	 */
 	public CBody(MimeMail mimeMail) {
 		this.mimeMail = mimeMail;
 	}
