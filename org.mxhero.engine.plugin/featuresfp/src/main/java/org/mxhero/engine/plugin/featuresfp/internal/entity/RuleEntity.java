@@ -5,6 +5,10 @@ import java.util.Collection;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class RuleEntity implements Rule{
 
 	private Integer id;

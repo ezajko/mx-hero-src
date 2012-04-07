@@ -5,6 +5,10 @@ import java.util.Set;
 import org.mxhero.engine.commons.feature.Feature;
 import org.mxhero.engine.commons.feature.Rule;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FeatureEntity implements Feature{
 
 	private Integer id;
