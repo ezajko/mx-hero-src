@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class NamedParameters {
 
-	private final Map<String, Object> nameToInstance = new HashMap<String, Object>();
+	protected final Map<String, Object> nameToInstance = new HashMap<String, Object>();
 
 	public NamedParameters(){
 	}
@@ -49,6 +49,10 @@ public class NamedParameters {
 	
 	public boolean hasParameter(String name){
 		return nameToInstance.containsKey(name);
+	}
+
+	public Map<String, Object> getNameToInstance() {
+		return nameToInstance;
 	}
 
 }

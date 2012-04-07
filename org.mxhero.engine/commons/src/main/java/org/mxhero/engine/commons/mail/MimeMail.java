@@ -44,7 +44,7 @@ public final class MimeMail {
 
 	private String responseServiceId;
 
-	private int initialSize;
+	private long initialSize;
 	
 	private int deliverTries;
 
@@ -189,7 +189,7 @@ public final class MimeMail {
 	/**
 	 * @return the initialSize
 	 */
-	public int getInitialSize() {
+	public long getInitialSize() {
 		return initialSize;
 	}
 

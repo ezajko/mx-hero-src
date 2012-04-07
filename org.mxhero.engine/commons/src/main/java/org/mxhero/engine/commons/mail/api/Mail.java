@@ -71,7 +71,10 @@ public interface Mail {
 	/**
 	 * @return
 	 */
-	public int getInitialSize();
+	public long getInitialSize();
+	
+	
+	public long getSize();
 	
 	/**
 	 * @return
