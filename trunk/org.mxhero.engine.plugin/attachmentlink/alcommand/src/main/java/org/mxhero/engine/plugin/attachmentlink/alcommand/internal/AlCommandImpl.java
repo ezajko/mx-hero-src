@@ -4,7 +4,9 @@ package org.mxhero.engine.plugin.attachmentlink.alcommand.internal;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommandResult;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentProcessor;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
@@ -25,10 +27,11 @@ public class AlCommandImpl implements AlCommand{
 	private boolean messageToBeEvaluateAsAttach;
 
 	public Result exec(MimeMail mail, NamedParameters parameters) {
-		Result result = new Result();
+		AlCommandResult result = new AlCommandResult();
 		Message message = null;
 		try {
-			message = new Message(mail,parameters);
+			ALCommandParameters alParameters = new ALCommandParameters(parameters);
+			message = new Message(mail,alParameters);
 			if(message.getMessagePlatformId()==null)throw new Exception("Message has not unique ID");
 			message.setMsgToBeEvaluateAsAttach(messageToBeEvaluateAsAttach);
 			processor.processMessage(message);
@@ -36,10 +39,9 @@ public class AlCommandImpl implements AlCommand{
 		} catch (RequeueingException e) {
 			result = message.getResult();
 		} catch (Exception e) {
-			e.printStackTrace();
 			result.setAnError(true);
 			result.setConditionTrue(false);
-			result.setMessage("");
+			result.setMessage(e.getMessage());
 			log.error(mail.toString(),e.getMessage());
 		}finally{
 			if(message != null)processor.finishProcessing(message);
