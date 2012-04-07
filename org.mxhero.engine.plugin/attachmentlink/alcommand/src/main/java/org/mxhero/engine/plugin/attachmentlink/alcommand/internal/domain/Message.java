@@ -69,6 +69,7 @@ public class Message {
 		this.locale =  new Locale(parameters.getLocale());
 		this.processAckDownloadMail = parameters.getNotify();
 		this.messageAckDownloadMail = parameters.getNotifyMessage();
+		this.result.setParameters(parameters);
 		this.sender = mail.getSender();
 		this.messagePlatformId = mail.getMessageId();
 		this.subject = mail.getMessage().getSubject();
