@@ -63,6 +63,7 @@ public class ReplyImpl implements Reply {
 	@Override
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
+		result.setParameters(parameters);
 		InternetAddress sender = null;
 		InternetAddress recipient = null;
 		String outputService = null;
