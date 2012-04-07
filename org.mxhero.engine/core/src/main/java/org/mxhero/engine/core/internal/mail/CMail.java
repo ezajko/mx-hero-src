@@ -1,5 +1,8 @@
 package org.mxhero.engine.core.internal.mail;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +84,7 @@ public class CMail implements Mail{
 	}
 
 	@Override
-	public int getInitialSize() {
+	public long getInitialSize() {
 		return mimeMail.getInitialSize();
 	}
 
@@ -173,5 +176,86 @@ public class CMail implements Mail{
 
 	public static void setResolver(CommandResolver resolver){
 		CMail.resolver=resolver;
+	}
+
+	@Override
+	public long getSize() {
+		long size;
+
+		try {
+			size = this.mimeMail.getMessage().getSize();
+		} catch (MessagingException e1) {
+			log.warn("error while trying to read message size");
+			size = -1;
+		}
+		if (size != -1) {
+			@SuppressWarnings("rawtypes")
+			Enumeration e;
+			try {
+				e = this.mimeMail.getMessage().getAllHeaderLines();
+				if (e.hasMoreElements()) {
+					size += 2;
+				}
+				while (e.hasMoreElements()) {
+					// add 2 bytes for the CRLF
+					size += ((String) e.nextElement()).length() + 2;
+				}
+			} catch (MessagingException e1) {
+				log.warn("error while trying to read message headers");
+				size = -1;
+			}
+		}
+
+		if (size == -1) {
+			SizeCalculatorOutputStream out = new SizeCalculatorOutputStream();
+			try {
+				this.mimeMail.getMessage().writeTo(out);
+			} catch (IOException e) {
+				log.warn("error while trying to read stream", e);
+				return -1;
+			} catch (MessagingException e) {
+				log.warn("error while trying to read stream", e);
+				return -1;
+			}
+			size = out.getSize();
+		}
+		return size;
+	}
+	
+	/**
+	 * Slow method to calculate the exact size of a message!
+	 * 
+	 * @author mmarmol
+	 */
+	private static final class SizeCalculatorOutputStream extends OutputStream {
+		private long size = 0;
+
+		/**
+		 * @see java.io.OutputStream#write(int)
+		 */
+		public void write(int arg0) throws IOException {
+			size++;
+		}
+
+		/**
+		 * @return return the amount of bytes written.
+		 */
+		public long getSize() {
+			return size;
+		}
+
+		/**
+		 * @see java.io.OutputStream#write(byte[], int, int)
+		 */
+		public void write(byte[] arg0, int arg1, int arg2) throws IOException {
+			size += arg2;
+		}
+
+		/**
+		 * @see java.io.OutputStream#write(byte[])
+		 */
+		public void write(byte[] arg0) throws IOException {
+			size += arg0.length;
+		}
 	}
 }
