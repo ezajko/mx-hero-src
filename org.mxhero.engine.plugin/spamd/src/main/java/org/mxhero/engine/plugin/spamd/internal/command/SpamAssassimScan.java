@@ -3,8 +3,11 @@ package org.mxhero.engine.plugin.spamd.internal.command;
 import javax.mail.MessagingException;
 
 import org.mxhero.engine.commons.mail.MimeMail;
+import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.spamd.command.SpamScan;
+import org.mxhero.engine.plugin.spamd.command.SpamScanParameters;
+import org.mxhero.engine.plugin.spamd.command.SpamScanResult;
 import org.mxhero.engine.plugin.spamd.internal.scanner.SpamdScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +24,6 @@ public class SpamAssassimScan implements SpamScan {
 
 	private static Logger log = LoggerFactory.getLogger(SpamAssassimScan.class);
 
-	private static final int CHANGE_SUBJECT_PARAM_NUMBER = 0;
-	private static final int ADD_HEADERS_PARAM_NUMBER = 1;
-	private static final int FLAG_HEADER_PARAM_NUMBER = 2;
-	private static final int STATUS_HEADER_PARAM_NUMBER = 3;
-	
 	private String hostName = "localhost";
 	private Integer port = 783;
     private String statusMailAttributeName = "X-Spam-Status";
@@ -36,64 +34,47 @@ public class SpamAssassimScan implements SpamScan {
 	 *      java.lang.String[])
 	 */
 	@Override
-	public Result exec(MimeMail mail, String... args) {
-		Result result = new Result();
-		result.setResult(false);
+	public Result exec(MimeMail mail, NamedParameters parameters) {
+		SpamScanResult result = new SpamScanResult();
 		String prefix = "";
 		boolean addHeaders = true;
 		String statusHeaderName = SpamdScanner.STATUS_MAIL_ATTRIBUTE_NAME;
 		String flagHeaderName = SpamdScanner.FLAG_MAIL_ATTRIBUTE_NAME;
-
+		SpamScanParameters ssParameters = new SpamScanParameters(parameters);
 		if (getFlagMailAttributeName()!=null && !getFlagMailAttributeName().isEmpty()) {
 			flagHeaderName = getFlagMailAttributeName();
 		}
 		if (getStatusMailAttributeName()!=null && getStatusMailAttributeName().isEmpty()) {
 			statusHeaderName = getStatusMailAttributeName();
 		}
-
-		if (args != null) {
-			if(args.length>CHANGE_SUBJECT_PARAM_NUMBER
-					&& args[CHANGE_SUBJECT_PARAM_NUMBER]!=null
-					&& !args[CHANGE_SUBJECT_PARAM_NUMBER].trim().isEmpty()){
-				prefix = args[CHANGE_SUBJECT_PARAM_NUMBER];
-				if(prefix!=null && prefix.length()>0){
-					prefix=prefix+" ";
-				}
-			}
-			if (args.length > ADD_HEADERS_PARAM_NUMBER
-					&& args[ADD_HEADERS_PARAM_NUMBER] != null
-					&& !args[ADD_HEADERS_PARAM_NUMBER].isEmpty()
-					&& (args[ADD_HEADERS_PARAM_NUMBER]
-							.equalsIgnoreCase(Boolean.TRUE.toString()) || args[ADD_HEADERS_PARAM_NUMBER]
-							.equalsIgnoreCase(Boolean.FALSE.toString()))) {
-				addHeaders = Boolean
-						.parseBoolean(args[ADD_HEADERS_PARAM_NUMBER]);
-			}
-			if (args.length > FLAG_HEADER_PARAM_NUMBER
-					&& args[FLAG_HEADER_PARAM_NUMBER] != null
-					&& !args[FLAG_HEADER_PARAM_NUMBER].isEmpty()) {
-				flagHeaderName = args[FLAG_HEADER_PARAM_NUMBER];
-			}
-			if (args.length > STATUS_HEADER_PARAM_NUMBER
-					&& args[STATUS_HEADER_PARAM_NUMBER] != null
-					&& !args[STATUS_HEADER_PARAM_NUMBER].isEmpty()) {
-				statusHeaderName = args[STATUS_HEADER_PARAM_NUMBER];
-			}
+		if(ssParameters.getPrefix()!=null &&
+				ssParameters.getPrefix().trim().length()>0){
+			prefix = ssParameters.getPrefix().trim()+" ";
+		}
+		if(ssParameters.getAddHeaders()!=null){
+			addHeaders=ssParameters.getAddHeaders();
+		}
+		if(ssParameters.getFlagHeader()!=null &&
+				!ssParameters.getFlagHeader().trim().isEmpty()){
+			flagHeaderName=ssParameters.getFlagHeader();
+		}
+		if(ssParameters.getStatusHeader()!=null &&
+				!ssParameters.getStatusHeader().trim().isEmpty()){
+			statusHeaderName=ssParameters.getStatusHeader();
 		}
 
 
 		SpamdScanner scanner = new SpamdScanner(getHostName(), getPort());
 		double hits = -1;
 		try {
-			result.setResult(scanner.scan(mail.getMessage()));
+			result.setConditionTrue(scanner.scan(mail.getMessage()));
 			try {
 				hits = Double.parseDouble(scanner.getHits());
 			} catch (NumberFormatException e) {
 				log.warn("wrong hits format");
 			}
-			result.setLongField((long) hits);
-			result.setDoubleField(hits);
-			result.setText(scanner.getHeadersAsAttribute().get(
+			result.setHits(hits);
+			result.setMessage(scanner.getHeadersAsAttribute().get(
 					SpamdScanner.STATUS_MAIL_ATTRIBUTE_NAME));
 			if (addHeaders) {
 				mail.getMessage().setHeader(
@@ -105,7 +86,7 @@ public class SpamAssassimScan implements SpamScan {
 						scanner.getHeadersAsAttribute().get(
 								SpamdScanner.FLAG_MAIL_ATTRIBUTE_NAME));
 			}
-			if(result.isTrue()){
+			if(result.isConditionTrue()){
 				mail.getMessage().setSubject(prefix+mail.getMessage().getSubject());
 			}
 			mail.getMessage().saveChanges();
