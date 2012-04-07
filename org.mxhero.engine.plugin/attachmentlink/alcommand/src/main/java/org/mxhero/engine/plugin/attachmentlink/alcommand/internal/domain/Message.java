@@ -24,9 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
-import org.mxhero.engine.commons.mail.command.NamedParameters;
-import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommandResult;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
 
 
@@ -46,7 +45,7 @@ public class Message {
 	private Long sizeLimit;
 	private boolean processed;
 	private Set<MessageAttachRecipient> messageAttachRecipient;
-	private Result result;
+	private AlCommandResult result;
 	private boolean msgToBeEvaluateAsAttach;
 	private Boolean processAckDownloadMail;
 	private String messageAckDownloadMail;
@@ -60,19 +59,16 @@ public class Message {
 	
 	public Message(){
 		this.processed = false;
-		this.result = new Result();
+		this.result = new AlCommandResult();
 		this.messageAttachRecipient = new HashSet<MessageAttachRecipient>();
 	}
 	
-	public Message(MimeMail mail, NamedParameters parameters) throws MessagingException{
+	public Message(MimeMail mail, ALCommandParameters parameters) throws MessagingException{
 		this();
 		this.mail = mail;
-		String locale = parameters.get(AlCommand.LOCALE);
-		Boolean notify = parameters.get(AlCommand.NOTIFY);
-		String notifyMessage = parameters.get(AlCommand.NOTIFY_MESSAGE);
-		this.locale =  new Locale(locale);
-		this.processAckDownloadMail = notify;
-		this.messageAckDownloadMail = notifyMessage;
+		this.locale =  new Locale(parameters.getLocale());
+		this.processAckDownloadMail = parameters.getNotify();
+		this.messageAckDownloadMail = parameters.getNotifyMessage();
 		this.sender = mail.getSender();
 		this.messagePlatformId = mail.getMessageId();
 		this.subject = mail.getMessage().getSubject();
@@ -183,7 +179,7 @@ public class Message {
 		return hasAttach;
 	}
 
-	public Result getResult() {
+	public AlCommandResult getResult() {
 		return this.result;
 	}
 
@@ -199,7 +195,7 @@ public class Message {
 		getResult().setConditionTrue(true);
 		getResult().setMessage("Attachment Processed");
 		int size = getMessageAttachRecipient().size();
-		getResult().setParameters(new NamedParameters("size",size));
+		getResult().setSize(size);
 	}
 
 	public void continueProcessing() {

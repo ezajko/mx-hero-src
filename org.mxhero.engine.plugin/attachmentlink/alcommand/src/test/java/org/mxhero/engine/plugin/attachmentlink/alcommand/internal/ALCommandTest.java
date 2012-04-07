@@ -56,9 +56,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
-import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -358,9 +357,10 @@ public class ALCommandTest {
 			mail.setSenderId("juan@juan.com");
 			mail.setSenderDomainId("juan.com");
 			mail.setMessageId(idEmail);
-			NamedParameters parameters = new NamedParameters(AlCommand.LOCALE,"es");
-			parameters.put(AlCommand.NOTIFY, true);
-			parameters.put(AlCommand.NOTIFY_MESSAGE, "sdasdadsads");
+			ALCommandParameters parameters = new ALCommandParameters();
+			parameters.setLocale("es");
+			parameters.setNotify(true);
+			parameters.setNotifyMessage("some message");
 			result = command.exec(mail, parameters);
 			if (result.isConditionTrue()) {
 				Object content = mail.getMessage().getContent();
@@ -412,9 +412,10 @@ public class ALCommandTest {
 //			sendMail(data);
 			MimeMail mail = new MimeMail("", recipient, is, "AAAAA");
 			mail.setMessageId(idMail);
-			NamedParameters parameters = new NamedParameters(AlCommand.LOCALE,"es");
-			parameters.put(AlCommand.NOTIFY, true);
-			parameters.put(AlCommand.NOTIFY_MESSAGE, "sdasdadsads");
+			ALCommandParameters parameters = new ALCommandParameters();
+			parameters.setLocale("es");
+			parameters.setNotify(true);
+			parameters.setNotifyMessage("some message");
 			result = command.exec(mail, parameters);
 //			sendMail(mail.getMessage());
 			if (result.isConditionTrue()) {
@@ -545,9 +546,10 @@ public class ALCommandTest {
 
 			String recipient = "juanpablo.royo@gmail.com";
 			MimeMail mail = new MimeMail("", recipient, is, idMail);
-			NamedParameters parameters = new NamedParameters(AlCommand.LOCALE,"es");
-			parameters.put(AlCommand.NOTIFY, true);
-			parameters.put(AlCommand.NOTIFY_MESSAGE, "sdasdadsads");
+			ALCommandParameters parameters = new ALCommandParameters();
+			parameters.setLocale("es");
+			parameters.setNotify(true);
+			parameters.setNotifyMessage("some message");
 			mail.setMessageId(idMail);
 			result = command.exec(mail, parameters);
 			if (result.isConditionTrue()) {
