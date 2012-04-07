@@ -2,8 +2,6 @@ package org.mxhero.engine.commons.domain;
 
 import java.util.Collection;
 
-
-
 /**
  * Represents a user inside the platform so it can be used inside rules.
  * @author mmarmol
@@ -64,30 +62,52 @@ public class User {
 		this.managed = managed;
 	}
 
+	/**
+	 * @return
+	 */
 	public Domain getDomain() {
 		return domain;
 	}
 
+	/**
+	 * @param domain
+	 */
 	public void setDomain(Domain domain) {
 		this.domain = domain;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getGroup() {
 		return group;
 	}
 
+	/**
+	 * @param group
+	 */
 	public void setGroup(String group) {
 		this.group = group;
 	}
 	
+	/**
+	 * @return
+	 */
 	public Collection<String> getAddressBook() {
 		return addressBook;
 	}
 
+	/**
+	 * @param addressBook
+	 */
 	public void setAddressBook(Collection<String> addressBook) {
 		this.addressBook = addressBook;
 	}
 	
+	/**
+	 * @param emails
+	 * @return
+	 */
 	public boolean hasAlias(String... emails){
 		if(emails == null || emails.length<1){
 			return false;
@@ -111,6 +131,10 @@ public class User {
 		return false;
 	}
 
+	/**
+	 * @param emails
+	 * @return
+	 */
 	public boolean hasEmailOnAddressBook(String... emails){
 		if(emails == null || emails.length<1){
 			return false;

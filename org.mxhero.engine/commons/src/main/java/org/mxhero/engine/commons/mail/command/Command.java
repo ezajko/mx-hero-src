@@ -8,12 +8,11 @@ import org.mxhero.engine.commons.mail.MimeMail;
  */
 public interface Command {
 
-
 	/**
 	 * Execute a command for the given mail and parameters
-	 * @param mail mail where it will execute
-	 * @param args parameters
-	 * @return result or the execution
+	 * @param mail
+	 * @param parameters
+	 * @return
 	 */
 	Result exec(MimeMail mail, NamedParameters parameters);
 }

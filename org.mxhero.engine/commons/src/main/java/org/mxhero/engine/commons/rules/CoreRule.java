@@ -7,6 +7,10 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class CoreRule implements Comparable<CoreRule>{
 
 	private static Logger log = LoggerFactory.getLogger(CoreRule.class);
@@ -21,12 +25,20 @@ public class CoreRule implements Comparable<CoreRule>{
 	
 	private List<Actionable> actions;
 
+	/**
+	 * @param id
+	 * @param priority
+	 * @param group
+	 */
 	public CoreRule(Integer id, Integer priority, String group){
 		this.id=id;
 		this.priority=priority;
 		this.group=group;
 	}
 	
+	/**
+	 * @param mail
+	 */
 	public void process(Mail mail){
 		//rules should have at least one action
 		if(evals!=null && actions!=null && actions.size()>0){
@@ -53,6 +65,9 @@ public class CoreRule implements Comparable<CoreRule>{
 		}
 	}
 	
+	/**
+	 * @param evaluation
+	 */
 	public void addEvaluation(Evaluable evaluation){
 		if(evals==null){
 			evals=new ArrayList<Evaluable>();
@@ -60,6 +75,9 @@ public class CoreRule implements Comparable<CoreRule>{
 		evals.add(evaluation);
 	}
 	
+	/**
+	 * @param action
+	 */
 	public void addAction(Actionable action){
 		if(actions==null){
 			actions= new ArrayList<Actionable>();
@@ -67,6 +85,9 @@ public class CoreRule implements Comparable<CoreRule>{
 		actions.add(action);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -75,6 +96,9 @@ public class CoreRule implements Comparable<CoreRule>{
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -92,19 +116,31 @@ public class CoreRule implements Comparable<CoreRule>{
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(CoreRule o) {
 		return priority.compareTo(o.priority)*-1;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getGroup(){
 		return this.group;
 	}
 	
+	/**
+	 * @return
+	 */
 	public Integer getId(){
 		return id;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

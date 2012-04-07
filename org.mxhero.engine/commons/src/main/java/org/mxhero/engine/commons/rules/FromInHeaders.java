@@ -6,6 +6,9 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ */
 public class FromInHeaders implements Evaluable{
 
 	private static Logger log = LoggerFactory.getLogger(FromInHeaders.class);
@@ -14,12 +17,20 @@ public class FromInHeaders implements Evaluable{
 	private RuleDirection to;
 	private Boolean twoWays;
 	
+	/**
+	 * @param from
+	 * @param to
+	 * @param twoWays
+	 */
 	public FromInHeaders(RuleDirection from, RuleDirection to, Boolean twoWays){
 		this.from=from;
 		this.to=to;
 		this.twoWays=twoWays;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.rules.Evaluable#eval(org.mxhero.engine.commons.mail.api.Mail)
+	 */
 	@Override
 	public boolean eval(Mail mail) {
 
@@ -46,6 +57,11 @@ public class FromInHeaders implements Evaluable{
 		return returnValue;
 	}
 	
+	/**
+	 * @param toDirection
+	 * @param mail
+	 * @return
+	 */
 	private boolean evalInHeaders(RuleDirection toDirection, Mail mail){
 		if(mail.getRecipientsInHeaders()!=null){
 			for(User user : mail.getRecipientsInHeaders()){
@@ -57,6 +73,12 @@ public class FromInHeaders implements Evaluable{
 		return false;
 	}
 	
+	/**
+	 * @param to
+	 * @param mail
+	 * @param user
+	 * @return
+	 */
 	private boolean evalUser(RuleDirection to, Mail mail, User user){
 		if(to.getDirectionType().equals(DirectionEval.ANYONE)){
 			return true;

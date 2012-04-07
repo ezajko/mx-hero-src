@@ -10,10 +10,20 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @author mmarmol
+ */
 public abstract class LogMail {
 
 	private static Logger log = LoggerFactory.getLogger(LogMail.class);
 	
+	/**
+	 * @param message
+	 * @param prefix
+	 * @param suffix
+	 * @param directory
+	 */
 	public static void saveErrorMail(MimeMessage message, String prefix, String suffix, String directory){
 		if(message!=null){
 			File outFile=null;

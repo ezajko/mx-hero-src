@@ -56,6 +56,10 @@ public class Domain {
 		this.managed = managed;
 	}
 
+	/**
+	 * @param alias
+	 * @return
+	 */
 	public boolean hasAlias(String alias){
 		if(this.getAliases()==null){
 			return this.getId().equalsIgnoreCase(alias);
@@ -63,6 +67,10 @@ public class Domain {
 		return this.getAliases().contains(alias);
 	}
 	
+	/**
+	 * @param aliases
+	 * @return
+	 */
 	public boolean hasAlias(String[] aliases){
 		if(this.getAliases()==null){
 			for(String alias : aliases){
@@ -80,6 +88,10 @@ public class Domain {
 		return false;
 	}
 	
+	/**
+	 * @param aliases
+	 * @return
+	 */
 	public boolean hasAlias(Collection<String> aliases){
 		if(this.getAliases()==null){
 			for(String alias : aliases){

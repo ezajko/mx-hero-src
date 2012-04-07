@@ -17,6 +17,9 @@ import org.mxhero.engine.commons.rules.FromToEval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ */
 public abstract class RulesByFeature implements RulesProvider{
 	
 	private static final String MXHERO_NOREPLY_NAME="mxhero.noreply.name";
@@ -45,6 +48,9 @@ public abstract class RulesByFeature implements RulesProvider{
 	
 	private Integer version;
 
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.rules.provider.RulesProvider#getRules()
+	 */
 	@Override
 	public Map<String, Set<CoreRule>> getRules() {
 
@@ -75,15 +81,27 @@ public abstract class RulesByFeature implements RulesProvider{
 		return domainRules;
 	}
 	
+	/**
+	 * @param rule
+	 * @return
+	 */
 	protected abstract CoreRule createRule(Rule rule);
 	
 	
+	/**
+	 * @param rule
+	 * @return
+	 */
 	protected CoreRule getDefault(Rule rule) {
 		CoreRule coreRule = new CoreRule(rule.getId(),this.getFeature().getBasePriority()+this.getPriority(rule.getFromDirection())+this.getPriority(rule.getToDirection()),(rule.getDomain()!=null)?rule.getDomain():rule.getAdminOrder());
 		coreRule.addEvaluation(new FromToEval(rule.getFromDirection(), rule.getToDirection(), rule.getTwoWays()));	
 		return coreRule;
 	}
 	
+	/**
+	 * @param domain
+	 * @return
+	 */
 	public String getNoReplyEmail(String domain){
 		String name = null;
 		String noreplyDomain = null;
@@ -114,6 +132,10 @@ public abstract class RulesByFeature implements RulesProvider{
 		return email;
 	}
 	
+	/**
+	 * @param domain
+	 * @return
+	 */
 	public String getAdminEmail(String domain){
 		String name = null;
 		String adminDomain = null;
@@ -144,6 +166,10 @@ public abstract class RulesByFeature implements RulesProvider{
 		return email;
 	}
 	
+	/**
+	 * @param direction
+	 * @return
+	 */
 	public int getPriority(RuleDirection direction){
 		if(direction.getDirectionType().equals(ANYONE)){
 			return 1;
@@ -162,34 +188,58 @@ public abstract class RulesByFeature implements RulesProvider{
 		}
 	}
 	
+	/**
+	 * @return
+	 */
 	public RulesFinder getRulesFinder() {
 		return rulesFinder;
 	}
 
+	/**
+	 * @param rulesFinder
+	 */
 	public void setRulesFinder(RulesFinder rulesFinder) {
 		this.rulesFinder = rulesFinder;
 	}
 
+	/**
+	 * @return
+	 */
 	public Feature getFeature() {
 		return feature;
 	}
 
+	/**
+	 * @param feature
+	 */
 	public void setFeature(Feature feature) {
 		this.feature = feature;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getComponent() {
 		return component;
 	}
 
+	/**
+	 * @param component
+	 */
 	public void setComponent(String component) {
 		this.component = component;
 	}
 
+	/**
+	 * @return
+	 */
 	public Integer getVersion() {
 		return version;
 	}
 
+	/**
+	 * @param version
+	 */
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
