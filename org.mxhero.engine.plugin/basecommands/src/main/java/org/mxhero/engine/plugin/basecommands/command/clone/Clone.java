@@ -1,0 +1,13 @@
+package org.mxhero.engine.plugin.basecommands.command.clone;
+
+import org.mxhero.engine.commons.mail.command.Command;
+
+/**
+ * This interface represents the Clone command, used to add clone the email
+ * where the command is executed.
+ * 
+ * @author mmarmol
+ */
+public interface Clone extends Command {
+
+}

@@ -17,8 +17,9 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.plugin.basecommands.command.Clone;
-import org.mxhero.engine.plugin.basecommands.command.Reply;
+import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
+import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
 import org.mxhero.engine.plugin.basecommands.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,25 +54,27 @@ public class CloneImpl implements Clone {
 		MimeMail clonedMail = null;
 		InternetAddress sender = null;
 		InternetAddress recipient = null;
-		String outputService = parameters.get(Clone.OUTPUT_SERVICE);
-		Mail.Phase phase = parameters.get(Clone.PHASE);
-		String override= parameters.get(Clone.OVERRIDE);
-		Boolean generateNewMessageId = parameters.get(Clone.GENERATE_ID);
+		CloneParameters cloneParameters = new CloneParameters(parameters);
+		
+		String outputService = cloneParameters.getOutputService();
+		Mail.Phase phase = cloneParameters.getPhase();
+		String override= cloneParameters.getOverride();
+		Boolean generateNewMessageId = cloneParameters.getGenerateId();
 
-		if(parameters==null || !parameters.hasParameter(Clone.RECIPIENT)){
+		if(cloneParameters.getRecipient()==null){
 			log.warn("wrong ammount of params.");
 			result.setMessage("wrong ammount of params.");
 			return result;
 		}
 
 			try {
-				String senderEmail = parameters.get(Clone.SENDER);
+				String senderEmail = cloneParameters.getSender();
 				if(senderEmail!=null){
 					sender = new InternetAddress(senderEmail,false);
 				}else{
 					sender = new InternetAddress(mail.getSender(),false);
 				}
-				String recipientEmail = parameters.get(Clone.RECIPIENT);
+				String recipientEmail = cloneParameters.getRecipient();
 				recipient = new InternetAddress(recipientEmail,false);
 				if(outputService==null){
 					outputService = mail.getResponseServiceId();

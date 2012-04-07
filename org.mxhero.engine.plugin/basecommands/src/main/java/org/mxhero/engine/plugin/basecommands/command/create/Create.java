@@ -1,4 +1,4 @@
-package org.mxhero.engine.plugin.basecommands.command;
+package org.mxhero.engine.plugin.basecommands.command.create;
 
 import org.mxhero.engine.commons.mail.command.Command;
 
@@ -9,11 +9,5 @@ import org.mxhero.engine.commons.mail.command.Command;
  * @author mmarmol
  */
 public interface Create extends Command {
-
-	String SENDER = "sender";
-	String RECIPIENTS = "recipients";
-	String SUBJECT = "subject";
-	String TEXT = "text";
-	String OUTPUT_SERVICE = "outputService";
 	
 }
