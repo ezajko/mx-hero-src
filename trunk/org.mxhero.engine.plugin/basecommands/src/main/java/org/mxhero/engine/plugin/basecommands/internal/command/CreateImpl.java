@@ -47,6 +47,7 @@ public class CreateImpl implements Create {
 		MimeMessage newMessage = null;
 		MimeMail newMail = null;
 		Result result = new Result();
+		result.setParameters(parameters);
 		InternetAddress sender = null;
 		Collection<InternetAddress> recipients = new ArrayList<InternetAddress>();
 		String subject = null;

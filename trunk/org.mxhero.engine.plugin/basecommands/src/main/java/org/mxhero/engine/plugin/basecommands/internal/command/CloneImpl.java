@@ -51,6 +51,7 @@ public class CloneImpl implements Clone {
 	@Override
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
+		result.setParameters(parameters);
 		MimeMail clonedMail = null;
 		InternetAddress sender = null;
 		InternetAddress recipient = null;
