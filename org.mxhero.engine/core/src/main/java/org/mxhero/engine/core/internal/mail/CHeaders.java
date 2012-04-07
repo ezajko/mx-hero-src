@@ -13,12 +13,19 @@ import org.mxhero.engine.commons.mail.api.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class CHeaders implements Headers{
 
 	private static Logger log = LoggerFactory.getLogger(CHeaders.class);
 	
 	private MimeMail mimeMail;
 
+	/**
+	 * @param mimeMail
+	 */
 	public CHeaders(MimeMail mimeMail) {
 		this.mimeMail = mimeMail;
 	}

@@ -14,11 +14,10 @@ import org.mxhero.engine.commons.mail.command.Result;
 public interface CommandResolver {
 
 	/**
-	 * Actually do the work
-	 * @param mail where the command should be executed
-	 * @param commandId id of the command to be found
-	 * @param args parameters for the command
-	 * @return result of the execution
+	 * @param mail
+	 * @param commandId
+	 * @param parameters
+	 * @return
 	 */
 	Result resolve(MimeMail mail, String commandId, NamedParameters parameters);
 }
