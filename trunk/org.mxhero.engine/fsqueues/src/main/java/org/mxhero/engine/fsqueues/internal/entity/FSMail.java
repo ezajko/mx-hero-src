@@ -1,5 +1,9 @@
 package org.mxhero.engine.fsqueues.internal.entity;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FSMail {
 
 	private String file;
@@ -12,48 +16,81 @@ public class FSMail {
 	
 	private long lastCheck;
 
+	/**
+	 * @param key
+	 */
 	public FSMail(FSMailKey key) {
 		super();
 		this.key = key;
 		lastCheck=System.currentTimeMillis();
 	}
 
+	/**
+	 * @return
+	 */
 	public String getFile() {
 		return file;
 	}
 
+	/**
+	 * @param file
+	 */
 	public void setFile(String file) {
 		this.file = file;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getTmpFile() {
 		return tmpFile;
 	}
 
+	/**
+	 * @param tmpFile
+	 */
 	public void setTmpFile(String tmpFile) {
 		this.tmpFile = tmpFile;
 	}
 
+	/**
+	 * @return
+	 */
 	public FSMailKey getKey() {
 		return key;
 	}
 
+	/**
+	 * @param key
+	 */
 	public void setKey(FSMailKey key) {
 		this.key = key;
 	}
 
+	/**
+	 * @return
+	 */
 	public int getReadded() {
 		return readded;
 	}
 
+	/**
+	 * @param readded
+	 */
 	public void setReadded(int readded) {
 		this.readded = readded;
 	}
 
+	/**
+	 * @return
+	 */
 	public long getLastCheck() {
 		return lastCheck;
 	}
 
+	/**
+	 * @param lastCheck
+	 */
 	public void setLastCheck(long lastCheck) {
 		this.lastCheck = lastCheck;
 	}

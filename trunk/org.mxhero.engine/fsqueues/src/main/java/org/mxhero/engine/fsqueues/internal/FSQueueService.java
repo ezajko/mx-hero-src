@@ -32,6 +32,10 @@ import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FSQueueService implements MimeMailQueueService {
 
 	public static final String SENDER_HEADER = "X-mxHero-Sender";
@@ -48,11 +52,17 @@ public class FSQueueService implements MimeMailQueueService {
 	
 	private AbandonedCheck check;
 	
+	/**
+	 * @param config
+	 */
 	public FSQueueService(FSConfig config){
 		this.config = config;
 		check = new AbandonedCheck(store, this, queues);
 	}
 	
+	/**
+	 * 
+	 */
 	public void stop(){
 		check.stop();
 		queues.clear();
@@ -60,6 +70,9 @@ public class FSQueueService implements MimeMailQueueService {
 		System.gc();
 	}
 	
+	/**
+	 * 
+	 */
 	public void init(){
 		for(File tmpFile : config.getTmpPathFile().listFiles()){
 			tmpFile.delete();
@@ -128,6 +141,9 @@ public class FSQueueService implements MimeMailQueueService {
 		check.init();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#store(org.mxhero.engine.commons.mail.api.Mail.Phase, org.mxhero.engine.commons.mail.MimeMail, long, java.util.concurrent.TimeUnit)
+	 */
 	public MimeMail store(Mail.Phase phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException{
 		File storeFile=null;
@@ -229,10 +245,17 @@ public class FSQueueService implements MimeMailQueueService {
 		return newMail;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#unstore(org.mxhero.engine.commons.mail.MimeMail)
+	 */
 	public void unstore(MimeMail mail){
 		unstore(mail.getTime(),mail.getSequence());
 	}
 	
+	/**
+	 * @param time
+	 * @param sequence
+	 */
 	private void unstore(Timestamp time, Long sequence){
 		FSMailKey fsmailKey = new FSMailKey(sequence,time);
 		FSMail fsmail = store.remove(fsmailKey);
@@ -261,6 +284,11 @@ public class FSQueueService implements MimeMailQueueService {
 	}
 	
 
+	/**
+	 * @param time
+	 * @param sequence
+	 * @param path
+	 */
 	public void saveToAndUnstore(Timestamp time, Long sequence, String path){
 		FSMailKey fsmailKey = new FSMailKey(sequence,time);
 		FSMail fsmail = store.get(fsmailKey);
@@ -280,6 +308,9 @@ public class FSQueueService implements MimeMailQueueService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#saveToAndUnstore(org.mxhero.engine.commons.mail.MimeMail, java.lang.String, boolean)
+	 */
 	public void saveToAndUnstore(MimeMail mail, String path, boolean useOriginal){
 		FSMailKey fsmailKey = new FSMailKey(mail.getSequence(),mail.getTime());
 		FSMail fsmail = store.get(fsmailKey);
@@ -317,6 +348,9 @@ public class FSQueueService implements MimeMailQueueService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#offer(org.mxhero.engine.commons.mail.api.Mail.Phase, org.mxhero.engine.commons.mail.MimeMail, long, java.util.concurrent.TimeUnit)
+	 */
 	public boolean offer(Mail.Phase phase, MimeMail mail, long timeout, TimeUnit unit)
     throws InterruptedException{
 		FSMailKey key = new FSMailKey(mail.getSequence(),mail.getTime());
@@ -328,6 +362,9 @@ public class FSQueueService implements MimeMailQueueService {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#put(org.mxhero.engine.commons.mail.api.Mail.Phase, org.mxhero.engine.commons.mail.MimeMail)
+	 */
 	public void put(Mail.Phase phase, MimeMail mail)
     throws InterruptedException{
 		FSMailKey key = new FSMailKey(mail.getSequence(),mail.getTime());
@@ -337,8 +374,10 @@ public class FSQueueService implements MimeMailQueueService {
 			log.warn("fail to find mail "+mail+" for key "+key);
 		}
 	}
-	
 
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#delayAndPut(org.mxhero.engine.commons.mail.api.Mail.Phase, org.mxhero.engine.commons.mail.MimeMail, long)
+	 */
 	public void delayAndPut(Mail.Phase phase, MimeMail mail, long millisenconds)
 			throws InterruptedException {
 		FSMailKey key = new FSMailKey(mail.getSequence(),mail.getTime());
@@ -349,6 +388,9 @@ public class FSQueueService implements MimeMailQueueService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#poll(org.mxhero.engine.commons.mail.api.Mail.Phase, long, java.util.concurrent.TimeUnit)
+	 */
 	public MimeMail poll(Mail.Phase phase, long timeout, TimeUnit unit) throws InterruptedException{
 		DelayedMail dmail = getOrCreateQueue(phase).poll(timeout, unit);
 		if(dmail!=null){
@@ -357,10 +399,16 @@ public class FSQueueService implements MimeMailQueueService {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.commons.queue.MimeMailQueueService#logState()
+	 */
 	public void logState(){
 		log.info(getQueuesCount());
 	}
 	
+	/**
+	 * @return
+	 */
 	private String getQueuesCount() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[store="+store.size());
@@ -371,6 +419,10 @@ public class FSQueueService implements MimeMailQueueService {
 		return sb.toString();
 	}
 	
+	/**
+	 * @param phase
+	 * @return
+	 */
 	private DelayQueue<DelayedMail> getOrCreateQueue(Mail.Phase phase){
 		DelayQueue<DelayedMail> queue = null;
 		synchronized (queues) {
@@ -384,10 +436,16 @@ public class FSQueueService implements MimeMailQueueService {
 	}
 	
 	
+	/**
+	 * @return
+	 */
 	public int size(){
 		return store.size();
 	}
 	
+	/**
+	 * @return
+	 */
 	public FSConfig getConfig(){
 		return this.config;
 	}

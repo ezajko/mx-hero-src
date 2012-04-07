@@ -16,6 +16,10 @@ import org.mxhero.engine.fsqueues.internal.util.SharedTmpFileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class FSLoader {
 
 	private static Logger log = LoggerFactory.getLogger(FSLoader.class);
@@ -24,6 +28,9 @@ public class FSLoader {
 	private boolean weekWorking=true;
 	private FSQueueService queueService;
 	
+	/**
+	 * 
+	 */
 	public void init(){
 		new Thread(new Runnable() {
 			public void run() {
@@ -43,16 +50,25 @@ public class FSLoader {
 		}).start();
 	}
 	
+	/**
+	 * 
+	 */
 	public void stop(){
 		weekWorking=false;
 	}
 	
+	/**
+	 * 
+	 */
 	private void work(){
 		for(Mail.Phase phase : Mail.Phase.values()){
 			loadPhase(phase);
 		}
 	}
 
+	/**
+	 * @param phase
+	 */
 	private void loadPhase(Mail.Phase phase){
 		try{
 			File pathFile = new File(config.getLoadPathFile(),phase.name());
@@ -91,18 +107,30 @@ public class FSLoader {
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public FSQueueService getQueueService() {
 		return queueService;
 	}
 
+	/**
+	 * @param queueService
+	 */
 	public void setQueueService(FSQueueService queueService) {
 		this.queueService = queueService;
 	}
 
+	/**
+	 * @return
+	 */
 	public FSConfig getConfig() {
 		return config;
 	}
 
+	/**
+	 * @param config
+	 */
 	public void setConfig(FSConfig config) {
 		this.config = config;
 	}

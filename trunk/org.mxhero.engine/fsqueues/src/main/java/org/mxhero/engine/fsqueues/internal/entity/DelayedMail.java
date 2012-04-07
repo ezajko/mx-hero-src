@@ -7,6 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.commons.mail.MimeMail;
 
+/**
+ * @author mmarmol
+ *
+ */
 public class DelayedMail implements Delayed{
 
 	private MimeMail mail;
@@ -18,11 +22,18 @@ public class DelayedMail implements Delayed{
 	private Long sequence;
 	
 
+	/**
+	 * @param time
+	 * @param sequence
+	 */
 	public DelayedMail(Timestamp time, Long sequence) {
 		this.time = time;
 		this.sequence = sequence;
 	}
 
+	/**
+	 * @param mail
+	 */
 	public DelayedMail(MimeMail mail) {
 		this.mail = mail;
 		this.time = mail.getTime();
@@ -31,6 +42,10 @@ public class DelayedMail implements Delayed{
 		requestTime = new Date();
 	}
 	
+	/**
+	 * @param mail
+	 * @param delay
+	 */
 	public DelayedMail(MimeMail mail, Long delay) {
 		this.mail = mail;
 		this.delay = System.currentTimeMillis()+delay;
@@ -40,6 +55,9 @@ public class DelayedMail implements Delayed{
 		noDelay=false;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	public int compareTo(Delayed o) {
 		DelayedMail other = (DelayedMail)o;
 		if (this.delay < other.delay)
@@ -49,6 +67,9 @@ public class DelayedMail implements Delayed{
 		return this.requestTime.compareTo(other.requestTime);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.concurrent.Delayed#getDelay(java.util.concurrent.TimeUnit)
+	 */
 	public long getDelay(TimeUnit unit) {
 		if(noDelay){
 			return 0;
@@ -56,6 +77,9 @@ public class DelayedMail implements Delayed{
 		return unit.convert(delay-System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 	}
 
+	/**
+	 * @return
+	 */
 	public MimeMail getMail() {
 		return mail;
 	}
