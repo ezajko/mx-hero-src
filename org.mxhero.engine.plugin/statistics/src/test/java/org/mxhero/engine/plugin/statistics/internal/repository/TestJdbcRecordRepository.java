@@ -24,7 +24,7 @@ public class TestJdbcRecordRepository {
 	@Test
 	public void test(){
 		Record record = new Record();
-		record.setBytesSize(10);
+		record.setBytesSize(10l);
 		record.setFlow(Mail.Flow.both.name());
 		record.setFrom("Y@Y");
 		record.setInsertDate(new Timestamp(Calendar.getInstance().getTimeInMillis()));

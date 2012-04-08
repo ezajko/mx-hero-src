@@ -42,7 +42,7 @@ public class Record{
 
 	private String ngRecipients;
 
-	private Integer bytesSize;
+	private Long bytesSize;
 
 	private String state;
 
@@ -190,11 +190,11 @@ public class Record{
 		this.ngRecipients = ngRecipients;
 	}
 
-	public Integer getBytesSize() {
+	public Long getBytesSize() {
 		return bytesSize;
 	}
 
-	public void setBytesSize(Integer bytesSize) {
+	public void setBytesSize(Long bytesSize) {
 		this.bytesSize = bytesSize;
 	}
 
