@@ -8,6 +8,7 @@ import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
+import org.mxhero.engine.plugin.threadlight.command.AddThreadWatchParameters;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowFollower;
@@ -23,18 +24,15 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 	@Override
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
-		String follower = null;
-		String followerParameters = null;
 		//mail can not be null
-		if(mail==null || parameters == null || (parameters.get(AddThreadWatch.FOLLOWER)==null ||
-												parameters.get(AddThreadWatch.FOLLOWER_PARAMETERS)==null)){
+		AddThreadWatchParameters atwParameters = new AddThreadWatchParameters(parameters);
+		if(atwParameters.getFollower()==null 
+				|| atwParameters.getFollower().trim().isEmpty()){
 			log.debug("wrong parameters");
 			result.setAnError(true);
 			result.setMessage("wrong parameters");
 			return result;
 		}
-		follower=parameters.get(AddThreadWatch.FOLLOWER);
-		followerParameters=parameters.get(AddThreadWatch.FOLLOWER_PARAMETERS);
 		//creat thread row
 		try{
 			ThreadRow threadRow = new ThreadRow();
@@ -46,8 +44,8 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 			} catch (MessagingException e) {}
 			//follow that thread
 			ThreadRowFollower threadFollower = new ThreadRowFollower();
-			threadFollower.setFollower(follower);
-			threadFollower.setFolowerParameters(followerParameters);
+			threadFollower.setFollower(atwParameters.getFollower());
+			threadFollower.setFolowerParameters(atwParameters.getParameters());
 			threadRowService.follow(threadRow,threadFollower);
 			log.debug("command follow "+threadRow);
 			result.setConditionTrue(true);
