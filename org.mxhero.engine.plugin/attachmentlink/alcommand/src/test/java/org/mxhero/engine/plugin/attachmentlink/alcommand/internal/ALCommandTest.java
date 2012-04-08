@@ -30,12 +30,10 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.URLDataSource;
 import javax.mail.BodyPart;
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -399,8 +397,6 @@ public class ALCommandTest {
 		}
 	}
 
-
-	@SuppressWarnings("rawtypes")
 	private Result testMailOneHTMLAttachment(String recipient, String idMail,
 			int amountInitialAttachs) {
 		Result result = null;
@@ -444,8 +440,6 @@ public class ALCommandTest {
 							if (dst.hasRemaining()) {
 								out.write(dst);
 							}
-							String htmlString = new String(stringWriter
-									.toByteArray());
 						}
 					}
 					assertTrue(cAttachs == 1);
@@ -458,34 +452,6 @@ public class ALCommandTest {
 		return result;
 	}
 
-	private void sendMail(MimeMessage message) {
-		Properties props = new Properties();
-		String host = "smtp.gmail.com";
-		String port = "465";
-
-		props.put("mail.smtp.user", "juanpablo.royo@gmail.com");
-		props.put("mail.smtp.host", host);
-		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.port", port);
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.socketFactory.port", port);
-		props.put("mail.smtp.socketFactory.class",
-				"javax.net.ssl.SSLSocketFactory");
-		props.put("mail.smtp.socketFactory.fallback", "false");
-
-		try {
-			Session session = Session.getInstance(props, null);
-			Transport transport = session.getTransport("smtp");
-			transport.connect(host, 465, "juanpablo.royo@gmail.com",
-					"Erica$2102");
-
-			transport.sendMessage(message, message
-					.getRecipients(Message.RecipientType.TO));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	private MimeMessage sendMessage(String recipient, int amountAttach)
 			throws IOException, MessagingException, AddressException {
