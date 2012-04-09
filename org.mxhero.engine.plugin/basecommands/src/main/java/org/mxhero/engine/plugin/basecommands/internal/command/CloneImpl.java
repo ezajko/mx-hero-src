@@ -14,7 +14,6 @@ import javax.mail.internet.InternetAddress;
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
@@ -58,7 +57,6 @@ public class CloneImpl implements Clone {
 		CloneParameters cloneParameters = new CloneParameters(parameters);
 		
 		String outputService = cloneParameters.getOutputService();
-		Mail.Phase phase = cloneParameters.getPhase();
 		String override= cloneParameters.getOverride();
 		Boolean generateNewMessageId = cloneParameters.getGenerateId();
 
@@ -79,9 +77,6 @@ public class CloneImpl implements Clone {
 				recipient = new InternetAddress(recipientEmail,false);
 				if(outputService==null){
 					outputService = mail.getResponseServiceId();
-				}
-				if(phase==null){
-					phase=mail.getPhase();
 				}
 				if(override == null || 
 						(!override.equalsIgnoreCase("in")&&
