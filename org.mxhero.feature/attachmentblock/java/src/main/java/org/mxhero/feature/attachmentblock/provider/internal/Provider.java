@@ -15,8 +15,8 @@ import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
 import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
-import org.mxhero.engine.plugin.statistics.command.LogStat;
-import org.mxhero.engine.plugin.statistics.command.LogStatParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,10 +158,10 @@ public class Provider extends RulesByFeature{
 				replyParameters.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(),replyParameters);
 			}
-			mail.cmd(LogStat.class.getName(),new LogStatParameters("org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments)));
+			mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments)));
 			if(droppedByAttachments){
 				log.debug("bloqued stat");
-				mail.cmd(LogStat.class.getName(),new LogStatParameters("email.blocked","org.mxhero.feature.attachementblock"));
+				mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("email.blocked","org.mxhero.feature.attachementblock"));
 			}
 		}
 		
