@@ -19,6 +19,13 @@ public class ALCommandParameters extends NamedParameters{
 		super();
 	}
 
+	public ALCommandParameters(String locale, Boolean notify, String notifyMessage){
+		super();
+		this.setLocale(locale);
+		this.setNotify(notify);
+		this.setNotifyMessage(notifyMessage);
+	}
+	
 	/**
 	 * @param parameters
 	 */
