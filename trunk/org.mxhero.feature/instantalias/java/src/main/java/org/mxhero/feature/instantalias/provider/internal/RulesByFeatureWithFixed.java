@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
+import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +57,9 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 	private class IAFixedEval implements Evaluable{
 		@Override
 		public boolean eval(Mail mail) {
-			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER) &&
-					mail.getInitialData().getRecipient().getMail().startsWith(REPLY_START)
-					&& mail.getInitialData().getSender().getDomain().getManaged();
+			boolean result = mail.getStatus().equals(Mail.Status.deliver) &&
+					mail.getRecipient().getMail().startsWith(REPLY_START)
+					&& mail.getSender().getDomain().getManaged();
 			log.debug("result:"+result);
 			return result;
 		}
@@ -68,18 +68,21 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 	private class IAFixedAction implements Actionable{
 		@Override
 		public void exec(Mail mail) {
-			String[] emailComposition = mail.getInitialData().getRecipient().getMail().split(REPLY_ALIAS);
+			String[] emailComposition = mail.getRecipient().getMail().split(REPLY_ALIAS);
 			String senderDomain=emailComposition[2];
 			String senderAccount=emailComposition[1];
 			log.debug("senderDomain:"+senderDomain);
 			log.debug("senderAccount:"+senderAccount);
 			//if sender is from the domain of the alias and the account is in the alias
-			if(mail.getInitialData().getSender().getDomain().hasAlias(senderDomain)
-					&& senderAccount.startsWith(mail.getInitialData().getSender().getMail().split("@")[0])){
+			if(mail.getSender().getDomain().hasAlias(senderDomain)
+					&& senderAccount.startsWith(mail.getSender().getMail().split("@")[0])){
 					String sender = senderAccount+"@"+senderDomain;
-					String recipient = mail.getInitialData().getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
+					String recipient = mail.getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
 					log.debug("sender:"+sender+", recipient:"+recipient);
-					mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,sender,recipient,null,"false","both");
+					CloneParameters cloneParameters = new CloneParameters(sender, recipient);
+					cloneParameters.setGenerateId(false);
+					cloneParameters.setOverride("both");
+					mail.cmd(Clone.class.getName(), cloneParameters);
 					mail.drop("org.mxhero.feature.redirect");
 			} else{
 				log.debug("no match");
