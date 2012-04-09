@@ -18,6 +18,15 @@ public class LogStatParameters extends NamedParameters {
 	}
 	
 	/**
+	 * @param key
+	 * @param value
+	 */
+	public LogStatParameters(String key, String value){
+		this.setKey(key);
+		this.setValue(value);
+	}
+	
+	/**
 	 * @param parameters
 	 */
 	public LogStatParameters(NamedParameters parameters){
