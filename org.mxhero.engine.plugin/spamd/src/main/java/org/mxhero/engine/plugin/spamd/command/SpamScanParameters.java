@@ -20,6 +20,15 @@ public class SpamScanParameters extends NamedParameters {
 	}
 	
 	/**
+	 * @param prefix
+	 * @param addHeaders
+	 */
+	public SpamScanParameters(String prefix, Boolean addHeaders){
+		this.setPrefix(prefix);
+		this.setAddHeaders(addHeaders);
+	}
+	
+	/**
 	 * @param parameters
 	 */
 	public SpamScanParameters(NamedParameters parameters){
