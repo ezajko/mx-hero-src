@@ -2,13 +2,18 @@ package org.mxhero.feature.clamav.provider.internal;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
+import org.mxhero.engine.plugin.clamd.command.ClamavScan;
+import org.mxhero.engine.plugin.clamd.command.ClamavScanParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
 public class Provider extends RulesByFeature{
 
@@ -26,12 +31,12 @@ public class Provider extends RulesByFeature{
 		String messagePlain = "";
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(ACTION_SELECTION)){
-				action=property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(RETURN_MESSAGE)){
-				message = property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(RETURN_MESSAGE_PLAIN)){
-				messagePlain = property.getPropertyValue();
+			if(property.getKey().equals(ACTION_SELECTION)){
+				action=property.getValue();
+			} else if(property.getKey().equals(RETURN_MESSAGE)){
+				message = property.getValue();
+			} else if(property.getKey().equals(RETURN_MESSAGE_PLAIN)){
+				messagePlain = property.getValue();
 			}
 		}
 		
@@ -45,7 +50,7 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			return mail.getStatus().equals(Mail.Status.deliver)
 			&& !mail.getProperties().containsKey("org.mxhero.feature.clamav")
 			&& mail.getHeaders()!=null;
 		}
@@ -71,14 +76,19 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			Result clamavResult = mail.cmd("org.mxhero.engine.plugin.clamd.command.ClamavScan","false","true");
+			ClamavScanParameters cavsParameters = new ClamavScanParameters();
+			cavsParameters.setAddHeader(true);
+			cavsParameters.setRemoveInfected(false);
+			Result clamavResult = mail.cmd(ClamavScan.class.getName(),cavsParameters);
 			mail.getProperties().put("org.mxhero.feature.clamav",ruleId.toString());
-			mail.getHeaders().addHeader("X-mxHero-ClamAV","rule="+ruleId.toString()+";result="+clamavResult.getText());
-			if(action.equalsIgnoreCase(ACTION_RETURN) && clamavResult.isTrue()){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),messagePlain,returnText );
+			mail.getHeaders().addHeader("X-mxHero-ClamAV","rule="+ruleId.toString()+";result="+clamavResult.getMessage());
+			if(action.equalsIgnoreCase(ACTION_RETURN) && clamavResult.isConditionTrue()){
+				ReplyParameters replyParameter = new ReplyParameters(replyMail, messagePlain, returnText);
+				replyParameter.setRecipient(mail.getSender().getMail());
+				mail.cmd(Reply.class.getName(), replyParameter);
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.clamav",Boolean.toString(clamavResult.isTrue()) );
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","virus.detected",Boolean.toString(clamavResult.isTrue()) );
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.clamav", Boolean.toString(clamavResult.isConditionTrue())));
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("virus.detected", Boolean.toString(clamavResult.isConditionTrue())));
 		}
 		
 	}
