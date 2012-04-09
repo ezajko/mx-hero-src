@@ -6,12 +6,13 @@ import java.util.Set;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
 public class Provider extends RulesByFeature{
 
@@ -43,34 +44,34 @@ public class Provider extends RulesByFeature{
 		Set<String> domains = new HashSet<String>();
 
 		for (RuleProperty property : rule.getProperties()) {
-			if (property.getPropertyKey().equals(ACTION_SELECTION)) {
-				action = property.getPropertyValue();
-			} else if (property.getPropertyKey().equals(HEADER_VALUE)) {
-				headerValue = property.getPropertyValue().trim();
-			} else if (property.getPropertyKey().equals(HEADER_KEY)) {
-				headerKey = property.getPropertyValue().trim();
-			} else if (property.getPropertyKey().equals(HEADER_MANAGED)) {
-				managed = Boolean.parseBoolean(property.getPropertyValue());
-			} else if (property.getPropertyKey().equals(ADD_HEADER_VALUE)) {
+			if (property.getKey().equals(ACTION_SELECTION)) {
+				action = property.getValue();
+			} else if (property.getKey().equals(HEADER_VALUE)) {
+				headerValue = property.getValue().trim();
+			} else if (property.getKey().equals(HEADER_KEY)) {
+				headerKey = property.getValue().trim();
+			} else if (property.getKey().equals(HEADER_MANAGED)) {
+				managed = Boolean.parseBoolean(property.getValue());
+			} else if (property.getKey().equals(ADD_HEADER_VALUE)) {
 				addHeaderValue = StringEscapeUtils.escapeJava(property
-						.getPropertyValue().trim());
-			} else if (property.getPropertyKey().equals(ADD_HEADER_KEY)) {
+						.getValue().trim());
+			} else if (property.getKey().equals(ADD_HEADER_KEY)) {
 				addHeaderKey = StringEscapeUtils.escapeJava(property
-						.getPropertyValue().trim());
-			} else if (property.getPropertyKey().equals(EMAIL_LIST)) {
+						.getValue().trim());
+			} else if (property.getKey().equals(EMAIL_LIST)) {
 				String value = StringEscapeUtils.escapeJava(property
-						.getPropertyValue().trim());
+						.getValue().trim());
 				if (value.startsWith("@")) {
 					domains.add(value.replace("@", ""));
 				} else {
 					accounts.add(value);
 				}
-			} else if (property.getPropertyKey().equals(PREFIX_VALUE)) {
+			} else if (property.getKey().equals(PREFIX_VALUE)) {
 				prefix = StringEscapeUtils.escapeJava(property
-						.getPropertyValue().trim());
-			} else if (property.getPropertyKey().equals(REMOVE_HEADER)){
+						.getValue().trim());
+			} else if (property.getKey().equals(REMOVE_HEADER)){
 				removeHeader = StringEscapeUtils.escapeJava(property
-						.getPropertyValue().trim());
+						.getValue().trim());
 			}
 		}
 		
@@ -92,7 +93,7 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			return mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& mail.getSubject()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.externalantispam:"+group)
@@ -141,13 +142,13 @@ public class Provider extends RulesByFeature{
 			boolean isException = false;
 			
 			//check domain white list
-			if(mail.getInitialData().getFromSender().getDomain().hasAlias(domains)
-				|| mail.getInitialData().getSender().getDomain().hasAlias(domains)){
+			if(mail.getFromSender().getDomain().hasAlias(domains)
+				|| mail.getSender().getDomain().hasAlias(domains)){
 				isException = true;
 			}
 			//check account white list
-			if(mail.getInitialData().getFromSender().hasAlias(accounts)
-				|| mail.getInitialData().getSender().hasAlias(accounts)){
+			if(mail.getFromSender().hasAlias(accounts.toArray(new String[accounts.size()]))
+				|| mail.getSender().hasAlias(accounts.toArray(new String[accounts.size()]))){
 				isException = true;
 			}
 			//if in white list and remove header is check
@@ -170,8 +171,8 @@ public class Provider extends RulesByFeature{
 				mail.getProperties().put("spam.detected",Boolean.toString(isSpam));
 			}
 			mail.getHeaders().addHeader("X-mxHero-ExternalAntispam","rule="+ruleId+";spam="+Boolean.toString(isSpam));
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.externalantispam",Boolean.toString(isSpam) );
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","spam.detected",Boolean.toString(isSpam) );
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.externalantispam", Boolean.toString(isSpam)));
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("spam.detected", Boolean.toString(isSpam)));
 			
 			if (!isException && isSpam && action.equals(ACTION_REJECT)) {
 				mail.drop("org.mxhero.feature.externalantispam");
@@ -182,7 +183,7 @@ public class Provider extends RulesByFeature{
 					mail.getHeaders().addHeader(addHeaderKey, addHeaderValue);
 				}
 				if (prefix != null && prefix.trim().length() > 0){
-					mail.getSubject().setSubject(prefix+mail.getSubject().getSubject());
+					mail.setSubject(prefix+mail.getSubject());
 				}
 			}
 		}
