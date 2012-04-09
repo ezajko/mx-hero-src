@@ -7,13 +7,16 @@ import java.util.Set;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.FromToEval;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
 public class Provider extends RulesByFeature{
 
@@ -35,21 +38,21 @@ public class Provider extends RulesByFeature{
 		boolean twoWayFlag = false;
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(ACTION_SELECTION)){
-				action=property.getPropertyValue();
-			} else if (property.getPropertyKey().equals(EMAIL_LIST)){
-				String value =  StringEscapeUtils.escapeJava(property.getPropertyValue().trim());
+			if(property.getKey().equals(ACTION_SELECTION)){
+				action=property.getValue();
+			} else if (property.getKey().equals(EMAIL_LIST)){
+				String value =  StringEscapeUtils.escapeJava(property.getValue().trim());
 				if(value.startsWith("@")){
 					domains.add(value.replace("@", ""));
 				}else{
 					accounts.add(value);
 				}
-			} else if (property.getPropertyKey().equals(RETURN_TEXT)){
-				returnText = property.getPropertyValue();
-			} else if (property.getPropertyKey().equals(TWO_WAY_FLAG)){
-				twoWayFlag = Boolean.parseBoolean(property.getPropertyValue());
-			} if (property.getPropertyKey().equals(RETURN_TEXT_PLAIN)){
-				returnTextPlain = property.getPropertyValue();
+			} else if (property.getKey().equals(RETURN_TEXT)){
+				returnText = property.getValue();
+			} else if (property.getKey().equals(TWO_WAY_FLAG)){
+				twoWayFlag = Boolean.parseBoolean(property.getValue());
+			} if (property.getKey().equals(RETURN_TEXT_PLAIN)){
+				returnTextPlain = property.getValue();
 			}
 		}
 		coreRule.addEvaluation(new FromToEval(rule.getFromDirection(),rule.getToDirection(), twoWayFlag));
@@ -76,20 +79,20 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result = mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.blocklist:"+group)
-			&& (mail.getInitialData().getFromSender().getDomain().hasAlias(domains)
-				|| mail.getInitialData().getSender().getDomain().hasAlias(domains)
-				|| mail.getInitialData().getFromSender().hasAlias(accounts)
-				|| mail.getInitialData().getSender().hasAlias(accounts));
+			&& (mail.getFromSender().getDomain().hasAlias(domains)
+				|| mail.getSender().getDomain().hasAlias(domains)
+				|| mail.getFromSender().hasAlias(accounts.toArray(new String[accounts.size()]))
+				|| mail.getSender().hasAlias(accounts.toArray(new String[accounts.size()])));
 			
 			if(twoWayFlag){
 				if(!result){
-					result = mail.getInitialData().getRecipient().getDomain().hasAlias(domains) || mail.getInitialData().getRecipient().hasAlias(accounts);
-					mail.getProperties().put("org.mxhero.feature.blocklist.recipient", mail.getInitialData().getRecipient().getMail());
+					result = mail.getRecipient().getDomain().hasAlias(domains) || mail.getRecipient().hasAlias(accounts.toArray(new String[accounts.size()]));
+					mail.getProperties().put("org.mxhero.feature.blocklist.recipient", mail.getRecipient().getMail());
 				}else{
-					mail.getProperties().put("org.mxhero.feature.blocklist.sender", mail.getInitialData().getSender().getMail());
+					mail.getProperties().put("org.mxhero.feature.blocklist.sender", mail.getSender().getMail());
 				}
 			}
 			
@@ -124,14 +127,16 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-BlockList", "rule="+ruleId.toString());
 			mail.drop("org.mxhero.feature.blocklist");
 			if(action.equalsIgnoreCase(ACTION_RETURN)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnTextPlain,returnText );
+				ReplyParameters replyParameter = new ReplyParameters(replyMail,returnTextPlain,returnText);
+				replyParameter.setRecipient(mail.getSender().getMail());
+				mail.cmd(Reply.class.getName(),replyParameter);
 			}
 			if(mail.getProperties().containsKey("org.mxhero.feature.blocklist.sender")){
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.email",mail.getInitialData().getSender().getMail());
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.blocklist.email", mail.getSender().getMail()));
 			}else{
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.blocklist.email",mail.getInitialData().getRecipient().getMail());
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.blocklist.email", mail.getRecipient().getMail()));
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.blocklist");			
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.blocklist"));			
 		}
 		
 	}
