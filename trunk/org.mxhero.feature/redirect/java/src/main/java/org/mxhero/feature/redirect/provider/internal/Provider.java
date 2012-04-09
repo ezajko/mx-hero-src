@@ -5,13 +5,15 @@ import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
+import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +29,8 @@ public class Provider extends RulesByFeature{
 		String redirectRecipient = null;
 
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(REDIRECT_PROPERTY)){
-				redirectRecipient=property.getPropertyValue();
+			if(property.getKey().equals(REDIRECT_PROPERTY)){
+				redirectRecipient=property.getValue();
 			} 
 		}
 		
@@ -48,7 +50,7 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			return mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.redirect:"+group);
 		}
@@ -70,21 +72,22 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			mail.getHeaders().addHeader("X-mxHero-Redirect","rule="+ruleId+";recipient="+mail.getInitialData().getRecipient().getMail()+";redirected="+redirectRecipient);
+			mail.getHeaders().addHeader("X-mxHero-Redirect","rule="+ruleId+";recipient="+mail.getRecipient().getMail()+";redirected="+redirectRecipient);
 			mail.getProperties().put("org.mxhero.feature.redirect:"+group, ruleId.toString());
 			for(String individualMail : redirectRecipient.split(",")){
 				try {
 					InternetAddress emailAddress = new InternetAddress(individualMail,false);
 					if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 						mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
-						mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailAddress.getAddress());					
+						CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress());
+						mail.cmd(Clone.class.getName(), cloneParameters);					
 					}
 				} catch (AddressException e) {
 					log.warn("wrong email address",e);
 				}
 			}
-			mail.drop("org.mxhero.feature.redirect");
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.redirect.recipient",redirectRecipient);
+			mail.redirect("org.mxhero.feature.redirect");
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.redirect.recipient", redirectRecipient));
 		}
 		
 	}
