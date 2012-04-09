@@ -23,9 +23,9 @@ public class ReplyParameters extends NamedParameters {
 	}
 
 	public ReplyParameters(String sender, String plainText, String htmlText) {
-		put(SENDER,sender);
-		put(PLAIN_TEXT,plainText);
-		put(HTML_TEXT,htmlText);
+		this.setSender(sender);
+		this.setPlainText(plainText);
+		this.setHtmlText(htmlText);
 	}
 	
 	/**

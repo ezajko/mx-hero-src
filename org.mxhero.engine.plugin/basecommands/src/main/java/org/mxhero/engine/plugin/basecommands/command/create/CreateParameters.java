@@ -28,11 +28,11 @@ public class CreateParameters extends NamedParameters{
 	 * @param outputService
 	 */
 	public CreateParameters(String sender, String recipients, String subject, String text, String outputService){
-		put(SENDER,sender);
-		put(RECIPIENTS, recipients);
-		put(SUBJECT,subject);
-		put(TEXT,text);
-		put(OUTPUT_SERVICE,outputService);
+		this.setSender(sender);
+		this.setRecipients(recipients);
+		this.setSubject(subject);
+		this.setText(text);
+		this.setOutputService(outputService);
 	}
 	
 	/**
