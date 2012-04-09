@@ -10,13 +10,17 @@ import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.api.Recipients.RecipientType;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.FromInHeaders;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,14 +42,14 @@ public class Provider extends RulesByFeature{
 		String bccHeaderPlain = "BCC:";
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(LIST_IGNORE)){
-				ignoreList=Boolean.parseBoolean(property.getPropertyValue());
-			}else if (property.getPropertyKey().equals(EMAIL_VALUE)){
-				email = property.getPropertyValue();
-			}else if (property.getPropertyKey().equals(BCC_HEADER)){
-				bccHeader = property.getPropertyValue();
-			}else if (property.getPropertyKey().equals(BCC_HEADER_PLAIN)){
-				bccHeaderPlain = property.getPropertyValue();
+			if(property.getKey().equals(LIST_IGNORE)){
+				ignoreList=Boolean.parseBoolean(property.getValue());
+			}else if (property.getKey().equals(EMAIL_VALUE)){
+				email = property.getValue();
+			}else if (property.getKey().equals(BCC_HEADER)){
+				bccHeader = property.getValue();
+			}else if (property.getKey().equals(BCC_HEADER_PLAIN)){
+				bccHeaderPlain = property.getValue();
 			}
 		}
 		
@@ -66,20 +70,20 @@ public class Provider extends RulesByFeature{
 		@Override
 		public boolean eval(Mail mail) {
 			List<String> allRecipients = new ArrayList<String>();
-			if(mail.getRecipients().getCcRecipients()!=null){
-				allRecipients.addAll(mail.getRecipients().getCcRecipients());
+			if(mail.getRecipients().getRecipients(RecipientType.cc)!=null){
+				allRecipients.addAll(mail.getRecipients().getRecipients(RecipientType.cc));
 			}
-			if(mail.getRecipients().getToRecipients()!=null){
-				allRecipients.addAll(mail.getRecipients().getToRecipients());
+			if(mail.getRecipients().getRecipients(RecipientType.to)!=null){
+				allRecipients.addAll(mail.getRecipients().getRecipients(RecipientType.to));
 			}
 
-			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result = mail.getStatus().equals(Mail.Status.deliver)
 					&& mail.getHeaders()!=null
 					&& mail.getRecipients()!=null
 					&& !mail.getProperties().containsKey("org.mxhero.feature.bccusagedetection")
 					&& !mail.getProperties().containsKey("org.mxhero.engine.plugin.basecommands.command.Reply")
-					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(allRecipients))
-					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(allRecipients)));
+					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getRecipient().hasAlias(allRecipients.toArray(new String[allRecipients.size()])))
+					|| (!ignoreList && !mail.getRecipient().hasAlias(allRecipients.toArray(new String[allRecipients.size()]))));
 			if(log.isDebugEnabled()){
 				log.debug("ignoreList:"+ignoreList);
 				log.debug("ignoreListCheck:"+ignoreListCheck(mail));
@@ -139,12 +143,15 @@ public class Provider extends RulesByFeature{
 			for(String individualMail : email.split(",")){
 				try {
 					InternetAddress emailAddress = new InternetAddress(individualMail,false);
-					mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{mail.getInitialData().getSender().getMail(),emailAddress.getAddress(),bccHeaderPlain,bccHeader,"true"} );
+					ReplyParameters replyParameters = new ReplyParameters(mail.getSender().getMail(),bccHeaderPlain,bccHeader);
+					replyParameters.setRecipient(emailAddress.getAddress());
+					replyParameters.setIncludeMessage(true);
+					mail.cmd(Reply.class.getName(), replyParameters);
 				} catch (AddressException e) {
 					log.warn("wrong email address",e);
 				}
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccusagedetection","true" );
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.bccusagedetection",Boolean.TRUE.toString()));
 		}
 		
 	}
