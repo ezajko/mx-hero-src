@@ -3,12 +3,22 @@ package org.mxhero.engine.commons.util;
 import javax.mail.internet.ParameterList;
 import javax.mail.internet.ParseException;
 
+/**
+ * @author mmarmol
+ *
+ */
 public abstract class HeaderUtils {
 
 	public static final String ACTION_PARAMETER="action";
 	
-	private HeaderUtils(){}
+	private HeaderUtils() {
+	}
 	
+	/**
+	 * @param valuesArray
+	 * @param action
+	 * @return
+	 */
 	public static final ParameterList getParametersList(String[] valuesArray,String action){
 		if(valuesArray!=null && valuesArray.length>0 && action!=null){
 			for(String value : valuesArray){
