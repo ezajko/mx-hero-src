@@ -32,6 +32,7 @@ public class CRecipients implements Recipients{
 	@Override
 	public Collection<String> getRecipients(RecipientType type) {
 		Address[] addresses = null;
+		Collection<String> recipients = new ArrayList<String>();
 		try {
 			switch(type){
 				case to : addresses = mimeMail.getMessage().getRecipients(javax.mail.internet.MimeMessage.RecipientType.TO);
@@ -50,7 +51,7 @@ public class CRecipients implements Recipients{
 		}
 		
 		if(addresses!=null && addresses.length>0){
-			Collection<String> recipients = new ArrayList<String>();
+			
 			for(Address address : addresses){
 				if (address instanceof InternetAddress){
 					try{
@@ -60,7 +61,7 @@ public class CRecipients implements Recipients{
 			}
 			return recipients;
 		}
-		return null;
+		return recipients;
 	}
 
 	@Override
