@@ -97,10 +97,12 @@ public class SingleClamavScan implements ClamavScan {
 				result.setConditionTrue(true);
 				if (addHeader) {
 					mail.getMessage().setHeader(headerName, STATUS_INFECTED);
+					result.setMessage(STATUS_INFECTED);
 				}
 			} else {
 				if (addHeader) {
 					mail.getMessage().setHeader(headerName, STATUS_CLEAN);
+					result.setMessage(STATUS_CLEAN);
 				}
 			}
 			result.setScanResults(results);
