@@ -5,15 +5,18 @@ import javax.mail.internet.InternetAddress;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
+import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class Provider extends RulesByFeature{
 
@@ -30,10 +33,10 @@ public class Provider extends RulesByFeature{
 		boolean checkSpam = false;
 
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(EMAIL_PROPERTY)){
-				backupRecipient=property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(SPAM_CHECK_PROPERTY)){
-				checkSpam = Boolean.parseBoolean(property.getPropertyValue());
+			if(property.getKey().equals(EMAIL_PROPERTY)){
+				backupRecipient=property.getValue();
+			} else if(property.getKey().equals(SPAM_CHECK_PROPERTY)){
+				checkSpam = Boolean.parseBoolean(property.getValue());
 			}
 		}
 		
@@ -62,12 +65,12 @@ public class Provider extends RulesByFeature{
 				log.trace("backupRecipient:"+backupRecipient
 						+" group:"+group
 						+" checkSpam:"+checkSpam);
-				log.trace("(state=deliver):"+mail.getState().equalsIgnoreCase(MailState.DELIVER)
+				log.trace("(state=deliver):"+mail.getStatus().equals(Mail.Status.deliver)
 						+" (headers!=null)"+(mail.getHeaders()!=null)
 						+" (!mail.getProperties().containsKey(\"org.mxhero.feature.backupcopy:"+group+"\"):"+!mail.getProperties().containsKey("org.mxhero.feature.backupcopy:"+group)
 						+" (!checkSpam || (checkSpam && !mail.getProperties().containsKey(\"spam.detected\")):"+(!checkSpam || (checkSpam && !mail.getProperties().containsKey("spam.detected"))));
 			}
-			return 	mail.getState().equalsIgnoreCase(MailState.DELIVER) 
+			return 	mail.getStatus().equals(Mail.Status.deliver)
 				&&	mail.getHeaders()!=null
 				&&	!mail.getProperties().containsKey("redirected:"+backupRecipient)
 				&& 	!mail.getProperties().containsKey("org.mxhero.feature.backupcopy:"+group)
@@ -97,13 +100,13 @@ public class Provider extends RulesByFeature{
 					InternetAddress emailAddress = new InternetAddress(individualMail,false);
 					if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 						mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
-						mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailAddress.getAddress());					
+						mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));		
 					}
 				} catch (AddressException e) {
 					log.warn("wrong email address",e);
 				}
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.backupcopy.recipient",backupRecipient);
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.backupcopy.recipient", backupRecipient));
 		}	
 	}
 
