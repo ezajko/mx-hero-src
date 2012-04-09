@@ -13,8 +13,8 @@ import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
-import org.mxhero.engine.plugin.statistics.command.LogStat;
-import org.mxhero.engine.plugin.statistics.command.LogStatParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
 public class Provider extends RulesByFeature{
 
@@ -102,7 +102,7 @@ public class Provider extends RulesByFeature{
 			if(!mail.getStatus().equals(Mail.Status.requeue)){
 				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isConditionTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
-				mail.cmd(LogStat.class.getName(),new LogStatParameters("org.mxhero.feature.attachmentlink",Boolean.toString(result.isConditionTrue())));
+				mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachmentlink",Boolean.toString(result.isConditionTrue())));
 			}
 		}
 		
