@@ -17,6 +17,7 @@ public class FeatureEntity implements Feature{
 	private String component;
 	private Set<Rule> rules;
 	
+	@Override
 	public Integer getId() {
 		return id;
 	}
