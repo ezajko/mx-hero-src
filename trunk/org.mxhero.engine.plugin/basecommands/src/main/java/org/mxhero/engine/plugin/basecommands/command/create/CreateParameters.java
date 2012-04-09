@@ -21,6 +21,21 @@ public class CreateParameters extends NamedParameters{
 	}
 	
 	/**
+	 * @param sender
+	 * @param recipients
+	 * @param subject
+	 * @param text
+	 * @param outputService
+	 */
+	public CreateParameters(String sender, String recipients, String subject, String text, String outputService){
+		put(SENDER,sender);
+		put(RECIPIENTS, recipients);
+		put(SUBJECT,subject);
+		put(TEXT,text);
+		put(OUTPUT_SERVICE,outputService);
+	}
+	
+	/**
 	 * @param parameters
 	 */
 	public CreateParameters(NamedParameters parameters){

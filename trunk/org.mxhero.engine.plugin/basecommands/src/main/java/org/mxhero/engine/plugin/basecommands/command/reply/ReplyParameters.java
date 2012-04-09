@@ -22,6 +22,12 @@ public class ReplyParameters extends NamedParameters {
 	public ReplyParameters() {
 	}
 
+	public ReplyParameters(String sender, String plainText, String htmlText) {
+		put(SENDER,sender);
+		put(PLAIN_TEXT,plainText);
+		put(HTML_TEXT,htmlText);
+	}
+	
 	/**
 	 * @param parameters
 	 */

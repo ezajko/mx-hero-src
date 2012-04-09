@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.basecommands.command.clone;
 
-import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 
 /**
@@ -9,7 +8,6 @@ import org.mxhero.engine.commons.mail.command.NamedParameters;
  */
 public class CloneParameters extends NamedParameters{
 
-	public static final String PHASE = "phase";
 	public static final String SENDER = "sender";
 	public static final String RECIPIENT = "recipient";
 	public static final String OUTPUT_SERVICE = "outputService";
@@ -23,25 +21,20 @@ public class CloneParameters extends NamedParameters{
 	}
 	
 	/**
+	 * @param sender
+	 * @param recipient
+	 */
+	public CloneParameters(String sender, String recipient){	
+		this.setSender(sender);
+		this.setRecipient(recipient);
+	}
+	
+	/**
 	 * @param parameters
 	 */
 	public CloneParameters(NamedParameters parameters){
 		super();
 		this.nameToInstance.putAll(parameters.getNameToInstance());
-	}
-
-	/**
-	 * @return
-	 */
-	public Mail.Phase getPhase() {
-		return get(PHASE);
-	}
-
-	/**
-	 * @param phase
-	 */
-	public void setPhase(Mail.Phase phase){
-		put(PHASE,phase);
 	}
 	
 	/**
