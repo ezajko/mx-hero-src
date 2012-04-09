@@ -5,13 +5,16 @@ import java.text.ParseException;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStat;
+import org.mxhero.engine.plugin.statistics.command.LogStatParameters;
 
 public class Provider extends RulesByFeature{
 
@@ -35,17 +38,17 @@ public class Provider extends RulesByFeature{
 		String locale = DEFAULT_LOCALE;
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equalsIgnoreCase(ACTION_SELECTION)){
-				if(property.getPropertyValue().equalsIgnoreCase(ACTION_RETURN)){
+			if(property.getKey().equalsIgnoreCase(ACTION_SELECTION)){
+				if(property.getValue().equalsIgnoreCase(ACTION_RETURN)){
 					notify=true;
 				}
-			} else if(property.getPropertyKey().equalsIgnoreCase(RETURN_MESSAGE)){
-				message = property.getPropertyValue();
-			} else if(property.getPropertyKey().equalsIgnoreCase(LOCALE)){
-				locale = property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(MAX_SIZE_PROPERTY)){
+			} else if(property.getKey().equalsIgnoreCase(RETURN_MESSAGE)){
+				message = property.getValue();
+			} else if(property.getKey().equalsIgnoreCase(LOCALE)){
+				locale = property.getValue();
+			} else if(property.getKey().equals(MAX_SIZE_PROPERTY)){
 				try {
-					maxSizeValue=formatter.parse(property.getPropertyValue());
+					maxSizeValue=formatter.parse(property.getValue());
 					effectiveMaxSize = (int)(maxSizeValue.doubleValue()*1024*1024*CODING_FACTOR);
 				} catch (ParseException e) {
 					throw new RuntimeException(e);
@@ -69,8 +72,8 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
-			&& mail.getInitialData().getInitialSize()> effectiveMaxSize
+			return mail.getStatus().equals(Mail.Status.deliver)
+			&& mail.getInitialSize()> effectiveMaxSize
 			&& !mail.getProperties().containsKey("org.mxhero.feature.attachmentlink")
 			&& mail.getHeaders()!=null;
 		}
@@ -95,11 +98,11 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			Result result = mail.cmd("org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand",locale,Boolean.toString(notify),message);
-			if(!mail.getState().equalsIgnoreCase(MailState.REQUEUE)){
-				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isTrue());
+			Result result = mail.cmd(AlCommand.class.getName(), new ALCommandParameters(locale, notify, message));
+			if(!mail.getStatus().equals(Mail.Status.requeue)){
+				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isConditionTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.attachmentlink",Boolean.toString(result.isResult()) );
+				mail.cmd(LogStat.class.getName(),new LogStatParameters("org.mxhero.feature.attachmentlink",Boolean.toString(result.isConditionTrue())));
 			}
 		}
 		
