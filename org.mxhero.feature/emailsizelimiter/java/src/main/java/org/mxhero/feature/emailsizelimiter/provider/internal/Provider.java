@@ -5,12 +5,15 @@ import java.text.ParseException;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
 public class Provider extends RulesByFeature{
 
@@ -32,19 +35,19 @@ public class Provider extends RulesByFeature{
 		String action = null;
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(MAX_SIZE_PROPERTY)){
+			if(property.getKey().equals(MAX_SIZE_PROPERTY)){
 				try {
-					maxSizeValue=formatter.parse(property.getPropertyValue());
+					maxSizeValue=formatter.parse(property.getValue());
 					effectiveMaxSize = (int)(maxSizeValue.doubleValue()*1024*1024*CODING_FACTOR);
 				} catch (ParseException e) {
 					throw new RuntimeException(e);
 				}
-			} else if(property.getPropertyKey().equals(RETURN_MESSAGE_PROPERTY)){
-				returnMessage = property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(ACTION_SELECTION_PROPERTY)){
-				action = property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(RETURN_MESSAGE_PLAIN_PROPERTY)){
-				returnMessagePlain = property.getPropertyValue();
+			} else if(property.getKey().equals(RETURN_MESSAGE_PROPERTY)){
+				returnMessage = property.getValue();
+			} else if(property.getKey().equals(ACTION_SELECTION_PROPERTY)){
+				action = property.getValue();
+			} else if(property.getKey().equals(RETURN_MESSAGE_PLAIN_PROPERTY)){
+				returnMessagePlain = property.getValue();
 			}
 		}
 		
@@ -65,7 +68,7 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			return mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& !mail.getProperties().containsKey("org.mxhero.feature.initialsizelimiter:"+group);
 		}
@@ -101,15 +104,17 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-InitialSizeLimiter","rule="+ruleId);
 			mail.getProperties().put("org.mxhero.feature.initialsizelimiter:"+group,ruleId.toString());
 			boolean isDropped = false;
-			if(mail.getInitialData().getInitialSize()>effectiveMaxSize){
+			if(mail.getInitialSize()>effectiveMaxSize){
 				mail.drop("org.mxhero.feature.initialsizelimiter");
 				isDropped=true;
-				mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.initialsizelimiter");
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.initialsizelimiter"));
 			}
 			if(action.equalsIgnoreCase(ACTION_RETURN) && isDropped){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",replyMail,mail.getInitialData().getSender().getMail(),returnMessagePlain,returnMessage );
+				ReplyParameters replyParameters = new ReplyParameters(replyMail, returnMessagePlain, returnMessage);
+				replyParameters.setRecipient(mail.getSender().getMail());
+				mail.cmd(Reply.class.getName(),replyParameters);
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.initialsizelimiter",Boolean.toString(isDropped) );
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.initialsizelimiter", Boolean.toString(isDropped)));
 		}
 		
 	}
