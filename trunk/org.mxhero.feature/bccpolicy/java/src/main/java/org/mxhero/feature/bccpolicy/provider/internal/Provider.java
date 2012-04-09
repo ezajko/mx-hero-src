@@ -4,13 +4,17 @@ import javax.mail.Message;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.api.Recipients.RecipientType;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.FromInHeaders;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,14 +38,14 @@ public class Provider extends RulesByFeature{
 		Boolean ignoreList = false;
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(ACTION_SELECTION)){
-				action=property.getPropertyValue();
-			}else if (property.getPropertyKey().equals(RETURN_MESSAGE)){
-				returnMessage = property.getPropertyValue();
-			}else if (property.getPropertyKey().equals(LIST_IGNORE)){
-				ignoreList = Boolean.parseBoolean(property.getPropertyValue());
-			}else if (property.getPropertyKey().equals(RETURN_MESSAGE_PLAIN)){
-				returnMessagePlain = property.getPropertyValue();
+			if(property.getKey().equals(ACTION_SELECTION)){
+				action=property.getValue();
+			}else if (property.getKey().equals(RETURN_MESSAGE)){
+				returnMessage = property.getValue();
+			}else if (property.getKey().equals(LIST_IGNORE)){
+				ignoreList = Boolean.parseBoolean(property.getValue());
+			}else if (property.getKey().equals(RETURN_MESSAGE_PLAIN)){
+				returnMessagePlain = property.getValue();
 			}
 		}
 		
@@ -62,12 +66,12 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			boolean result = mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			boolean result = mail.getStatus().equals(Mail.Status.deliver)
 					&& mail.getHeaders()!=null
 					&& mail.getRecipients()!=null
 					&& !mail.getProperties().containsKey("org.mxhero.engine.plugin.basecommands.command.Reply")
-					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients()))
-					|| (!ignoreList && !mail.getInitialData().getRecipient().hasAlias(mail.getRecipients().getAllRecipients())));
+					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getRecipient().hasAlias(mail.getRecipients().getRecipients(RecipientType.all).toArray(new String[0])))
+					|| (!ignoreList && !mail.getRecipient().hasAlias(mail.getRecipients().getRecipients(RecipientType.all).toArray(new String[0]))));
 			log.debug("eva result:"+result);
 			return result;
 		}
@@ -123,10 +127,12 @@ public class Provider extends RulesByFeature{
 			mail.drop("org.mxhero.feature.bccpolicy");
 			mail.getHeaders().addHeader("X-mxHero-BCCPolicy", "rule="+ruleId+";blocked=true");
 			if(action!=null && action.equals(RETURN_ACTION)){
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),returnMessagePlain,returnMessage} );
+				ReplyParameters replyParameters = new ReplyParameters(noreplyMail, returnMessagePlain, returnMessage);
+				replyParameters.setSender(mail.getSender().getMail());
+				mail.cmd(Reply.class.getName(), replyParameters);
 			}			
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.bccpolicy","true" );
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","email.blocked","org.mxhero.feature.bccpolicy");
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.bccpolicy", "true"));
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.bccpolicy"));
 		}
 
 	}
