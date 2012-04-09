@@ -8,16 +8,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.mail.internet.MailDateFormat;
+import javax.mail.internet.ParameterList;
 
+import org.jsoup.Jsoup;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
+import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.api.Recipients.RecipientType;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.commons.util.HeaderUtils;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
+import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
+import org.mxhero.engine.plugin.threadlight.command.AddThreadWatchParameters;
 import org.mxhero.feature.replytimeout.provider.internal.config.ReplyTimeoutConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +39,9 @@ public class Provider extends RulesByFeature  {
 	private static final String LOCALE_PROPERTY="locale";
 	private static final String DATE_FORMAT_PROPERTY="date.format";
 	private static final String HEADER = "X-mxHero-Actions";
-	private static final String HEADER_VALUE = "replyTimeout";
+	private static final String ACTION_VALUE = "replyTimeout";
+	private static final String UNIXTIME = "unixtime";
+	private static final String LOCALE = "locale";
 	public static final String REGEX = "(?i).*\\[\\s*mxreply\\s*.*\\]\\s*.*";
 	public static final String REGEX_DEFAULT_DAY = "(?i).*\\[\\s*mxreply\\s*\\]\\s*.*";
 	public static final String REGEX_REMOVE = "(?i)\\s*\\[\\s*mxreply\\s*.*\\]\\s*";
@@ -46,10 +56,10 @@ public class Provider extends RulesByFeature  {
 		String dateFormat = "dd/mm";
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(LOCALE_PROPERTY)){
-				locale=property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(DATE_FORMAT_PROPERTY)){
-				dateFormat=property.getPropertyValue();
+			if(property.getKey().equals(LOCALE_PROPERTY)){
+				locale=property.getValue();
+			} else if(property.getKey().equals(DATE_FORMAT_PROPERTY)){
+				dateFormat=property.getValue();
 			}
 		}
 		
@@ -63,15 +73,16 @@ public class Provider extends RulesByFeature  {
 
 		@Override
 		public boolean eval(Mail mail) {
-			boolean conditions =  	mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			Collection<String> values = mail.getHeaders().getHeaderValues(HEADER);
+			boolean conditions =  	mail.getStatus().equals(Mail.Status.deliver)
 					&& mail.getHeaders()!=null
-					&& (mail.getSubject().getSubject().matches(REGEX) ||
-					HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE)!=null);
+					&& (mail.getSubject().matches(REGEX) ||
+						(values!=null && values.size()>0 && HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)!=null));
 			boolean isInTO = false;
-			Collection<String> toRecipients = mail.getRecipients().getToRecipients();
+			Collection<String> toRecipients = mail.getRecipients().getRecipients(RecipientType.to);
 			if(toRecipients!=null){
 				for(String recipient : toRecipients){
-					if(mail.getInitialData().getRecipient().hasAlias(recipient)){
+					if(mail.getRecipient().hasAlias(recipient)){
 						isInTO=true;
 						break;
 					}
@@ -80,11 +91,13 @@ public class Provider extends RulesByFeature  {
 			if(log.isDebugEnabled()){
 				log.debug("conditions="+conditions);
 				log.debug("isInTO="+isInTO);
-				log.debug("match subject="+mail.getSubject().getSubject().matches(REGEX) );
-				log.debug("header value="+HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE));
+				log.debug("match subject="+mail.getSubject().matches(REGEX) );
+				if(values!=null && values.size()>0){
+					log.debug("header value="+HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE));
+				}
 			}
 			if(conditions && !isInTO){
-				mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
+				mail.setSubject(mail.getSubject().replaceFirst(REGEX_REMOVE, ""));
 			}
 			return conditions && isInTO;
 		}
@@ -109,16 +122,20 @@ public class Provider extends RulesByFeature  {
 		@Override
 		public void exec(Mail mail) {
 			boolean hasError=false;
-			String[] headerParameters=HeaderUtils.parseParameters(mail.getHeaders().getHeaderValue(HEADER), HEADER_VALUE);
+			Collection<String> values = mail.getHeaders().getHeaderValues(HEADER);
+			ParameterList parameterList = null;
 			try{
-				if(headerParameters!=null && headerParameters.length>0){
-					replyTimeoutDate=Calendar.getInstance();
-					replyTimeoutDate.setTimeInMillis(Long.parseLong(headerParameters[0].trim()));
-					if(headerParameters.length>1 && headerParameters[1].trim().length()>0){
-						locale=headerParameters[1].trim();
+				if(values!=null && values.size()>0){
+					parameterList = HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE);
+					if(parameterList!=null){
+						replyTimeoutDate=Calendar.getInstance();
+						replyTimeoutDate.setTimeInMillis(Long.parseLong(parameterList.get(UNIXTIME)));
+						if(parameterList.get(LOCALE)!=null && !parameterList.get(LOCALE).trim().isEmpty()){
+							locale=parameterList.get(LOCALE);
+						}
 					}
 				}else{
-					Matcher matcher = Pattern.compile(REGEX_STRICT).matcher(mail.getSubject().getSubject());
+					Matcher matcher = Pattern.compile(REGEX_STRICT).matcher(mail.getSubject());
 					if(matcher.find()){
 						String dateParameters = matcher.group().trim().replaceFirst("(?i)\\[\\s*mxreply\\s*", "").replaceFirst("\\s*\\]", "").trim();
 						Calendar calendar =  null;
@@ -167,7 +184,7 @@ public class Provider extends RulesByFeature  {
 						}
 					}else{
 						//default day
-						if(Pattern.compile(REGEX_DEFAULT_DAY).matcher(mail.getSubject().getSubject()).find()){
+						if(Pattern.compile(REGEX_DEFAULT_DAY).matcher(mail.getSubject()).find()){
 							int addDays = 1;
 							Calendar calendar=Calendar.getInstance();
 							calendar.add(Calendar.DATE, addDays);
@@ -179,8 +196,8 @@ public class Provider extends RulesByFeature  {
 					dateString=Calendar.getInstance().getTime().toString();
 				}
 				if(replyTimeoutDate!=null){
-					mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.replytimeout",""+replyTimeoutDate.getTimeInMillis());
-					mail.cmd("org.mxhero.engine.plugin.threadlight.command.AddThreadWatch",FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail+";"+dateString);
+					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.replytimeout", ""+replyTimeoutDate.getTimeInMillis()));
+					mail.cmd(AddThreadWatch.class.getName(), new AddThreadWatchParameters(FOLLOWER_ID,replyTimeoutDate.getTimeInMillis()+";"+locale+";"+noreplyMail+";"+dateString));
 				}
 			}catch(Exception e){
 				log.warn("unhandle error!",e);
@@ -189,9 +206,11 @@ public class Provider extends RulesByFeature  {
 			if(hasError || replyTimeoutDate==null){
 				String text = config.getErrorTemplate(locale);
 				log.debug("sending replyText="+text);
-				mail.cmd("org.mxhero.engine.plugin.basecommands.command.Reply",new String[]{noreplyMail,mail.getInitialData().getSender().getMail(),text,text} );
+				ReplyParameters replyParameters = new ReplyParameters(noreplyMail, Jsoup.parse(text).text(), text);
+				replyParameters.setSender(mail.getSender().getMail());
+				mail.cmd(Reply.class.getName(), replyParameters);
 			}
-			mail.getSubject().setSubject(mail.getSubject().getSubject().replaceFirst(REGEX_REMOVE, ""));
+			mail.setSubject(mail.getSubject().replaceFirst(REGEX_REMOVE, ""));
 		}
 		
 	}

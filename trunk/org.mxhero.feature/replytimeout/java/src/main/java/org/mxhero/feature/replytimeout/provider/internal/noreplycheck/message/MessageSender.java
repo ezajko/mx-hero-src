@@ -19,7 +19,7 @@ import org.jsoup.Jsoup;
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRow;
 import org.mxhero.feature.replytimeout.provider.internal.Provider;
 import org.mxhero.feature.replytimeout.provider.internal.config.ReplyTimeoutConfig;
@@ -89,7 +89,7 @@ public class MessageSender {
 
 			MimeMail replayMail = new MimeMail(senderMail, row.getPk().getSenderMail()
 					, bis, config.getOutputService());
-			replayMail.setPhase(RulePhase.OUT);
+			replayMail.setPhase(Mail.Phase.out);
 
 			if (service == null) {
 				log.warn("core input service is not online");
