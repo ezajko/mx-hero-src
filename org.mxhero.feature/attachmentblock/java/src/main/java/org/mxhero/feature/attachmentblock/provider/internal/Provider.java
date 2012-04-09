@@ -154,24 +154,14 @@ public class Provider extends RulesByFeature{
 			boolean droppedByAttachments=mail.getStatus().equals(Mail.Status.drop);
 			if(action!=null && action.equals(RETURN_ACTION) && droppedByAttachments){
 				log.debug("return message");
-				ReplyParameters replyParameters = new ReplyParameters();
-				replyParameters.setSender(noreplyMail);
+				ReplyParameters replyParameters = new ReplyParameters(noreplyMail,returnMessagePlain,returnMessage);
 				replyParameters.setRecipient(mail.getSender().getMail());
-				replyParameters.setPlainText(returnMessagePlain);
-				replyParameters.setHtmlText(returnMessage);
 				mail.cmd(Reply.class.getName(),replyParameters);
 			}
-			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock", "rule="+ruleId+";blocked="+droppedByAttachments);
-			LogStatParameters lsAttParameters = new LogStatParameters();
-			lsAttParameters.setKey("org.mxhero.feature.attachementblock");
-			lsAttParameters.setValue(Boolean.toString(droppedByAttachments));
-			mail.cmd(LogStat.class.getName(),lsAttParameters);
+			mail.cmd(LogStat.class.getName(),new LogStatParameters("org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments)));
 			if(droppedByAttachments){
 				log.debug("bloqued stat");
-				LogStatParameters lsBlockParameters = new LogStatParameters();
-				lsBlockParameters.setKey("email.blocked");
-				lsBlockParameters.setValue("org.mxhero.feature.attachementblock");
-				mail.cmd(LogStat.class.getName(),lsBlockParameters);
+				mail.cmd(LogStat.class.getName(),new LogStatParameters("email.blocked","org.mxhero.feature.attachementblock"));
 			}
 		}
 		
