@@ -1,5 +1,7 @@
 package org.mxhero.feature.attachmenttrack.provider.internal;
 
+import java.util.Collection;
+
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.api.Mail;
@@ -58,13 +60,13 @@ public class Provider extends RulesByFeature{
 		
 		@Override
 		public boolean eval(Mail mail) {
-			
+			Collection<String> values = mail.getHeaders().getHeaderValues(HEADER);
 			boolean result =  mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& mail.getAttachments()!=null
 			&& mail.getAttachments().isAttached()
 			&& (mail.getSubject().matches("(?i)\\s*\\[\\s*mxatt\\s*\\]\\s*.*") ||
-					HeaderUtils.getParametersList(mail.getHeaders().getHeaderValues(HEADER).toArray(new String[0]), ACTION_VALUE)!=null);
+					(values!=null && values.size()>0 && HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)!=null));
 			if(log.isDebugEnabled()){
 				log.debug("eval="+result);
 				log.debug("has header="+mail.getHeaders().hasHeader(HEADER));
