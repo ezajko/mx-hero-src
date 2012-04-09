@@ -52,15 +52,15 @@
 	<osgi:service ref="logStatCommand">
 		<osgi:interfaces>
 	  		<value>org.mxhero.engine.commons.mail.command.Command</value>
-	  		<value>org.mxhero.engine.plugin.statistics.command.LogStat</value>
+	  		<value>org.mxhero.engine.plugin.statistics.command.LogStatCommand</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
-				value="org.mxhero.engine.plugin.statistics.internal.command.LogStatCommand" />
+				value="org.mxhero.engine.plugin.statistics.internal.command.LogStatCommandImpl" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="logStatCommand" class="org.mxhero.engine.plugin.statistics.internal.command.LogStatCommand">
+	<bean id="logStatCommand" class="org.mxhero.engine.plugin.statistics.internal.command.LogStatCommandImpl">
 		<property name="repository" ref="cachedRecordRepository"/>
 		<property name="utils" ref="utils"/>
 	</bean>

@@ -6,7 +6,7 @@ import org.mxhero.engine.commons.mail.command.NamedParameters;
  * @author mmarmol
  *
  */
-public class LogStatParameters extends NamedParameters {
+public class LogStatCommandParameters extends NamedParameters {
 
 	public static final String KEY = "key";
 	public static final String VALUE = "value";
@@ -14,14 +14,14 @@ public class LogStatParameters extends NamedParameters {
 	/**
 	 * 
 	 */
-	public LogStatParameters(){
+	public LogStatCommandParameters(){
 	}
 	
 	/**
 	 * @param key
 	 * @param value
 	 */
-	public LogStatParameters(String key, String value){
+	public LogStatCommandParameters(String key, String value){
 		this.setKey(key);
 		this.setValue(value);
 	}
@@ -29,7 +29,7 @@ public class LogStatParameters extends NamedParameters {
 	/**
 	 * @param parameters
 	 */
-	public LogStatParameters(NamedParameters parameters){
+	public LogStatCommandParameters(NamedParameters parameters){
 		super();
 		this.nameToInstance.putAll(parameters.getNameToInstance());
 	}

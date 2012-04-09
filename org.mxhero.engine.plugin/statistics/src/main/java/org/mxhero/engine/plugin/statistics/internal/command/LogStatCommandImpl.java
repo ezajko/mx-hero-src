@@ -3,8 +3,8 @@ package org.mxhero.engine.plugin.statistics.internal.command;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
-import org.mxhero.engine.plugin.statistics.command.LogStat;
-import org.mxhero.engine.plugin.statistics.command.LogStatParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.mxhero.engine.plugin.statistics.internal.entity.Stat;
 import org.mxhero.engine.plugin.statistics.internal.entity.Utils;
 import org.mxhero.engine.plugin.statistics.internal.repository.RecordRepository;
@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
  * @author mmarmol
  *
  */
-public class LogStatCommand implements LogStat{
+public class LogStatCommandImpl implements LogStatCommand{
 
-	private static Logger log = LoggerFactory.getLogger(LogStatCommand.class);
+	private static Logger log = LoggerFactory.getLogger(LogStatCommandImpl.class);
 	
 	private Utils utils;
 	
@@ -29,7 +29,7 @@ public class LogStatCommand implements LogStat{
 	@Override
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 		Result result = new Result();
-		LogStatParameters lsParameters = new LogStatParameters(parameters);
+		LogStatCommandParameters lsParameters = new LogStatCommandParameters(parameters);
 		if (lsParameters.getKey()==null
 				|| lsParameters.getKey().trim().isEmpty()
 				|| lsParameters.getValue()==null
