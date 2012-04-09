@@ -11,6 +11,11 @@ public interface Feature {
 	/**
 	 * @return
 	 */
+	public Integer getId();
+	
+	/**
+	 * @return
+	 */
 	public Integer getBasePriority();
 
 	/**
