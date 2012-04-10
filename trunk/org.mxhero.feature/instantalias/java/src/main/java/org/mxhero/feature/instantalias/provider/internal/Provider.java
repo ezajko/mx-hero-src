@@ -82,7 +82,7 @@ public class Provider extends RulesByFeatureWithFixed {
 			mail.getHeaders().addHeader("X-mxHero-InstantAlias","rule="+ruleId+";alias="+mail.getRecipient().getMail());
 			CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),realEmail);
 			mail.cmd(Clone.class.getName(),cloneParameters);
-			mail.drop("org.mxhero.feature.instantalias");
+			mail.redirect("org.mxhero.feature.instantalias");
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.alias", mail.getRecipient().getMail()));
 
 		}
