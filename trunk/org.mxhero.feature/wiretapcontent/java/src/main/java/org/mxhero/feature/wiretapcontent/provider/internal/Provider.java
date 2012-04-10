@@ -9,13 +9,15 @@ import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.business.Mail;
-import org.mxhero.engine.commons.mail.business.MailState;
-import org.mxhero.engine.commons.mail.business.RulePhase;
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
+import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,14 +44,14 @@ public class Provider extends RulesByFeature{
 		String action = null;
 		
 		for(RuleProperty property : rule.getProperties()){
-			if(property.getPropertyKey().equals(ANDOR_SELECTION_PROPERTY)){
-				andor=property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(WORD_LIST_PROPERTY)){
-				words.add(StringEscapeUtils.escapeJava(property.getPropertyValue()));
-			} else if(property.getPropertyKey().equals(EMAIL_VALUE_PROPERTY)){
-				emailCopy = property.getPropertyValue();
-			} else if(property.getPropertyKey().equals(FOUND_ACTION)){
-				action = property.getPropertyValue();
+			if(property.getKey().equals(ANDOR_SELECTION_PROPERTY)){
+				andor=property.getValue();
+			} else if(property.getKey().equals(WORD_LIST_PROPERTY)){
+				words.add(StringEscapeUtils.escapeJava(property.getValue()));
+			} else if(property.getKey().equals(EMAIL_VALUE_PROPERTY)){
+				emailCopy = property.getValue();
+			} else if(property.getKey().equals(FOUND_ACTION)){
+				action = property.getValue();
 			}
 		}
 
@@ -72,11 +74,11 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public boolean eval(Mail mail) {
-			return mail.getState().equalsIgnoreCase(MailState.DELIVER)
+			return mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& mail.getBody()!=null
-			&&(andor!=null && ((andor.equals(AND_VALUE)&&(mail.getBody().textHasAll(words)||mail.getBody().htmlTextHasAll(words)))
-								||(andor.equals(OR_VALUE)&&(mail.getBody().textHasAny(words)||mail.getBody().textHasAny(words)))));
+			&&(andor!=null && ((andor.equals(AND_VALUE)&&(mail.getBody().textHasAll(words.toArray(new String[words.size()]))||mail.getBody().htmlTextHasAll(words.toArray(new String[words.size()]))))
+								||(andor.equals(OR_VALUE)&&(mail.getBody().textHasAny(words.toArray(new String[words.size()]))||mail.getBody().textHasAny(words.toArray(new String[words.size()]))))));
 		}
 		
 	}
@@ -102,7 +104,7 @@ public class Provider extends RulesByFeature{
 						InternetAddress emailAddress = new InternetAddress(individualMail,false);
 						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
-							mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailAddress.getAddress());							
+							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));	
 						}
 					} catch (AddressException e) {
 						log.warn("wrong email address",e);
@@ -114,17 +116,17 @@ public class Provider extends RulesByFeature{
 						InternetAddress emailAddress = new InternetAddress(individualMail,false);
 						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
-							mail.cmd("org.mxhero.engine.plugin.basecommands.command.Clone",RulePhase.RECEIVE,mail.getInitialData().getSender().getMail(),emailAddress.getAddress());
+							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
 						}
 					} catch (AddressException e) {
 						log.warn("wrong email address",e);
 					}
 				}				
-				mail.drop("org.mxhero.feature.wiretapcontent");
+				mail.redirect("org.mxhero.feature.wiretapcontent");
 			}else if(action.equalsIgnoreCase(FOUND_ACTION_DROP)){
 				mail.drop("org.mxhero.feature.wiretapcontent");
 			}
-			mail.cmd("org.mxhero.engine.plugin.statistics.command.LogStat","org.mxhero.feature.wiretapcontent","true");
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.wiretapcontent", Boolean.TRUE.toString()));
 		}
 		
 	}
