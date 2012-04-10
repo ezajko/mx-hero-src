@@ -51,11 +51,17 @@
 							<s:layout>
 								<s:BasicLayout/>
 							</s:layout>
-							<mx:Image 	visible="{data.state!='drop'}"
+							<mx:Image 	visible="{data.state=='deliver'}"
 										source="{CommonsImages.DELIVERED}" 
+										buttonMode="false"
 										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DELIVERED_TOOLTIP)}"/>
+							<mx:Image 	visible="{data.state=='redirect'}"
+										source="{CommonsImages.REDIRECT}" 
+										buttonMode="false"
+										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.REDIRECTED_TOOLTIP)}"/>
 							<mx:Image 	visible="{data.state=='drop'}"
-										source="{CommonsImages.DROPPED}" 
+										source="{CommonsImages.DROPPED}"
+										buttonMode="false"
 										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DROPPED_TOOLTIP_START)}"/>						
 							
 						</s:Group>
