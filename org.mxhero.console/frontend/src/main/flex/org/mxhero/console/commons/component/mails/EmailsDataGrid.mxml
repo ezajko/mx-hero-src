@@ -56,7 +56,7 @@
 										buttonMode="false"
 										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DELIVERED_TOOLTIP)}"/>
 							<mx:Image 	visible="{data.state=='redirect'}"
-										source="{CommonsImages.REDIRECT}" 
+										source="{CommonsImages.REDIRECTED}" 
 										buttonMode="false"
 										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.REDIRECTED_TOOLTIP)}"/>
 							<mx:Image 	visible="{data.state=='drop'}"
