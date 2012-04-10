@@ -83,7 +83,7 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 					cloneParameters.setGenerateId(false);
 					cloneParameters.setOverride("both");
 					mail.cmd(Clone.class.getName(), cloneParameters);
-					mail.drop("org.mxhero.feature.redirect");
+					mail.redirect("org.mxhero.feature.redirect");
 			} else{
 				log.debug("no match");
 			}
