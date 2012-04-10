@@ -29,10 +29,11 @@ public class DefaultRulesProcessor implements RulesProcessor{
 		if(fact.getPhase().equals(Mail.Phase.send)){
 			domainAgendaGroup = fact.getSender().getDomain().getId();
 			//Adding default rules to start first
-			String bottomAgendaGroup = getProperties().getBottomGroupId();
-			if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
-				log.debug("firing rules for bottom:"+bottomAgendaGroup);
-				base.process(bottomAgendaGroup, fact);
+			//Adding default rules to start first
+			String startAgendaGroup = getProperties().getTopGroupId();
+			if (startAgendaGroup!=null && !startAgendaGroup.isEmpty()){
+				log.debug("firing rules for top:"+startAgendaGroup);
+				base.process(startAgendaGroup, fact);
 			}
 			//Adding domain agenda group
 			if(domainAgendaGroup!=null){
@@ -47,11 +48,10 @@ public class DefaultRulesProcessor implements RulesProcessor{
 				log.debug("firing rules for domain:"+domainAgendaGroup);
 				base.process(domainAgendaGroup, fact);
 			}
-			//Adding default rules to start first
-			String startAgendaGroup = getProperties().getTopGroupId();
-			if (startAgendaGroup!=null && !startAgendaGroup.isEmpty()){
-				log.debug("firing rules for top:"+startAgendaGroup);
-				base.process(startAgendaGroup, fact);
+			String bottomAgendaGroup = getProperties().getBottomGroupId();
+			if (bottomAgendaGroup!=null && !bottomAgendaGroup.isEmpty()){
+				log.debug("firing rules for bottom:"+bottomAgendaGroup);
+				base.process(bottomAgendaGroup, fact);
 			}
 		}
 	}
