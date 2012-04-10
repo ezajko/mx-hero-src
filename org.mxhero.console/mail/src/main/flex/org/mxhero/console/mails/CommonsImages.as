@@ -6,7 +6,7 @@ package org.mxhero.console.mails
 		[Bindable]
 		public static var DELIVERED:Class; 
 		
-		[Embed(source="/images/component/redirect.png")] 
+		[Embed(source="/images/component/redirected.png")] 
 		[Bindable]
 		public static var REDIRECT:Class; 
 		
