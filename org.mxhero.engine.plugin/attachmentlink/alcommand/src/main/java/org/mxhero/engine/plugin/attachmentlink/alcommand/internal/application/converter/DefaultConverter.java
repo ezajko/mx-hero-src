@@ -66,4 +66,12 @@ public class DefaultConverter implements Converter {
 		logger.debug("Message old attach was transformed successfuly");
 	}
 
+	public String getBaseStorePath() {
+		return baseStorePath;
+	}
+
+	public void setBaseStorePath(String baseStorePath) {
+		this.baseStorePath = baseStorePath;
+	}
+	
 }
