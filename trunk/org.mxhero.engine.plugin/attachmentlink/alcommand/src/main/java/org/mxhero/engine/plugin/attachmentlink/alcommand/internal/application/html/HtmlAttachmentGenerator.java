@@ -63,6 +63,7 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
 			template.append(language);
 	        template.append(".vm");
 			Template t = ve.getTemplate(template.toString(),"UTF-8");
+			log.debug("template:"+t.getName());
 	        VelocityContext context = new VelocityContext();
 	        createLinks(mail);
 	        Set<MessageAttachRecipient> messageAttachRecipientForRecipient = mail.getMessageAttachRecipient();
