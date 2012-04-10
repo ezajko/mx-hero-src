@@ -12,5 +12,6 @@ package org.mxhero.console.commons.component.mails
 		public static const DETAILS_TOOLTIP:String="details.tooltip";
 		public static const DELIVERED_TOOLTIP:String="delivered.tooltip";
 		public static const DROPPED_TOOLTIP_START:String="dropped.tooltip.start";
+		public static const REDIRECTED_TOOLTIP:String="redirected.tooltip";
 	}
 }

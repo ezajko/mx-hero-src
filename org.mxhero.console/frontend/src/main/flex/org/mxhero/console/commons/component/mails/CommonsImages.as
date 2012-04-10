@@ -6,6 +6,10 @@ package org.mxhero.console.commons.component.mails
 		[Bindable]
 		public static var DELIVERED:Class; 
 		
+		[Embed(source="/images/reports/fromto/redirected.png")] 
+		[Bindable]
+		public static var REDIRECTED:Class; 
+		
 		[Embed(source="/images/reports/fromto/dropped.png")] 
 		[Bindable]
 		public static var DROPPED:Class; 
