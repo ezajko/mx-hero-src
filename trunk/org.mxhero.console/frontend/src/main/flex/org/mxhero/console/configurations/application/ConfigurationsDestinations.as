@@ -7,6 +7,7 @@ package org.mxhero.console.configurations.application
 		public static const ACCOUNTS:String="main.dashboard.configurations.accounts";
 		public static const GROUPS:String="main.dashboard.configurations.groups";
 		public static const USER:String="main.dashboard.configurations.user";
+		public static const QUARANTINE:String="main.dashboard.configurations.quarantine";
 		public static const SYSTEM:String="main.dashboard.configurations.system";
 	}
 }
