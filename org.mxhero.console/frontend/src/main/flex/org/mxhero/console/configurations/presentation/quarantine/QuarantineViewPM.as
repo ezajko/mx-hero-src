@@ -40,7 +40,7 @@ package org.mxhero.console.configurations.presentation.quarantine
 		}
 		
 		public function save():void{
-			dispatcher(new SaveQuarantineEvent(quarantine.domain,quarantine.email));
+			dispatcher(new SaveQuarantineEvent(quarantine));
 			isNotUpdating=false;
 		}
 		
