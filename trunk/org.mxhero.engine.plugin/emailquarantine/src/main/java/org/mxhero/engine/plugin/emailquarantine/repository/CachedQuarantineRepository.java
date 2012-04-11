@@ -51,7 +51,7 @@ public class CachedQuarantineRepository implements Runnable, QuarantineRepositor
 			try {
 				Thread.sleep(CHECK_TIME);
 			} catch (InterruptedException e) {}
-			if(lastReload+(60*1000)-System.currentTimeMillis()<0){
+			if(lastReload+(30*1000)-System.currentTimeMillis()<0){
 				findAll();
 				lastReload=System.currentTimeMillis();
 			}

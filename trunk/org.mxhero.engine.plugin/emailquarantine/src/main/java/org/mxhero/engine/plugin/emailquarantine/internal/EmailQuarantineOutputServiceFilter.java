@@ -12,8 +12,10 @@ import org.mxhero.engine.commons.connector.OutputServiceFilter;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.api.Mail.Phase;
+import org.mxhero.engine.plugin.emailquarantine.repository.QuarantineRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class EmailQuarantineOutputServiceFilter implements OutputServiceFilter{
 
@@ -22,7 +24,13 @@ public class EmailQuarantineOutputServiceFilter implements OutputServiceFilter{
 	private static final String TMP_FILE_PREFIX = "clone";
 	private static final int DEFERRED_SIZE = 1*1024*1024;
 	private InputService inputService;
+	private QuarantineRepository repository;
 	
+	@Autowired(required=true)
+	public EmailQuarantineOutputServiceFilter(QuarantineRepository repository) {
+		this.repository = repository;
+	}
+
 	public void dofilter(MimeMail mail) {
 		if(mail !=null && mail.getStatus().equals(Mail.Status.drop)){
 			if(mail.getPhase().equals(Mail.Phase.receive)){
@@ -44,7 +52,7 @@ public class EmailQuarantineOutputServiceFilter implements OutputServiceFilter{
 	}
 
 	private String getEmail(String domain){
-		return null;
+		return repository.findEmail(domain);
 	}
 	
 	private void quarantine(MimeMail mail, String email){

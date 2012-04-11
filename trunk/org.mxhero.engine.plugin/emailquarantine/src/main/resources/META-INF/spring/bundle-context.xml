@@ -31,6 +31,9 @@
 
 	<osgi:reference id="inputService" interface="org.mxhero.engine.commons.connector.InputService"/>
 
+	<bean id="cachedQuarantineRepository" class="org.mxhero.engine.plugin.emailquarantine.repository.CachedQuarantineRepository"
+		init-method="start" destroy-method="stop"/>
+
 	<bean id="outputFilter" class="org.mxhero.engine.plugin.emailquarantine.internal.EmailQuarantineOutputServiceFilter">
 		<property name="inputService" ref="inputService"/>
 	</bean>
