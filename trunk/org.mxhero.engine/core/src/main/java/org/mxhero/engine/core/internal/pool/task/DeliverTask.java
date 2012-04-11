@@ -1,6 +1,10 @@
 package org.mxhero.engine.core.internal.pool.task;
 
+import java.util.List;
+
+import org.mxhero.engine.commons.connector.InputServiceFilter;
 import org.mxhero.engine.commons.connector.OutputService;
+import org.mxhero.engine.commons.connector.OutputServiceFilter;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.queue.MimeMailQueueService;
@@ -25,7 +29,8 @@ public final class DeliverTask implements Runnable {
 	private LogStat logStatService;
 	private CoreProperties properties;
 	private MimeMailQueueService queueService;
-
+	@SuppressWarnings("rawtypes")
+	private List filters;
 	/**
 	 * @param mail
 	 * @param bc
@@ -41,6 +46,24 @@ public final class DeliverTask implements Runnable {
 	 */
 	@Override
 	public void run() {
+		for(Object filter : filters){
+			if(filter instanceof InputServiceFilter){
+				try{
+					((OutputServiceFilter) filter).dofilter(mail);
+				}catch(Exception e){
+					log.warn("error while doing filter "+filter.getClass().getCanonicalName(),e);
+				}
+			}
+		}
+		if(mail.getStatus().equals(Mail.Status.deliver)){
+			deliver();
+		}else{
+			log.info(mail.getStatus().name().toUpperCase() +" "+mail.toString());
+			queueService.unstore(mail);
+		}
+	}
+	
+	private void deliver(){
 		ServiceReference serviceReference;
 		OutputService service;
 		boolean delivered = false;
@@ -110,6 +133,16 @@ public final class DeliverTask implements Runnable {
 
 	public void setProperties(CoreProperties properties) {
 		this.properties = properties;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public List getFilters() {
+		return filters;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void setFilters(List filters) {
+		this.filters = filters;
 	}
 
 }

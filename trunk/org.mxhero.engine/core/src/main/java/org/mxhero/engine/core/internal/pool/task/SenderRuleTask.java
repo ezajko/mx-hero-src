@@ -91,12 +91,8 @@ public final class SenderRuleTask implements Runnable {
 				mail.setStatus(Mail.Status.deliver);
 				queueService.delayAndPut(Mail.Phase.send, mail, getProperties().getQueueDelayTime());
 				log.info("REQUEUED "+mail);
-			} else if (mail.getStatus().equals(Mail.Status.drop)) {
-				queueService.unstore(mail);
-				log.info("DROPPED "+mail);
-			} else if (mail.getStatus().equals(Mail.Status.redirect)) {
-				queueService.unstore(mail);
-				log.info("REDIRECT "+mail);
+			} else if (mail.getStatus().equals(Mail.Status.drop) || mail.getStatus().equals(Mail.Status.redirect)) {
+				queueService.put(Mail.Phase.out, mail);
 			} else  {
 				mail.setStatus(Mail.Status.deliver);
 				mail.getMessage().saveChanges();
