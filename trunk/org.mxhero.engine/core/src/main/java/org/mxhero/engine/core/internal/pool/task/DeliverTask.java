@@ -2,7 +2,6 @@ package org.mxhero.engine.core.internal.pool.task;
 
 import java.util.List;
 
-import org.mxhero.engine.commons.connector.InputServiceFilter;
 import org.mxhero.engine.commons.connector.OutputService;
 import org.mxhero.engine.commons.connector.OutputServiceFilter;
 import org.mxhero.engine.commons.mail.MimeMail;
@@ -46,16 +45,21 @@ public final class DeliverTask implements Runnable {
 	 */
 	@Override
 	public void run() {
-		for(Object filter : filters){
-			if(filter instanceof InputServiceFilter){
-				try{
-					((OutputServiceFilter) filter).dofilter(mail);
-				}catch(Exception e){
-					log.warn("error while doing filter "+filter.getClass().getCanonicalName(),e);
+		log.debug("email has status:"+mail.getStatus().name());
+		if(filters!=null){
+			for(Object filter : filters){
+				if(filter instanceof OutputServiceFilter){
+					try{
+						((OutputServiceFilter) filter).dofilter(mail);
+						log.debug("doing filter "+filter.getClass().getName());
+					}catch(Exception e){
+						log.warn("error while doing filter "+filter.getClass().getCanonicalName(),e);
+					}
 				}
 			}
 		}
 		if(mail.getStatus().equals(Mail.Status.deliver)){
+			log.debug("doing delivery for "+mail);
 			deliver();
 		}else{
 			log.info(mail.getStatus().name().toUpperCase() +" "+mail.toString());
