@@ -31,6 +31,7 @@
 			import org.mxhero.console.configurations.application.command.LoadConfigurationCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsByGroupCommand;
 			import org.mxhero.console.configurations.application.command.LoadEmailAccountsWithNoGroupCommand;
+			import org.mxhero.console.configurations.application.command.LoadQuarantineCommand;
 			import org.mxhero.console.configurations.application.command.RefreshAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.RemoveAdLdapCommand;
 			import org.mxhero.console.configurations.application.command.RemoveDomainCommand;
@@ -81,6 +82,7 @@
 		<parsley:DynamicCommand type="{TestAdldapCommand}"/>
 		
 		<parsley:DynamicCommand type="{SaveQuarantineCommand}"/>
+		<parsley:DynamicCommand type="{LoadQuarantineCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
