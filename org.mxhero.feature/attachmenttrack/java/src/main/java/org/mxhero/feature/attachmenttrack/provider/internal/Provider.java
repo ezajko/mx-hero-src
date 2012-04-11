@@ -1,5 +1,6 @@
 package org.mxhero.feature.attachmenttrack.provider.internal;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.mxhero.engine.commons.feature.Rule;
@@ -72,7 +73,10 @@ public class Provider extends RulesByFeature{
 				log.debug("has header="+mail.getHeaders().hasHeader(HEADER));
 				log.debug("is attached="+mail.getAttachments().isAttached());
 				log.debug("match subject="+mail.getSubject().matches("(?i).*\\[\\s*mxatt\\s*\\]\\s*.*") );
-				log.debug("header value="+HeaderUtils.getParametersList(mail.getHeaders().getHeaderValues(HEADER).toArray(new String[0]), ACTION_VALUE));
+				if(mail.getHeaders().hasHeader(HEADER)){
+					log.debug("header raw value="+Arrays.deepToString(mail.getHeaders().getHeaderValues(HEADER).toArray(new String[0])));
+					log.debug("header value="+HeaderUtils.getParametersList(mail.getHeaders().getHeaderValues(HEADER).toArray(new String[0]), ACTION_VALUE));
+				}
 			}
 			return result;
 		}
