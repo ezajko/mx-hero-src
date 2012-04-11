@@ -6,7 +6,7 @@ import org.mxhero.engine.commons.mail.MimeMail;
  * @author mmarmol
  *
  */
-public interface PreOutputServiceFilter {
+public interface OutputServiceFilter {
 
 	/**
 	 * @param mail
