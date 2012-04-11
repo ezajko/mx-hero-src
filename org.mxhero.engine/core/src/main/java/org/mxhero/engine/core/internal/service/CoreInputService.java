@@ -48,12 +48,15 @@ public final class CoreInputService implements InputService {
 		if(mail.getBussinesObject()==null){
 			this.getFiller().fill(getUserFinderService(), mail);
 		}
-		for(Object filter : filters){
-			if(filter instanceof InputServiceFilter){
-				try{
-					((InputServiceFilter) filter).dofilter(mail);
-				}catch(Exception e){
-					log.warn("error while doing filter "+filter.getClass().getCanonicalName(),e);
+		if(filters!=null){
+			for(Object filter : filters){
+				if(filter instanceof InputServiceFilter){
+					try{
+						((InputServiceFilter) filter).dofilter(mail);
+						log.debug("doing filter "+filter.getClass().getName());
+					}catch(Exception e){
+						log.warn("error while doing filter "+filter.getClass().getCanonicalName(),e);
+					}
 				}
 			}
 		}

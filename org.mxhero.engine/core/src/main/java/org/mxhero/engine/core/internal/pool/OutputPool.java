@@ -72,6 +72,7 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 		DeliverTask task = new DeliverTask(mail,bc,queueService);
 		task.setProperties(getProperties());
 		task.setLogStatService(getLogStatService());
+		task.setFilters(filters);
 		if(log.isDebugEnabled()){
 			log.debug("Out Phase task created for " + mail);
 		}
