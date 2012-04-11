@@ -34,6 +34,16 @@
 	<bean id="cachedQuarantineRepository" class="org.mxhero.engine.plugin.emailquarantine.repository.CachedQuarantineRepository"
 		init-method="start" destroy-method="stop"/>
 
+	<osgi:service ref="threadLightFilter">
+		<osgi:interfaces>
+			<value>org.mxhero.engine.commons.connector.OutputServiceFilter</value>
+		</osgi:interfaces>
+		<osgi:service-properties>
+			<entry key="service.pid"
+				value="org.mxhero.engine.plugin.emailquarantine.internal.EmailQuarantineOutputServiceFilter" />
+		</osgi:service-properties>
+	</osgi:service>
+
 	<bean id="outputFilter" class="org.mxhero.engine.plugin.emailquarantine.internal.EmailQuarantineOutputServiceFilter">
 		<property name="inputService" ref="inputService"/>
 	</bean>
