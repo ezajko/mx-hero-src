@@ -1,5 +1,6 @@
 package org.mxhero.engine.core.internal.pool;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -28,6 +29,9 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 	private LogStat logStatService;
 	
 	private MimeMailQueueService queueService;
+	
+	@SuppressWarnings("rawtypes")
+	private List filters;
 	
 	/**
 	 * @param bc
@@ -110,6 +114,16 @@ public final class OutputPool extends QueueTaskPool implements Observer {
 		this.setMaximumPoolSize(getProperties().getMaximumPoolSize());
 		this.setWaitTime(getProperties().getWaitTime());
 		log.debug("updated with "+getProperties().toString());
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List getFilters() {
+		return filters;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setFilters(List filters) {
+		this.filters = filters;
 	}
 
 }

@@ -26,7 +26,9 @@
 	<osgi:list id="rulesProviders" interface="org.mxhero.engine.commons.rules.provider.RulesProvider" cardinality="0..N"/>
 	
 	<osgi:list id="inputServiceFilters" interface="org.mxhero.engine.commons.connector.InputServiceFilter" cardinality="0..N"/>
-	
+
+	<osgi:list id="outputServiceFilters" interface="org.mxhero.engine.commons.connector.OutputServiceFilter" cardinality="0..N"/>	
+
 	<osgix:cm-properties id="cmProps" persistent-id="org.mxhero.engine.core"/>
 	
 	<bean id="coreProperties" class="org.mxhero.engine.core.internal.CoreProperties">
@@ -96,6 +98,7 @@
 		<constructor-arg ref="queuesService"/>
 		<property name="properties" ref="coreProperties"/>
 		<property name="logStatService" ref="logStatService"/>
+		<property name="filters" ref="outputServiceFilters"/>
 	</bean>
 
 
