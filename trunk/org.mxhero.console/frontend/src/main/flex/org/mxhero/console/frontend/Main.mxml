@@ -89,6 +89,7 @@
 			import org.mxhero.console.frontend.domain.MxHeroData;
 			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.domain.Page;
+			import org.mxhero.console.frontend.domain.Quarantine;
 			import org.mxhero.console.frontend.domain.TestAccount;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
 			
@@ -130,6 +131,7 @@
 				registerClassAlias("org.mxhero.console.backend.vo.DomainAdLdapVO",DomainAdLdap);
 				registerClassAlias("org.mxhero.console.backend.vo.LdapAccountVO",TestAccount);
 				registerClassAlias("org.mxhero.console.backend.vo.PageVO",Page);
+				registerClassAlias("org.mxhero.console.backend.vo.QuarantineVO",Quarantine);
 			}
 			
 			[Inject]

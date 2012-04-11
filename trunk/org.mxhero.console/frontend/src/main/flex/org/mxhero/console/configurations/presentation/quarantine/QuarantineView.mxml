@@ -17,9 +17,15 @@
 			
 			protected function saveBtt_clickHandler(event:MouseEvent):void
 			{
-				if(emailV.validate().results==null){
-					model.save(emailTi.text);
+				if(activateCb.selected){
+					if(emailV.validate().results!=null){
+						return;
+					}
+				}else{
+					model.quarantine.email=null;
+					emailTi.errorString=null;
 				}
+				model.save();
 			}
 			
 		]]>
@@ -29,9 +35,7 @@
 		<mx:EmailValidator id="emailV" 
 						   required="true" 
 						   property="text" 
-						   source="{emailTi}" 
-						   trigger="{saveBtt}" 
-						   triggerEvent="click"/>
+						   source="{emailTi}" />
 	</fx:Declarations>
 	
 	<s:layout>
@@ -54,7 +58,7 @@
 			<mx:FormItem>
 				<mx:HBox>
 					<s:Label fontWeight="bold" text="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.REDIRECT_EMAIL_LABEL)}"/>
-					<s:TextInput id="emailTi" width="200" enabled="{activateCb.enabled}"/>
+					<s:TextInput id="emailTi" width="200" enabled="{activateCb.selected}" text="@{model.quarantine.email}"/>
 				</mx:HBox>
 			</mx:FormItem>
 		</mx:Form>
