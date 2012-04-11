@@ -1,15 +1,14 @@
 package org.mxhero.console.configurations.application.event
 {
+	import org.mxhero.console.frontend.domain.Quarantine;
+
 	public class SaveQuarantineEvent
 	{
-		public var domain:String;
+		public var qurantine:Quarantine;
 		
-		public var email:String;
-		
-		public function SaveQuarantineEvent(domain:String,email:String)
+		public function SaveQuarantineEvent(qurantine:Quarantine)
 		{
-			this.domain=domain;
-			this.email=email;
+			this.qurantine=qurantine;
 		}
 	}
 }
