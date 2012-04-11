@@ -52,7 +52,9 @@
 	<s:VGroup gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10">
 		<mx:Form>
 			<mx:FormItem>
-				<s:CheckBox id="activateCb" enabled="true" label="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.ACTIVATE_LABEL)}"/>
+				<s:CheckBox id="activateCb" 
+							selected="@{model.hasQuarentine}"
+							label="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.ACTIVATE_LABEL)}"/>
 			</mx:FormItem>	
 			<mx:Spacer height="10"/>
 			<mx:FormItem>

@@ -16,7 +16,7 @@ package org.mxhero.console.configurations.application.command
 		
 		public function execute(event:SaveQuarantineEvent):AsyncToken
 		{
-			return service.save(event.qurantine);
+			return service.save(event.quarantine);
 		}
 	}
 }

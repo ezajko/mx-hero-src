@@ -16,6 +16,8 @@ package org.mxhero.console.configurations.presentation.quarantine
 
 		[Bindable]
 		public var quarantine:Quarantine;
+		[Bindable]
+		public var hasQuarentine:Boolean=false;
 		
 		[Inject]
 		[Bindable]
@@ -64,7 +66,12 @@ package org.mxhero.console.configurations.presentation.quarantine
 		[CommandResult]
 		public function loadQuarantineResult(result:*,event:LoadQuarantineEvent):void{
 			isNotUpdating=true;
-			this.quarantine=result as Quarantine;
+			if(result!=null){
+				this.quarantine=result as Quarantine;
+				this.hasQuarentine=true;
+			}else{
+				this.hasQuarentine=false;
+			}
 		}
 		
 		[CommandError]

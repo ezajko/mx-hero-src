@@ -4,11 +4,11 @@ package org.mxhero.console.configurations.application.event
 
 	public class SaveQuarantineEvent
 	{
-		public var qurantine:Quarantine;
+		public var quarantine:Quarantine;
 		
-		public function SaveQuarantineEvent(qurantine:Quarantine)
+		public function SaveQuarantineEvent(quarantine:Quarantine)
 		{
-			this.qurantine=qurantine;
+			this.quarantine=quarantine;
 		}
 	}
 }
