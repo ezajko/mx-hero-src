@@ -6,7 +6,7 @@
 		xmlns:cairngorm="http://ns.adobe.com/cairngorm" 
 		xmlns:parsley="http://www.spicefactory.org/parsley" 
 		xmlns:presentation="org.mxhero.console.configurations.presentation.*" 
-		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*" xmlns:user="org.mxhero.console.configurations.presentation.user.*" xmlns:system="org.mxhero.console.configurations.presentation.system.*">
+		xmlns:domain="org.mxhero.console.commons.domain.*" xmlns:domains="org.mxhero.console.configurations.presentation.domains.*" xmlns:event="org.mxhero.console.configurations.application.event.*" xmlns:accounts="org.mxhero.console.configurations.presentation.accounts.*" xmlns:groups="org.mxhero.console.configurations.presentation.groups.*" xmlns:user="org.mxhero.console.configurations.presentation.user.*" xmlns:system="org.mxhero.console.configurations.presentation.system.*" xmlns:quarantine="org.mxhero.console.configurations.presentation.quarantine.*">
 
 	<fx:Script>
 		<![CDATA[
@@ -37,6 +37,7 @@
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupMemberCommand;
+			import org.mxhero.console.configurations.application.command.SaveQuarantineCommand;
 			import org.mxhero.console.configurations.application.command.TestAdldapCommand;
 			import org.mxhero.console.configurations.application.command.TestEmailCommand;
 			import org.mxhero.console.configurations.application.command.UploadAccountsCommand;
@@ -79,6 +80,8 @@
 		<parsley:DynamicCommand type="{RefreshAdLdapCommand}"/>
 		<parsley:DynamicCommand type="{TestAdldapCommand}"/>
 		
+		<parsley:DynamicCommand type="{SaveQuarantineCommand}"/>
+		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
 		<domains:DomainsViewPM/>
@@ -86,6 +89,7 @@
 		<groups:GroupsViewPM/>
 		<user:UserViewPM/>
 		<system:SystemViewPM/>
+		<quarantine:QuarantineViewPM/>
 		
 		<s:ArrayCollection id="configurationsCategories">
 			<domain:LCCategory key="category.domains" 
@@ -127,6 +131,12 @@
 										resource="configurations_list"
 										navigateTo="{ConfigurationsDestinations.USER}"
 										needsOwner="true"/>
+						<domain:LCChild key="category.settings.quarantine" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.settings.quarantine.description" 
+										resource="configurations_list"
+										navigateTo="{ConfigurationsDestinations.QUARANTINE}"
+										domainExclusive="true"/>						
 						<domain:LCChild key="category.settings.system" 
 										requiredAuthority="ROLE_ADMIN" 
 										keyDescription="category.settings.system.description" 
@@ -158,6 +168,12 @@
 
 		<parsley:Object type="{RemoteObject}" id="configurationService">
 			<parsley:Property name="destination" value="configurationService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+			
+		<parsley:Object type="{RemoteObject}" id="quarantineService">
+			<parsley:Property name="destination" value="quarantineService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

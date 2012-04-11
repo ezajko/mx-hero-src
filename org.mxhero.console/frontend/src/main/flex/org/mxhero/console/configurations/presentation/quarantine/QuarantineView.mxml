@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"  
+		 xmlns:parsley="http://www.spicefactory.org/parsley" 
+		 xmlns:component="org.mxhero.console.commons.component.*"
+		 xmlns:cairngorm="http://ns.adobe.com/cairngorm"
+		 enabled="{model.isNotUpdating}">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.configurations.application.resources.ConfigurationsListProperties;
+			import org.mxhero.console.configurations.application.resources.QuarantineProperties;
+			
+			[Inject]
+			[Bindable]
+			public var model:QuarantineViewPM;
+			
+			protected function saveBtt_clickHandler(event:MouseEvent):void
+			{
+				if(emailV.validate().results==null){
+					model.save(emailTi.text);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<parsley:Configure/>
+		<mx:EmailValidator id="emailV" 
+						   required="true" 
+						   property="text" 
+						   source="{emailTi}" 
+						   trigger="{saveBtt}" 
+						   triggerEvent="click"/>
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10"/>
+	</s:layout>
+	
+	<component:TitleExpanded width="100%"
+							 title="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.TITLE)}"
+							 description="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.DESCRIPTION)}"
+							 enableExpanded="false"
+							 backLink="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_LABEL)}"
+							 backLinkFunction="{model.goBack}"
+							 backLinkTooltip="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_TOOLTIP)}"/>
+	<s:VGroup gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10">
+		<mx:Form>
+			<mx:FormItem>
+				<s:CheckBox id="activateCb" enabled="true" label="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.ACTIVATE_LABEL)}"/>
+			</mx:FormItem>	
+			<mx:Spacer height="10"/>
+			<mx:FormItem>
+				<mx:HBox>
+					<s:Label fontWeight="bold" text="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.REDIRECT_EMAIL_LABEL)}"/>
+					<s:TextInput id="emailTi" width="200" enabled="{activateCb.enabled}"/>
+				</mx:HBox>
+			</mx:FormItem>
+		</mx:Form>
+		<s:HGroup width="100%" horizontalAlign="right" paddingRight="15">
+			<s:Button id="saveBtt" label="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.SAVE_BUTTON)}" click="saveBtt_clickHandler(event)"/>
+		</s:HGroup>
+	</s:VGroup>
+
+	
+</s:Group>
