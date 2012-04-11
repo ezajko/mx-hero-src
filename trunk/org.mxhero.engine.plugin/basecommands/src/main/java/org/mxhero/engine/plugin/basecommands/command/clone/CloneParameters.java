@@ -1,5 +1,6 @@
 package org.mxhero.engine.plugin.basecommands.command.clone;
 
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 
 /**
@@ -13,6 +14,7 @@ public class CloneParameters extends NamedParameters{
 	public static final String OUTPUT_SERVICE = "outputService";
 	public static final String GENERATE_ID = "generateId";
 	public static final String OVERRIDE = "override";
+	public static final String PHASE = "phase";
 	
 	/**
 	 * 
@@ -105,6 +107,20 @@ public class CloneParameters extends NamedParameters{
 	 */
 	public void setOverride(String override){
 		put(OVERRIDE,override);
+	}
+
+	/**
+	 * @return
+	 */
+	public Mail.Phase getPhase(){
+		return get(PHASE);
+	}
+	
+	/**
+	 * @param phase
+	 */
+	public void setPhase(Mail.Phase phase){
+		put(PHASE,phase);
 	}
 	
 }
