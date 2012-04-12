@@ -110,15 +110,6 @@
 				}
 				fdg.emailsDg.errorString = "";
 				
-				if(returnRb.selected){
-					if(StringUtil.trim(rte.text).length<1){
-						validationError = resourceManager.getString(MODULE_NAME,'error.return.message');
-						rte.errorString = validationError;
-						return false;
-					}
-				}
-				rte.errorString="";
-				
 				validationError="";
 				return true;
 			}
@@ -135,22 +126,11 @@
 					}
 					uarray.sort();
 					emails = new ArrayCollection(uarray);
-					var actionSelected:String = PropertyHelper.getProperty(initialProperties,"action.selection").propertyValue;
-					if(actionSelected=='discard'){
-						discardRb.selected=true;
-					} else if(actionSelected=='return'){
-						returnRb.selected=true;
-						if(PropertyHelper.getProperty(this.initialProperties,"return.text.rte")!=null){
-							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.text.rte").propertyValue;
-						}else{
-							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue;
-						}
-					}
-					if(PropertyHelper.getProperty(initialProperties,"two.way.flag")!=null
-						&& PropertyHelper.getProperty(initialProperties,"two.way.flag").propertyValue=="true"){
-						twoWayCb.selected=true;
-					}else{
-						twoWayCb.selected=false;
+					var actionSelected:String = PropertyHelper.getProperty(initialProperties,"protected.selection").propertyValue;
+					if(actionSelected=='cc'){
+						ccRb.selected=true;
+					} else if(actionSelected=='cc.to'){
+						cctoRb.selected=true;
 					}
 				}
 			}
@@ -167,39 +147,14 @@
 				}
 				
 				property = new FeatureRuleProperty();
-				property.propertyKey = "action.selection";
-				if(discardRb.selected){
-					property.propertyValue='discard';
+				property.propertyKey = "protected.selection";
+				if(ccRb.selected){
+					property.propertyValue='cc';
 					properties.addItem(property);
-				}else if(returnRb.selected){
-					property.propertyValue='return';
-					properties.addItem(property);
-					
-					property = new FeatureRuleProperty();
-					property.propertyKey = "return.text";
-					var t:RteHtmlParser = new RteHtmlParser();
-					t.ParseToHTML(rte.htmlText);
-					var str:String = t.StringFormat;
-					property.propertyValue = t.XMLFormat;
-					properties.addItem(property);
-					property = new FeatureRuleProperty();
-					property.propertyKey = "return.text.plain";
-					property.propertyValue = rte.text;
-					properties.addItem(property);	
-					property = new FeatureRuleProperty();
-					property.propertyKey = "return.text.rte";
-					property.propertyValue = rte.htmlText;
-					properties.addItem(property);	
+				}else if(cctoRb.selected){
+					property.propertyValue='ccto';
+					properties.addItem(property);					
 				}
-				
-				property = new FeatureRuleProperty();
-				property.propertyKey = "two.way.flag";
-				if(twoWayCb.selected){
-					property.propertyValue = "true";
-				}else{
-					property.propertyValue = "false";
-				}
-				properties.addItem(property);
 				
 				return properties;
 			}
@@ -259,42 +214,20 @@
 		</mx:Form>
 		
 		<fdg:FilterDataGrid id="fdg" dataProvider="{emails}" width="100%"/>	
-		
-		<s:HGroup verticalAlign="middle" width="100%">
-			<s:CheckBox id="twoWayCb" 
-						selected="false"/>
-			<component:LabelExpanded
-				labelText="{resourceManager.getString(MODULE_NAME,'two.way.block')}"
-				expandedText="{resourceManager.getString(MODULE_NAME,'two.way.block.expanded')}"
-				explainText="{resourceManager.getString(MODULE_NAME,'label.explain')}"
-				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
-				width="100%"/>			
-		</s:HGroup>
-		
-		<mx:Spacer height="20"/>
+
+		<mx:Spacer height="10"/>
 		
 	</s:VGroup>
 	
 	<s:Label text="{resourceManager.getString(MODULE_NAME,'second.title')}" fontSize="16" fontWeight="bold"/>
 	
-	<s:VGroup paddingLeft="20" gap="20">
-		<s:VGroup>
-			<s:RadioButton id="returnRb" 
+	<s:VGroup paddingLeft="20" gap="10">
+		<s:RadioButton id="ccRb" 
 						   groupName="blockType"
-						   label="{resourceManager.getString(MODULE_NAME,'action.return.label')}"
+						   label="{resourceManager.getString(MODULE_NAME,'action.cc.label')}"
 						   selected="true"/>
-			<mx:Spacer/>
-			<s:VGroup paddingLeft="18">
-				<mx:RichTextEditor id="rte" 
-								   width="400"
-								   enabled="{returnRb.selected}"
-								   title="{resourceManager.getString(MODULE_NAME,'action.return.textarea.title')}"
-								   text="{resourceManager.getString(MODULE_NAME,'action.return.textarea.text')}">
-				</mx:RichTextEditor>			
-			</s:VGroup>
-		</s:VGroup>
-		<s:RadioButton id="discardRb" 
+		<s:RadioButton id="cctoRb" 
 					   groupName="blockType"
-					   label="{resourceManager.getString(MODULE_NAME,'action.discard.label')}"/>
+					   label="{resourceManager.getString(MODULE_NAME,'action.cc.to.label')}"/>
 	</s:VGroup>
 </mx:Module>
