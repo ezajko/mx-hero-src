@@ -21,7 +21,6 @@ public class Provider extends RulesByFeature{
 
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_REJECT = "reject";
-	private static final String ACTION_RECEIVE = "receive";
 	private static final String HEADER_VALUE = "header.value";
 	private static final String EMAIL_LIST = "email.list";
 	private static final String PREFIX_VALUE = "prefix.value";
@@ -112,10 +111,9 @@ public class Provider extends RulesByFeature{
 				mail.getProperties().put("spam.detected","true");
 				if(action.equals(ACTION_REJECT)){
 					mail.drop("org.mxhero.feature.spamassassin");
-				}else if(action.equals(ACTION_RECEIVE)){
-					if(header!=null && !header.trim().isEmpty()){
-						mail.getHeaders().addHeaderLine(header);
-					}
+				}
+				if(header!=null && !header.trim().isEmpty()){
+					mail.getHeaders().addHeaderLine(header);
 				}
 			}
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.spamassassin", Boolean.toString(spamResult.isConditionTrue())));
