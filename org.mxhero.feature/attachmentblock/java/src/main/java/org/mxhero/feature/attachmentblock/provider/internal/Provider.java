@@ -163,6 +163,7 @@ public class Provider extends RulesByFeature{
 				log.debug("bloqued stat");
 				mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("email.blocked","org.mxhero.feature.attachementblock"));
 			}
+			mail.getHeaders().addHeader("X-mxHeo-AttachmentBlock","rule="+ruleId.toString()+";result="+Boolean.toString(droppedByAttachments));
 		}
 		
 	}
