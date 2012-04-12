@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 		   layout="vertical"
+		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30"
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*">
+	<fx:Script>
+		<![CDATA[
+			import org.mxhero.console.commons.utils.Regex;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:RadioButtonGroup id="blockType"/>
+		<mx:EmailValidator id="emailV" required="true"/>
+		<mx:RegExpValidator id="domainV" required="true" expression="{Regex.domainRegex}"/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.utils.ObjectUtil;
+			import org.mxhero.console.commons.utils.RteHtmlParser;
+			import mx.collections.SortField;
+			import mx.collections.Sort;
+			import mx.validators.ValidationResult;
+			import mx.collections.ArrayCollection;
+			import mx.events.DragEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.DragManager;
+			import mx.messaging.messages.ErrorMessage;
+			import mx.utils.StringUtil;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			public var validationError:String;
+			
+			private static const MODULE_NAME:String = "addressprotection";
+			
+			private var initialProperties:ArrayCollection;
+			
+			[Bindable]
+			public var emails:ArrayCollection=new ArrayCollection();
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadData();
+			}
+
+			protected function addEmailBtt_clickHandler(event:MouseEvent):void
+			{
+				var textToValidate:String = StringUtil.trim(emailTi.text).replace(/^[@]+/,"");
+				var isEmail:Boolean = true;		
+				var isDomain:Boolean = true;
+				var results:Array=null;
+
+				results=emailV.validate(textToValidate).results;
+				if(results!=null){
+					if(results.length>0){
+						for each(var result:ValidationResult in results){
+							if(result.isError){
+								emailTi.errorString= result.errorMessage;
+								isEmail=false;
+							}
+						}
+					}
+				}
+				
+				if(!isEmail){
+					results=domainV.validate(textToValidate).results;
+					if(results!=null){
+						if(results.length>0){
+							for each(var domainResult:ValidationResult in results){
+								if(domainResult.isError){
+									emailTi.errorString= domainResult.errorMessage;
+									isDomain=false;
+								}
+							}
+						}
+					}
+					if(isDomain){
+						textToValidate="@"+textToValidate;
+					}
+				}
+				if(!isDomain && !isEmail){
+					return;
+				}
+				
+				emailTi.errorString= "";
+				
+				for each(var object:Object in emails){
+					if(object.toString()==textToValidate){
+						emailTi.errorString=resourceManager.getString(MODULE_NAME,'duplicate.email.domain');
+						return;
+					}
+				}
+				emails.addItem(textToValidate);
+				emailTi.text="";
+			}
+			
+			public function isValid():Boolean{
+				if(emails.length<1){
+					validationError = resourceManager.getString(MODULE_NAME,'error.emails.empty');
+					fdg.emailsDg.errorString = validationError;
+					return false;
+				}
+				fdg.emailsDg.errorString = "";
+				
+				if(returnRb.selected){
+					if(StringUtil.trim(rte.text).length<1){
+						validationError = resourceManager.getString(MODULE_NAME,'error.return.message');
+						rte.errorString = validationError;
+						return false;
+					}
+				}
+				rte.errorString="";
+				
+				validationError="";
+				return true;
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+				initialProperties=data;
+			}
+			
+			private function loadData():void{
+				if(initialProperties!=null){
+					var uarray:Array = new Array();
+					for each(var property:Object in PropertyHelper.getProperties(initialProperties,"email.list")){
+						uarray.push(property.propertyValue);
+					}
+					uarray.sort();
+					emails = new ArrayCollection(uarray);
+					var actionSelected:String = PropertyHelper.getProperty(initialProperties,"action.selection").propertyValue;
+					if(actionSelected=='discard'){
+						discardRb.selected=true;
+					} else if(actionSelected=='return'){
+						returnRb.selected=true;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.text.rte")!=null){
+							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.text.rte").propertyValue;
+						}else{
+							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue;
+						}
+					}
+					if(PropertyHelper.getProperty(initialProperties,"two.way.flag")!=null
+						&& PropertyHelper.getProperty(initialProperties,"two.way.flag").propertyValue=="true"){
+						twoWayCb.selected=true;
+					}else{
+						twoWayCb.selected=false;
+					}
+				}
+			}
+			
+			public function getProperties():ArrayCollection{
+				var properties:ArrayCollection = new ArrayCollection();
+				var property:FeatureRuleProperty;
+				emails.source.sort();
+				for each(var object:Object in emails.source){
+					property = new FeatureRuleProperty();
+					property.propertyKey = "email.list";
+					property.propertyValue = object.toString();
+					properties.addItem(property);
+				}
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey = "action.selection";
+				if(discardRb.selected){
+					property.propertyValue='discard';
+					properties.addItem(property);
+				}else if(returnRb.selected){
+					property.propertyValue='return';
+					properties.addItem(property);
+					
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text";
+					var t:RteHtmlParser = new RteHtmlParser();
+					t.ParseToHTML(rte.htmlText);
+					var str:String = t.StringFormat;
+					property.propertyValue = t.XMLFormat;
+					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text.plain";
+					property.propertyValue = rte.text;
+					properties.addItem(property);	
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text.rte";
+					property.propertyValue = rte.htmlText;
+					properties.addItem(property);	
+				}
+				
+				property = new FeatureRuleProperty();
+				property.propertyKey = "two.way.flag";
+				if(twoWayCb.selected){
+					property.propertyValue = "true";
+				}else{
+					property.propertyValue = "false";
+				}
+				properties.addItem(property);
+				
+				return properties;
+			}
+			
+			protected function emailAccountSort(obj1:Object, obj2:Object):int{
+				return ObjectUtil.stringCompare(obj1.toString(), obj2.toString(), true);
+			}
+			
+			public function getValidationError():String{
+				return this.validationError;
+			}
+			
+			public function fixedTo():Boolean{
+				return false;
+			}
+			
+			public function fixedFrom():Boolean{
+				return true;
+			}
+			
+			public function fixedToValue():String{
+				return "";
+			}
+			
+			public function fixedFromValue():String{
+				return "anyone";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("addressprotection")]
+	</fx:Metadata>
+	
+	<s:Label text="{resourceManager.getString(MODULE_NAME,'first.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
+		
+		<mx:Form defaultButton="{addEmailBtt}" 
+				 paddingLeft="0" paddingRight="0" 
+				 paddingTop="0" paddingBottom="0"
+				 width="100%">
+			<component:LabelExpanded
+				labelText="{resourceManager.getString(MODULE_NAME,'email.label.text')}"
+				expandedText="{resourceManager.getString(MODULE_NAME,'email.label.expanded')}"
+				explainText="{resourceManager.getString(MODULE_NAME,'label.explain')}"
+				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
+				width="100%"/>
+			<s:HGroup width="100%">
+				<s:TextInput id="emailTi" 
+							 width="100%"/>
+				<s:Button id="addEmailBtt" 
+						  label="{resourceManager.getString(MODULE_NAME,'email.add')}"
+						  buttonMode="true"
+						  click="addEmailBtt_clickHandler(event)"/>							
+			</s:HGroup>
+		</mx:Form>
+		
+		<fdg:FilterDataGrid id="fdg" dataProvider="{emails}" width="100%"/>	
+		
+		<s:HGroup verticalAlign="middle" width="100%">
+			<s:CheckBox id="twoWayCb" 
+						selected="false"/>
+			<component:LabelExpanded
+				labelText="{resourceManager.getString(MODULE_NAME,'two.way.block')}"
+				expandedText="{resourceManager.getString(MODULE_NAME,'two.way.block.expanded')}"
+				explainText="{resourceManager.getString(MODULE_NAME,'label.explain')}"
+				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
+				width="100%"/>			
+		</s:HGroup>
+		
+		<mx:Spacer height="20"/>
+		
+	</s:VGroup>
+	
+	<s:Label text="{resourceManager.getString(MODULE_NAME,'second.title')}" fontSize="16" fontWeight="bold"/>
+	
+	<s:VGroup paddingLeft="20" gap="20">
+		<s:VGroup>
+			<s:RadioButton id="returnRb" 
+						   groupName="blockType"
+						   label="{resourceManager.getString(MODULE_NAME,'action.return.label')}"
+						   selected="true"/>
+			<mx:Spacer/>
+			<s:VGroup paddingLeft="18">
+				<mx:RichTextEditor id="rte" 
+								   width="400"
+								   enabled="{returnRb.selected}"
+								   title="{resourceManager.getString(MODULE_NAME,'action.return.textarea.title')}"
+								   text="{resourceManager.getString(MODULE_NAME,'action.return.textarea.text')}">
+				</mx:RichTextEditor>			
+			</s:VGroup>
+		</s:VGroup>
+		<s:RadioButton id="discardRb" 
+					   groupName="blockType"
+					   label="{resourceManager.getString(MODULE_NAME,'action.discard.label')}"/>
+	</s:VGroup>
+</mx:Module>
