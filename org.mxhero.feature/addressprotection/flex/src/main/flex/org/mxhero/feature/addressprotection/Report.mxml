@@ -111,7 +111,8 @@
 			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, s.stat_key as `label`" 
 				+" FROM mail_records r0 " 
 				+" INNER JOIN mail_stats s"
-				+" ON s.insert_date = r0.insert_date AND s.record_sequence = r0.record_sequence AND s.stat_key = 'org.mxhero.feature.blocklist.email' "
+				+" ON s.insert_date = r0.insert_date AND s.record_sequence = r0.record_sequence " +
+				" AND s.stat_key = 'org.mxhero.feature.addressprotection' "
 				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) ";
 			
 			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
@@ -123,7 +124,7 @@
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.blocklist.email' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.addressprotection' ) ";
 
 				
 			public function setResult(queryId:String, result:*):void{
@@ -154,8 +155,8 @@
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
 				options = 
-					new ArrayCollection([{label:resourceManager.getString('blocklist_report','last.week'),value:'week'}, 
-						{label:resourceManager.getString('blocklist_report','today'),value:'today'}]);
+					new ArrayCollection([{label:resourceManager.getString('addressprotection_report','last.week'),value:'week'}, 
+						{label:resourceManager.getString('addressprotection_report','today'),value:'today'}]);
 				periodBar.selectedIndex=1;
 			}
 			
@@ -218,7 +219,7 @@
 	</fx:Script>
 	
 	<fx:Metadata>
-		[ResourceBundle("addressprotection")]
+		[ResourceBundle("addressprotection_report")]
 	</fx:Metadata>
 	
 	<s:HGroup horizontalAlign="right" 
@@ -228,7 +229,7 @@
 			  paddingTop="40">
 		<s:Label 
 			fontSize="18" fontWeight="bold" 
-			text="{resourceManager.getString('addressprotection','title')}" />
+			text="{resourceManager.getString('addressprotection_report','title')}" />
 		<mx:Spacer width="100%"/>
 		<s:ButtonBar id="periodBar"
 					 buttonMode="true" 
@@ -259,8 +260,8 @@
 			<mx:horizontalAxis>
 				
 				<mx:LinearAxis id="qtyAxis" 
-							   displayName="{resourceManager.getString('addressprotection','amount.axis')}"  
-							   title="{resourceManager.getString('addressprotection','amount.axis')}" 
+							   displayName="{resourceManager.getString('addressprotection_report','amount.axis')}"  
+							   title="{resourceManager.getString('addressprotection_report','amount.axis')}" 
 							   />
 			</mx:horizontalAxis>
 			
@@ -269,8 +270,8 @@
 				<mx:CategoryAxis
 					id="emailAxis"
 					categoryField="Email"
-					displayName="{resourceManager.getString('addressprotection','emails.axis')}"
-					title="{resourceManager.getString('addressprotection','emails.axis')}"
+					displayName="{resourceManager.getString('addressprotection_report','emails.axis')}"
+					title="{resourceManager.getString('addressprotection_report','emails.axis')}"
 					/>
 			</mx:verticalAxis>
 			
@@ -328,7 +329,7 @@
 			</mx:series>
 			
 		</mx:BarChart>
-		<s:Label text="{resourceManager.getString('addressprotection','emails.title')}" 
+		<s:Label text="{resourceManager.getString('addressprotection_report','emails.title')}" 
 				 fontWeight="bold" fontSize="16"
 				 paddingLeft="50"/>
 		<s:HGroup width="100%" paddingLeft="50" height="100%">
