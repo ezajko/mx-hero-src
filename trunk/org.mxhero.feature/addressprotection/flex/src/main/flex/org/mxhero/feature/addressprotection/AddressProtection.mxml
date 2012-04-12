@@ -176,11 +176,11 @@
 			}
 			
 			public function fixedToValue():String{
-				return "";
+				return "anyoneelse";
 			}
 			
 			public function fixedFromValue():String{
-				return "anyone";
+				return "owndomain";
 			}
 		]]>
 	</fx:Script>
