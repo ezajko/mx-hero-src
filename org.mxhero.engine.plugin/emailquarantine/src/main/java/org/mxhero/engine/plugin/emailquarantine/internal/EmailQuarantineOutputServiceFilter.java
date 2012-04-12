@@ -60,6 +60,8 @@ public class EmailQuarantineOutputServiceFilter implements OutputServiceFilter{
 			InputStream is = null;
 			OutputStream os = null;
 			try {
+				mail.getMessage().setHeader("X-mxHero-Quarantine", (mail.getStatusReason()!=null)?mail.getStatusReason():Mail.Status.drop.name());
+				mail.getMessage().saveChanges();
 				if(mail.getInitialSize()>DEFERRED_SIZE){
 					File tmpFile = File.createTempFile(TMP_FILE_PREFIX, TMP_FILE_SUFFIX);
 					os = new FileOutputStream(tmpFile);
