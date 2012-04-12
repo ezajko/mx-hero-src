@@ -74,8 +74,8 @@ public class EmailQuarantineOutputServiceFilter implements OutputServiceFilter{
 					is = new ByteArrayInputStream(((ByteArrayOutputStream)os).toByteArray());
 				}
 				MimeMail newMimeMail = new MimeMail(mail.getSender(), email, is, mail.getResponseServiceId());
-				mail.setPhase(Phase.out);
-				mail.setStatus(Mail.Status.deliver);
+				newMimeMail.setPhase(Phase.out);
+				newMimeMail.setStatus(Mail.Status.deliver);
 				inputService.addMail(newMimeMail);
 				log.info("QUARANTINE "+newMimeMail);
 			}catch(Exception e){
