@@ -18,7 +18,6 @@ public class Provider extends RulesByFeature{
 
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_REJECT = "reject";
-	private static final String ACTION_RECEIVE = "receive";
 	private static final String HEADER_VALUE = "header.value";
 	private static final String HEADER_KEY = "header.key";
 	private static final String ADD_HEADER_VALUE = "add.header.value";
@@ -176,7 +175,9 @@ public class Provider extends RulesByFeature{
 			
 			if (!isException && isSpam && action.equals(ACTION_REJECT)) {
 				mail.drop("org.mxhero.feature.externalantispam");
-			}else if(!isException && isSpam && action.equals(ACTION_RECEIVE)){
+			}
+			
+			if(!isException && isSpam ){
 				if (addHeaderKey != null && !addHeaderKey.trim().isEmpty()
 						&& addHeaderValue != null
 						&& !addHeaderValue.trim().isEmpty()){
