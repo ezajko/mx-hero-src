@@ -11,7 +11,7 @@
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd">
 
 
-	<context:component-scan base-package="org.mxhero.feature.attachmentblock" />
+	<context:component-scan base-package="org.mxhero.feature.addressprotection" />
 
 	<context:annotation-config />
 
@@ -24,13 +24,13 @@
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
-				value="org.mxhero.feature.attachmentblock.provider.internal.Provider" />
+				value="org.mxhero.feature.addressprotection.provider.internal.Provider" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="provider" class="org.mxhero.feature.attachmentblock.provider.internal.Provider">
+	<bean id="provider" class="org.mxhero.feature.addressprotection.provider.internal.Provider">
 		<property name="rulesFinder" ref="rulesFinderService" />
-		<property name="component" value="org.mxhero.feature.attachmentblock" />
+		<property name="component" value="org.mxhero.feature.addressprotection" />
 		<property name="version" value="1" />
 	</bean>
 
