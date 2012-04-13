@@ -6,5 +6,7 @@ public class ThreadLightHeaders {
 	public static final String SENDER = "X-mxHero-Thread-Light-Sender";
 	public static final String RECIPIENT = "X-mxHero-Thread-Light-Recipient";
 	public static final String FOLLOWER = "X-mxHero-Thread-Light-Follower";
+	public static final String FOLLOWER_ID = "follower";
+	public static final String FOLLOWER_PARAMETERS = "parameters";
 		
 }
