@@ -14,12 +14,8 @@ public abstract class HeaderUtils {
 	private HeaderUtils() {
 	}
 	
-	/**
-	 * @param valuesArray
-	 * @param action
-	 * @return
-	 */
-	public static final ParameterList getParametersList(String[] valuesArray,String action){
+	
+	public static final ParameterList getParametersList(String[] valuesArray,String action, String parameter){
 		if(valuesArray!=null && valuesArray.length>0 && action!=null){
 			for(String value : valuesArray){
 				if(value!=null){
@@ -32,8 +28,8 @@ public abstract class HeaderUtils {
 					}
 					try {
 						ParameterList parameterList = new ParameterList(value);
-						if(parameterList.get(ACTION_PARAMETER)!=null
-								&& parameterList.get(ACTION_PARAMETER).equalsIgnoreCase(action)){
+						if(parameterList.get(parameter)!=null
+								&& parameterList.get(parameter).equalsIgnoreCase(action)){
 							return parameterList;
 						}
 					} catch (ParseException e) {
@@ -43,6 +39,15 @@ public abstract class HeaderUtils {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * @param valuesArray
+	 * @param action
+	 * @return
+	 */
+	public static final ParameterList getParametersList(String[] valuesArray,String action){
+		return getParametersList(valuesArray, action, ACTION_PARAMETER);
 	}
 	
 }
