@@ -32,6 +32,7 @@
 		<property name="rulesFinder" ref="rulesFinderService" />
 		<property name="component" value="org.mxhero.feature.addressprotection" />
 		<property name="version" value="1" />
+		<property name="group" value="before"/>
 	</bean>
 
 </beans>

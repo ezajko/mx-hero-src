@@ -3,7 +3,9 @@ package org.mxhero.feature.addressprotection.provider.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mxhero.engine.commons.domain.User;
@@ -14,19 +16,21 @@ import org.mxhero.engine.commons.mail.api.Recipients.RecipientType;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
-import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
+import org.mxhero.engine.plugin.threadlight.command.AddThreadWatch;
+import org.mxhero.engine.plugin.threadlight.command.AddThreadWatchParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Provider extends RulesByFeature{
+public class Provider extends RulesByFeatureWithFixed{
 
 	private static Logger log = LoggerFactory.getLogger(Provider.class);
 	public static final String EMAIL_LIST = "email.list";
 	public static final String PROTECTED_SELECTION = "protected.selection";
 	public static final String CC_VALUE = "cc";
 	public static final String CCTO_VALUE = "ccto";
+	public static final String FOLLOWER_ID = "org.mxhero.feature.addressprotection";
 	
 	@Override
 	protected CoreRule createRule(Rule rule) {
@@ -62,6 +66,7 @@ public class Provider extends RulesByFeature{
 		public boolean eval(Mail mail) {
 			log.debug("protectedSelection:"+protectedSelection+" accounts:"+Arrays.deepToString(accounts.toArray()));
 			return mail.getStatus().equals(Mail.Status.deliver) 
+					&& !mail.getFromSender().hasAlias(accounts.toArray(new String[accounts.size()]))
 					&& hasEmailInHeader(mail,accounts);
 		}
 		
@@ -107,18 +112,24 @@ public class Provider extends RulesByFeature{
 		@Override
 		public void exec(Mail mail) {
 			mail.getHeaders().addHeader("X-mxHero-AddressProtection", "rule="+ruleId);
-			String removedStr = Arrays.deepToString(removeEmailInHeader(mail).toArray()).replace("[","").replace("]","");
+			Map<RecipientType, Collection<String>> removed = removeEmailInHeader(mail);
+			String removedCcStr = Arrays.deepToString(removed.get(RecipientType.cc).toArray()).replace("[","").replace("]","");
+			String removedToStr = Arrays.deepToString(removeEmailInHeader(mail).get(RecipientType.to).toArray()).replace("[","").replace("]","");
+			String removedAllStr = Arrays.deepToString(removeEmailInHeader(mail).get(RecipientType.all).toArray()).replace("[","").replace("]","");
 			if(mail.getRecipients().getRecipients(RecipientType.to)==null || mail.getRecipients().getRecipients(RecipientType.to).size()<1){
 				mail.getHeaders().removeHeader("To");
 				mail.getHeaders().addHeader("To", "undisclosed-recipients:;");
 			}
-			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.addressprotection", removedStr));
+			mail.cmd(AddThreadWatch.class.getName(), new AddThreadWatchParameters(FOLLOWER_ID,removedToStr+";"+removedCcStr));
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.addressprotection", removedAllStr));
 		}
 		
-		private Collection<String> removeEmailInHeader(Mail mail){
+		private Map<RecipientType, Collection<String>> removeEmailInHeader(Mail mail){
 			Collection<String> mailCC = mail.getRecipients().getRecipients(RecipientType.cc);
 			Collection<String> mailTO = mail.getRecipients().getRecipients(RecipientType.to);
-			Collection<String> removed = new ArrayList<String>();
+			Collection<String> removedTo = new ArrayList<String>();
+			Collection<String> removedCc = new ArrayList<String>();
+			Collection<String> removedAll = new ArrayList<String>();
 			for(User user : mail.getRecipientsInHeaders()){
 				log.debug("checking user:"+user.getMail());
 				if(accounts!=null){
@@ -132,7 +143,7 @@ public class Provider extends RulesByFeature{
 									log.debug("trying to remove alias "+alias);
 									if(mail.getRecipients().removeRecipient(RecipientType.cc, alias)){
 										log.debug("alias removed from CC "+alias);
-										removed.add(alias);
+										removedCc.add(alias);
 									}
 								}
 							}
@@ -145,7 +156,7 @@ public class Provider extends RulesByFeature{
 									log.debug("trying to remove alias "+alias);
 									if(mail.getRecipients().removeRecipient(RecipientType.to, alias)){
 										log.debug("alias removed from TO "+alias);
-										removed.add(alias);
+										removedTo.add(alias);
 									}
 								}
 							}
@@ -153,7 +164,13 @@ public class Provider extends RulesByFeature{
 					}
 				}
 			}
-			return removed;
+			removedAll.addAll(removedTo);
+			removedAll.addAll(removedCc);
+			Map<RecipientType, Collection<String>> response = new HashMap<RecipientType, Collection<String>>();
+			response.put(RecipientType.to, removedTo);
+			response.put(RecipientType.cc, removedCc);
+			response.put(RecipientType.all, removedAll);
+			return response;
 		}
 	}
 	
