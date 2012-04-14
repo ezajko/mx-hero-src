@@ -58,7 +58,7 @@ public class ThreadLightFilter implements InputServiceFilter{
 				mail.getMessage().addHeader(ThreadLightHeaders.RECIPIENT, replyRow.getPk().getRecipientMail());
 				if(replyRow.getFollowers()!=null){
 					for(ThreadRowFollower follower : replyRow.getFollowers()){
-						mail.getMessage().addHeader(ThreadLightHeaders.FOLLOWER, ThreadLightHeaders.FOLLOWER_ID+"="+follower.getFollower()+";"+ThreadLightHeaders.FOLLOWER_PARAMETERS+"=\\\""+follower.getFolowerParameters()+"\\\"");
+						mail.getMessage().addHeader(ThreadLightHeaders.FOLLOWER, ThreadLightHeaders.FOLLOWER_ID+"="+follower.getFollower()+";"+ThreadLightHeaders.FOLLOWER_PARAMETERS+"=\""+follower.getFolowerParameters()+"\"");
 					}
 				}
 				mail.getMessage().saveChanges();
