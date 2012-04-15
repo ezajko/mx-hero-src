@@ -138,14 +138,11 @@ public class CoreRule implements Comparable<CoreRule>{
 		return id;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("CoreRule [group=").append(group).append(", id=")
-				.append(id).append("]");
+		builder.append("CoreRule [id=").append(id).append(", priority=")
+				.append(priority).append(", group=").append(group).append("]");
 		return builder.toString();
 	}
 	
