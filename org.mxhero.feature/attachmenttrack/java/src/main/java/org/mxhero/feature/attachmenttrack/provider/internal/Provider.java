@@ -3,6 +3,7 @@ package org.mxhero.feature.attachmenttrack.provider.internal;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.jsoup.Jsoup;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.api.Mail;
@@ -14,6 +15,8 @@ import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.commons.util.HeaderUtils;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommand;
+import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
+import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
@@ -51,7 +54,7 @@ public class Provider extends RulesByFeature{
 			} 
 		}
 		
-		coreRule.addEvaluation(new ATEvaluation());
+		coreRule.addEvaluation(new ATEvaluation(this.getNoReplyEmail(rule.getDomain())));
 		coreRule.addAction(new ATAction(rule.getId(), notify, message, locale));
 		
 		return coreRule;
@@ -59,6 +62,12 @@ public class Provider extends RulesByFeature{
 
 	public class ATEvaluation implements Evaluable{
 		
+		private String noreplyEmail;
+
+		public ATEvaluation(String noreplyEmail) {
+			this.noreplyEmail = noreplyEmail;
+		}
+
 		@Override
 		public boolean eval(Mail mail) {
 			Collection<String> values = mail.getHeaders().getHeaderValues(HEADER);
@@ -78,6 +87,20 @@ public class Provider extends RulesByFeature{
 					log.debug("header value="+HeaderUtils.getParametersList(mail.getHeaders().getHeaderValues(HEADER).toArray(new String[0]), ACTION_VALUE));
 				}
 			}
+			
+			if(mail.getHeaders().hasHeader(HEADER) && HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)==null){
+				for(String value : values){
+					if(value.contains(ACTION_VALUE)){
+						String text = "<p>The mxHero Zimlet installed in your Zimbra installation is no longer supported by your mxHero installation.</p><p>Please notify your email administrator.</p><p>Thank you, mxHero</p>";
+						log.debug("sending cliente error message");
+						ReplyParameters replyParameters = new ReplyParameters(noreplyEmail, Jsoup.parse(text).text(), text);
+						replyParameters.setSubject("mxHero client error");
+						replyParameters.setRecipient(mail.getSender().getMail());
+						mail.cmd(Reply.class.getName(), replyParameters);
+					}
+				}
+			}
+			
 			return result;
 		}
 	}
