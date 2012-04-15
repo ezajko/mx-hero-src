@@ -88,7 +88,9 @@ public class Provider extends RulesByFeature{
 				}
 			}
 			
-			if(mail.getHeaders().hasHeader(HEADER) && HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)==null){
+			if(mail.getHeaders().hasHeader(HEADER) 
+					&& !mail.getProperties().containsKey("org.mxhero.feature.attachmenttrack.erromail")
+					&& HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)==null){
 				for(String value : values){
 					if(value.contains(ACTION_VALUE)){
 						String text = "<p>The mxHero Zimlet installed in your Zimbra installation is no longer supported by your mxHero installation.</p><p>Please notify your email administrator.</p><p>Thank you, mxHero</p>";
@@ -97,6 +99,8 @@ public class Provider extends RulesByFeature{
 						replyParameters.setSubject("mxHero client error");
 						replyParameters.setRecipient(mail.getSender().getMail());
 						mail.cmd(Reply.class.getName(), replyParameters);
+						mail.getProperties().put("org.mxhero.feature.attachmenttrack.erromail", "error");
+						break;
 					}
 				}
 			}
