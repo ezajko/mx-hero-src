@@ -128,7 +128,7 @@ public class Provider extends RulesByFeature{
 			mail.getHeaders().addHeader("X-mxHero-BCCPolicy", "rule="+ruleId+";blocked=true");
 			if(action!=null && action.equals(RETURN_ACTION)){
 				ReplyParameters replyParameters = new ReplyParameters(noreplyMail, returnMessagePlain, returnMessage);
-				replyParameters.setSender(mail.getSender().getMail());
+				replyParameters.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(), replyParameters);
 			}			
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.bccpolicy", "true"));
