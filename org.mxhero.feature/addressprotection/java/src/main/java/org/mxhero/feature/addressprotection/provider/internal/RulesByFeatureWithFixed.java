@@ -1,7 +1,10 @@
 package org.mxhero.feature.addressprotection.provider.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,10 +78,21 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 		public void exec(Mail mail) {
 			ParameterList list = HeaderUtils.getParametersList(mail.getHeaders().getHeaderValues(ThreadLightHeaders.FOLLOWER).toArray(new String[0]), Provider.FOLLOWER_ID, ThreadLightHeaders.FOLLOWER_ID);
 			log.debug(list.toString());
+			
+			List<String> allHeaderValues = new ArrayList<String>(mail.getHeaders().getHeaderValues(ThreadLightHeaders.FOLLOWER));
+			
+			//find header and remove it from the list recovered
+			for(String value : allHeaderValues){
+				if(value.contains(Provider.FOLLOWER_ID)){
+					allHeaderValues.remove(value);
+					break;
+				}
+			}
+			//remove all headers and put them again but without the one processed
 			mail.getHeaders().removeHeader(ThreadLightHeaders.FOLLOWER);
-			mail.getHeaders().removeHeader(ThreadLightHeaders.MESSAGE_ID);
-			mail.getHeaders().removeHeader(ThreadLightHeaders.RECIPIENT);
-			mail.getHeaders().removeHeader(ThreadLightHeaders.SENDER);
+			for(String value : allHeaderValues){
+				mail.getHeaders().addHeader(ThreadLightHeaders.FOLLOWER, value);
+			}
 			
 			String[] allemails = list.get(ThreadLightHeaders.FOLLOWER_PARAMETERS).split(";");
 			String[] toEmails = allemails[0].split(",");

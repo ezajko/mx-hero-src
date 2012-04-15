@@ -67,13 +67,14 @@ public class Provider extends RulesByFeatureWithFixed{
 			log.debug("protectedSelection:"+protectedSelection+" accounts:"+Arrays.deepToString(accounts.toArray()));
 			return mail.getStatus().equals(Mail.Status.deliver) 
 					&& !mail.getFromSender().hasAlias(accounts.toArray(new String[accounts.size()]))
-					&& hasEmailInHeader(mail,accounts);
+					&& hasEmailInHeader(mail,accounts)
+					&& !mail.getProperties().containsKey(FOLLOWER_ID);
 		}
 		
 		private boolean hasEmailInHeader(Mail mail, List<String> accounts){
 			Collection<String> mailCC = mail.getRecipients().getRecipients(RecipientType.cc);
 			Collection<String> mailTO = mail.getRecipients().getRecipients(RecipientType.to);
-			
+			mail.getProperties().put(FOLLOWER_ID, protectedSelection);
 			for(User user : mail.getRecipientsInHeaders()){
 				if(accounts!=null){
 					if(user.hasAlias(accounts.toArray(new String[accounts.size()]))){
