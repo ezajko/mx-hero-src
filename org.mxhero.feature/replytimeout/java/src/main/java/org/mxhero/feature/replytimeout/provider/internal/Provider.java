@@ -63,13 +63,19 @@ public class Provider extends RulesByFeature  {
 			}
 		}
 		
-		coreRule.addEvaluation(new RTOEval());
+		coreRule.addEvaluation(new RTOEval(this.getNoReplyEmail(rule.getDomain())));
 		coreRule.addAction(new RTOAction(locale, dateFormat,this.getNoReplyEmail(rule.getDomain())));
 		
 		return coreRule;
 	}
 	
 	public class RTOEval implements Evaluable{
+
+		String noreplyEmail;
+
+		public RTOEval(String noreplyEmail) {
+			this.noreplyEmail = noreplyEmail;
+		}
 
 		@Override
 		public boolean eval(Mail mail) {
@@ -88,6 +94,19 @@ public class Provider extends RulesByFeature  {
 					}
 				}
 			}
+			if(mail.getHeaders().hasHeader(HEADER) && HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)==null){
+				for(String value : values){
+					if(value.contains(ACTION_VALUE)){
+						String text = "<p>The mxHero Zimlet installed in your Zimbra installation is no longer supported by your mxHero installation.</p><p>Please notify your email administrator.</p><p>Thank you, mxHero</p>";
+						log.debug("sending cliente error message");
+						ReplyParameters replyParameters = new ReplyParameters(noreplyEmail, Jsoup.parse(text).text(), text);
+						replyParameters.setSubject("mxHero client error");
+						replyParameters.setRecipient(mail.getSender().getMail());
+						mail.cmd(Reply.class.getName(), replyParameters);
+					}
+				}
+			}
+			
 			if(log.isDebugEnabled()){
 				log.debug("conditions="+conditions);
 				log.debug("isInTO="+isInTO);
@@ -207,7 +226,7 @@ public class Provider extends RulesByFeature  {
 				String text = config.getErrorTemplate(locale);
 				log.debug("sending replyText="+text);
 				ReplyParameters replyParameters = new ReplyParameters(noreplyMail, Jsoup.parse(text).text(), text);
-				replyParameters.setSender(mail.getSender().getMail());
+				replyParameters.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(), replyParameters);
 			}
 			mail.setSubject(mail.getSubject().replaceFirst(REGEX_REMOVE, ""));
