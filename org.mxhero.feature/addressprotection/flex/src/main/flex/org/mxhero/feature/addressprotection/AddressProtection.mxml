@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
-		   xmlns:mx="library://ns.adobe.com/flex/mx" 		   layout="vertical"
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 		   
+		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
 		   verticalGap="20"
 		   paddingTop="30"
-		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*">
-	<fx:Script>
-		<![CDATA[
-			import org.mxhero.console.commons.utils.Regex;
-		]]>
-	</fx:Script>
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*" xmlns:components="org.flashcommander.components.*">
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
@@ -20,6 +16,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import org.mxhero.console.commons.feature.IApplicationContext;
 			import mx.utils.ObjectUtil;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
 			import mx.collections.SortField;
@@ -35,6 +32,7 @@
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.Regex;
 			
 			public var validationError:String;
 			
@@ -43,7 +41,25 @@
 			private var initialProperties:ArrayCollection;
 			
 			[Bindable]
+			private var _ap:IApplicationContext;
+			
+			[Bindable]
 			public var emails:ArrayCollection=new ArrayCollection();
+			
+			protected function emailAu_keyUpHandler(event:KeyboardEvent):void
+			{
+				_ap.refreshAccounts(emailAu.text);
+			}
+			
+			public function accountLabelFunction(item:Object):String{
+				if(item!=null){
+					if(item is String){
+						return item as String;
+					}
+					return item.account+"@"+item.domain;
+				}
+				return "";
+			}
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
@@ -53,53 +69,21 @@
 
 			protected function addEmailBtt_clickHandler(event:MouseEvent):void
 			{
-				var textToValidate:String = StringUtil.trim(emailTi.text).replace(/^[@]+/,"");
-				var isEmail:Boolean = true;		
-				var isDomain:Boolean = true;
-				var results:Array=null;
-
-				results=emailV.validate(textToValidate).results;
-				if(results!=null){
-					if(results.length>0){
-						for each(var result:ValidationResult in results){
-							if(result.isError){
-								emailTi.errorString= result.errorMessage;
-								isEmail=false;
-							}
-						}
-					}
-				}
-				
-				if(!isEmail){
-					results=domainV.validate(textToValidate).results;
-					if(results!=null){
-						if(results.length>0){
-							for each(var domainResult:ValidationResult in results){
-								if(domainResult.isError){
-									emailTi.errorString= domainResult.errorMessage;
-									isDomain=false;
-								}
-							}
-						}
-					}
-					if(isDomain){
-						textToValidate="@"+textToValidate;
-					}
-				}
-				if(!isDomain && !isEmail){
+				if(emailAu.selectedItem==null){
+					emailAu.errorString=resourceManager.getString(MODULE_NAME,'email.label.expanded');
 					return;
 				}
-				
-				emailTi.errorString= "";
+				var textToValidate:String=emailAu.selectedItem.account+"@"+emailAu.selectedItem.domain;
+				emailAu.errorString= "";
 				
 				for each(var object:Object in emails){
 					if(object.toString()==textToValidate){
-						emailTi.errorString=resourceManager.getString(MODULE_NAME,'duplicate.email.domain');
+						emailAu.errorString=resourceManager.getString(MODULE_NAME,'duplicate.email.domain');
 						return;
 					}
 				}
 				emails.addItem(textToValidate);
-				emailTi.text="";
+				emailAu.text="";
 			}
 			
 			public function isValid():Boolean{
@@ -159,20 +143,16 @@
 				return properties;
 			}
 			
-			protected function emailAccountSort(obj1:Object, obj2:Object):int{
-				return ObjectUtil.stringCompare(obj1.toString(), obj2.toString(), true);
-			}
-			
 			public function getValidationError():String{
 				return this.validationError;
 			}
 			
 			public function fixedTo():Boolean{
-				return false;
+				return true;
 			}
 			
 			public function fixedFrom():Boolean{
-				return true;
+				return false;
 			}
 			
 			public function fixedToValue():String{
@@ -180,7 +160,15 @@
 			}
 			
 			public function fixedFromValue():String{
-				return "owndomain";
+				return "";
+			}
+			
+			public function set applicationContext(ap:Object):void{
+				this._ap=ap as IApplicationContext;
+			}
+			
+			public function get applicationContext():Object{
+				return _ap;
 			}
 		]]>
 	</fx:Script>
@@ -188,7 +176,7 @@
 	<fx:Metadata>
 		[ResourceBundle("addressprotection")]
 	</fx:Metadata>
-	
+
 	<s:Label text="{resourceManager.getString(MODULE_NAME,'first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
@@ -204,8 +192,16 @@
 				hideText="{resourceManager.getString(MODULE_NAME,'label.hide')}"
 				width="100%"/>
 			<s:HGroup width="100%">
-				<s:TextInput id="emailTi" 
-							 width="100%"/>
+				<components:AutoComplete
+					id="emailAu"
+					width="100%"
+					keyUp="emailAu_keyUpHandler(event)"
+					requireSelection="false"
+					prefixOnly="true"
+					dataProvider="{_ap.accounts}"
+					labelFunction="{accountLabelFunction}"
+					forceOpen="true"
+					/>
 				<s:Button id="addEmailBtt" 
 						  label="{resourceManager.getString(MODULE_NAME,'email.add')}"
 						  buttonMode="true"
