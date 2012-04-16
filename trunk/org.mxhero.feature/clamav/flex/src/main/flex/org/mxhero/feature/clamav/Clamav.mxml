@@ -117,6 +117,13 @@
 			public function fixedFromValue():String{
 				return "";
 			}
+			
+			public function set applicationContext(ap:Object):void{
+			}
+			
+			public function get applicationContext():Object{
+				return null;
+			}
 		]]>
 	</fx:Script>
 	
