@@ -39,9 +39,13 @@
 			import mx.utils.StringUtil;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IApplicationContext;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
+			
+			[Bindable]
+			private var _ap:IApplicationContext;
 			
 			public var validationError:String;
 			
@@ -302,6 +306,14 @@
 			
 			public function fixedFromValue():String{
 				return "";
+			}
+			
+			public function set applicationContext(ap:Object):void{
+				this._ap=ap as IApplicationContext;
+			}
+			
+			public function get applicationContext():Object{
+				return _ap;
 			}
 			
 		]]>
