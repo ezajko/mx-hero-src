@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.utils.StringUtil;
+			
+			public function labelFunction(item:Object, column:DataGridColumn):String{
+				return item.account+"@"+item.domain;
+			}
+			
+			public static const RESOURCE:String = "email_filter_datagrid";
+			
+			[Bindable]
+			public var dataProvider:ArrayCollection;
+			
+			private function filter():void {
+				if(dataProvider!=null){
+					dataProvider.filterFunction = filterEmailCollection;
+					dataProvider.refresh();
+				}
+			}
+			
+			protected function aliasesLabelFunction(item:Object, column:DataGridColumn):String{
+				var label:String="";
+				if(item.aliases!=null){
+					for each (var alias:Object in item.aliases){
+						label=label+alias.name+"@"+alias.domain+'\n';
+					}
+					label=StringUtil.trim(label);
+				}
+				return label;
+			}
+			
+			private function filterEmailCollection(item:Object):Boolean {
+				var searchString:String = filterTi.text.toLowerCase();
+				var itemName:String = (item as String).toLowerCase();
+				return ((item.account.account+"@"+item.account.domain) as String).indexOf(searchString) > -1;
+			}
+			
+			private function clearTextInput():void {
+				filterTi.text = "";
+				filter();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("email_filter_datagrid")]
+	</fx:Metadata>
+	
+	<s:Panel skinClass="org.mxhero.console.mails.skins.TitleLessPanel" width="100%">
+		<mx:DataGrid id="emailsDg"
+					 dataProvider="{dataProvider}" 
+					 width="100%"
+					 height="300"
+					 paddingBottom="5">
+			<mx:columns>
+				<mx:DataGridColumn id="emailColumn" 
+								   sortable="true"
+								   labelFunction="{labelFunction}"
+								   headerText="{resourceManager.getString(RESOURCE,'email.column.label')}"/>
+				<mx:DataGridColumn id="aliasesColumn" 
+								   sortable="false"
+								   labelFunction="{aliasesLabelFunction}"
+								   headerText="{resourceManager.getString(RESOURCE,'email.aliases.column.label')}"/>
+				<mx:DataGridColumn width="48" 
+								   sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<fx:Script>
+									<![CDATA[
+										import flash.events.MouseEvent;
+										
+										[Bindable]
+										[Embed(source="images/delete.png")]
+										public static var DELETE:Class;
+										
+										protected function remove_clickHandler(event:MouseEvent):void
+										{
+											outerDocument.dataProvider.removeItemAt(outerDocument.dataProvider.getItemIndex(outerDocument.emailsDg.selectedItem));
+										}
+									]]>
+								</fx:Script>
+								<mx:Image source="{DELETE}"
+										  buttonMode="true"
+										  toolTip="{resourceManager.getString(ManagedFilterDataGrid.RESOURCE,'remove.tooltip')}"
+										  click="remove_clickHandler(event)"/>
+							</mx:HBox>		  
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:controlBarLayout>
+			<s:HorizontalLayout verticalAlign="middle" 
+								paddingBottom="5"
+								paddingLeft="5"
+								paddingRight="5"
+								paddingTop="5"/>
+		</s:controlBarLayout>
+		<s:controlBarContent>
+			<s:Label text="{resourceManager.getString(RESOURCE,'filter.label')}"/>
+			<s:TextInput id="filterTi" 
+						 width="200"
+						 change="filter()" 
+						 enabled="true" />
+			<s:Button label="{resourceManager.getString(RESOURCE,'clear.label')}" click="clearTextInput()"/>
+		</s:controlBarContent>
+		
+	</s:Panel>
+
+	
+</s:VGroup>
