@@ -210,6 +210,13 @@
 			public function fixedFromValue():String{
 				return "anyone";
 			}
+			
+			public function set applicationContext(ap:Object):void{
+			}
+			
+			public function get applicationContext():Object{
+				return null;
+			}
 		]]>
 	</fx:Script>
 	
