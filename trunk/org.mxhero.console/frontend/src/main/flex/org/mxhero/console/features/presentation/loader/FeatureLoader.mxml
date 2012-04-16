@@ -63,6 +63,7 @@
 				if(featureModule!=null){
 					this.featureModule.setProperties(model.rule.properties);
 				}
+				featureModule.applicationContext=model.context;
 				loaded=true;
 				model.refresh(false);
 			}
