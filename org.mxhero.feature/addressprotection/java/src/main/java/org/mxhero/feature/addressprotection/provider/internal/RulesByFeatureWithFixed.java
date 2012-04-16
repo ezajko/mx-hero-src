@@ -1,7 +1,6 @@
 package org.mxhero.feature.addressprotection.provider.internal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +19,8 @@ import org.mxhero.engine.commons.util.HeaderUtils;
 import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
 import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
 import org.mxhero.engine.plugin.threadlight.ThreadLightHeaders;
+import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
+import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 	
 	private static Logger log = LoggerFactory.getLogger(RulesByFeatureWithFixed.class);
 	private String group;
+	private ThreadRowService service;
 	
 	@Override
 	public Map<String, Set<CoreRule>> getRules() {
@@ -85,6 +87,7 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 			for(String value : allHeaderValues){
 				if(value.contains(Provider.FOLLOWER_ID)){
 					allHeaderValues.remove(value);
+					log.debug("found header to remove:"+value);
 					break;
 				}
 			}
@@ -97,32 +100,89 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 			String[] allemails = list.get(ThreadLightHeaders.FOLLOWER_PARAMETERS).split(";");
 			String[] toEmails = allemails[0].split(",");
 			String[] ccEmails = allemails[1].split(",");
+			String group = allemails[2];
+			log.debug("toEmails:"+allemails[0]);
+			log.debug("ccEmails:"+allemails[0]);
+			log.debug("group:"+group);
+			
 			if(toEmails!=null && toEmails.length>0){
 				for(String email : toEmails){
 					if(email!=null && !email.trim().isEmpty()){
-						log.debug("TO recipient attached:"+email);
 						mail.getRecipients().addRecipient(RecipientType.to, email);
-						CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),email);
-						cloneParameters.setGenerateId(true);
-						cloneParameters.setPhase(Mail.Phase.send);
-						mail.cmd(Clone.class.getName(), cloneParameters);
-						mail.getRecipients().removeRecipient(RecipientType.to, email);
+						log.debug("added to recipient:"+email);
 					}
 				}
 			}
 			if(ccEmails!=null && ccEmails.length>0){
 				for(String email : ccEmails){
 					if(email!=null && !email.trim().isEmpty()){
-						log.debug("CC recipient attached:"+email);
 						mail.getRecipients().addRecipient(RecipientType.cc, email);
+						log.debug("added cc recipient:"+email);
+					}
+				}
+			}
+			
+			if(toEmails!=null && toEmails.length>0){
+				for(String email : toEmails){
+					if(email!=null && !email.trim().isEmpty()){
 						CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),email);
 						cloneParameters.setGenerateId(true);
 						cloneParameters.setPhase(Mail.Phase.send);
 						mail.cmd(Clone.class.getName(), cloneParameters);
-						mail.getRecipients().removeRecipient(RecipientType.cc, email);
+						log.debug("sent email to:"+email);
 					}
 				}
 			}
+			if(ccEmails!=null && ccEmails.length>0){
+				for(String email : ccEmails){
+					if(email!=null && !email.trim().isEmpty()){
+						CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),email);
+						cloneParameters.setGenerateId(true);
+						cloneParameters.setPhase(Mail.Phase.send);
+						mail.cmd(Clone.class.getName(), cloneParameters);
+						log.debug("sent email to:"+email);
+					}
+				}
+			}
+			
+			boolean removeRecipients = false;
+			if(group==null){
+				removeRecipients = true;
+			}else if((group.equalsIgnoreCase("after") || group.equalsIgnoreCase("before")) && !mail.getRecipient().getDomain().getManaged()){
+				removeRecipients = true;
+			}else if(!mail.getRecipient().getDomain().hasAlias(group)){
+				removeRecipients = true;
+			}
+			if(removeRecipients){
+				log.debug("remove recipients");
+				if(toEmails!=null && toEmails.length>0){
+					for(String email : toEmails){
+						if(email!=null && !email.trim().isEmpty()){
+							mail.getRecipients().removeRecipient(RecipientType.to, email);
+						}
+					}
+				}
+				if(ccEmails!=null && ccEmails.length>0){
+					for(String email : ccEmails){
+						if(email!=null && !email.trim().isEmpty()){
+							mail.getRecipients().removeRecipient(RecipientType.cc, email);
+						}
+					}
+				}
+			}
+			if(service!=null){
+				ThreadRowPk pk = new ThreadRowPk(mail.getHeaders().getHeaderValue(ThreadLightHeaders.MESSAGE_ID), mail.getHeaders().getHeaderValue(ThreadLightHeaders.SENDER), mail.getHeaders().getHeaderValue(ThreadLightHeaders.RECIPIENT));
+				service.unfollow(pk, Provider.FOLLOWER_ID);
+			}
 		}
 	}
+
+	public ThreadRowService getService() {
+		return service;
+	}
+
+	public void setService(ThreadRowService service) {
+		this.service = service;
+	}
+
 }
