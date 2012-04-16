@@ -47,7 +47,7 @@ public class Provider extends RulesByFeatureWithFixed{
 		}
 		
 		coreRule.addEvaluation(new APEvaluation(protectedSelection,accounts));
-		coreRule.addAction(new APAction(rule.getId(),protectedSelection,accounts));
+		coreRule.addAction(new APAction(rule.getId(),protectedSelection,accounts,coreRule.getGroup()));
 		
 		return coreRule;
 	}
@@ -64,7 +64,12 @@ public class Provider extends RulesByFeatureWithFixed{
 
 		@Override
 		public boolean eval(Mail mail) {
-			log.debug("protectedSelection:"+protectedSelection+" accounts:"+Arrays.deepToString(accounts.toArray()));
+			if(log.isDebugEnabled()){
+				log.debug("protectedSelection:"+protectedSelection
+						+" accounts:"+Arrays.deepToString(accounts.toArray())
+						+" hasEmailInHeader:"+hasEmailInHeader(mail,accounts)
+						+" don't have property:"+!mail.getProperties().containsKey(FOLLOWER_ID));
+			}
 			return mail.getStatus().equals(Mail.Status.deliver) 
 					&& !mail.getFromSender().hasAlias(accounts.toArray(new String[accounts.size()]))
 					&& hasEmailInHeader(mail,accounts)
@@ -74,7 +79,6 @@ public class Provider extends RulesByFeatureWithFixed{
 		private boolean hasEmailInHeader(Mail mail, List<String> accounts){
 			Collection<String> mailCC = mail.getRecipients().getRecipients(RecipientType.cc);
 			Collection<String> mailTO = mail.getRecipients().getRecipients(RecipientType.to);
-			mail.getProperties().put(FOLLOWER_ID, protectedSelection);
 			for(User user : mail.getRecipientsInHeaders()){
 				if(accounts!=null){
 					if(user.hasAlias(accounts.toArray(new String[accounts.size()]))){
@@ -103,16 +107,19 @@ public class Provider extends RulesByFeatureWithFixed{
 		private Integer ruleId;
 		private String protectedSelection;
 		private List<String> accounts;
+		private String group;
 
-		public APAction(Integer ruleId, String protectedSelection, List<String> accounts) {
+		public APAction(Integer ruleId, String protectedSelection, List<String> accounts,String group) {
 			this.protectedSelection = protectedSelection;
 			this.accounts = accounts;
 			this.ruleId = ruleId;
+			this.group = group;
 		}
 
 		@Override
 		public void exec(Mail mail) {
 			mail.getHeaders().addHeader("X-mxHero-AddressProtection", "rule="+ruleId);
+			mail.getProperties().put(FOLLOWER_ID, protectedSelection);
 			Map<RecipientType, Collection<String>> removed = removeEmailInHeader(mail);
 			String removedCcStr = Arrays.deepToString(removed.get(RecipientType.cc).toArray()).replace("[","").replace("]","");
 			String removedToStr = Arrays.deepToString(removeEmailInHeader(mail).get(RecipientType.to).toArray()).replace("[","").replace("]","");
@@ -121,7 +128,7 @@ public class Provider extends RulesByFeatureWithFixed{
 				mail.getHeaders().removeHeader("To");
 				mail.getHeaders().addHeader("To", "undisclosed-recipients:;");
 			}
-			mail.cmd(AddThreadWatch.class.getName(), new AddThreadWatchParameters(FOLLOWER_ID,removedToStr+";"+removedCcStr));
+			mail.cmd(AddThreadWatch.class.getName(), new AddThreadWatchParameters(FOLLOWER_ID,removedToStr+";"+removedCcStr+";"+group));
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.addressprotection", removedAllStr));
 		}
 		

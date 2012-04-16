@@ -15,6 +15,9 @@
 
 	<context:annotation-config />
 
+	<osgi:reference id="threadRowService"
+		interface="org.mxhero.engine.plugin.threadlight.service.ThreadRowService" />
+
 	<osgi:reference id="rulesFinderService"
 		interface="org.mxhero.engine.commons.feature.RulesFinder" />
 
@@ -33,6 +36,7 @@
 		<property name="component" value="org.mxhero.feature.addressprotection" />
 		<property name="version" value="1" />
 		<property name="group" value="before"/>
+		<property name="service" ref="threadRowService"/>
 	</bean>
 
 </beans>
