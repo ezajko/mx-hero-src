@@ -21,5 +21,9 @@ package org.mxhero.console.commons.feature
 		function fixedToValue():String;
 		
 		function fixedFromValue():String;
+		
+		function set applicationContext(ap:Object):void;
+
+		function get applicationContext():Object;
 	}
 }
