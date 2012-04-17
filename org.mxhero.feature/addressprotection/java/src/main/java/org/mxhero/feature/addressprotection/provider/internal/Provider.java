@@ -122,8 +122,8 @@ public class Provider extends RulesByFeatureWithFixed{
 			mail.getProperties().put(FOLLOWER_ID, protectedSelection);
 			Map<RecipientType, Collection<String>> removed = removeEmailInHeader(mail);
 			String removedCcStr = Arrays.deepToString(removed.get(RecipientType.cc).toArray()).replace("[","").replace("]","");
-			String removedToStr = Arrays.deepToString(removeEmailInHeader(mail).get(RecipientType.to).toArray()).replace("[","").replace("]","");
-			String removedAllStr = Arrays.deepToString(removeEmailInHeader(mail).get(RecipientType.all).toArray()).replace("[","").replace("]","");
+			String removedToStr = Arrays.deepToString(removed.get(RecipientType.to).toArray()).replace("[","").replace("]","");
+			String removedAllStr = Arrays.deepToString(removed.get(RecipientType.all).toArray()).replace("[","").replace("]","");
 			if(mail.getRecipients().getRecipients(RecipientType.to)==null || mail.getRecipients().getRecipients(RecipientType.to).size()<1){
 				mail.getHeaders().removeHeader("To");
 				mail.getHeaders().addHeader("To", "undisclosed-recipients:;");
