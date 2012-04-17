@@ -71,6 +71,12 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 				String mailId = mail.getTime().getTime()+"-"+mail.getSequence();
 				if(mailId.trim().equalsIgnoreCase(id[0].trim())){
 					notifyValue=notifyHeaders[0].trim();
+					if(!notifyValue.startsWith("NEVER")
+							&& !notifyValue.startsWith("DELAY")
+							&& !notifyValue.startsWith("SUCCESS")
+							&& !notifyValue.startsWith("FAILURE")){
+						notifyValue= "NEVER "+notifyValue;
+					}
 					String[] retHeaders = msg.getHeader(ConnectorProperties.RET_HEADER);
 					if(retHeaders!=null && retHeaders.length>0 && retHeaders[0]!=null && !retHeaders[0].trim().isEmpty()){
 						retValue = retHeaders[0].trim();
@@ -108,6 +114,10 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 		    }
 
 		} catch (Exception e) {
+	    	if(props.contains("mail.smtp.dsn.notify") || props.contains("mail.smtp.dsn.ret")){
+	    		log.error("mail.smtp.dsn.ret="+props.get("mail.smtp.dsn.ret"));
+	    		log.error("mail.smtp.dsn.notify="+props.get("mail.smtp.dsn.notify"));
+	    	}
 			log.error("Couldnt send the mail:"+mail,e);
 			throw new RuntimeException(e);
 		}	
