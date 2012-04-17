@@ -1,0 +1,103 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>enhancedbcc</artifactId>
+		<groupId>org.mxhero.feature</groupId>
+		<version>1.5.0</version>
+	</parent>
+
+	<groupId>org.mxhero.feature</groupId>
+	<artifactId>enhancedbcc-flex</artifactId>
+	<version>1.0.0</version>
+	<packaging>swf</packaging>
+
+	<properties>
+		<sonar.language>flex</sonar.language>
+		<sonar.dynamicAnalysis>false</sonar.dynamicAnalysis>
+		<sonar.profile>mxHero Flex Profile</sonar.profile>
+	</properties>
+
+	<build>
+		<sourceDirectory>src/main/flex</sourceDirectory>
+		<testSourceDirectory>src/test/flex</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>3.7.1</version>
+				<extensions>true</extensions>
+				<configuration>
+					<resourceBundlePath>${basedir}/src/main/resources/locale/{locale}</resourceBundlePath>
+					<runtimeLocales>
+						<locale>en_US</locale>
+					</runtimeLocales>
+					<locales>
+						<locale>en_US</locale>
+					</locales>
+					<compiledLocales>
+						<locale>en_US</locale>
+					</compiledLocales>
+					<allowSourcePathOverlap>true</allowSourcePathOverlap>
+					<moduleFiles>
+						<module>org/mxhero/feature/attachmentblock/AttachmentBlock.mxml</module>
+						<module>org/mxhero/feature/attachmentblock/Report.mxml</module>
+					</moduleFiles>
+					<flexBuilderOutputFolderPath>target</flexBuilderOutputFolderPath>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+					<dependency>
+						<groupId>com.adobe.flex.compiler</groupId>
+						<artifactId>asdoc</artifactId>
+						<version>${flex.sdk.version}</version>
+						<classifier>template</classifier>
+						<type>zip</type>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.sdk.version}</version>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.adobe.flex.framework</groupId>
+					<artifactId>playerglobal</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>${flex.sdk.version}</version>
+			<classifier>${flex.playerglobal}</classifier>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mxhero.console</groupId>
+			<artifactId>commons</artifactId>
+			<version>1.0.0.M1</version>
+			<type>swc</type>
+		</dependency>
+
+		<dependency>
+			<groupId>mails</groupId>
+			<artifactId>org.mxhero.console</artifactId>
+			<version>1.0.0.M1</version>
+			<type>swc</type>
+		</dependency>
+
+	</dependencies>
+</project>
