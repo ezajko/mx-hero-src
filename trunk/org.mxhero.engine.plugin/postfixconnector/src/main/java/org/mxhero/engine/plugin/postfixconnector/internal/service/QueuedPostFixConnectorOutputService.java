@@ -1,6 +1,7 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.service;
 
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -71,10 +72,10 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 				String mailId = mail.getTime().getTime()+"-"+mail.getSequence();
 				if(mailId.trim().equalsIgnoreCase(id[0].trim())){
 					notifyValue=notifyHeaders[0].trim();
-					if(!notifyValue.startsWith("NEVER")
-							&& !notifyValue.startsWith("DELAY")
-							&& !notifyValue.startsWith("SUCCESS")
-							&& !notifyValue.startsWith("FAILURE")){
+					if(!Pattern.compile("^\\s*DELAY", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
+							&& !Pattern.compile("^\\s*FALIURE", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
+							&& !Pattern.compile("^\\s*SUCCESS", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
+							&& !Pattern.compile("^\\s*NEVER", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()){
 						notifyValue= "NEVER "+notifyValue;
 					}
 					String[] retHeaders = msg.getHeader(ConnectorProperties.RET_HEADER);
