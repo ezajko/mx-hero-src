@@ -102,8 +102,7 @@
 			private var _dataQuery:String =	"SELECT COALESCE(SUM(r0.amount),0) as `count`,date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) as `date`" 
 				+" FROM mail_stats_grouped r0 " 
 				+" WHERE r0.insert_date >= CONVERT_TZ(?, ?, '+00:00' ) "
-				+" AND r0.stat_key = 'org.mxhero.feature.addressprotection' " 
-				+" AND r0.stat_value = 'true' ";
+				+" AND r0.stat_key = 'org.mxhero.feature.addressprotection' ";
 			
 			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
 				+" r0.to_recipients, r0.cc_recipients, r0.bcc_recipients, " 
@@ -114,8 +113,7 @@
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.addressprotection' " 
-				+" AND s.stat_value = 'true' ) ";
+				+" AND s.stat_key = 'org.mxhero.feature.addressprotection') ";
 			
 			public function setResult(queryId:String, result:*):void{
 				if(queryId==DATA_QUERY){
