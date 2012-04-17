@@ -10,7 +10,7 @@
 		   implements="org.mxhero.console.commons.feature.IReport" xmlns:mails="org.mxhero.console.mails.*">
 	
 	<fx:Declarations>
-	
+		
 		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
 		
 		<mx:SeriesSlide id="slideIn" 
@@ -71,69 +71,61 @@
 		}
 		
 	</fx:Style>
-
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.charts.events.ChartItemEvent;
 			import mx.collections.ArrayCollection;
-			import mx.controls.Alert;
 			import mx.events.FlexEvent;
 			
-			import org.mxhero.console.commons.feature.IReport;
 			import org.mxhero.console.commons.feature.IReportService;
 			import org.mxhero.console.commons.feature.TimeUtils;
 			
-			import spark.events.IndexChangeEvent;
-			
-			private static const WEEK:String = "week";
-			private static const TODAY:String = "today";
 			private static const DATA_QUERY:String = "data.query";
 			private static const EMAIL_QUERY:String = "email.query";
-			
-			private var selectedPeriod:String = TODAY;
 			
 			private var _reportService:IReportService;
 			
 			[Bindable]
 			private var _data:ArrayCollection;
 			
-			private static const DAYSBEFORE:Number = 24*60*60*1000; 
+			private static const DAYSBEFORE:Number = 7*24*60*60*1000; 
 			
 			[Bindable]
 			private static var sinceDate:Date;
 			
 			[Bindable]
 			private var _emails:ArrayCollection;
-			
 			[Bindable]
-			private var options:ArrayCollection;
+			public var selectedDateLabel:String;
 			
-			private var _dataQuery:String =	"SELECT COUNT(*) as `count`, s.stat_key as `label`" 
-				+" FROM mail_records r0 " 
-				+" INNER JOIN mail_stats s"
-				+" ON s.insert_date = r0.insert_date AND s.record_sequence = r0.record_sequence " +
-				" AND s.stat_key = 'org.mxhero.feature.addressprotection' "
-				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' ) ";
+			private var _dataQuery:String =	"SELECT COALESCE(SUM(r0.amount),0) as `count`,date(CONVERT_TZ(r0.insert_date, '+00:00', ? )) as `date`" 
+				+" FROM mail_stats_grouped r0 " 
+				+" WHERE r0.insert_date >= CONVERT_TZ(?, ?, '+00:00' ) "
+				+" AND r0.stat_key = 'org.mxhero.feature.addressprotection' " 
+				+" AND r0.stat_value = 'true' ";
 			
 			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
 				+" r0.to_recipients, r0.cc_recipients, r0.bcc_recipients, " 
 				+" r0.subject, r0.phase, r0.bytes_size, r0.state, " 
 				+" r0.state_reason, r0.insert_date " 
 				+" FROM mail_records r0 " 
-				+" WHERE r0.insert_date > CONVERT_TZ(?, ?, '+00:00' )  "
+				+" WHERE r0.insert_date BETWEEN CONVERT_TZ(?, ?, '+00:00' ) AND  CONVERT_TZ(?, ?, '+00:00' ) "
 				+" AND EXISTS( SELECT 1 FROM mail_stats s "
 				+" WHERE s.insert_date = r0.insert_date " 
 				+" AND s.record_sequence = r0.record_sequence " 
-				+" AND s.stat_key = 'org.mxhero.feature.addressprotection' ) ";
-
-				
+				+" AND s.stat_key = 'org.mxhero.feature.addressprotection' " 
+				+" AND s.stat_value = 'true' ) ";
+			
 			public function setResult(queryId:String, result:*):void{
 				if(queryId==DATA_QUERY){
-					var dataArray:Array = new Array();
+					var dataArray:ArrayCollection = new ArrayCollection();
 					for each(var dataRow:Object in result){
-						dataArray.push({Qty:dataRow.count,Email:dataRow.label});
+						var axisDate:Date = dataRow.date;
+						axisDate.setTime(axisDate.getTime()+axisDate.timezoneOffset*60*1000);
+						dataArray.addItem({Qty:dataRow.count,Date:axisDate});
 					}
-					this._data=new ArrayCollection(dataArray.reverse());
+					this._data=dataArray;
 				}else if(queryId==EMAIL_QUERY){
 					var emailArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
@@ -154,33 +146,28 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
-				options = 
-					new ArrayCollection([{label:resourceManager.getString('addressprotection_report','last.week'),value:'week'}, 
-						{label:resourceManager.getString('addressprotection_report','today'),value:'today'}]);
-				periodBar.selectedIndex=1;
 			}
 			
 			
 			public function refresh():void
 			{
 				sinceDate=new Date();
-				if(selectedPeriod==TODAY){
-					sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
-				}else if(selectedPeriod==WEEK){
-					sinceDate.setTime(sinceDate.getTime()-7*DAYSBEFORE);
-				}
-				sinceDate.setHours(0,0,0,0);
+				sinceDate.setTime(sinceDate.getTime()-DAYSBEFORE);
+				sinceDate.setTime(sinceDate.setHours(0,0,0,0));
 				queryForData();
-				queryForEmails();
+				queryForEmails(new Date());
 			}
 			
-			private function queryForEmails():void{
+			private function queryForEmails(date:Date):void{
 				var domain:String = _reportService.getDomain();
 				var params:Array = new Array();
 				var emailsQuery:String = _emailsQuery;
-
-				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
-
+				date.setHours(0,0,0,0);
+				var untilDate:Date = new Date();
+				untilDate.setTime(date.getTime()+24*60*60*1000);
+				params.push(dateFormatter.format(date),TimeUtils.offsetToTZ(date.getTimezoneOffset()));
+				params.push(dateFormatter.format(untilDate),TimeUtils.offsetToTZ(untilDate.getTimezoneOffset()));
+				selectedDateLabel=dateFormatter.format(date);
 				if(domain!=null){
 					params.push(domain,domain);
 					emailsQuery = emailsQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
@@ -197,144 +184,144 @@
 				var params:Array = new Array();
 				var dataQuery:String = _dataQuery;
 				
+				params.push(TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
 				params.push(dateFormatter.format(sinceDate),TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
 
 				if(domain!=null){
 					params.push(domain,domain);
 					dataQuery = dataQuery + " and (r0.recipient_domain_id = ? or r0.sender_domain_id = ?) ";
 				}
-				dataQuery = dataQuery + " group by s.stat_key ORDER BY 1 DESC  limit 10";
+				dataQuery = dataQuery + " group by date(CONVERT_TZ(r0.insert_date, '+00:00', ? ))";
+				params.push(TimeUtils.offsetToTZ(sinceDate.getTimezoneOffset()));
+				
 				_reportService.processQuery(DATA_QUERY,dataQuery,params,this);
 				
 			}
-
-
-			protected function buttonbar1_changeHandler(event:IndexChangeEvent):void
+			
+			protected function vgroup1_creationCompleteHandler(event:FlexEvent):void
 			{
-				selectedPeriod=ButtonBar(event.target).selectedItem.value;
-				refresh();
+				chartContainer.addEventListener(ChartItemEvent.CHANGE, chartItemEventChange, true, 0, true);
 			}
-
+			private function chartItemEventChange(event: Event): void
+			{
+				event.stopImmediatePropagation();
+			}
+			
+			protected function linechart_itemClickHandler(event:ChartItemEvent):void
+			{
+				queryForEmails(event.hitData.item.Date);
+			}
 		]]>
 	</fx:Script>
 	
 	<fx:Metadata>
 		[ResourceBundle("addressprotection_report")]
 	</fx:Metadata>
-	
-	<s:HGroup horizontalAlign="right" 
-			  width="100%"
-			  paddingRight="5"
-			  paddingBottom="5"
-			  paddingTop="40">
-		<s:Label 
-			fontSize="18" fontWeight="bold" 
-			text="{resourceManager.getString('addressprotection_report','title')}" />
-		<mx:Spacer width="100%"/>
-		<s:ButtonBar id="periodBar"
-					 buttonMode="true" 
-					 change="buttonbar1_changeHandler(event)"
-					 dataProvider="{options}"
-					 requireSelection="true"
-					 selectedIndex="1"/>
-	</s:HGroup>
-	
-	<s:VGroup width="100%" height="100%">
-		<mx:BarChart id="linechart" color="0x323232" 
-					 width="100%"
-					 minHeight="200"
-					 height="100%"
-					 showDataTips="true" 
-					 styleName="myChart"
-					 dataProvider="{_data}"
-					 axisTitleStyleName="axisTitles"
-					 backgroundElements="{bge}">
-			
-			<mx:filters>
-				<s:DropShadowFilter
-					distance="4"
-					color="0x666666"
-					alpha=".9"/>
-			</mx:filters>
-			
-			<mx:horizontalAxis>
-				
-				<mx:LinearAxis id="qtyAxis" 
-							   displayName="{resourceManager.getString('addressprotection_report','amount.axis')}"  
-							   title="{resourceManager.getString('addressprotection_report','amount.axis')}" 
-							   />
-			</mx:horizontalAxis>
-			
-			<mx:verticalAxis>
-				
-				<mx:CategoryAxis
-					id="emailAxis"
-					categoryField="Email"
-					displayName="{resourceManager.getString('addressprotection_report','emails.axis')}"
-					title="{resourceManager.getString('addressprotection_report','emails.axis')}"
-					/>
-			</mx:verticalAxis>
-			
-			<mx:verticalAxisRenderers>
-				<mx:AxisRenderer 
-					axis="{emailAxis}" 
-					color="#FFFFFF" 
-					fontSize="14"
-					/>
-			</mx:verticalAxisRenderers>
-			
-			<mx:horizontalAxisRenderers>
-				<mx:AxisRenderer 
-					axis="{qtyAxis}" 
-					color="#FFFFFF" 
-					fontSize="14"
-					/>	  
-				
-				
-			</mx:horizontalAxisRenderers>
-			
-			<mx:fill>
-				<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
-			</mx:fill>
-			
-			<mx:series>
-				<mx:BarSeries xField="Qty" 
-							  yField="Email" 
-							  showDataEffect="{slideIn}" 
-							  hideDataEffect="{slideOut}"
-							  id="cserie"
-							  >
-					<mx:stroke>
-						<s:SolidColorStroke color="#FFFFFF" caps="round" />
-					</mx:stroke>
-					<mx:fills>
-						<mx:SolidColor color="0x800080" alpha=".6"/>
-						<mx:SolidColor color="0x990099" alpha=".6"/>
-						<mx:SolidColor color="0xB300B3" alpha=".6"/>
-						<mx:SolidColor color="0xCC00CC" alpha=".6"/>
-						<mx:SolidColor color="0xE600E6" alpha=".6"/>
-						<mx:SolidColor color="0xFF00FF" alpha=".6"/>
-						<mx:SolidColor color="0xFF1AFF" alpha=".6"/>
-						<mx:SolidColor color="0xFF33FF" alpha=".6"/>
-						<mx:SolidColor color="0xFF4DFF" alpha=".6"/>
-						<mx:SolidColor color="0xFF66FF" alpha=".6"/>
-					</mx:fills>
-					<mx:filters>
-						<s:DropShadowFilter
-							distance="8"
-							color="0x666666"
-							alpha=".8"/>
-					</mx:filters>
-				</mx:BarSeries>
-			</mx:series>
-			
-		</mx:BarChart>
-		<s:Label text="{resourceManager.getString('addressprotection_report','emails.title')}" 
-				 fontWeight="bold" fontSize="16"
-				 paddingLeft="50"/>
-		<s:HGroup width="100%" paddingLeft="50" height="100%">
-			<mails:EmailsDataGrid dataProvider="{_emails}" height="100%" width="100%"/>
+		
+		<s:HGroup horizontalAlign="right" 
+				  width="100%"
+				  paddingRight="5"
+				  paddingBottom="5"
+				  paddingTop="40">
+			<s:Label text="{resourceManager.getString('attachmenttrack_report','title')}" 
+					 fontWeight="bold" fontSize="16"
+					 color="#FFFFFF"
+					 textDecoration="underline"/>
+			<mx:Spacer width="100%"/>
 		</s:HGroup>
 		
-	</s:VGroup>
+	<s:VGroup id="chartContainer" width="100%" height="100%" creationComplete="vgroup1_creationCompleteHandler(event)">
+			<mx:ColumnChart id="linechart" color="0x323232" 
+							height="240" width="100%"
+							showDataTips="true" 
+							styleName="myChart"
+							dataProvider="{_data}"
+							axisTitleStyleName="axisTitles"
+							backgroundElements="{bge}"
+							selectionMode="single"
+							itemClick="linechart_itemClickHandler(event)"
+							>
+				
+				<mx:filters>
+					<s:DropShadowFilter
+						distance="4"
+						color="0x666666"
+						alpha=".9"/>
+				</mx:filters>
+				
+				<mx:horizontalAxis>
+					<mx:DateTimeAxis id="dateAxis" 
+									 dataUnits="days"
+									 labelUnits="days"
+									 disabledDays="{[]}"
+									 autoAdjust="true"
+									 dataInterval="1"
+									 title="{resourceManager.getString('addressprotection_report','date.axis')}"
+									 maximum="{new Date()}"
+									 minimum="{sinceDate}"
+									 displayName="{resourceManager.getString('addressprotection_report','date.axis')}"
+									 />
+				</mx:horizontalAxis>
+				
+				<mx:verticalAxis>
+					<mx:LinearAxis id="qtyAxis"  
+								   title="{resourceManager.getString('addressprotection_report','emails.axis')}" 
+								   displayName="{resourceManager.getString('addressprotection_report','emails.axis')}"/>
+				</mx:verticalAxis>
+				
+				<mx:verticalAxisRenderers>
+					<mx:AxisRenderer labelRotation="45" 
+									 axis="{qtyAxis}" 
+									 color="#FFFFFF" 
+									 fontSize="14"
+									 />	   
+				</mx:verticalAxisRenderers>
+				
+				<mx:horizontalAxisRenderers>
+					<mx:AxisRenderer labelRotation="45" 
+									 axis="{dateAxis}" 
+									 color="#FFFFFF" 
+									 fontSize="14"
+									 />
+				</mx:horizontalAxisRenderers>
+				
+				
+				
+				<mx:fill>
+					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
+				</mx:fill>
+				
+				<mx:series>
+					<mx:ColumnSeries xField="Date" yField="Qty" 
+									 showDataEffect="{slideIn}" 
+									 hideDataEffect="{slideOut}"
+									 id="cserie"
+									 selectable="true"
+									 buttonMode="true"
+									 displayName="{resourceManager.getString('addressprotection_report','hits.axis')}">
+						<mx:stroke>
+							<s:SolidColorStroke color="red" caps="round" />
+						</mx:stroke>
+						<mx:fill>
+							<mx:SolidColor color="red" alpha="0.6"/>
+						</mx:fill>
+						<mx:filters>
+							<s:DropShadowFilter
+								distance="8"
+								color="0x666666"
+								alpha=".8"/>
+						</mx:filters>
+					</mx:ColumnSeries>
+				</mx:series>
+				
+			</mx:ColumnChart>
+			<s:Label text="{resourceManager.getString('addressprotection_report','emails.title')+' ('+selectedDateLabel+')'}" 
+					 fontWeight="bold" fontSize="16"
+					 paddingLeft="50"/>
+			<s:HGroup width="100%" paddingLeft="50" height="100%">
+				<mails:EmailsDataGrid  dataProvider="{_emails}" height="100%" width="100%"/>
+			</s:HGroup>
+
+		</s:VGroup>
+
 </mx:Module>
