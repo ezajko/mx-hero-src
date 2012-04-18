@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   verticalGap="10"
+		   paddingTop="40" 
+		   creationComplete="creationCompleteHandler(event)" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*"
+		   implements="org.mxhero.console.commons.feature.IFeature">
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		@namespace component "org.mxhero.console.commons.feature.component.*";
+		
+		.instantaliasTitleStyle { 
+			fontSize: 16;
+			color: #FFFFFF;
+			fontWeight:bold;
+		}
+		
+	</fx:Style>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IFeature;
+			import org.mxhero.console.commons.feature.PropertyHelper;
+			
+			private var errorMessage:String;
+			
+			private var initialProperties:ArrayCollection;
+			
+			[Bindable]
+			private var separators:ArrayCollection = new ArrayCollection(["-","+","=","_","'","."]);
+			
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				loadProperties();
+			}
+			
+			public function isValid():Boolean{
+				return true;
+			}
+			
+			private function loadProperties():void{
+			}
+			
+			public function setProperties(data:ArrayCollection):void{
+			}
+			
+			public function getProperties():ArrayCollection{
+				return null;
+			}
+			
+			public function getValidationError():String{
+				return errorMessage;
+			}
+			
+			public function fixedTo():Boolean{
+				return true;
+			}
+			
+			public function fixedFrom():Boolean{
+				return true;
+			}
+			
+			public function fixedToValue():String{
+				return "owndomain";
+			}
+			
+			public function fixedFromValue():String{
+				return "anyone";
+			}
+			
+			public function set applicationContext(ap:Object):void{
+			}
+			
+			public function get applicationContext():Object{
+				return null;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Metadata>
+		[ResourceBundle("enhancedbcc")]
+		[ResourceBundle("textLayout")]
+	</fx:Metadata>
+		
+</mx:Module>
