@@ -10,7 +10,10 @@ public class AddThreadWatchParameters extends NamedParameters{
 
 	public static final String FOLLOWER = "follower";
 	public static final String PARAMETERS = "parameters";
-
+	public static final String SENDER_ID = "sender_id";
+	public static final String RECIPIENT_ID = "recipient_id";
+	public static final String SUBJECT = "subject";
+	
 	/**
 	 * 
 	 */
@@ -59,6 +62,48 @@ public class AddThreadWatchParameters extends NamedParameters{
 	 */
 	public void setParameters(String parameters) {
 		put(PARAMETERS,parameters);
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getSenderId(){
+		return get(SENDER_ID);
+	}
+	
+	/**
+	 * @param senderId
+	 */
+	public void setSenderId(String senderId){
+		put(SENDER_ID,senderId);
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getRecipientId(){
+		return get(RECIPIENT_ID);
+	}
+	
+	/**
+	 * @param recipientId
+	 */
+	public void setRecipientId(String recipientId){
+		put(RECIPIENT_ID, recipientId);
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getSubject(){
+		return get(SUBJECT);
+	}
+	
+	/**
+	 * @param subject
+	 */
+	public void setSubject(String subject){
+		put(SUBJECT,subject);
 	}
 	
 }
