@@ -126,7 +126,6 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 				for(String email : toEmails){
 					if(email!=null && !email.trim().isEmpty()){
 						CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),email);
-						cloneParameters.setGenerateId(true);
 						cloneParameters.setPhase(Mail.Phase.send);
 						mail.cmd(Clone.class.getName(), cloneParameters);
 						log.debug("sent email to:"+email);
@@ -137,7 +136,6 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 				for(String email : ccEmails){
 					if(email!=null && !email.trim().isEmpty()){
 						CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),email);
-						cloneParameters.setGenerateId(true);
 						cloneParameters.setPhase(Mail.Phase.send);
 						mail.cmd(Clone.class.getName(), cloneParameters);
 						log.debug("sent email to:"+email);
