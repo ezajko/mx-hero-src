@@ -35,8 +35,17 @@ public class AddThreadWatchImpl implements AddThreadWatch{
 		}
 		//creat thread row
 		try{
+			String senderId=mail.getSenderId();
+			String recipientId=mail.getRecipientId();
+			
+			if(atwParameters.getSenderId()!=null && !atwParameters.getSenderId().isEmpty()){
+				senderId=atwParameters.getSenderId();
+			}
+			if(atwParameters.getRecipientId()!=null && !atwParameters.getRecipientId().isEmpty()){
+				recipientId=atwParameters.getRecipientId();
+			}
 			ThreadRow threadRow = new ThreadRow();
-			threadRow.setPk(new ThreadRowPk(mail.getMessageId(),mail.getSenderId(),mail.getRecipientId()));
+			threadRow.setPk(new ThreadRowPk(mail.getMessageId(),senderId,recipientId));
 			threadRow.setCreationTime(new Timestamp(System.currentTimeMillis()));
 			threadRow.setSnoozeTime(threadRow.getCreationTime());
 			try {
