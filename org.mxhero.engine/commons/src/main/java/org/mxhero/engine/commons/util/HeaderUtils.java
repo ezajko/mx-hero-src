@@ -1,5 +1,8 @@
 package org.mxhero.engine.commons.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.mail.internet.ParameterList;
 import javax.mail.internet.ParseException;
 
@@ -19,7 +22,7 @@ public abstract class HeaderUtils {
 	}
 	
 	
-	public static final ParameterList getParametersList(String[] valuesArray,String action, String parameter){
+	public static final ParameterList getParametersList(String[] valuesArray, String action, String parameter){
 		if(valuesArray!=null && valuesArray.length>0 && action!=null){
 			log.debug("has values");
 			for(String value : valuesArray){
@@ -48,6 +51,37 @@ public abstract class HeaderUtils {
 			}
 		}
 		return null;
+	}
+	
+	public static final Collection<ParameterList> getParametersListLike(String[] valuesArray, String like, String parameter){
+		Collection<ParameterList> parametersLike = new ArrayList<ParameterList>();
+		if(valuesArray!=null && valuesArray.length>0 && like!=null){
+			log.debug("has values");
+			for(String value : valuesArray){
+				log.debug("checking value:"+value);
+				if(value!=null){
+					value = value.trim();
+					if(value.startsWith("\"") && value.endsWith("\"")){
+						value=value.substring(1,value.length()-1).trim();
+					}
+					if(!value.startsWith(";")){
+						value=";"+value;
+					}
+					log.debug("formated value:"+value);
+					try {
+						ParameterList parameterList = new ParameterList(value);
+						if(parameterList.get(parameter)!=null
+								&& parameterList.get(parameter).startsWith(like)){
+							log.debug("found:"+parameterList.toString());
+							parametersLike.add(parameterList);
+						}
+					} catch (ParseException e) {
+						log.warn(e.getMessage());
+					}
+				}
+			}
+		}
+		return parametersLike;
 	}
 	
 	/**
