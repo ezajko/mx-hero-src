@@ -74,11 +74,11 @@
 			}
 			
 			public function fixedToValue():String{
-				return "owndomain";
+				return "anyone";
 			}
 			
 			public function fixedFromValue():String{
-				return "anyone";
+				return "owndomain";
 			}
 			
 			public function set applicationContext(ap:Object):void{
