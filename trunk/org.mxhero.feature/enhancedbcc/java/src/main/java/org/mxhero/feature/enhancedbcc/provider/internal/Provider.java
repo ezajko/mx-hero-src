@@ -57,8 +57,8 @@ public class Provider extends RulesByFeatureWithFixed{
 		public void exec(Mail mail) {
 			for(User user : mail.getRecipientsInHeaders()){
 				AddThreadWatchParameters parameters = new AddThreadWatchParameters(FOLLOWER_ID+"."+mail.getRecipient().getMail(),"none");
-				parameters.setSenderId(user.getMail());
-				parameters.setRecipientId(mail.getSender().getMail());
+				parameters.setSenderId(mail.getSender().getMail());
+				parameters.setRecipientId(user.getMail());
 				log.debug("wathc thread for sender:"+parameters.getSenderId()+" and recipient:"+parameters.getRecipientId());
 				mail.cmd(AddThreadWatch.class.getName(), parameters);
 			}
