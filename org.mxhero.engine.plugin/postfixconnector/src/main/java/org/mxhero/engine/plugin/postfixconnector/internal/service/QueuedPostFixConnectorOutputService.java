@@ -1,8 +1,10 @@
 package org.mxhero.engine.plugin.postfixconnector.internal.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -38,6 +40,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 	 * .engine.domain.mail.Mail)
 	 */
 	public void addOutMail(MimeMail mail) {
+		boolean hasDsn = false;
 		props = new Properties();
 	    props.put("mail.smtp.host", getProperties().getMailSmtpHost());
 	    props.put("mail.smtp.port", getProperties().getMailSmtpPort().toString());
@@ -84,6 +87,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 					}else{
 						retValue = MailCommand.RET_HDRS;
 					}
+					hasDsn=true;
 					props.put("mail.smtp.dsn.ret", retValue);
 					props.put("mail.smtp.dsn.notify", notifyValue);
 				}
@@ -99,17 +103,17 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 				}
 				throw new RuntimeException(e);
 			}
-			Session session = Session.getInstance(props);
-		    Transport t = session.getTransport("smtp");
-		    t.connect();
-		    InternetAddress recipient=null;
-		    try{
-		    	recipient = new InternetAddress(mail.getRecipient());
-		    }catch(AddressException e){
-		    	recipient = new InternetAddress(mail.getRecipient(),null,"utf-8");
-		    }
-		    t.sendMessage(msg, new InternetAddress[] { recipient });
-		    t.close();
+			try{
+				send(mail,msg,props);
+			}catch(Exception e){
+				log.warn("DSN error:",e.getMessage());
+				if(hasDsn){
+					props.remove("mail.smtp.dsn.ret");
+					props.remove("mail.smtp.dsn.notify");
+					log.debug("send without DSN");
+					send(mail,msg,props);
+				}
+			}
 		    if(log.isDebugEnabled()){
 		    	log.debug("Message sent:"+mail);
 		    }
@@ -125,6 +129,20 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 
 	}
 
+	public void send(MimeMail mail, MimeMessage msg, Properties props) throws MessagingException, UnsupportedEncodingException{
+		Session session = Session.getInstance(props);
+	    Transport t = session.getTransport("smtp");
+	    t.connect();
+	    InternetAddress recipient=null;
+	    try{
+	    	recipient = new InternetAddress(mail.getRecipient());
+	    }catch(AddressException e){
+	    	recipient = new InternetAddress(mail.getRecipient(),null,"utf-8");
+	    }
+	    t.sendMessage(msg, new InternetAddress[] { recipient });
+	    t.close();
+	}
+	
 	public Properties getProps() {
 		return props;
 	}
