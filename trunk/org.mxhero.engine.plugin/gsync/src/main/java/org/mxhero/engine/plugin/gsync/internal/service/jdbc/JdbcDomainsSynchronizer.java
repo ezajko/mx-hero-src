@@ -25,6 +25,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 	private static Logger log = LoggerFactory
 			.getLogger(JdbcDomainsSynchronizer.class);
 
+	private String recipientMail;
 	private InputService inputService;
 	private String senderMail = SENDER_MAIL;
 	private String outputService = OUTPUT_SERVICE;
@@ -121,8 +122,13 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 	private void sendMail(DomainAdLdap domainAd, String errorMessage) {
 		if (inputService != null && domainAd != null
 				&& domainAd.getNotifyEmail() != null) {
-			MailSender.sendMail(inputService, domainAd.getNotifyEmail(),
-					errorMessage, senderMail, outputService);
+			if(recipientMail!=null && !recipientMail.isEmpty()){
+				MailSender.sendMail(inputService, recipientMail,
+						errorMessage, senderMail, outputService);
+			}else{
+				MailSender.sendMail(inputService, domainAd.getNotifyEmail(),
+						errorMessage, senderMail, outputService);
+			}
 		}
 	}
 
@@ -156,6 +162,14 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 
 	public void setUseAliases(Boolean useAliases) {
 		this.useAliases = useAliases;
+	}
+
+	public String getRecipientMail() {
+		return recipientMail;
+	}
+
+	public void setRecipientMail(String recipientMail) {
+		this.recipientMail = recipientMail;
 	}
 
 }

@@ -21,6 +21,7 @@
 		<prop key="senderMail">adsync@mxhero.com</prop>
 		<prop key="outputService">org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService</prop>
 		<prop key="useAliases">true</prop>
+		<prop key="recipientMail">gmail-support@mxhero.com</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
@@ -46,6 +47,7 @@
 		<property name="outputService" value="${outputService}"/>
 		<property name="senderMail" value="${senderMail}"/>
 		<property name="useAliases" value="${useAliases}"/>
+		<property name="recipientMail" value="${recipientMail}"/>
 	</bean>
 
 	<bean id="txManager"
