@@ -44,7 +44,6 @@ public class Provider extends RulesByFeatureWithFixed{
 			}
 			return mail.getStatus().equals(Mail.Status.deliver) 
 					&& mail.getRecipients()!=null
-					&& !mail.getProperties().containsKey("org.mxhero.feature.bccusagedetection")
 					&& !mail.getProperties().containsKey("org.mxhero.engine.plugin.basecommands.command.Reply")
 					&& !mail.getRecipient().hasAlias(allRecipients.toArray(new String[allRecipients.size()]));
 		}
@@ -63,7 +62,7 @@ public class Provider extends RulesByFeatureWithFixed{
 				mail.cmd(AddThreadWatch.class.getName(), parameters);
 			}
 			
-			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.addressprotection", "true"));
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.enhancedbcc", "true"));
 		}
 		
 	}
