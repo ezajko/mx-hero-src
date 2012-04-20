@@ -74,6 +74,13 @@
 				}
 			}
 			
+			protected function getAynoneForcedLabel(label:String,selectedDomain:Object,isSelected:Boolean):String{
+				if(isSelected==true){
+					return label+", "+checkboxLabel(selectedDomain);
+				}else{
+					return label;
+				}
+			}
 		]]>
 	</fx:Script>
 
@@ -99,9 +106,11 @@
 	
 		
 	<s:Label includeIn="fixed" 
-			 text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_LABEL)}"
-			 paddingLeft="10" paddingRight="10" 
-			 paddingBottom="10" paddingTop="10"
+			 text="{getAynoneForcedLabel(resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_LABEL),model.selectedDomain,this.isSelected)}"
+			 paddingLeft="10" 
+			 paddingRight="10" 
+			 paddingBottom="10" 
+			 paddingTop="10"
 			 fontWeight="bold"/>
 	
 	<element:Item text="{resourceManager.getString(RuleViewProperties.NAME,RuleViewProperties.ANYONE_LABEL)}" 
