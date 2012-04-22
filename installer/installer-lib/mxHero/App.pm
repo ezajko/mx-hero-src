@@ -178,6 +178,8 @@ sub _cascadeUpgrade
 		{
 			copy ("$myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/configuration/properties/$file", "$myConfig{MXHERO_PATH}/configuration/properties/$file");
 		}
+
+		system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/replytimeout $myConfig{MXHERO_PATH}");
 	}
 
 	return 1;
