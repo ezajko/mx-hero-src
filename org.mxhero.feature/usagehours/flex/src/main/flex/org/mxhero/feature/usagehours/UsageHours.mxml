@@ -9,6 +9,8 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="actionType"/>
+		<mx:EmailValidator id="emailV" required="true"/>
+		<mx:StringValidator id="requiredCopyV" required="true" source="{emailTi}" property="text"/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -16,8 +18,10 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
+			import mx.formatters.DateFormatter;
 			import mx.managers.DragManager;
 			import mx.messaging.messages.ErrorMessage;
+			import mx.utils.ObjectProxy;
 			import mx.utils.StringUtil;
 			import mx.validators.ValidationResult;
 			
@@ -26,25 +30,92 @@
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.Regex;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
-			
-			public var validationError:String;
+			import org.mxhero.console.commons.utils.StringUtils;
 			
 			private static const MODULE_NAME:String = "usagehours";
 			
 			private var initialProperties:ArrayCollection;
 			
+			private var errorMessage:String;
+			
 			[Bindable]
 			public var emails:ArrayCollection=new ArrayCollection();
 			
+			[Bindable]
+			public var hours:ArrayCollection = new ArrayCollection(
+				[new ObjectProxy({hour:6,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:7,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:8,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:9,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:10,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:11,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:12,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:13,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:14,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:15,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:16,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:17,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:18,sunday:false,monday:true,tuesday:true,wednesday:true,thursday:true,friday:true,saturday:false}),
+				new ObjectProxy({hour:19,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:20,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:21,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:22,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:23,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:0,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:1,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:2,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:3,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:4,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false}),
+				new ObjectProxy({hour:5,sunday:false,monday:false,tuesday:false,wednesday:false,thursday:false,friday:false,saturday:false})]
+			);
+			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				//styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
 				loadData();
 			}
 			
 			
 			public function isValid():Boolean{
-
+				var valArray:Array;
+				
+				if(returnRb.selected){
+					if(StringUtil.trim(rte.text).length<1){
+						errorMessage = resourceManager.getString(MODULE_NAME,'error.return.message');
+						rte.errorString = errorMessage;
+						return false;
+					}
+				}
+				rte.errorString="";
+				
+				if(alertRb.selected){
+					valArray=requiredCopyV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						errorMessage= (valArray[0] as ValidationResult).errorMessage;
+						emailTi.errorString=errorMessage;
+						return false;
+					}
+					var valid:String="";
+					for each(var email:String in emailTi.text.split(",")){
+						if( StringUtils.trim(email).length>0){
+							valArray=emailV.validate(email).results;
+							if(valArray!=null && valArray.length>0){
+								errorMessage=(valArray[0] as ValidationResult).errorMessage
+								emailTi.errorString=errorMessage;
+								return false;
+							}
+							valid=valid+","+StringUtils.trim(email);
+						}
+					}
+					emailTi.text=valid.substr(1,valid.length);
+					valArray=requiredCopyV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						errorMessage= (valArray[0] as ValidationResult).errorMessage;
+						emailTi.errorString=errorMessage;
+						return false;
+					}
+				}
+				emailTi.errorString="";
 				return true;
 			}
 			
@@ -52,20 +123,97 @@
 				initialProperties=data;
 			}
 			
+			private function getHourObject(value:String):ObjectProxy{
+				if(value==null){
+					return null;
+				}
+				var array:Array = value.split(";");
+				var object:ObjectProxy = new ObjectProxy({hour:new Number(array[0]),sunday:((array[1]=='true')?true:false),monday:((array[2]=='true')?true:false),tuesday:((array[3]=='true')?true:false),wednesday:((array[4]=='true')?true:false),thursday:((array[5]=='true')?true:false),friday:((array[6]=='true')?true:false),saturday:((array[7]=='true')?true:false)});
+				return object;
+			}
+			
 			private function loadData():void{
 				if(initialProperties!=null){
-
+					var actionSelected:String = PropertyHelper.getProperty(initialProperties,"action").propertyValue;
+					if(actionSelected=='discard'){
+						discardRb.selected=true;
+						returnRb.selected=false;
+						alertRb.selected=false;
+					} else if(actionSelected=='return'){
+						returnRb.selected=true;
+						alertRb.selected=false
+						discardRb.selected=false;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.text.rte")!=null){
+							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.text.rte").propertyValue;
+						}else{
+							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue;
+						}
+					} else if(actionSelected=='alert'){
+						returnRb.selected=false;
+						discardRb.selected=false;
+						alertRb.selected=true;
+						emailTi.text=PropertyHelper.getProperty(this.initialProperties,"alert.email").propertyValue;
+					}
+					hours=new ArrayCollection();
+					for each(var property:Object in PropertyHelper.getProperties(initialProperties,"hour.list")){
+						hours.addItem(getHourObject(property.propertyValue));
+					}
 				}
 			}
 			
 			public function getProperties():ArrayCollection{
 				var properties:ArrayCollection = new ArrayCollection();
 
+				for(var i:int=0 ; i<hours.length;i++){
+					var element:Object = hours.getItemAt(i);
+					var hour:FeatureRuleProperty = new FeatureRuleProperty();
+					hour.propertyKey="hour.list";
+					hour.propertyValue=element.hour
+						+";"+element.sunday
+						+";"+element.monday
+						+";"+element.tuesday
+						+";"+element.wednesday
+						+";"+element.thursday
+						+";"+element.friday
+						+";"+element.saturday;
+					properties.addItem(hour);
+				}
+				
+				var action:FeatureRuleProperty = new FeatureRuleProperty();
+				action.propertyKey="action";
+				if(discardRb.selected){
+					action.propertyValue='discard';
+				}else if(alertRb.selected){
+					action.propertyValue='alert';
+					var email:FeatureRuleProperty = new FeatureRuleProperty();
+					email.propertyKey="alert.email";
+					email.propertyValue=emailTi.text;
+					properties.addItem(email);
+				}else if(returnRb.selected){
+					action.propertyValue='return';
+					var property:FeatureRuleProperty = new FeatureRuleProperty();
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text";
+					var t:RteHtmlParser = new RteHtmlParser();
+					t.ParseToHTML(rte.htmlText);
+					var str:String = t.StringFormat;
+					property.propertyValue = t.XMLFormat;
+					properties.addItem(property);
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text.plain";
+					property.propertyValue = rte.text;
+					properties.addItem(property);	
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.text.rte";
+					property.propertyValue = rte.htmlText;
+					properties.addItem(property);	
+				}
+				properties.addItem(action);
 				return properties;
 			}
 			
 			public function getValidationError():String{
-				return this.validationError;
+				return this.errorMessage;
 			}
 			
 			public function fixedTo():Boolean{
@@ -90,6 +238,19 @@
 			public function get applicationContext():Object{
 				return null;
 			}
+			
+			private function hourLabelFunction(item:Object, column:DataGridColumn):String 
+			{
+				var time:Date = new Date();
+				if(item.hour!='0'){
+					time.setHours(item.hour,0,0,0);
+					var formatter:DateFormatter = new DateFormatter();
+					formatter.formatString="L A";
+					return formatter.format(time).toLowerCase();					
+				}else{
+					return '0 am';
+				}
+			}
 		]]>
 	</fx:Script>
 	
@@ -101,7 +262,74 @@
 	
 	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
 		<s:Label text="{resourceManager.getString(MODULE_NAME,'check.hours.label')}"/>
-		
+		<mx:DataGrid id="dataGrid" editable="true" dataProvider="{hours}">
+			<mx:columns>
+				<mx:DataGridColumn dataField="hour" width="60" headerText="{resourceManager.getString(MODULE_NAME,'day.hours')}" editable="false" sortable="false" labelFunction="hourLabelFunction"/>				
+				<mx:DataGridColumn dataField="sunday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.sunday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.sunday == true)?true:false}" click="{data.sunday = (data.sunday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="monday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.monday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.monday == true)?true:false}" click="{data.monday = (data.monday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="@tuesday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.tuesday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.tuesday == true)?true:false}" click="{data.tuesday = (data.tuesday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="wednesday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.wednesday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.wednesday == true)?true:false}" click="{data.wednesday = (data.wednesday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>				
+				<mx:DataGridColumn dataField="thursday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.thursday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.thursday == true)?true:false}" click="{data.thursday = (data.thursday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="friday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.friday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.friday == true)?true:false}" click="{data.friday = (data.friday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="saturday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.saturday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.saturday == true)?true:false}" click="{data.@saturday = (data.saturday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
 	</s:VGroup>
 	
 	<s:Label text="{resourceManager.getString(MODULE_NAME,'second.title')}" fontSize="16" fontWeight="bold"/>
@@ -125,9 +353,6 @@
 				</mx:RichTextEditor>			
 			</s:VGroup>
 		</s:VGroup>
-		<s:RadioButton id="quarantineRb" 
-					   groupName="actionType"
-					   label="{resourceManager.getString(MODULE_NAME,'action.quarantine.checkbox.label')}"/>
 		<s:VGroup>
 			<s:RadioButton id="alertRb" 
 						   groupName="actionType"
