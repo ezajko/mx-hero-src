@@ -154,8 +154,8 @@
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
 				options = 
-					new ArrayCollection([{label:resourceManager.getString('blocklist_report','last.week'),value:'week'}, 
-						{label:resourceManager.getString('blocklist_report','today'),value:'today'}]);
+					new ArrayCollection([{label:resourceManager.getString('usagehours_report','last.week'),value:'week'}, 
+						{label:resourceManager.getString('usagehours_report','today'),value:'today'}]);
 				periodBar.selectedIndex=1;
 			}
 			
