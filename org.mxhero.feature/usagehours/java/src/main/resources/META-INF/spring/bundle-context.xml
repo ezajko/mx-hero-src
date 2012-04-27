@@ -14,9 +14,6 @@
 
 	<context:annotation-config />
 
-	<osgi:reference id="inputService"
-		interface="org.mxhero.engine.commons.connector.InputService" />
-
 	<osgi:reference id="rulesFinderService"
 		interface="org.mxhero.engine.commons.feature.RulesFinder" />
 
