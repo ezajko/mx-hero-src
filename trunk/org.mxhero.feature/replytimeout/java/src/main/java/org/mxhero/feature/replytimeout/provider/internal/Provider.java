@@ -147,10 +147,14 @@ public class Provider extends RulesByFeature  {
 				if(values!=null && values.size()>0){
 					parameterList = HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE);
 					if(parameterList!=null){
+						log.debug("unixtime:"+parameterList.get(UNIXTIME));
 						replyTimeoutDate=Calendar.getInstance();
-						replyTimeoutDate.setTimeInMillis(Long.parseLong(parameterList.get(UNIXTIME)));
+						log.debug("datenow:"+replyTimeoutDate.getTime().toString());
+						replyTimeoutDate.setTimeInMillis(Long.parseLong(parameterList.get(UNIXTIME))*1000);
+						log.debug("dateafter:"+replyTimeoutDate.getTime().toString());
 						if(parameterList.get(LOCALE)!=null && !parameterList.get(LOCALE).trim().isEmpty()){
 							locale=parameterList.get(LOCALE);
+							log.debug("locale:"+parameterList.get(LOCALE));
 						}
 					}
 				}else{
