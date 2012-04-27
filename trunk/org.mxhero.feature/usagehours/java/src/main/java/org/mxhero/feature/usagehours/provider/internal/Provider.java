@@ -3,6 +3,7 @@ package org.mxhero.feature.usagehours.provider.internal;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -33,8 +34,9 @@ public class Provider extends RulesByFeature{
 	private static final String ALERT_ACTION = "alert";
 	private static final String ALERT_EMAIL = "alert.email";
 	private static final String HOUR_LIST = "hour.list";
-	private static final String RETURN_ACTION_TEXT = "return.action.text";
-	private static final String RETURN_ACTION_TEXT_PLAIN = "return.action.text.plain";
+	private static final String RETURN_TEXT = "return.text";
+	private static final String RETURN_TEXT_PLAIN = "return.text.plain";
+	private static final String LOCALE = "locale";
 	
 	protected CoreRule createRule(Rule rule) {
 		CoreRule coreRule = this.getDefault(rule);
@@ -42,22 +44,25 @@ public class Provider extends RulesByFeature{
 		String returnMessage = "";
 		String returnMessagePlain = "";
 		String emailList = "";
+		TimeZone timeZone = TimeZone.getDefault();
 		Map<Integer, Boolean[]> hours= new HashMap<Integer, Boolean[]>();
 		
 		for(RuleProperty property : rule.getProperties()){
 			if(property.getKey().equals(ACTION)){
 				action=property.getValue();
-			}else if (property.getKey().equals(RETURN_ACTION_TEXT)){
+			}else if (property.getKey().equals(RETURN_TEXT)){
 				returnMessage = property.getValue();
-			}else if (property.getKey().equals(RETURN_ACTION_TEXT_PLAIN)){
+			}else if (property.getKey().equals(RETURN_TEXT_PLAIN)){
 				returnMessagePlain=StringEscapeUtils.escapeJava(property.getValue());
 			}else if(property.getKey().equals(ALERT_EMAIL)){
 				emailList = property.getValue();
 			}else if(property.getKey().equals(HOUR_LIST)){
 				decodeHours(property.getValue(),hours);
+			}else if(property.getKey().equals(LOCALE)){
+				timeZone = TimeZone.getTimeZone(property.getValue());
 			}
 		}
-			coreRule.addEvaluation(new UHEvaluation(coreRule.getGroup(),hours));
+			coreRule.addEvaluation(new UHEvaluation(coreRule.getGroup(),hours,timeZone));
 			coreRule.addAction(new UHAction(coreRule.getId(),coreRule.getGroup(),action,returnMessage,returnMessagePlain,getNoReplyEmail(rule.getDomain()),emailList));
 		
 		return coreRule;
@@ -70,7 +75,7 @@ public class Provider extends RulesByFeature{
 			try{
 				Integer hourNumber = Integer.parseInt(hourArray[0]);
 				for(int i=1;i<hourArray.length && i<8;i++){
-					week[i]=Boolean.parseBoolean(hourArray[i]);
+					week[i-1]=Boolean.parseBoolean(hourArray[i]);
 				}
 				hours.put(hourNumber, week);
 			}catch(Exception e){}
@@ -81,18 +86,29 @@ public class Provider extends RulesByFeature{
 
 		private String group="";
 		private Map<Integer, Boolean[]> hours;
-		public UHEvaluation(String group,Map<Integer, Boolean[]> hours) {
+		private TimeZone timeZone = TimeZone.getDefault();
+		
+		public UHEvaluation(String group,Map<Integer, Boolean[]> hours, TimeZone timeZone) {
 			this.group = group;
 			this.hours = hours;
+			this.timeZone = timeZone;
 		}
 
 		public boolean eval(Mail mail) {
 			if(mail.getProperties().containsKey("org.mxhero.feature.usagehours."+group)){
 				return false;
 			}
+			log.debug("timezone:"+timeZone.getID());
 			Calendar sentCalendar = Calendar.getInstance();
 			sentCalendar.setTime(mail.getSentDate());
-			return hours.get(sentCalendar.get(Calendar.HOUR_OF_DAY))[sentCalendar.get(Calendar.DAY_OF_WEEK-1)];
+			sentCalendar.setTimeZone(timeZone);
+			log.debug("sentDate:"+sentCalendar.toString());
+			log.debug("hours:"+hours.toString());
+			log.debug("sentDate hour:"+sentCalendar.get(Calendar.HOUR_OF_DAY));
+			log.debug("sentDate dayoftheweek:"+(sentCalendar.get(Calendar.DAY_OF_WEEK)-1));
+			boolean result = !hours.get(sentCalendar.get(Calendar.HOUR_OF_DAY))[sentCalendar.get(Calendar.DAY_OF_WEEK)-1];
+			log.debug("result:"+result);
+			return result;
 		}
 		
 	}
@@ -122,16 +138,18 @@ public class Provider extends RulesByFeature{
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.usagehours."+group, ruleId.toString());
 			if(action.equalsIgnoreCase(RETURN_ACTION)){
-				mail.drop("org.mxhero.feature.usagehours");
+				log.debug("return");
 				ReplyParameters replyParameter = new ReplyParameters(replyMail,returnTextPlain,returnText);
 				replyParameter.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(),replyParameter);
-				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.usagehours"));	
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.usagehours"));
+				log.debug("dropped:"+mail.drop("org.mxhero.feature.usagehours"));
 			}else if(action.equalsIgnoreCase(DISCARD_ACTION)){
-				mail.drop("org.mxhero.feature.usagehours");
+				log.debug("dropped:"+mail.drop("org.mxhero.feature.usagehours"));
 				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.usagehours"));	
 			}else if(action.equalsIgnoreCase(ALERT_ACTION)){
 				for(String individualMail : emailList.split(",")){
+					log.debug("sending to:"+individualMail);
 					try {
 						InternetAddress emailAddress = new InternetAddress(individualMail,false);
 						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
