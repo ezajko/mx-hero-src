@@ -86,6 +86,8 @@ public class Provider extends RulesByFeature{
 				ReplyParameters replyParameter = new ReplyParameters(replyMail, messagePlain, returnText);
 				replyParameter.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(), replyParameter);
+			}
+			if(clamavResult.isConditionTrue()){
 				mail.drop("org.mxhero.feature.clamav");
 			}
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.clamav", Boolean.toString(clamavResult.isConditionTrue())));
