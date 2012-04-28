@@ -89,7 +89,7 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
-				//styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
 				loadData();
 			}
 			
