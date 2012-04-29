@@ -91,7 +91,7 @@
 			}
 			
 			public function fixedFrom():Boolean{
-				return false;
+				return true;
 			}
 			
 			public function fixedToValue():String{
@@ -117,10 +117,8 @@
 	
 	<s:Label text="{resourceManager.getString('disclaimer','first.title')}" fontSize="16" fontWeight="bold"/>
 	
-			
-
-	<s:VGroup paddingLeft="20" gap="20">
-		<mx:Text htmlText="{resourceManager.getString('disclaimer','description.text.html')}" width="400"/>
+	<s:VGroup paddingLeft="20" gap="20" width="600">
+		<mx:Text htmlText="{resourceManager.getString('disclaimer','description.text.html')}" width="100%"/>
 		<mx:RichTextEditor id="rte" 
 						   width="400"
 						   title="{resourceManager.getString('disclaimer','action.return.textarea.title')}"
