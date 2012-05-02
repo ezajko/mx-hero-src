@@ -36,7 +36,8 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 				" `"+DomainAdLdapMapper.LAST_UPDATE+"`,`"+DomainAdLdapMapper.NEXT_UPDATE+"`,"+
 				" `"+DomainAdLdapMapper.OVERRIDE_FLAG+"`,`"+DomainAdLdapMapper.PASSWORD+"`,"+
 				" `"+DomainAdLdapMapper.PORT+"`,`"+DomainAdLdapMapper.SSL_FLAG+"`,"+
-				" `"+DomainAdLdapMapper.USER+"`,`"+DomainAdLdapMapper.DN_AUTHENTICATE+"`" +
+				" `"+DomainAdLdapMapper.USER+"`,`"+DomainAdLdapMapper.DN_AUTHENTICATE+"`," +
+				" `"+DomainAdLdapMapper.ACCOUNT_PROPERTIES+"`" +
 				" FROM `"+DomainAdLdapMapper.DATABASE+"`.`"+DomainAdLdapMapper.TABLE_NAME+"`" +
 				" WHERE `"+DomainAdLdapMapper.DOMAIN+"` = :domainId";
 		List<DomainAdLdapVO> adldaps = template.query(sql, new MapSqlParameterSource("domainId",domainId), new DomainAdLdapMapper());
@@ -60,7 +61,8 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 				" `"+DomainAdLdapMapper.PORT+"` = :port," +
 				" `"+DomainAdLdapMapper.SSL_FLAG+"` = :sslFlag,"+
 				" `"+DomainAdLdapMapper.USER+"` = :user," +
-				" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"` = :dnAuthenticate" +
+				" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"` = :dnAuthenticate," +
+				" `"+DomainAdLdapMapper.ACCOUNT_PROPERTIES+"` = :accountProperties" +
 				" WHERE `"+DomainAdLdapMapper.DOMAIN+"` = :domainId";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		source.addValue("address", domainAdLdapVO.getAddres());
@@ -75,6 +77,7 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 		source.addValue("user", domainAdLdapVO.getUser());
 		source.addValue("dnAuthenticate", domainAdLdapVO.getDnAuthenticate());
 		source.addValue("domainId", domainAdLdapVO.getDomainId());
+		source.addValue("accountProperties", domainAdLdapVO.getAccountProperties());
 		template.update(sql, source);
 		return findByDomainId(domainAdLdapVO.getDomainId());
 	}
@@ -89,9 +92,9 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 				" `"+DomainAdLdapMapper.NEXT_UPDATE+"`,"+
 				" `"+DomainAdLdapMapper.OVERRIDE_FLAG+"`,`"+DomainAdLdapMapper.PASSWORD+"`,"+
 				" `"+DomainAdLdapMapper.PORT+"`,`"+DomainAdLdapMapper.SSL_FLAG+"`,"+
-				" `"+DomainAdLdapMapper.USER+"`,`"+DomainAdLdapMapper.DN_AUTHENTICATE+"`)" +
+				" `"+DomainAdLdapMapper.USER+"`,"+" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"`,`"+DomainAdLdapMapper.ACCOUNT_PROPERTIES+"`)" +
 				" VALUES (:domainId, :address, :base, :directoryType, :filter, :nextUpdate," +
-				" :overrideFlag, :password, :port, :sslFlag, :user, :dnAuthenticate) ;";
+				" :overrideFlag, :password, :port, :sslFlag, :user, :dnAuthenticate, :accountProperties) ;";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		source.addValue("domainId", domainAdLdapVO.getDomainId());
 		source.addValue("address", domainAdLdapVO.getAddres());
@@ -105,6 +108,7 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 		source.addValue("sslFlag", domainAdLdapVO.getSslFlag());
 		source.addValue("user", domainAdLdapVO.getUser());
 		source.addValue("dnAuthenticate", domainAdLdapVO.getDnAuthenticate());
+		source.addValue("accountProperties", domainAdLdapVO.getAccountProperties());
 		template.update(sql, source);
 		return findByDomainId(domainAdLdapVO.getDomainId());
 	}

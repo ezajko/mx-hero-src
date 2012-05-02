@@ -33,6 +33,8 @@ public class DomainAdLdapVO {
 	private Boolean overrideFlag;
 	
 	private String dnAuthenticate;
+	
+	private String accountProperties;
 
 	public String getDomainId() {
 		return domainId;
@@ -144,6 +146,14 @@ public class DomainAdLdapVO {
 
 	public void setDnAuthenticate(String dnAuthenticate) {
 		this.dnAuthenticate = dnAuthenticate;
+	}
+
+	public String getAccountProperties() {
+		return accountProperties;
+	}
+
+	public void setAccountProperties(String accountProperties) {
+		this.accountProperties = accountProperties;
 	}
 
 	@Override
