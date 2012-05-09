@@ -1,5 +1,6 @@
 package org.mxhero.engine.commons.mail.api;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -75,6 +76,9 @@ public interface Mail {
 	public long getInitialSize();
 	
 	
+	/**
+	 * @return
+	 */
 	public long getSize();
 	
 	/**
@@ -92,6 +96,10 @@ public interface Mail {
 	 */
 	public User getRecipient();
 	
+	/**
+	 * @return
+	 */
+	public Date getSentDate();
 	
 	/**
 	 * @return

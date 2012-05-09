@@ -64,7 +64,7 @@ public class Domain {
 		if(this.getAliases()==null){
 			return this.getId().equalsIgnoreCase(alias);
 		}
-		return this.getAliases().contains(alias);
+		return this.getAliases().contains(alias.toLowerCase());
 	}
 	
 	/**
@@ -80,7 +80,7 @@ public class Domain {
 			}
 		}else{
 			for(String alias : aliases){
-				if(this.getAliases().contains(alias)){
+				if(this.getAliases().contains(alias.toLowerCase())){
 					return true;
 				}
 			}
@@ -101,7 +101,7 @@ public class Domain {
 			}
 		}else{
 			for(String alias : aliases){
-				if(this.getAliases().contains(alias)){
+				if(this.getAliases().contains(alias.toLowerCase())){
 					return true;
 				}
 			}

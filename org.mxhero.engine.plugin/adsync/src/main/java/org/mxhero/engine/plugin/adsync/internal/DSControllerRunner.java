@@ -65,11 +65,14 @@ public class DSControllerRunner {
 				if(domains!=null){
 					for(String domain : domains){
 						try{
+							log.debug("sync domain:"+domain);
 							synchronizer.synchronize(domain);
 						}catch(Exception e){
 							log.error("error while processing "+domain,e);
 						}
 					}
+				}else{
+					log.debug("no domains to sync");
 				}
 			}catch(Exception e){
 				log.error("error while processing domains",e);

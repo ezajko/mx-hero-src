@@ -31,7 +31,7 @@ public class DomainAdLdap {
 	private Boolean overrideFlag;
 	
 	private String notifyEmail;
-
+	
 	public String getDomainId() {
 		return domainId;
 	}
