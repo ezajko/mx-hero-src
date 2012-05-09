@@ -7,6 +7,8 @@ package org.mxhero.console.frontend.domain
 		
 		public var insertDate:Date;
 		
+		public var sequence:Number;
+		
 		public var messageId:String;
 		
 		public var phase:String;

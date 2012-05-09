@@ -79,6 +79,7 @@
 			import org.mxhero.console.frontend.domain.Configuration;
 			import org.mxhero.console.frontend.domain.Domain;
 			import org.mxhero.console.frontend.domain.DomainAdLdap;
+			import org.mxhero.console.frontend.domain.DomainAdLdapProperty;
 			import org.mxhero.console.frontend.domain.EmailAccount;
 			import org.mxhero.console.frontend.domain.EmailAccountAlias;
 			import org.mxhero.console.frontend.domain.Feature;
@@ -90,6 +91,8 @@
 			import org.mxhero.console.frontend.domain.Owner;
 			import org.mxhero.console.frontend.domain.Page;
 			import org.mxhero.console.frontend.domain.Quarantine;
+			import org.mxhero.console.frontend.domain.Record;
+			import org.mxhero.console.frontend.domain.RecordStat;
 			import org.mxhero.console.frontend.domain.TestAccount;
 			import org.mxhero.console.frontend.presentation.MainViewPM;
 			
@@ -130,7 +133,10 @@
 				registerClassAlias("org.mxhero.console.backend.vo.EmailAccountAliasVO",EmailAccountAlias);
 				registerClassAlias("org.mxhero.console.backend.vo.DomainAdLdapVO",DomainAdLdap);
 				registerClassAlias("org.mxhero.console.backend.vo.LdapAccountVO",TestAccount);
+				registerClassAlias("org.mxhero.console.backend.vo.DomainAdLdapPropertyVO",DomainAdLdapProperty);
 				registerClassAlias("org.mxhero.console.backend.vo.PageVO",Page);
+				registerClassAlias("org.mxhero.console.backend.vo.RecordVO",Record);
+				registerClassAlias("org.mxhero.console.backend.vo.RecordStatVO",RecordStat);
 				registerClassAlias("org.mxhero.console.backend.vo.QuarantineVO",Quarantine);
 			}
 			

@@ -116,7 +116,7 @@
 				+" AND s.record_sequence = r0.record_sequence " 
 				+" AND s.stat_key = 'org.mxhero.feature.limituserdestinations.recipient' ) ";
 			
-			private var _emailsQuery:String  = "SELECT r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
+			private var _emailsQuery:String  = "SELECT r0.record_sequence, r0.message_id, r0.from_recipients, r0.sender, r0.recipient, " 
 				+" r0.to_recipients, r0.cc_recipients, r0.bcc_recipients, " 
 				+" r0.subject, r0.phase, r0.bytes_size, r0.state, " 
 				+" r0.state_reason, r0.insert_date " 
@@ -138,7 +138,7 @@
 				}else if(queryId==EMAIL_QUERY){
 					var emailArray:ArrayCollection = new ArrayCollection();
 					for each(var row:Object in result){
-						emailArray.addItem({messageId:row.message_id,from:row.from_recipients,sender:row.sender
+						emailArray.addItem({sequence:row.record_sequence,messageId:row.message_id,from:row.from_recipients,sender:row.sender
 							,recipient:row.recipient,toRecipients:row.to_recipients
 							,ccRecipients:row.cc_recipients,bccRecipients:row.bcc_recipients
 							,subject:row.subject,phase:row.phase,bytesSize:row.bytes_size

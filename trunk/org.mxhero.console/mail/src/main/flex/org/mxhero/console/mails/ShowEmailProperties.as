@@ -17,6 +17,10 @@ package org.mxhero.console.mails
 		public static const STATE_LABEL:String="state.label";
 		public static const STATE_REASON_LABEL:String="state.reason.label";
 		public static const CLOSE_BTT_LABEL:String="close.btt.label";
+		public static const MAIL_TITLE:String="mail.title";
+		public static const STATS_TITLE:String="stats.title";
+		public static const STATS_KEY_LABEL:String="stats.key.label";
+		public static const STATS_VALUE_LABEL:String="stats.value.label";
 		
 	}
 }

@@ -90,7 +90,19 @@ package org.mxhero.console.configurations.application.resources
 		
 		public static const ADLDAP_BIND_AUTHENTICATE_LABEL:String="adldap.bind.authenticate.label";
 		
+		public static const ADLDAP_ACCOUNT_PROPERTIES:String="adldap.account.properties.label";
+		
 		public static const ACCOUNTS_TOTAL:String="accounts.total";
+		
+		public static const ADLDAP_ACCOUNT_PROPERTIES_ADD:String="adldap.account.properties.add";
+		
+		public static const ADLDAP_ACCOUNT_PROPERTIES_ERROR:String="adldap.account.properties.error";
+		
+		public static const ADLDAP_ACCOUNT_PROPERTIES_NAME:String="adldap.account.properties.name";
+		
+		public static const ADLDAP_ACCOUNT_PROPERTIES_KEY:String="adldap.account.properties.key";
+		
+		public static const ADLDAP_ACCOUNT_PROPERTIES_REMOVE:String="adldap.account.properties.remove";
 
 	}
 }

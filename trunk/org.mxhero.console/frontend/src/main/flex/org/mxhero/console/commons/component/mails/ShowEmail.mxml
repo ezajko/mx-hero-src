@@ -2,16 +2,20 @@
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   close="closeEmail(event)">
+			   close="closeEmail(event)" xmlns:component="org.mxhero.console.commons.component.*">
 
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			
 			import org.mxhero.console.commons.component.mails.ShowEmailProperties;
 
 			[Bindable]
 			public var email:Object;
+			
+			[Bindable]
+			public var stats:ArrayCollection;
 			
 			protected function closeEmail(event:*):void
 			{
@@ -32,53 +36,82 @@
 	</fx:Script>
 
 	<fx:Declarations>
-		
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="100"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
 	</fx:Declarations>
 	
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" paddingBottom="20"/>
 	</s:layout>
-	<mx:Form width="100%" defaultButton="{closeBtt}">
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.MESSAGE_ID_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{converNulls(email.messageId)}" width="100%" />
-		</mx:FormItem>		
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.FROM_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{converNulls(email.from)}" width="100%"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.TO_LABEL)}" width="100%" labelWidth="110">
-			<s:TextArea editable="false" text="{converNulls(email.toRecipients)}" width="100%" heightInLines="2"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SENDER_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{converNulls(email.sender)}" width="100%"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.RECIPIENT_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{converNulls(email.recipient)}" width="100%"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.CC_LABEL)}" width="100%" labelWidth="110">
-			<s:TextArea editable="false" text="{converNulls(email.ccRecipients)}" width="100%" heightInLines="2"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.BCC_LABEL)}" width="100%" labelWidth="110">
-			<s:TextArea editable="false" text="{converNulls(email.bccRecipients)}" width="100%" heightInLines="2"/>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SUBJECT_LABEL)}" width="100%" labelWidth="110">
-			<s:TextInput editable="false" text="{converNulls(email.subject)}" width="100%"/>
-		</mx:FormItem>
-		<s:HGroup width="100%">
-			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.PHASE_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{converNulls(email.phase)}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SIZE_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{int((((email.bytesSize)/1024)/1024)*1000)/1000}"/>
-			</mx:FormItem>
-		</s:HGroup>
-		<s:HGroup width="100%">
-			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{converNulls(email.state)}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_REASON_LABEL)}" width="100%" labelWidth="110">
-				<s:TextInput editable="false" text="{converNulls(email.stateReason)}" width="100%"/>
-			</mx:FormItem>
-		</s:HGroup>
-	</mx:Form>
+	<component:NoDisabledLinkBar dataProvider="{emailsVs}" styleName="Reports" width="100%" horizontalAlign="left"/>
+	<mx:ViewStack  
+		id="emailsVs"
+		width="100%" height="100%" 
+		creationPolicy="all">
+		<s:NavigatorContent width="100%" height="100%" 
+							label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.MAIL_TITLE)}"
+							showEffect="{fadein}" 
+							hideEffect="{fadeout}">
+			<mx:Form width="100%" defaultButton="{closeBtt}">
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.MESSAGE_ID_LABEL)}" width="100%" labelWidth="110">
+					<s:TextInput editable="false" text="{converNulls(email.messageId)}" width="100%" />
+				</mx:FormItem>		
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.FROM_LABEL)}" width="100%" labelWidth="110">
+					<s:TextInput editable="false" text="{converNulls(email.from)}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.TO_LABEL)}" width="100%" labelWidth="110">
+					<s:TextArea editable="false" text="{converNulls(email.toRecipients)}" width="100%" heightInLines="2"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SENDER_LABEL)}" width="100%" labelWidth="110">
+					<s:TextInput editable="false" text="{converNulls(email.sender)}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.RECIPIENT_LABEL)}" width="100%" labelWidth="110">
+					<s:TextInput editable="false" text="{converNulls(email.recipient)}" width="100%"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.CC_LABEL)}" width="100%" labelWidth="110">
+					<s:TextArea editable="false" text="{converNulls(email.ccRecipients)}" width="100%" heightInLines="2"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.BCC_LABEL)}" width="100%" labelWidth="110">
+					<s:TextArea editable="false" text="{converNulls(email.bccRecipients)}" width="100%" heightInLines="2"/>
+				</mx:FormItem>
+				<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SUBJECT_LABEL)}" width="100%" labelWidth="110">
+					<s:TextInput editable="false" text="{converNulls(email.subject)}" width="100%"/>
+				</mx:FormItem>
+				<s:HGroup width="100%">
+					<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.PHASE_LABEL)}" width="100%" labelWidth="110">
+						<s:TextInput editable="false" text="{converNulls(email.phase)}"/>
+					</mx:FormItem>
+					<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.SIZE_LABEL)}" width="100%" labelWidth="110">
+						<s:TextInput editable="false" text="{int((((email.bytesSize)/1024)/1024)*1000)/1000}"/>
+					</mx:FormItem>
+				</s:HGroup>
+				<s:HGroup width="100%">
+					<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_LABEL)}" width="100%" labelWidth="110">
+						<s:TextInput editable="false" text="{converNulls(email.state)}"/>
+					</mx:FormItem>
+					<mx:FormItem label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATE_REASON_LABEL)}" width="100%" labelWidth="110">
+						<s:TextInput editable="false" text="{converNulls(email.stateReason)}" width="100%"/>
+					</mx:FormItem>
+				</s:HGroup>
+			</mx:Form>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" 
+							label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_TITLE)}"
+							showEffect="{fadein}" 
+							hideEffect="{fadeout}">
+			<mx:DataGrid
+				variableRowHeight="false"
+				dropShadowVisible="false"
+				mouseChildren="true"
+				dataProvider="{stats}"
+				width="100%" height="100%" >
+				<mx:columns>
+					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_KEY_LABEL)}" dataField="key"/>
+					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_VALUE_LABEL)}" dataField="value"/>
+				</mx:columns>
+			</mx:DataGrid>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+
 	<s:Button id="closeBtt" label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.CLOSE_BTT_LABEL)}" click="closeEmail(event)"/>
 </s:TitleWindow>

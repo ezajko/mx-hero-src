@@ -1,5 +1,7 @@
 package org.mxhero.console.frontend.domain
 {
+	import mx.collections.ArrayCollection;
+
 	[Bindable]
 	[RemoteClass(alias="org.mxhero.console.backend.vo.DomainAdLdapVO")]
 	public class DomainAdLdap
@@ -18,6 +20,7 @@ package org.mxhero.console.frontend.domain
 		public var error:String;
 		public var overrideFlag:Boolean;
 		public var dnAuthenticate:String;
+		public var accountProperties:ArrayCollection;
 		
 		public function clone():DomainAdLdap{
 			var clonedAdLdap:DomainAdLdap = new DomainAdLdap();
@@ -35,6 +38,10 @@ package org.mxhero.console.frontend.domain
 			clonedAdLdap.error=this.error;
 			clonedAdLdap.overrideFlag=this.overrideFlag;
 			clonedAdLdap.dnAuthenticate=this.dnAuthenticate;
+			if(this.accountProperties!=null){
+				clonedAdLdap.accountProperties=new ArrayCollection();
+				clonedAdLdap.accountProperties.addAll(this.accountProperties);
+			}
 			return clonedAdLdap;
 		}
 	}

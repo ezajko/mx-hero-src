@@ -245,6 +245,7 @@ package org.mxhero.console.configurations.presentation.accounts
 				accountsAdLdap.adLdap=context.selectedDomain.adLdap.clone();
 			}else{
 				accountsAdLdap.adLdap=new DomainAdLdap();
+				accountsAdLdap.adLdap.accountProperties=new ArrayCollection();
 				accountsAdLdap.adLdap.domainId=context.selectedDomain.domain;
 			}
 			PopUpManager.addPopUp(accountsAdLdap,parent,true);
