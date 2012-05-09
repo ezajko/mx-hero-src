@@ -1,0 +1,23 @@
+<property type="ldap" name="firstname" key=""/>
+<property type="ldap" name="lastname" key=""/>
+<property type="ldap" name="telephone" key=""/>
+<property type="ldap" name="fax" key=""/>
+<property type="ldap" name="email" key=""/>
+<property type="ldap" name="website" key=""/>
+<property type="ldap" name="address" key=""/>
+
+<property type="exchange" name="firstname" key=""/>
+<property type="exchange" name="lastname" key=""/>
+<property type="exchange" name="telephone" key=""/>
+<property type="exchange" name="fax" key=""/>
+<property type="exchange" name="email" key=""/>
+<property type="exchange" name="website" key=""/>
+<property type="exchange" name="address" key=""/>
+
+<property type="zimbra" name="firstname" key=""/>
+<property type="zimbra" name="lastname" key=""/>
+<property type="zimbra" name="telephone" key=""/>
+<property type="zimbra" name="fax" key=""/>
+<property type="zimbra" name="email" key=""/>
+<property type="zimbra" name="website" key=""/>
+<property type="zimbra" name="address" key=""/>

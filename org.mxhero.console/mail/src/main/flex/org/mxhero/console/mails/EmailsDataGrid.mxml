@@ -5,6 +5,28 @@
 			 width="100%" 
 			 borderStyle="solid" 
 			 borderColor="0x336699">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.rpc.events.ResultEvent;
+			import org.mxhero.console.mails.EmailsDataGridProperties;
+			
+			[Bindable]
+			public var selectedEmailWindow:ShowEmail;
+
+			protected function method1_resultHandler(event:ResultEvent):void
+			{
+				if(event.result is ArrayCollection){
+					selectedEmailWindow.stats=event.result as ArrayCollection;
+				}
+			}
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
+			}
+			
+		]]>
+	</fx:Script>
 	
 	<fx:Declarations>
 		<mx:DateFormatter id="creationDateFormatter"/>
@@ -12,22 +34,23 @@
 		<mx:DateFormatter id="creationHourFormatter"
 						  formatString="JJ:NN:SS"
 						  />
+		<s:RemoteObject id="customReportService"
+						destination="customReportService"
+						showBusyCursor="true"
+						channelSet="{channelSet}">
+			<s:method name="getStats" result="method1_resultHandler(event)"/>
+		</s:RemoteObject>
+		<s:ChannelSet id="channelSet">
+			<s:channels>
+				<s:AMFChannel uri="{'http://{server.name}:{server.port}/mxhero/messagebroker/flex-amf'}"/>
+				<!--<s:AMFChannel uri="{'http://localhost:8080/mxhero/messagebroker/flex-amf'}"/>-->
+			</s:channels>
+		</s:ChannelSet>
 	</fx:Declarations>
 	
 	<fx:Metadata>
 		[ResourceBundle("emails_datagrid")]
 	</fx:Metadata>
-	
-	<fx:Script>
-		<![CDATA[
-			
-			import org.mxhero.console.mails.EmailsDataGridProperties;
-			
-			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
-				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
-			}
-		]]>
-	</fx:Script>
 	
 	<mx:columns>						
 		<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
@@ -138,6 +161,8 @@
 								private function showEmail():void{
 									var emailWindow:ShowEmail = new ShowEmail();
 									emailWindow.email=data;
+									outerDocument.selectedEmailWindow=emailWindow;
+									outerDocument.customReportService.getStats(data.insertDate.time,data.sequence);
 									PopUpManager.addPopUp(emailWindow,FlexGlobals.topLevelApplication as DisplayObject,true);
 									PopUpManager.centerPopUp(emailWindow);
 								}

@@ -22,13 +22,13 @@
 			import org.mxhero.console.frontend.application.command.GetAccountsCommand;
 			import org.mxhero.console.frontend.application.command.GetDomainGroupsCommand;
 			import org.mxhero.console.frontend.application.command.GetDomainsCommand;
+			import org.mxhero.console.frontend.application.command.GetRecordStatsCommand;
 			import org.mxhero.console.frontend.application.command.IsAuthenticadedCommand;
 			import org.mxhero.console.frontend.application.command.LoadInitialDataCommand;
 			import org.mxhero.console.frontend.application.command.LoginCommand;
 			import org.mxhero.console.frontend.application.command.LogoutCommand;
 			import org.mxhero.console.frontend.application.command.ProcessQueryCommand;
 			import org.mxhero.console.frontend.application.command.RecoverPasswordCommand;
-			import mx.controls.RichTextEditor;
 			
 		]]>
 	</fx:Script>
@@ -50,6 +50,7 @@
 		<parsley:DynamicCommand type="{ GetDomainGroupsCommand }"/>
 		<parsley:DynamicCommand type="{ ProcessQueryCommand }"/>
 		<parsley:DynamicCommand type="{ IsAuthenticadedCommand }"/>
+		<parsley:DynamicCommand type="{ GetRecordStatsCommand }"/>
 		
 		<!--<data:DataCache/>-->
 		<domain:ApplicationContext/>
@@ -127,6 +128,12 @@
 		
 		<parsley:Object type="{RemoteObject}" id="pluginReportService">
 			<parsley:Property name="destination" value="pluginReportService"/>
+			<parsley:Property name="showBusyCursor" value="true"/>
+			<parsley:Property name="channelSet" idRef="channelSet"/>
+		</parsley:Object>
+		
+		<parsley:Object type="{RemoteObject}" id="customReportService">
+			<parsley:Property name="destination" value="customReportService"/>
 			<parsley:Property name="showBusyCursor" value="true"/>
 			<parsley:Property name="channelSet" idRef="channelSet"/>
 		</parsley:Object>

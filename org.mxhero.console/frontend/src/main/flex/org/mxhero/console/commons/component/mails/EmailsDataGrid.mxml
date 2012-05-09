@@ -5,9 +5,11 @@
 			 width="100%" 
 			 borderStyle="solid" 
 			 borderColor="0x336699"
-			 height="100%" xmlns:component="org.mxhero.console.commons.feature.component.*">
+			 height="100%" xmlns:component="org.mxhero.console.commons.feature.component.*" 
+			 xmlns:parsley="http://www.spicefactory.org/parsley">
 	
 	<fx:Declarations>
+		<parsley:Configure/>
 		<mx:DateFormatter id="creationDateFormatter"/>
 		
 		<mx:DateFormatter id="creationHourFormatter"
@@ -17,8 +19,21 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.ArrayCollection;
 			
 			import org.mxhero.console.commons.component.mails.EmailsDataGridProperties;
+			import org.mxhero.console.frontend.application.event.GetRecordStatsEvent;
+			
+			[MessageDispatcher]
+			public var dispatcher:Function;
+			
+			[Bindable]
+			public var emailWindow:ShowEmail
+			
+			[CommandResult]
+			public function getRecordStatsResult (result:*, event:GetRecordStatsEvent) : void {
+				emailWindow.stats=result;
+			}
 			
 			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
@@ -108,6 +123,7 @@
 								
 								import org.mxhero.console.commons.component.mails.EmailsDataGridProperties;
 								import org.mxhero.console.commons.component.mails.ShowEmail;
+								import org.mxhero.console.frontend.application.event.GetRecordStatsEvent;
 								
 								[Bindable]
 								private var rm:IResourceManager=ResourceManager.getInstance();
@@ -135,6 +151,8 @@
 								private function showEmail():void{
 									var emailWindow:ShowEmail = new ShowEmail();
 									emailWindow.email=data;
+									outerDocument.emailWindow=emailWindow;
+									outerDocument.dispatcher(new GetRecordStatsEvent(data.sequence,data.insertDate));
 									PopUpManager.addPopUp(emailWindow,FlexGlobals.topLevelApplication as DisplayObject,true);
 									PopUpManager.centerPopUp(emailWindow);
 								}
