@@ -21,16 +21,14 @@ import com.google.gdata.client.appsforyourdomain.NicknameService;
 import com.google.gdata.client.appsforyourdomain.UserService;
 import com.google.gdata.client.authn.oauth.GoogleOAuthParameters;
 import com.google.gdata.client.authn.oauth.OAuthHmacSha1Signer;
+import com.google.gdata.client.contacts.ContactsService;
 import com.google.gdata.data.Link;
 import com.google.gdata.data.appsforyourdomain.AppsForYourDomainException;
-import com.google.gdata.data.appsforyourdomain.Login;
-import com.google.gdata.data.appsforyourdomain.Name;
-import com.google.gdata.data.appsforyourdomain.Nickname;
-import com.google.gdata.data.appsforyourdomain.Quota;
 import com.google.gdata.data.appsforyourdomain.provisioning.NicknameEntry;
 import com.google.gdata.data.appsforyourdomain.provisioning.NicknameFeed;
 import com.google.gdata.data.appsforyourdomain.provisioning.UserEntry;
 import com.google.gdata.data.appsforyourdomain.provisioning.UserFeed;
+import com.google.gdata.data.contacts.ContactFeed;
 import com.google.gdata.util.ServiceException;
 
 import java.io.IOException;
@@ -60,6 +58,7 @@ public class AppsForYourDomainClient {
 	protected NicknameService nicknameService;
 	protected UserService userService;
 	protected AppsGroupsService groupService;
+	protected ContactsService contactService;
 
 	/**
 	 * Public getter for AppsGroupsService
@@ -104,157 +103,11 @@ public class AppsForYourDomainClient {
 		groupService = new AppsGroupsService(domain,
 				"org.mxhero.engine.plugin.gsync-AppsGroupService");
 		groupService.setOAuthCredentials(parameters, new OAuthHmacSha1Signer());
+		
+		contactService = new ContactsService("org.mxhero.engine.plugin.gsync-ContactService");
+		contactService.setOAuthCredentials(parameters, new OAuthHmacSha1Signer());
 	}
 
-
-	/**
-	 * Creates a new user with an email account.
-	 * 
-	 * @param username
-	 *            The username of the new user.
-	 * @param givenName
-	 *            The given name for the new user.
-	 * @param familyName
-	 *            the family name for the new user.
-	 * @param password
-	 *            The password for the new user.
-	 * @return A UserEntry object of the newly created user.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry createUser(String username, String givenName,
-			String familyName, String password)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		return createUser(username, givenName, familyName, password, null, null);
-	}
-
-	/**
-	 * Creates a new user with an email account.
-	 * 
-	 * @param username
-	 *            The username of the new user.
-	 * @param givenName
-	 *            The given name for the new user.
-	 * @param familyName
-	 *            the family name for the new user.
-	 * @param password
-	 *            The password for the new user.
-	 * @param quotaLimitInMb
-	 *            User's quota limit in megabytes. This field is only used for
-	 *            domains with custom quota limits.
-	 * @return A UserEntry object of the newly created user.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry createUser(String username, String givenName,
-			String familyName, String password, Integer quotaLimitInMb)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		return createUser(username, givenName, familyName, password, null,
-				quotaLimitInMb);
-	}
-
-	/**
-	 * Creates a new user with an email account.
-	 * 
-	 * @param username
-	 *            The username of the new user.
-	 * @param givenName
-	 *            The given name for the new user.
-	 * @param familyName
-	 *            the family name for the new user.
-	 * @param password
-	 *            The password for the new user.
-	 * @param passwordHashFunction
-	 *            The name of the hash function to hash the password
-	 * @return A UserEntry object of the newly created user.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry createUser(String username, String givenName,
-			String familyName, String password, String passwordHashFunction)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		return createUser(username, givenName, familyName, password,
-				passwordHashFunction, null);
-	}
-
-	/**
-	 * Creates a new user with an email account.
-	 * 
-	 * @param username
-	 *            The username of the new user.
-	 * @param givenName
-	 *            The given name for the new user.
-	 * @param familyName
-	 *            the family name for the new user.
-	 * @param password
-	 *            The password for the new user.
-	 * @param passwordHashFunction
-	 *            Specifies the hash format of the password parameter
-	 * @param quotaLimitInMb
-	 *            User's quota limit in megabytes. This field is only used for
-	 *            domains with custom quota limits.
-	 * @return A UserEntry object of the newly created user.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry createUser(String username, String givenName,
-			String familyName, String password, String passwordHashFunction,
-			Integer quotaLimitInMb) throws AppsForYourDomainException,
-			ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Creating user '"
-				+ username
-				+ "'. Given Name: '"
-				+ givenName
-				+ "' Family Name: '"
-				+ familyName
-				+ (passwordHashFunction != null ? "' Hash Function: '"
-						+ passwordHashFunction : "")
-				+ (quotaLimitInMb != null ? "' Quota Limit: '" + quotaLimitInMb
-						+ "'." : "'."));
-
-		UserEntry entry = new UserEntry();
-		Login login = new Login();
-		login.setUserName(username);
-		login.setPassword(password);
-		if (passwordHashFunction != null) {
-			login.setHashFunctionName(passwordHashFunction);
-		}
-		entry.addExtension(login);
-
-		Name name = new Name();
-		name.setGivenName(givenName);
-		name.setFamilyName(familyName);
-		entry.addExtension(name);
-
-		if (quotaLimitInMb != null) {
-			Quota quota = new Quota();
-			quota.setLimit(quotaLimitInMb);
-			entry.addExtension(quota);
-		}
-
-		URL insertUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION);
-		return userService.insert(insertUrl, entry);
-	}
 
 	/**
 	 * Retrieves a user.
@@ -350,235 +203,6 @@ public class AppsForYourDomainClient {
 		return userService.query(query, UserFeed.class);
 	}
 
-	/**
-	 * Updates a user.
-	 * 
-	 * @param username
-	 *            The user to update.
-	 * @param userEntry
-	 *            The updated UserEntry for the user.
-	 * @return A UserEntry object of the newly updated user.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry updateUser(String username, UserEntry userEntry)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Updating user '" + username + "'.");
-
-		URL updateUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		return userService.update(updateUrl, userEntry);
-	}
-
-	/**
-	 * Deletes a user.
-	 * 
-	 * @param username
-	 *            The user you wish to delete.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public void deleteUser(String username) throws AppsForYourDomainException,
-			ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Deleting user '" + username + "'.");
-
-		URL deleteUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		userService.delete(deleteUrl);
-	}
-
-	/**
-	 * Suspends a user. Note that executing this method for a user who is
-	 * already suspended has no effect.
-	 * 
-	 * @param username
-	 *            The user you wish to suspend.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry suspendUser(String username)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Suspending user '" + username + "'.");
-
-		URL retrieveUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION
-				+ "/" + username);
-		UserEntry userEntry = userService
-				.getEntry(retrieveUrl, UserEntry.class);
-		userEntry.getLogin().setSuspended(true);
-
-		URL updateUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		return userService.update(updateUrl, userEntry);
-	}
-
-	/**
-	 * Restores a user. Note that executing this method for a user who is not
-	 * suspended has no effect.
-	 * 
-	 * @param username
-	 *            The user you wish to restore.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry restoreUser(String username)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Restoring user '" + username + "'.");
-
-		URL retrieveUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION
-				+ "/" + username);
-		UserEntry userEntry = userService
-				.getEntry(retrieveUrl, UserEntry.class);
-		userEntry.getLogin().setSuspended(false);
-
-		URL updateUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		return userService.update(updateUrl, userEntry);
-	}
-
-	/**
-	 * Set admin privilege for user. Note that executing this method for a user
-	 * who is already an admin has no effect.
-	 * 
-	 * @param username
-	 *            The user you wish to make an admin.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific error occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry addAdminPrivilege(String username)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Setting admin privileges for user '" + username
-				+ "'.");
-
-		URL retrieveUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION
-				+ "/" + username);
-		UserEntry userEntry = userService
-				.getEntry(retrieveUrl, UserEntry.class);
-		userEntry.getLogin().setAdmin(true);
-
-		URL updateUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		return userService.update(updateUrl, userEntry);
-	}
-
-	/**
-	 * Remove admin privilege for user. Note that executing this method for a
-	 * user who is not an admin has no effect.
-	 * 
-	 * @param username
-	 *            The user you wish to remove admin privileges.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific error occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry removeAdminPrivilege(String username)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Removing admin privileges for user '"
-				+ username + "'.");
-
-		URL retrieveUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION
-				+ "/" + username);
-		UserEntry userEntry = userService
-				.getEntry(retrieveUrl, UserEntry.class);
-		userEntry.getLogin().setAdmin(false);
-
-		URL updateUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		return userService.update(updateUrl, userEntry);
-	}
-
-	/**
-	 * Require a user to change password at next login. Note that executing this
-	 * method for a user who is already required to change password at next
-	 * login as no effect.
-	 * 
-	 * @param username
-	 *            The user who must change his or her password.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public UserEntry forceUserToChangePassword(String username)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Requiring " + username
-				+ " to change password at " + "next login.");
-
-		URL retrieveUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION
-				+ "/" + username);
-		UserEntry userEntry = userService
-				.getEntry(retrieveUrl, UserEntry.class);
-		userEntry.getLogin().setChangePasswordAtNextLogin(true);
-
-		URL updateUrl = new URL(domainUrlBase + "user/" + SERVICE_VERSION + "/"
-				+ username);
-		return userService.update(updateUrl, userEntry);
-	}
-
-	/**
-	 * Creates a nickname for the username.
-	 * 
-	 * @param username
-	 *            The user for which we want to create a nickname.
-	 * @param nickname
-	 *            The nickname you wish to create.
-	 * @return A NicknameEntry object of the newly created nickname.
-	 * @throws AppsForYourDomainException
-	 *             If a Provisioning API specific occurs.
-	 * @throws ServiceException
-	 *             If a generic GData framework error occurs.
-	 * @throws IOException
-	 *             If an error occurs communicating with the GData service.
-	 */
-	public NicknameEntry createNickname(String username, String nickname)
-			throws AppsForYourDomainException, ServiceException, IOException {
-
-		LOGGER.log(Level.INFO, "Creating nickname '" + nickname
-				+ "' for user '" + username + "'.");
-
-		NicknameEntry entry = new NicknameEntry();
-		Nickname nicknameExtension = new Nickname();
-		nicknameExtension.setName(nickname);
-		entry.addExtension(nicknameExtension);
-
-		Login login = new Login();
-		login.setUserName(username);
-		entry.addExtension(login);
-
-		URL insertUrl = new URL(domainUrlBase + "nickname/" + SERVICE_VERSION);
-		return nicknameService.insert(insertUrl, entry);
-	}
 
 	/**
 	 * Retrieves a nickname.
@@ -699,10 +323,12 @@ public class AppsForYourDomainClient {
 	}
 
 	/**
-	 * Deletes a nickname.
+	 * Retrieves all users in domain. This method may be very slow for domains
+	 * with a large number of users. Any changes to users, including creations
+	 * and deletions, which are made after this method is called may or may not
+	 * be included in the Feed which is returned.
 	 * 
-	 * @param nickname
-	 *            The nickname you wish to delete.
+	 * @return A UserFeed object of the retrieved users.
 	 * @throws AppsForYourDomainException
 	 *             If a Provisioning API specific occurs.
 	 * @throws ServiceException
@@ -710,14 +336,27 @@ public class AppsForYourDomainClient {
 	 * @throws IOException
 	 *             If an error occurs communicating with the GData service.
 	 */
-	public void deleteNickname(String nickname)
-			throws AppsForYourDomainException, ServiceException, IOException {
+	public ContactFeed retrieveAllContacts() throws AppsForYourDomainException,
+			ServiceException, IOException {
 
-		LOGGER.log(Level.INFO, "Deleting nickname '" + nickname + "'.");
+		LOGGER.log(Level.INFO, "Retrieving all users.");
 
-		URL deleteUrl = new URL(domainUrlBase + "nickname/" + SERVICE_VERSION
-				+ "/" + nickname);
-		nicknameService.delete(deleteUrl);
+		URL retrieveUrl = new URL(
+				"https://www.google.com/m8/feeds/profiles/domain/"+domain+"/full"+"?xoauth_requestor_id=bruno@mxhero.com");
+		ContactFeed allContacts = new ContactFeed();
+		ContactFeed currentPage;
+		Link nextLink;
+
+		do {
+			currentPage = contactService.getFeed(retrieveUrl, ContactFeed.class);
+			allContacts.getEntries().addAll(currentPage.getEntries());
+			nextLink = currentPage.getLink(Link.Rel.NEXT, Link.Type.ATOM);
+			if (nextLink != null) {
+				retrieveUrl = new URL(nextLink.getHref());
+			}
+		} while (nextLink != null);
+
+		return allContacts;
 	}
 	
 }

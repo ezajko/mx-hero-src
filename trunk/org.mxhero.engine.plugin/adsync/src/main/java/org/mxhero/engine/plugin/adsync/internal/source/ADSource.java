@@ -1,8 +1,11 @@
 package org.mxhero.engine.plugin.adsync.internal.source;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.naming.NamingException;
@@ -37,7 +40,7 @@ public class ADSource {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Account> getAllPersonNames(String filter) {
+	public List<Account> getAllPersonNames(String filter, final Map<String,String> accountProperties) {
 		String realFilter = "(objectClass=*)";
 		if(filter!=null && filter.length()>0){
 			realFilter=filter;
@@ -76,6 +79,15 @@ public class ADSource {
 							}
 						}
 						
+						if(accountProperties!=null && accountProperties.size()>0){
+							account.setProperties(new HashMap<String, String>());
+							for(Entry<String,String> property : accountProperties.entrySet()){
+								if(attrs.get(property.getValue())!=null){
+									account.getProperties().put(property.getKey(), attrs.get(property.getValue()).get().toString());
+								}
+							}
+						}
+						
 						return account;
 					}
 				});
@@ -95,7 +107,8 @@ public class ADSource {
 	public class Account {
 		private String uid;
 		private Set<String> mails;
-
+		private Map<String, String> properties;
+		
 		public Account(){		
 		}
 
@@ -113,6 +126,14 @@ public class ADSource {
 
 		public void setMails(Set<String> mails) {
 			this.mails = mails;
+		}
+		
+		public Map<String, String> getProperties() {
+			return properties;
+		}
+
+		public void setProperties(Map<String, String> properties) {
+			this.properties = properties;
 		}
 
 		@Override

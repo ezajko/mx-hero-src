@@ -45,16 +45,16 @@ public class JdbcUserRepository implements UserRepository{
 			//map domains
 			for(Map<String, Object> domainRow:domainsResult){
 				Domain domain = null;
-				if(domainMap.containsKey(domainRow.get("domain"))){
+				if(domainMap.containsKey(domainRow.get("domain").toString().toLowerCase())){
 					domain = domainMap.get(domainRow.get("domain"));
 				}else{
 					domain = new Domain();
-					domain.setId(domainRow.get("domain").toString());
+					domain.setId(domainRow.get("domain").toString().toLowerCase());
 					domain.setManaged(true);
 					domain.setAliases(new HashSet<String>());
 					domainMap.put(domain.getId(), domain);
 				}
-				domain.getAliases().add(domainRow.get("alias").toString());
+				domain.getAliases().add(domainRow.get("alias").toString().toLowerCase());
 			}
 		}
 		return domainMap;
@@ -80,18 +80,18 @@ public class JdbcUserRepository implements UserRepository{
 				if(accountsResult!=null & accountsResult.size()>0){
 					for(Map<String, Object> accountAlias : accountsResult){
 						User user = null;
-						if(usersMap.containsKey(accountAlias.get("account"))){
-							user = usersMap.get(accountAlias.get("account"));
+						if(usersMap.containsKey(accountAlias.get("account").toString().toLowerCase())){
+							user = usersMap.get(accountAlias.get("account").toString().toLowerCase());
 						}else{
 							user = new User();
 							user.setManaged(true);
 							user.setAliases(new HashSet<String>());
 							user.setDomain(domain);
-							user.setMail(accountAlias.get("account").toString()+"@"+accountAlias.get("domain_id").toString());
-							user.setGroup((accountAlias.get("group_name")==null)?null:accountAlias.get("group_name").toString());
+							user.setMail(accountAlias.get("account").toString().toLowerCase()+"@"+accountAlias.get("domain_id").toString().toLowerCase());
+							user.setGroup((accountAlias.get("group_name")==null)?null:accountAlias.get("group_name").toString().toLowerCase());
 							usersMap.put(accountAlias.get("account").toString(), user);
 						}
-						user.getAliases().add(accountAlias.get("account_alias").toString()+"@"+accountAlias.get("domain_alias").toString());
+						user.getAliases().add(accountAlias.get("account_alias").toString().toLowerCase()+"@"+accountAlias.get("domain_alias").toString().toLowerCase());
 					}
 				}
 				//now load the aliasesMap
@@ -100,7 +100,19 @@ public class JdbcUserRepository implements UserRepository{
 						aliasesMap.put(alias, entry.getValue());
 					}
 				}
+				//load user properties for the domain
+				String accountProperties = "SELECT account||'@'||domain_id as email, property_name, property_value FROM email_accounts_properties WHERE domain_id = :domainId";
+				List<Map<String, Object>> accountsPropertiesResult = template.queryForList(accountProperties, new MapSqlParameterSource("domainId", domainKey));
+				if(accountsPropertiesResult!=null && accountsPropertiesResult.size()>0){
+					for(Map<String, Object> accountProperty : accountsPropertiesResult){
+						if(aliasesMap.containsKey(accountProperty.get("email"))){
+							aliasesMap.get(accountProperty.get("email")).getProperties().put(accountProperty.get("property_name").toString(), accountProperty.get("property_value").toString());
+						}
+					}
+				}
 			}	
+			
+			
 		}
 		return aliasesMap;
 	}

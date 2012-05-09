@@ -1,5 +1,6 @@
 package org.mxhero.engine.plugin.dbfinder.internal.util;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.mxhero.engine.commons.domain.Domain;
@@ -48,8 +49,16 @@ public abstract class Cloner {
 				clonedUser.setGroup(user.getGroup());
 				clonedUser.setDomain(clone(user.getDomain()));
 				clonedUser.setAliases(new HashSet<String>());
+				clonedUser.setAddressBook(new HashSet<String>());
+				clonedUser.setProperties(new HashMap<String, String>());
 				if(user.getAliases()!=null){
 					clonedUser.getAliases().addAll(user.getAliases());
+				}
+				if(user.getAddressBook()!=null){
+					clonedUser.getAddressBook().addAll(user.getAddressBook());
+				}
+				if(user.getProperties()!=null){
+					clonedUser.getProperties().putAll(user.getProperties());
 				}
 			}
 		return clonedUser;

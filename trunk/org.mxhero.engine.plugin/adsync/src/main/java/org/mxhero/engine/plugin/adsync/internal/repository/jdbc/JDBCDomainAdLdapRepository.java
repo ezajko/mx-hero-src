@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
@@ -16,7 +17,9 @@ import org.mxhero.engine.plugin.adsync.internal.repository.DomainAdLdapRepositor
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -66,7 +69,22 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 			}
 		});
 		if(domainsAdLdap!=null && domainsAdLdap.size()>0){
-			return domainsAdLdap.get(0);
+			DomainAdLdap domainAdLdap = domainsAdLdap.get(0);
+			String propertiesSql = " SELECT property_name, property_key FROM domain_adldap_properties WHERE domain = :domainId"; 
+			domainAdLdap.setAccountProperties(template.query(propertiesSql,  new MapSqlParameterSource("domainId", domainId), new ResultSetExtractor<Map<String,String>>() {
+
+				@Override
+				public Map<String,String> extractData(ResultSet rs) throws SQLException,
+						DataAccessException {
+					Map<String,String> properties = new HashMap<String, String>();
+					while(rs.next()){
+						properties.put(rs.getString("property_name"), rs.getString("property_key"));
+					}
+					return properties;
+				}
+			}));
+			
+			return domainAdLdap;
 		}
 		return null;
 	}
@@ -195,7 +213,12 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		String sql = " INSERT INTO email_accounts (account, domain_id, created, data_source, updated, group_name) " +
 				" VALUES (?,?,NOW(),?,NOW(),null) ";
 		
-		template.getJdbcOperations().update(sql, new Object[]{account, domainId, SYNC_TYPE});
+		try{
+			template.getJdbcOperations().update(sql, new Object[]{account, domainId, SYNC_TYPE});
+		}catch(DataIntegrityViolationException e){
+			log.warn("duplicate account:"+account+" domain:"+domainId);
+		}
+		
 		String aliasSql = " INSERT INTO account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
 						" VALUES (?,?,NOW(),?,?,?) " +
 						" ON DUPLICATE KEY UPDATE " +
@@ -220,6 +243,30 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		return calendar;
+	}
+
+	@Override
+	public void refreshProperties(String account, String domainId,
+			Map<String, String> properties) {
+		try{
+			String deleteSql = " DELETE FROM email_accounts_properties WHERE account=:account AND domain_id = :domainId ";
+			MapSqlParameterSource deleteSource = new MapSqlParameterSource("account",account);
+			deleteSource.addValue("domainId", domainId);
+			template.update(deleteSql, deleteSource);
+			String refreshSql = " INSERT INTO email_accounts_properties (account,domain_id,property_name,property_value) " +
+					" VALUES (:account,:domainId,:propertyName,:propertyValue) ";
+			if(properties!=null && properties.size()>0){
+				for(Entry<String, String> entry : properties.entrySet()){
+					MapSqlParameterSource insertSource = new MapSqlParameterSource("account",account);
+					insertSource.addValue("domainId", domainId);
+					insertSource.addValue("propertyName", entry.getKey().toLowerCase());
+					insertSource.addValue("propertyValue", entry.getValue());
+					template.update(refreshSql, insertSource);
+				}
+			}
+		}catch(Exception e){
+			log.warn("error while sync of account properties:",e);
+		}
 	}
 	
 }

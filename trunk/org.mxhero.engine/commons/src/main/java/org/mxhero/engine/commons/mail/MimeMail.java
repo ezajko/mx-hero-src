@@ -75,11 +75,11 @@ public final class MimeMail {
 		this.sequence = sequence;
 		this.time = time;
 		this.responseServiceId = responseServiceId;
-		this.recipient = recipient;
-		this.recipientId = recipient;
+		this.recipient = toLower(recipient);
+		this.recipientId = toLower(recipient);
 		this.recipientDomainId = getDomain(recipient);
-		this.sender = from;
-		this.senderId = from;
+		this.sender = toLower(from);
+		this.senderId = toLower(from);
 		this.senderDomainId = getDomain(from);
 		try {
 			this.message = new StaticIdMimeMessage(data);
@@ -135,11 +135,11 @@ public final class MimeMail {
 		this.sequence = Sequencer.getInstance().getNextSequence();
 		this.time = new Timestamp(System.currentTimeMillis());
 		this.responseServiceId = responseServiceId;
-		this.recipient = recipient;
-		this.recipientId = recipient;
+		this.recipient = toLower(recipient);
+		this.recipientId = toLower(recipient);
 		this.recipientDomainId = getDomain(recipient);
-		this.sender = from;
-		this.senderId = from;
+		this.sender = toLower(from);
+		this.senderId = toLower(from);
 		this.senderDomainId = getDomain(from);
 	}
 
@@ -340,10 +340,17 @@ public final class MimeMail {
 
 	private static String getDomain(String email){
 		if(email!=null && email.contains("@")){
-			return email.split("@")[1];
+			return email.split("@")[1].trim().toLowerCase();
 		}else{
 			return "";
 		}
+	}
+	
+	private static String toLower(String value){
+		if(value == null){
+			return null;
+		}
+		return value.trim().toLowerCase();
 	}
 
 	public int getDeliverTries() {

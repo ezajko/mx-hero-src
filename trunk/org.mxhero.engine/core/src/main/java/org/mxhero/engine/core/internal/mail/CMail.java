@@ -2,6 +2,8 @@ package org.mxhero.engine.core.internal.mail;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -268,5 +270,13 @@ public class CMail implements Mail{
 		public void write(byte[] arg0) throws IOException {
 			size += arg0.length;
 		}
+	}
+
+	@Override
+	public Date getSentDate() {
+		try {
+			return mimeMail.getMessage().getSentDate();
+		} catch (MessagingException e) {log.warn(e.getMessage());}
+		return Calendar.getInstance().getTime();
 	}
 }

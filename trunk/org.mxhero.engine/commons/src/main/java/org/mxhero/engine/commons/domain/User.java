@@ -1,6 +1,7 @@
 package org.mxhero.engine.commons.domain;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Represents a user inside the platform so it can be used inside rules.
@@ -19,6 +20,8 @@ public class User {
 	private Collection<String> addressBook;
 	
 	private Boolean managed;
+	
+	private Map<String, String> properties;
 
 	/**
 	 * @return
@@ -122,7 +125,7 @@ public class User {
 			return false;
 		}else{
 			for(String email : emails){
-				if(this.getAliases().contains(email)){
+				if(this.getAliases().contains(email.toLowerCase())){
 					return true;
 				}
 			}
@@ -142,7 +145,7 @@ public class User {
 		
 		if(this.getAddressBook()!=null){
 			for(String email : emails){
-				if(this.getAddressBook().contains(email)){
+				if(this.getAddressBook().contains(email.toLowerCase())){
 					return true;
 				}
 			}
@@ -150,7 +153,21 @@ public class User {
 		
 		return false;
 	}
-	
+
+	/**
+	 * @return
+	 */
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @param properties
+	 */
+	public void setProperties(Map<String, String> properties) {
+		this.properties = properties;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -25,4 +25,5 @@ public interface DomainAdLdapRepository {
 	public void updateAliasesAccount(String account, String domainId, List<String> aliases);
 	
 	public void insertAccount(String account, String domainId, List<String> aliases);
+	
 }

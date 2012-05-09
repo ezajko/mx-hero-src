@@ -1,6 +1,7 @@
 package org.mxhero.engine.plugin.adsync.internal.domain;
 
 import java.util.Calendar;
+import java.util.Map;
 
 public class DomainAdLdap {
 
@@ -31,6 +32,8 @@ public class DomainAdLdap {
 	private Boolean overrideFlag;
 	
 	private String notifyEmail;
+	
+	private Map<String,String> accountProperties;
 
 	public String getDomainId() {
 		return domainId;
@@ -142,6 +145,14 @@ public class DomainAdLdap {
 
 	public void setNotifyEmail(String notifyEmail) {
 		this.notifyEmail = notifyEmail;
+	}
+
+	public Map<String, String> getAccountProperties() {
+		return accountProperties;
+	}
+
+	public void setAccountProperties(Map<String, String> accountProperties) {
+		this.accountProperties = accountProperties;
 	}
 
 }
