@@ -59,6 +59,7 @@ public class RecordMapper implements RowMapper<RecordVO>{
 		record.setStateReason(rs.getString(STATE_REASON));
 		record.setSubject(rs.getString(SUBJECT));
 		record.setToRecipients(rs.getString(TO_RECIPIENTS));
+		record.setSequence(rs.getLong(RECORD_SEQUENCE));
 		
 		return record;
 	}

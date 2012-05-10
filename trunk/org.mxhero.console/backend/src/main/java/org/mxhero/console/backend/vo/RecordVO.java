@@ -6,6 +6,8 @@ public class RecordVO {
 
 	private Calendar insertDate;
 
+	private Long sequence;
+	
 	private String messageId;
 
 	private String phase;
@@ -33,6 +35,14 @@ public class RecordVO {
 	private String stateReason;
 
 	private String flow;
+
+	public Long getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(Long sequence) {
+		this.sequence = sequence;
+	}
 
 	public Calendar getInsertDate() {
 		return insertDate;

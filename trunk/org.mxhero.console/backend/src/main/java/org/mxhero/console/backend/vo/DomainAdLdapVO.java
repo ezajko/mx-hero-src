@@ -1,6 +1,7 @@
 package org.mxhero.console.backend.vo;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class DomainAdLdapVO {
 	
@@ -34,7 +35,7 @@ public class DomainAdLdapVO {
 	
 	private String dnAuthenticate;
 	
-	private String accountProperties;
+	private List<DomainAdLdapPropertyVO> accountProperties;
 
 	public String getDomainId() {
 		return domainId;
@@ -148,11 +149,11 @@ public class DomainAdLdapVO {
 		this.dnAuthenticate = dnAuthenticate;
 	}
 
-	public String getAccountProperties() {
+	public List<DomainAdLdapPropertyVO> getAccountProperties() {
 		return accountProperties;
 	}
 
-	public void setAccountProperties(String accountProperties) {
+	public void setAccountProperties(List<DomainAdLdapPropertyVO> accountProperties) {
 		this.accountProperties = accountProperties;
 	}
 

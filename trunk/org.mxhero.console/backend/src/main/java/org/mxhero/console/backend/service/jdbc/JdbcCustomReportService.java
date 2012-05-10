@@ -1,18 +1,25 @@
 package org.mxhero.console.backend.service.jdbc;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.mxhero.console.backend.repository.jdbc.mapper.RecordMapper;
+import org.mxhero.console.backend.repository.jdbc.mapper.RecordStatMapper;
 import org.mxhero.console.backend.service.CustomReportService;
 import org.mxhero.console.backend.service.PluginReportService;
 import org.mxhero.console.backend.vo.FeatureRuleDirectionVO;
+import org.mxhero.console.backend.vo.RecordStatVO;
 import org.mxhero.console.backend.vo.RecordVO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +31,7 @@ public class JdbcCustomReportService implements CustomReportService{
 	private static final String DOMAIN="domain";	
 	private static final String ALLDOMAINS="alldomains";
 	private static final String ANYONEELSE="anyoneelse";
-	
+	private static Logger log = LoggerFactory.getLogger(JdbcCustomReportService.class);
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
@@ -91,6 +98,21 @@ public class JdbcCustomReportService implements CustomReportService{
 		}
 				
 		return query;
+	}
+
+	@Override
+	public List<RecordStatVO> getStats(Long insertDate, Long sequence) {
+		String sql = " SELECT `"+RecordStatMapper.STAT_KEY+"`,`"+RecordStatMapper.STAT_VALUE+"` " +
+				" FROM `"+RecordStatMapper.DATABASE+"`.`"+RecordStatMapper.TABLE_NAME+"`" +
+				" WHERE `"+RecordStatMapper.RECORD_SEQUENCE+"` = :sequence" +
+				" AND `"+RecordStatMapper.INSERT_DATE+"` = :insertDate ";
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		source.addValue("insertDate", new Timestamp(insertDate));
+		source.addValue("sequence", sequence);
+		List<RecordStatVO> stats = template.query(sql, source, new RecordStatMapper());
+		log.debug("insertDate="+ new Timestamp(insertDate).toString()+" sequence="+sequence);
+		log.debug("stats="+stats.toString());
+		return stats;
 	}
 
 
