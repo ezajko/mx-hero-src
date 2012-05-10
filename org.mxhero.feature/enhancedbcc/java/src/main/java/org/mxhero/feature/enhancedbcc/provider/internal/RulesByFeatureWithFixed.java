@@ -18,6 +18,8 @@ import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.commons.util.HeaderUtils;
 import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
 import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.mxhero.engine.plugin.threadlight.ThreadLightHeaders;
 import org.mxhero.engine.plugin.threadlight.service.ThreadRowService;
 import org.mxhero.engine.plugin.threadlight.vo.ThreadRowPk;
@@ -106,6 +108,7 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 						ThreadRowPk pk = new ThreadRowPk(mail.getHeaders().getHeaderValue(ThreadLightHeaders.MESSAGE_ID), mail.getHeaders().getHeaderValue(ThreadLightHeaders.SENDER), mail.getHeaders().getHeaderValue(ThreadLightHeaders.RECIPIENT));
 						service.unfollow(pk, Provider.FOLLOWER_ID+"."+email);
 					}
+					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.enhancedbcc.recipeint."+email, "bcc"));
 				}
 			}
 		}

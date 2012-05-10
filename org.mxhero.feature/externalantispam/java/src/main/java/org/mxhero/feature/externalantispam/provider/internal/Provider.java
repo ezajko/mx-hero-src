@@ -59,11 +59,11 @@ public class Provider extends RulesByFeature{
 						.getValue().trim());
 			} else if (property.getKey().equals(EMAIL_LIST)) {
 				String value = StringEscapeUtils.escapeJava(property
-						.getValue().trim());
+						.getValue().trim().toLowerCase());
 				if (value.startsWith("@")) {
-					domains.add(value.replace("@", ""));
+					domains.add(value.replace("@", "").toLowerCase());
 				} else {
-					accounts.add(value);
+					accounts.add(value.toLowerCase());
 				}
 			} else if (property.getKey().equals(PREFIX_VALUE)) {
 				prefix = StringEscapeUtils.escapeJava(property
@@ -150,10 +150,12 @@ public class Provider extends RulesByFeature{
 				|| mail.getSender().hasAlias(accounts.toArray(new String[accounts.size()]))){
 				isException = true;
 			}
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.externalantispam.exception", Boolean.toString(isException)));
 			//if in white list and remove header is check
 			if(removeHeader!=null
 				&& isException){
 				mail.getHeaders().removeHeader(removeHeader);
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.externalantispam.removed.header", removeHeader));
 			}
 			if(!isException){
 				if(managed){

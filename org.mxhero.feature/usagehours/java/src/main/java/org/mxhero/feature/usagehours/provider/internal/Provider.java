@@ -162,6 +162,15 @@ public class Provider extends RulesByFeature{
 				}
 			}
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.usagehours", Boolean.TRUE.toString()));
+			if(mail.getSender().getDomain().hasAlias(group)){
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.usagehours.email",mail.getSender().getMail()));
+			}else if(mail.getRecipient().getDomain().hasAlias(group)){
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.usagehours.email",mail.getRecipient().getMail()));
+			}else if(mail.getSender().getDomain().getManaged()){
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.usagehours.email",mail.getSender().getMail()));
+			}else if(mail.getRecipient().getDomain().getManaged()){
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.usagehours.email",mail.getRecipient().getMail()));
+			}
 		}
 		
 	}

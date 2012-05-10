@@ -126,6 +126,7 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
+			String files = Arrays.deepToString(mail.getAttachments().getFileNames().toArray());
 			if(!mail.getProperties().containsKey("org.mxhero.feature.attachmentlink")
 				&& !mail.getProperties().containsKey("org.mxhero.feature.attachmenttrack")){
 				Result result = mail.cmd(AlCommand.class.getName(),new ALCommandParameters(locale, notify, message));
@@ -136,6 +137,7 @@ public class Provider extends RulesByFeature{
 					mail.getProperties().put("org.mxhero.feature.attachmenttrack", ruleId.toString());
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachmentlink",Boolean.toString(result.isConditionTrue())));
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachmenttrack",Boolean.toString(result.isConditionTrue())));
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachmenttrack.files",files));
 					log.debug("exec, attached");
 				}
 			}else{

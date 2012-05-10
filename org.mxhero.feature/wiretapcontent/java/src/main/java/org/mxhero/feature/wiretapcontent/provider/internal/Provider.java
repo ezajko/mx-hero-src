@@ -49,7 +49,7 @@ public class Provider extends RulesByFeature{
 			} else if(property.getKey().equals(WORD_LIST_PROPERTY)){
 				words.add(StringEscapeUtils.escapeJava(property.getValue()));
 			} else if(property.getKey().equals(EMAIL_VALUE_PROPERTY)){
-				emailCopy = property.getValue();
+				emailCopy = property.getValue().toLowerCase();
 			} else if(property.getKey().equals(FOUND_ACTION)){
 				action = property.getValue();
 			}
@@ -104,7 +104,8 @@ public class Provider extends RulesByFeature{
 						InternetAddress emailAddress = new InternetAddress(individualMail,false);
 						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
-							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));	
+							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
+							mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.wiretapcontent.copy."+emailAddress.getAddress(), Boolean.TRUE.toString()));
 						}
 					} catch (AddressException e) {
 						log.warn("wrong email address",e);
@@ -117,6 +118,7 @@ public class Provider extends RulesByFeature{
 						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
 							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
+							mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.wiretapcontent.redirect."+emailAddress.getAddress(), Boolean.TRUE.toString()));
 						}
 					} catch (AddressException e) {
 						log.warn("wrong email address",e);

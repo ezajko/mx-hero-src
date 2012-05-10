@@ -42,7 +42,7 @@ public class Provider extends RulesByFeatureWithFixed{
 			if(property.getKey().equals(PROTECTED_SELECTION)){
 				protectedSelection=property.getValue();
 			} else if (property.getKey().equals(EMAIL_LIST)){
-				accounts.add(StringEscapeUtils.escapeJava(property.getValue().trim()));
+				accounts.add(StringEscapeUtils.escapeJava(property.getValue().trim()).toLowerCase());
 			}
 		}
 		
@@ -151,7 +151,7 @@ public class Provider extends RulesByFeatureWithFixed{
 									log.debug("trying to remove alias "+alias);
 									if(mail.getRecipients().removeRecipient(RecipientType.cc, alias)){
 										log.debug("alias removed from CC "+alias);
-										removedCc.add(alias);
+										removedCc.add(alias.toLowerCase());
 									}
 								}
 							}
@@ -164,7 +164,7 @@ public class Provider extends RulesByFeatureWithFixed{
 									log.debug("trying to remove alias "+alias);
 									if(mail.getRecipients().removeRecipient(RecipientType.to, alias)){
 										log.debug("alias removed from TO "+alias);
-										removedTo.add(alias);
+										removedTo.add(alias.toLowerCase());
 									}
 								}
 							}

@@ -83,6 +83,7 @@ public class Provider extends RulesByFeatureWithFixed {
 			CloneParameters cloneParameters = new CloneParameters(mail.getSender().getMail(),realEmail);
 			mail.cmd(Clone.class.getName(),cloneParameters);
 			mail.redirect("org.mxhero.feature.instantalias");
+			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected", realEmail));
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.alias", mail.getRecipient().getMail()));
 
 		}
