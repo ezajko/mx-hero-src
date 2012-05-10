@@ -26,7 +26,6 @@ public class DomainAdLdapMapper implements RowMapper<DomainAdLdapVO> {
 	public static final String SSL_FLAG = "ssl_flag";
 	public static final String USER = "user";
 	public static final String DN_AUTHENTICATE = "dn_authenticate";
-	public static final String ACCOUNT_PROPERTIES = "account_properties";
 	
 	@Override
 	public DomainAdLdapVO mapRow(ResultSet rs, int param) throws SQLException {
@@ -55,7 +54,6 @@ public class DomainAdLdapMapper implements RowMapper<DomainAdLdapVO> {
 		adladap.setPort(rs.getString(PORT));
 		adladap.setSslFlag(rs.getBoolean(SSL_FLAG));
 		adladap.setUser(rs.getString(USER));
-		adladap.setAccountProperties(rs.getString(ACCOUNT_PROPERTIES));
 		return adladap;
 	}
 

@@ -7,8 +7,10 @@ import javax.sql.DataSource;
 
 import org.mxhero.console.backend.repository.DomainAdLdapRepository;
 import org.mxhero.console.backend.repository.jdbc.mapper.DomainAdLdapMapper;
+import org.mxhero.console.backend.repository.jdbc.mapper.DomainAdLdapPropertyMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountAliasMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountMapper;
+import org.mxhero.console.backend.vo.DomainAdLdapPropertyVO;
 import org.mxhero.console.backend.vo.DomainAdLdapVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,13 +38,17 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 				" `"+DomainAdLdapMapper.LAST_UPDATE+"`,`"+DomainAdLdapMapper.NEXT_UPDATE+"`,"+
 				" `"+DomainAdLdapMapper.OVERRIDE_FLAG+"`,`"+DomainAdLdapMapper.PASSWORD+"`,"+
 				" `"+DomainAdLdapMapper.PORT+"`,`"+DomainAdLdapMapper.SSL_FLAG+"`,"+
-				" `"+DomainAdLdapMapper.USER+"`,`"+DomainAdLdapMapper.DN_AUTHENTICATE+"`," +
-				" `"+DomainAdLdapMapper.ACCOUNT_PROPERTIES+"`" +
+				" `"+DomainAdLdapMapper.USER+"`,`"+DomainAdLdapMapper.DN_AUTHENTICATE+"`" +
 				" FROM `"+DomainAdLdapMapper.DATABASE+"`.`"+DomainAdLdapMapper.TABLE_NAME+"`" +
 				" WHERE `"+DomainAdLdapMapper.DOMAIN+"` = :domainId";
 		List<DomainAdLdapVO> adldaps = template.query(sql, new MapSqlParameterSource("domainId",domainId), new DomainAdLdapMapper());
 		if(adldaps!=null && adldaps.size()>0){
-			return adldaps.get(0);
+			DomainAdLdapVO adldap = adldaps.get(0);
+			String sqlProperties = "SELECT `"+DomainAdLdapPropertyMapper.PROPERTY_NAME+"`,`"+DomainAdLdapPropertyMapper.PROPERTY_KEY+"`"+
+					" FROM `"+DomainAdLdapPropertyMapper.DATABASE+"`.`"+DomainAdLdapPropertyMapper.TABLE_NAME+"`" +
+					" WHERE `"+DomainAdLdapPropertyMapper.DOMAIN+"` = :domainId";
+			adldap.setAccountProperties(template.query(sqlProperties, new MapSqlParameterSource("domainId",domainId), new DomainAdLdapPropertyMapper()));
+			return adldap;
 		}
 		return null;
 	}
@@ -61,8 +67,7 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 				" `"+DomainAdLdapMapper.PORT+"` = :port," +
 				" `"+DomainAdLdapMapper.SSL_FLAG+"` = :sslFlag,"+
 				" `"+DomainAdLdapMapper.USER+"` = :user," +
-				" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"` = :dnAuthenticate," +
-				" `"+DomainAdLdapMapper.ACCOUNT_PROPERTIES+"` = :accountProperties" +
+				" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"` = :dnAuthenticate" +
 				" WHERE `"+DomainAdLdapMapper.DOMAIN+"` = :domainId";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		source.addValue("address", domainAdLdapVO.getAddres());
@@ -77,8 +82,22 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 		source.addValue("user", domainAdLdapVO.getUser());
 		source.addValue("dnAuthenticate", domainAdLdapVO.getDnAuthenticate());
 		source.addValue("domainId", domainAdLdapVO.getDomainId());
-		source.addValue("accountProperties", domainAdLdapVO.getAccountProperties());
 		template.update(sql, source);
+		
+		template.update("DELETE FROM `"+DomainAdLdapPropertyMapper.DATABASE+"`.`"+DomainAdLdapPropertyMapper.TABLE_NAME+"` WHERE `"+DomainAdLdapPropertyMapper.DOMAIN+"` = :domainId"
+				, new MapSqlParameterSource("domainId",domainAdLdapVO.getDomainId()));
+		if(domainAdLdapVO.getAccountProperties()!=null){
+			for(DomainAdLdapPropertyVO property : domainAdLdapVO.getAccountProperties()){
+				MapSqlParameterSource propertySource = new MapSqlParameterSource();
+				propertySource.addValue("name", property.getName());
+				propertySource.addValue("key", property.getKey());
+				propertySource.addValue("domain", domainAdLdapVO.getDomainId());
+				template.update("INSERT INTO `"+DomainAdLdapPropertyMapper.DATABASE+"`.`"+DomainAdLdapPropertyMapper.TABLE_NAME+"` " +
+						" (`"+DomainAdLdapPropertyMapper.PROPERTY_NAME+"`,`"+DomainAdLdapPropertyMapper.PROPERTY_KEY+"`,`"+DomainAdLdapPropertyMapper.DOMAIN+"`) " +
+						" VALUES (:name,:key,:domain) ;",propertySource);
+			}
+		}
+		
 		return findByDomainId(domainAdLdapVO.getDomainId());
 	}
 
@@ -92,9 +111,9 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 				" `"+DomainAdLdapMapper.NEXT_UPDATE+"`,"+
 				" `"+DomainAdLdapMapper.OVERRIDE_FLAG+"`,`"+DomainAdLdapMapper.PASSWORD+"`,"+
 				" `"+DomainAdLdapMapper.PORT+"`,`"+DomainAdLdapMapper.SSL_FLAG+"`,"+
-				" `"+DomainAdLdapMapper.USER+"`,"+" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"`,`"+DomainAdLdapMapper.ACCOUNT_PROPERTIES+"`)" +
+				" `"+DomainAdLdapMapper.USER+"`,"+" `"+DomainAdLdapMapper.DN_AUTHENTICATE+"`)" +
 				" VALUES (:domainId, :address, :base, :directoryType, :filter, :nextUpdate," +
-				" :overrideFlag, :password, :port, :sslFlag, :user, :dnAuthenticate, :accountProperties) ;";
+				" :overrideFlag, :password, :port, :sslFlag, :user, :dnAuthenticate) ;";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		source.addValue("domainId", domainAdLdapVO.getDomainId());
 		source.addValue("address", domainAdLdapVO.getAddres());
@@ -108,8 +127,20 @@ public class JdbcDomainAdLdapRepository implements DomainAdLdapRepository{
 		source.addValue("sslFlag", domainAdLdapVO.getSslFlag());
 		source.addValue("user", domainAdLdapVO.getUser());
 		source.addValue("dnAuthenticate", domainAdLdapVO.getDnAuthenticate());
-		source.addValue("accountProperties", domainAdLdapVO.getAccountProperties());
 		template.update(sql, source);
+		template.update("DELETE FROM `"+DomainAdLdapPropertyMapper.DATABASE+"`.`"+DomainAdLdapPropertyMapper.TABLE_NAME+"` WHERE `"+DomainAdLdapPropertyMapper.DOMAIN+"` = :domainId"
+				, new MapSqlParameterSource("domainId",domainAdLdapVO.getDomainId()));
+		if(domainAdLdapVO.getAccountProperties()!=null){
+			for(DomainAdLdapPropertyVO property : domainAdLdapVO.getAccountProperties()){
+				MapSqlParameterSource propertySource = new MapSqlParameterSource();
+				propertySource.addValue("name", property.getName());
+				propertySource.addValue("key", property.getKey());
+				propertySource.addValue("domain", domainAdLdapVO.getDomainId());
+				template.update("INSERT INTO `"+DomainAdLdapPropertyMapper.DATABASE+"`.`"+DomainAdLdapPropertyMapper.TABLE_NAME+"` " +
+						" (`"+DomainAdLdapPropertyMapper.PROPERTY_NAME+"`,`"+DomainAdLdapPropertyMapper.PROPERTY_KEY+"`,`"+DomainAdLdapPropertyMapper.DOMAIN+"`) " +
+						" VALUES (:name,:key,:domain) ;",propertySource);
+			}
+		}		
 		return findByDomainId(domainAdLdapVO.getDomainId());
 	}
 
