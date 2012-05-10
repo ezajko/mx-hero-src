@@ -45,7 +45,7 @@ public class Provider extends RulesByFeature{
 			if(property.getKey().equals(LIST_IGNORE)){
 				ignoreList=Boolean.parseBoolean(property.getValue());
 			}else if (property.getKey().equals(EMAIL_VALUE)){
-				email = property.getValue();
+				email = property.getValue().toLowerCase();
 			}else if (property.getKey().equals(BCC_HEADER)){
 				bccHeader = property.getValue();
 			}else if (property.getKey().equals(BCC_HEADER_PLAIN)){

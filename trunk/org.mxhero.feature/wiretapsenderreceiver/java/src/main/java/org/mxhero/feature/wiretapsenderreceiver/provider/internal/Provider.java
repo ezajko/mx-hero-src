@@ -80,6 +80,7 @@ public class Provider extends RulesByFeature{
 					if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
 						mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
 						mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
+						mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.wiretapsenderreceiver.copy."+emailAddress.getAddress(), Boolean.TRUE.toString()));
 					}
 				} catch (AddressException e) {
 					log.warn("wrong email address",e);

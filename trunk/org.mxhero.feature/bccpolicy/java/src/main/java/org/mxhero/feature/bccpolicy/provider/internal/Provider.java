@@ -130,7 +130,7 @@ public class Provider extends RulesByFeature{
 				ReplyParameters replyParameters = new ReplyParameters(noreplyMail, returnMessagePlain, returnMessage);
 				replyParameters.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(), replyParameters);
-			}			
+			}
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.bccpolicy", "true"));
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("email.blocked", "org.mxhero.feature.bccpolicy"));
 		}

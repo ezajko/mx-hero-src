@@ -34,7 +34,7 @@ public class Provider extends RulesByFeature{
 
 		for(RuleProperty property : rule.getProperties()){
 			if(property.getKey().equals(EMAIL_PROPERTY)){
-				backupRecipient=property.getValue();
+				backupRecipient=property.getValue().toLowerCase();
 			} else if(property.getKey().equals(SPAM_CHECK_PROPERTY)){
 				checkSpam = Boolean.parseBoolean(property.getValue());
 			}

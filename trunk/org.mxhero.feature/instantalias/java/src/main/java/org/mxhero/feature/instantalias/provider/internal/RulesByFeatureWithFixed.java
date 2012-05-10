@@ -12,6 +12,8 @@ import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
 import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
+import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +85,8 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 					cloneParameters.setGenerateId(false);
 					cloneParameters.setOverride("both");
 					mail.cmd(Clone.class.getName(), cloneParameters);
+					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected", recipient));
+					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected.sender", sender));
 					mail.redirect("org.mxhero.feature.redirect");
 			} else{
 				log.debug("no match");

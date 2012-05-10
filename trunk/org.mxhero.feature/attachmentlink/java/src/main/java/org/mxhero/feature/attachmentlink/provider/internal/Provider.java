@@ -2,6 +2,7 @@ package org.mxhero.feature.attachmentlink.provider.internal;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
@@ -74,6 +75,7 @@ public class Provider extends RulesByFeature{
 		public boolean eval(Mail mail) {
 			return mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getInitialSize()> effectiveMaxSize
+			&& mail.getAttachments().isAttached()
 			&& !mail.getProperties().containsKey("org.mxhero.feature.attachmentlink")
 			&& mail.getHeaders()!=null;
 		}
@@ -98,11 +100,13 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
+			String files = Arrays.deepToString(mail.getAttachments().getFileNames().toArray());
 			Result result = mail.cmd(AlCommand.class.getName(), new ALCommandParameters(locale, notify, message));
 			if(!mail.getStatus().equals(Mail.Status.requeue)){
 				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isConditionTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
 				mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachmentlink",Boolean.toString(result.isConditionTrue())));
+				mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachmentlink.files",files));
 			}
 		}
 		

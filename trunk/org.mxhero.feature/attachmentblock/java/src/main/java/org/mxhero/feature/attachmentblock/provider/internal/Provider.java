@@ -134,6 +134,8 @@ public class Provider extends RulesByFeature{
 				if(mail.getStatus().equals(Mail.Status.deliver) && mail.getAttachments().hasMatchingExtension(extensions.toArray(new String[extensions.size()]))){
 					mail.drop("org.mxhero.feature.attachmentblock");
 					log.debug("droped by extension");
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.reason","extension"));
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.extensions",Arrays.deepToString(mail.getAttachments().getExtensions().toArray())));
 				}
 			}
 			if(names.size()>0){
@@ -141,6 +143,8 @@ public class Provider extends RulesByFeature{
 				if(mail.getStatus().equals(Mail.Status.deliver) && mail.getAttachments().hasMatchingName(names.toArray(new String[names.size()]))){
 					mail.drop("org.mxhero.feature.attachmentblock");
 					log.debug("droped by names");
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.reason","names"));
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.names",Arrays.deepToString(mail.getAttachments().getFileNames().toArray())));
 				}
 			}
 			if(types.size()>0){
@@ -148,6 +152,8 @@ public class Provider extends RulesByFeature{
 				if(mail.getStatus().equals(Mail.Status.deliver) && mail.getAttachments().hasMatchingType(types.toArray(new String[types.size()]))){
 					mail.drop("org.mxhero.feature.attachmentblock");
 					log.debug("droped by types");
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.reason","types"));
+					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.types",Arrays.deepToString(mail.getAttachments().getTypes().toArray())));
 				}
 			}
 

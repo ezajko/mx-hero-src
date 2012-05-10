@@ -1,5 +1,7 @@
 package org.mxhero.feature.clamav.provider.internal;
 
+import java.util.Arrays;
+
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
 import org.mxhero.engine.commons.mail.api.Mail;
@@ -12,6 +14,7 @@ import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
 import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
 import org.mxhero.engine.plugin.clamd.command.ClamavScan;
 import org.mxhero.engine.plugin.clamd.command.ClamavScanParameters;
+import org.mxhero.engine.plugin.clamd.command.ClamavScanResult;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
@@ -80,6 +83,9 @@ public class Provider extends RulesByFeature{
 			cavsParameters.setAddHeader(true);
 			cavsParameters.setRemoveInfected(false);
 			Result clamavResult = mail.cmd(ClamavScan.class.getName(),cavsParameters);
+			if(clamavResult instanceof ClamavScanResult && ((ClamavScanResult)clamavResult).getScanResults()!=null){
+				mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.clamav.result", Arrays.deepToString(((ClamavScanResult)clamavResult).getScanResults().toArray())));
+			}
 			mail.getProperties().put("org.mxhero.feature.clamav",ruleId.toString());
 			mail.getHeaders().addHeader("X-mxHero-ClamAV","rule="+ruleId.toString()+";result="+clamavResult.getMessage());
 			if(action.equalsIgnoreCase(ACTION_RETURN) && clamavResult.isConditionTrue()){

@@ -42,9 +42,9 @@ public class Provider extends RulesByFeature{
 			} else if (property.getKey().equals(EMAIL_LIST)){
 				String value =  StringEscapeUtils.escapeJava(property.getValue().trim());
 				if(value.startsWith("@")){
-					domains.add(value.replace("@", ""));
+					domains.add(value.replace("@", "").toLowerCase());
 				}else{
-					accounts.add(value);
+					accounts.add(value.toLowerCase());
 				}
 			} else if (property.getKey().equals(RETURN_TEXT)){
 				returnText = property.getValue();

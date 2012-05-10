@@ -14,6 +14,7 @@ import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
 import org.mxhero.engine.plugin.spamd.command.SpamScan;
 import org.mxhero.engine.plugin.spamd.command.SpamScanParameters;
+import org.mxhero.engine.plugin.spamd.command.SpamScanResult;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 
@@ -43,9 +44,9 @@ public class Provider extends RulesByFeature{
 			} else if (property.getKey().equals(EMAIL_LIST)){
 				String value =  StringEscapeUtils.escapeJava(property.getValue().trim());
 				if(value.startsWith("@")){
-					domains.add(value.replace("@", ""));
+					domains.add(value.replace("@", "").toLowerCase());
 				}else{
-					accounts.add(value);
+					accounts.add(value.toLowerCase());
 				}
 			} else if (property.getKey().equals(PREFIX_VALUE)){
 				prefix = StringEscapeUtils.escapeJava(property.getValue().trim());
@@ -108,6 +109,9 @@ public class Provider extends RulesByFeature{
 			Result spamResult = mail.cmd(SpamScan.class.getName(),new SpamScanParameters(prefix, true));	 
 			mail.getHeaders().addHeader("X-mxHero-SpamAssassin","rule="+ruleId+";result="+spamResult.getMessage());
 			if(spamResult.isConditionTrue()){
+				if(spamResult instanceof SpamScanResult){
+					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.spamassassin.hits", ((SpamScanResult)spamResult).getHits().toString()));
+				}
 				mail.getProperties().put("spam.detected","true");
 				if(action.equals(ACTION_REJECT)){
 					mail.drop("org.mxhero.feature.spamassassin");
