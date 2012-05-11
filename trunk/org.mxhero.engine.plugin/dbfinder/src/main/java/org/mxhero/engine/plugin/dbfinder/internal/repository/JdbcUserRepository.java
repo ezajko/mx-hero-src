@@ -10,6 +10,8 @@ import javax.sql.DataSource;
 
 import org.mxhero.engine.commons.domain.Domain;
 import org.mxhero.engine.commons.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository("jdbcUserRepository")
 public class JdbcUserRepository implements UserRepository{
 
+	private static Logger log = LoggerFactory.getLogger(JdbcUserRepository.class);
 	private NamedParameterJdbcTemplate template;
 	
 	/**
@@ -101,11 +104,17 @@ public class JdbcUserRepository implements UserRepository{
 					}
 				}
 				//load user properties for the domain
-				String accountProperties = "SELECT account||'@'||domain_id as email, property_name, property_value FROM email_accounts_properties WHERE domain_id = :domainId";
+				String accountProperties = "SELECT concat(account,'@',domain_id) as email, property_name, property_value FROM email_accounts_properties WHERE domain_id = :domainId";
 				List<Map<String, Object>> accountsPropertiesResult = template.queryForList(accountProperties, new MapSqlParameterSource("domainId", domainKey));
+				log.debug("found X properties:"+accountsPropertiesResult.size()+" for domain:"+domainKey);
 				if(accountsPropertiesResult!=null && accountsPropertiesResult.size()>0){
+					log.debug("adding properties");
 					for(Map<String, Object> accountProperty : accountsPropertiesResult){
 						if(aliasesMap.containsKey(accountProperty.get("email"))){
+							if(aliasesMap.get(accountProperty.get("email")).getProperties()==null){
+								aliasesMap.get(accountProperty.get("email")).setProperties(new HashMap<String, String>());
+							}
+							log.debug("adding for email:"+accountProperty.get("email")+" key:"+accountProperty.get("property_name")+" value:"+accountProperty.get("property_value"));
 							aliasesMap.get(accountProperty.get("email")).getProperties().put(accountProperty.get("property_name").toString(), accountProperty.get("property_value").toString());
 						}
 					}
