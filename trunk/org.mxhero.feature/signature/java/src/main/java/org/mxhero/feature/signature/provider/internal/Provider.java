@@ -73,10 +73,17 @@ public class Provider extends RulesByFeature{
 		}
 
 		public void exec(Mail mail) {
-			log.debug("adding text:"+returnMessagePlain);
 			mail.getProperties().put("org.mxhero.feature.signature."+group, ruleId.toString());
-			mail.getBody().addText("</p></p>"+replaceTextVars(mail.getSender().getProperties(),returnMessage), Body.AddTextPosition.botton, Body.AddTextPartType.html);
-			mail.getBody().addText("\n\n"+replaceTextVars(mail.getSender().getProperties(),returnMessagePlain), Body.AddTextPosition.botton, Body.AddTextPartType.plain);
+			log.debug("returnMessage:"+returnMessage);
+			log.debug("sender:"+mail.getSender().toString());
+			log.debug("sender properties:"+mail.getSender().getProperties().toString());
+			String processedReturnMessage = replaceTextVars(mail.getSender().getProperties(),returnMessage);
+			log.debug("processedReturnMessage:"+processedReturnMessage);
+			mail.getBody().addText("</p></p>"+processedReturnMessage, Body.AddTextPosition.botton, Body.AddTextPartType.html);
+			log.debug("returnMessagePlain:"+returnMessagePlain);
+			String processedReturnMessagePlain = replaceTextVars(mail.getSender().getProperties(),returnMessagePlain);
+			log.debug("processedReturnMessagePlain:"+processedReturnMessagePlain);
+			mail.getBody().addText("\n\n"+replaceTextVars(mail.getSender().getProperties(),processedReturnMessagePlain), Body.AddTextPosition.botton, Body.AddTextPartType.plain);
 			mail.getHeaders().addHeader("X-mxHero-Signature", "ruleId="+ruleId);
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.signature", Boolean.TRUE.toString()));
 		}
@@ -91,11 +98,14 @@ public class Provider extends RulesByFeature{
 			while (m2.find()) {
 				lastIndex = m2.end();
 				String key = content.substring(m2.start() + 2, m2.end() - 1);
-
+				log.debug("key:"+key);
 				// this should be a header
 				String value = properties.get(key);
 				if (value != null) {
+					log.debug("value:"+value);
 					m2.appendReplacement(sb, value);
+				}else{
+					m2.appendReplacement(sb, "");
 				}
 
 			}
