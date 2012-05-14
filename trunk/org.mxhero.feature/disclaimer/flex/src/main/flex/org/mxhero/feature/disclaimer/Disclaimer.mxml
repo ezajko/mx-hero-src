@@ -40,7 +40,7 @@
 			
 			public function isValid():Boolean{
 				if(StringUtil.trim(rte.text).length<1){
-					validationError = resourceManager.getString('emailsizelimiter','error.return.message');
+					validationError = resourceManager.getString('disclaimer','error.return.message');
 					return false;
 				}
 				validationError="";
@@ -114,7 +114,7 @@
 	<fx:Metadata>
 		[ResourceBundle("disclaimer")]
 	</fx:Metadata>
-	
+
 	<s:Label text="{resourceManager.getString('disclaimer','first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup paddingLeft="20" gap="20" width="600">
