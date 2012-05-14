@@ -58,6 +58,7 @@ public class JdbcUserRepository implements UserRepository{
 					domainMap.put(domain.getId(), domain);
 				}
 				domain.getAliases().add(domainRow.get("alias").toString().toLowerCase());
+				domainMap.put(domainRow.get("alias").toString(), domain);
 			}
 		}
 		return domainMap;

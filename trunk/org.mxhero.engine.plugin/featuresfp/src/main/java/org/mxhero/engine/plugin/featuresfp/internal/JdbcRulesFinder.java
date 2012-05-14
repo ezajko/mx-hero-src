@@ -17,6 +17,8 @@ import org.mxhero.engine.plugin.featuresfp.internal.entity.FeatureEntity;
 import org.mxhero.engine.plugin.featuresfp.internal.entity.RuleDirectionEntity;
 import org.mxhero.engine.plugin.featuresfp.internal.entity.RuleEntity;
 import org.mxhero.engine.plugin.featuresfp.internal.entity.RulePropertyEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -29,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 public class JdbcRulesFinder implements RulesFinder{
-
+	private static Logger log = LoggerFactory.getLogger(JdbcRulesFinder.class);
 	private NamedParameterJdbcTemplate template;
 	
 	/**
@@ -124,6 +126,9 @@ public class JdbcRulesFinder implements RulesFinder{
 				RulePropertyEntity property = new RulePropertyEntity();
 				property.setKey(rs.getString("property_key"));
 				property.setValue(rs.getString("property_value"));
+				if(log.isDebugEnabled() && property.getKey().equalsIgnoreCase("return.message.plain")){
+					log.debug(property.getKey()+":"+property.getValue());
+				}
 				return property;
 			}
 		});
