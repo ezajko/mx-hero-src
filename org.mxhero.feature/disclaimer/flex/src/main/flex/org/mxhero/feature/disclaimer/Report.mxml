@@ -296,7 +296,7 @@
 									 id="cserie"
 									 selectable="true"
 									 buttonMode="true"
-									 displayName="{resourceManager.getString('bccpolicy_report','hits.axis')}">
+									 displayName="{resourceManager.getString('disclaimer_report','hits.axis')}">
 						<mx:stroke>
 							<s:SolidColorStroke color="red" caps="round" />
 						</mx:stroke>
