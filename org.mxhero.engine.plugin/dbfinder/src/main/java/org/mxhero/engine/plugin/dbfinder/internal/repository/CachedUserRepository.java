@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.mxhero.engine.commons.domain.Domain;
 import org.mxhero.engine.commons.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mmarmol
@@ -11,6 +13,8 @@ import org.mxhero.engine.commons.domain.User;
  */
 public class CachedUserRepository implements UserRepository, Runnable{
 
+	private static Logger log = LoggerFactory.getLogger(CachedUserRepository.class);
+	
 	private UserRepository repository;
 	
 	private Map<String, User> users;
@@ -80,11 +84,15 @@ public class CachedUserRepository implements UserRepository, Runnable{
 	 * 
 	 */
 	public void update(){
-		Map<String, Domain> newDomains = repository.getDomains();
-		Map<String, User> newUsers = repository.getUsers();
-		synchronized (this) {
-			domains=newDomains;
-			users=newUsers;
+		try{
+			Map<String, Domain> newDomains = repository.getDomains();
+			Map<String, User> newUsers = repository.getUsers();
+			synchronized (this) {
+				domains=newDomains;
+				users=newUsers;
+			}
+		}catch(Exception e){
+			log.error("Error, will try later: "+e.getMessage());
 		}
 	}
 

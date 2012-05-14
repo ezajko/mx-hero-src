@@ -21,4 +21,6 @@ gdata-core;groupId=com.google.gdata;inline=false, \
 gdata-base;groupId=com.google.gdata;inline=false, \
 gdata-appsforyourdomain;groupId=com.google.gdata;inline=false, \
 gdata-appsforyourdomain-meta;groupId=com.google.gdata;inline=false, \
+gdata-contacts;groupId=com.google.gdata;inline=false, \
+gdata-contacts-meta;groupId=com.google.gdata;inline=false, \
 google-collections;groupId=com.google.collections;inline=false 

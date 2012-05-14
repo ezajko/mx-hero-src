@@ -22,7 +22,7 @@
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://127.0.0.1/mxhero" />
+		<property name="url" value="jdbc:mysql://192.168.3.41/mxhero" />
 		<property name="username" value="mxhero" />
 		<property name="password" value="mxhero" />
 	</bean>

@@ -16,7 +16,7 @@ public class TestJdbcRulesFinder {
 
 	@Test
 	public void test(){
-		finder.find("org.mxhero.feature.clamav", 1);
+		finder.find("org.mxhero.feature.signature", 1);
 	}
 	
 	public JdbcRulesFinder getFinder() {
