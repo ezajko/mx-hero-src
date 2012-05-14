@@ -192,7 +192,7 @@ public class JdbcFeatureRuleRepository implements FeatureRuleRepository{
 				" VALUES(:key,:value,:ruleId)";
 		MapSqlParameterSource source = new MapSqlParameterSource("ruleId",ruleId);
 		source.addValue("key",property.getPropertyKey());
-		source.addValue("value", property.getPropertyValue());
+		source.addValue("value", property.getPropertyValue().replace("\r\n", "\n").replace("\r", "\n"));
 		template.update(sql, source);
 	}
 	
