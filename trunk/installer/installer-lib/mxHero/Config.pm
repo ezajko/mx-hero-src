@@ -21,7 +21,7 @@ our %myConfig;
 
 $myConfig{JDK_X86_DIRNAME} = 'jdk1.6.0_30-i586';
 $myConfig{JDK_X64_DIRNAME} = 'jdk1.6.0_30-x64';
-$myConfig{MXHERO_INSTALL_VERSION} = '1.5.0.RELEASE';
+$myConfig{MXHERO_INSTALL_VERSION} = '1.6.0.RELEASE';
 $myConfig{RPMFORGE_BASE_URL} = "http://packages.sw.be/rpmforge-release";
 $myConfig{RPMFORGE_EL6_X86} = 'rpmforge-release-0.5.2-2.el6.rf.i686';
 $myConfig{RPMFORGE_EL6_X64} = 'rpmforge-release-0.5.2-2.el6.rf.x86_64';
