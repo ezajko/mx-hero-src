@@ -20,11 +20,23 @@ public class RuleEndPoint {
 	}
 
 	@WebMethod(action="createRule")
-	public void createRule(
+	public Integer createRule(
 			@WebParam(name="ruleVO")FeatureRuleVO ruleVO, 
 			@WebParam(name="featureId")Integer featureId, 
 			@WebParam(name="domainId")String domainId){
-		ruleService.createRule(ruleVO, featureId, domainId);
+		return ruleService.createRule(ruleVO, featureId, domainId);
+	}
+	
+	@WebMethod(action="removeRule")
+	public void removeRule(
+			@WebParam(name="ruleId")Integer ruleId){
+		ruleService.remove(ruleId);
+	}
+	
+	@WebMethod(action="toggleStatus")
+	public void toggleStatus(
+			@WebParam(name="ruleId")Integer ruleId){
+		ruleService.toggleStatus(ruleId);
 	}
 	
 }

@@ -23,9 +23,9 @@ public class FlexRuleService implements RuleService{
 
 	@Override
 	@Secured("ROLE_DOMAIN_ADMIN")
-	public void createRule(FeatureRuleVO ruleVO, Integer featureId,
+	public Integer createRule(FeatureRuleVO ruleVO, Integer featureId,
 			String domainId) {
-		service.createRule(ruleVO, featureId, domainId);
+		return service.createRule(ruleVO, featureId, domainId);
 	}
 
 	@Override

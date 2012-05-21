@@ -6,7 +6,7 @@ import org.mxhero.console.backend.vo.FeatureRuleVO;
 
 public interface RuleService {
 
-	void createRule(FeatureRuleVO ruleVO, Integer featureId, String domainId);
+	Integer createRule(FeatureRuleVO ruleVO, Integer featureId, String domainId);
 
 	void editRule(FeatureRuleVO ruleVO);
 

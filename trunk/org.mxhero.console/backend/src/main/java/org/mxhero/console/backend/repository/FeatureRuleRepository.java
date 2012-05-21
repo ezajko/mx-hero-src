@@ -16,7 +16,7 @@ public interface FeatureRuleRepository {
 	
 	boolean checkFromTo(String domainId, Integer featureId, String fromFreeValue, String toFreeValue, Integer ruleId);
 	
-	void insert(FeatureRuleVO rule);
+	Integer insert(FeatureRuleVO rule);
 	
 	void update(FeatureRuleVO rule);
 	

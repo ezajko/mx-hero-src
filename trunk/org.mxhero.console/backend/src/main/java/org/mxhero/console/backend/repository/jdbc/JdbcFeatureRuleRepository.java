@@ -136,7 +136,7 @@ public class JdbcFeatureRuleRepository implements FeatureRuleRepository{
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void insert(FeatureRuleVO rule) {
+	public Integer insert(FeatureRuleVO rule) {
 		String ruleInsertSql = "INSERT INTO `"+FeatureRuleMapper.DATABASE+"`.`"+FeatureRuleMapper.TABLE_NAME+"`" +
 				" (`"+FeatureRuleMapper.ADMIN_ORDER+"`,`"+FeatureRuleMapper.CREATED+"`,`"+FeatureRuleMapper.DOMAIN_ID+"`," +
 				" `"+FeatureRuleMapper.ENABLED+"`,`"+FeatureRuleMapper.FEATURE_ID+"`,`"+FeatureRuleMapper.LABEL+"`," +
@@ -167,6 +167,7 @@ public class JdbcFeatureRuleRepository implements FeatureRuleRepository{
 				insertProperty(property,ruleKey.getKey().intValue());
 			}
 		}
+		return ruleKey.getKey().intValue();
 	}
 
 	private Integer insertDirection(FeatureRuleDirectionVO direction, Integer ruleId){
