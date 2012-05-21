@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/security 
+   http://www.springframework.org/schema/security/spring-security-3.1.xsd
+   http://www.springframework.org/schema/beans 
+   http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+	<sec:global-method-security 
+		pre-post-annotations="enabled" 
+		authentication-manager-ref="authenticationManager"
+		proxy-target-class="false">
+		<sec:expression-handler ref="expressionHandler"/>
+	</sec:global-method-security>
+
+	<beans:bean id="expressionHandler"
+	      class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+	        <beans:property name="permissionEvaluator">
+	        	<beans:bean id="webapiPermissionEvaluator" 
+	        		class="org.mxhero.webapi.security.WebapiPermissionEvaluator"/>
+	        </beans:property>
+	</beans:bean>
+
+ 	<sec:http create-session="stateless" 
+ 			use-expressions="true">
+		<sec:http-basic />
+		<sec:intercept-url pattern="/api/v1/**" access="isFullyAuthenticated()"/>
+		<sec:intercept-url pattern="/api/v1/users/resetPassword" access="none"/>
+	</sec:http>
+
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="jdbcUserDetailsService">
+			<sec:password-encoder hash="md5" />
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+
+</beans:beans>
