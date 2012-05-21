@@ -35,7 +35,7 @@ public class JdbcRuleService implements RuleService{
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void createRule(FeatureRuleVO ruleVO, Integer featureId,
+	public Integer createRule(FeatureRuleVO ruleVO, Integer featureId,
 			String domainId) {
 
 		if(domainId!=null){
@@ -52,7 +52,7 @@ public class JdbcRuleService implements RuleService{
 		}
 		ruleVO.setFeatureId(featureId);
 		ruleVO.setDomain(domainId);
-		ruleRepository.insert(ruleVO);
+		return ruleRepository.insert(ruleVO);
 	}
 
 	@Override
