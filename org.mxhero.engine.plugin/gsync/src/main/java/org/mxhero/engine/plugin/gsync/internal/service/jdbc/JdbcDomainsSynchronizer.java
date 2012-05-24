@@ -124,7 +124,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer {
 				&& domainAd.getNotifyEmail() != null) {
 			if(recipientMail!=null && !recipientMail.isEmpty()){
 				MailSender.sendMail(inputService, recipientMail,
-						errorMessage, senderMail, outputService);
+						"domain: "+domainAd.getDomainId()+"\n\n"+errorMessage, senderMail, outputService);
 			}else{
 				MailSender.sendMail(inputService, domainAd.getNotifyEmail(),
 						errorMessage, senderMail, outputService);

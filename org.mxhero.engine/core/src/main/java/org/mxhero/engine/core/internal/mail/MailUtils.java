@@ -23,6 +23,8 @@ import javax.mail.internet.ContentType;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.mxhero.engine.commons.mail.api.Body;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -32,6 +34,8 @@ import org.mxhero.engine.commons.mail.api.Body;
  */
 public abstract class MailUtils {
 
+	private static Logger log = LoggerFactory.getLogger(MailUtils.class);
+	
 	public static final String TEXT_TYPE = "text/*";
 	public static final String TEXT_PLAIN_TYPE = "text/plain";
 	public static final String TEXT_HTML_TYPE = "text/html";
@@ -315,31 +319,42 @@ public abstract class MailUtils {
 	
 	public static void addText(Part p, String text, Body.AddTextPosition position, Body.AddTextPartType type)
 			throws MessagingException, IOException {
-
+		log.debug("addText=[contentType="+p.getContentType()+", positio="+position.toString()+", type="+type.toString()+"]");
 		if (p.isMimeType(TEXT_TYPE)
-				&& (p.getDisposition() == null || (!p.getDisposition().equals(
-						Part.INLINE))
-						&& !p.getDisposition().equals(Part.ATTACHMENT))) {
-
+				&& (p.getDisposition() == null || (!p.getDisposition().equals(Part.INLINE))
+				&& !p.getDisposition().equals(Part.ATTACHMENT))) {
 			if (position.equals(Body.AddTextPosition.top)) {
 				if((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.plain)) && p.isMimeType(TEXT_PLAIN_TYPE)){
-					p.setContent(text + ((String) p.getContent()), p
-							.getContentType());
-				} else if ((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.html)) && p.isMimeType(TEXT_HTML_TYPE)){
+					String contentType =  p.getContentType();
+					p.setContent(text + ((String) p.getContent()),contentType);
+					p.setHeader("Content-Type", contentType);
+					log.debug("setContent=[contentType="+p.getContentType()+", text="+text + ((String) p.getContent())+"]");
+				}  
+				if ((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.html)) && p.isMimeType(TEXT_HTML_TYPE)){
+					String contentType =  p.getContentType();
 					Document doc = Jsoup.parse((String) p.getContent());
 					doc.body().prepend(text);
-					p.setContent(doc.outerHtml(), p
-							.getContentType());
+					p.setContent(doc.outerHtml(), p.getContentType());
+					p.setHeader("Content-Type", contentType);
+					log.debug("setContent=[contentType="+p.getContentType()+", text="+doc.outerHtml()+"]");
 				}
 			} else if (position.equals(Body.AddTextPosition.botton)) {
+				log.debug("setContent=[contentType="+p.getContentType()+"]");
 				if((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.plain)) && p.isMimeType(TEXT_PLAIN_TYPE)){
-					p.setContent(((String) p.getContent()) + text, p
-							.getContentType());
-				} else if ((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.html)) && p.isMimeType(TEXT_HTML_TYPE)){
+					String contentType =  p.getContentType();
+					log.debug("setContent=[beforeContentType="+p.getContentType()+"]");
+					p.setContent(((String) p.getContent()) + text, p.getContentType());
+					p.setHeader("Content-Type", contentType);
+					log.debug("setContent=[contentType="+p.getContentType()+", text="+text + ((String) p.getContent())+"]");
+				}
+				if ((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.html)) && p.isMimeType(TEXT_HTML_TYPE)){
+					String contentType =  p.getContentType();
 					Document doc = Jsoup.parse((String) p.getContent());
 					doc.body().append(text);
-					p.setContent(doc.outerHtml(), p
-							.getContentType());
+					log.debug("setContent=[beforeContentType="+p.getContentType()+"]");
+					p.setContent(doc.outerHtml(), p.getContentType());
+					p.setHeader("Content-Type", contentType);
+					log.debug("setContent=[contentType="+p.getContentType()+", text="+doc.outerHtml()+"]");
 				}
 			}
 		} else if (p.isMimeType(MULTIPART_TYPE)) {
