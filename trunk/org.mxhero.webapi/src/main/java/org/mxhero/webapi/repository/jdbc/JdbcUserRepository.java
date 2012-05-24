@@ -24,10 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(value="mxhero",readOnly=false)
 public class JdbcUserRepository extends BaseJdbcDao<UserVO> implements UserRepository{
-
-	public static final String ROLE_ADMIN = "ROLE_ADMIN";
-	public static final String ROLE_DOMAIN_ADMIN = "ROLE_DOMAIN_ADMIN";
-	public static final String ROLE_DOMAIN_ACCOUNT = "ROLE_DOMAIN_ACCOUNT";
 	
 	private NamedParameterJdbcTemplate template;
 	
@@ -106,13 +102,16 @@ public class JdbcUserRepository extends BaseJdbcDao<UserVO> implements UserRepos
 		template.update(sql, source,userKey);
 		
 		int roleAdminId =-1;
-		if(rol.equalsIgnoreCase(ROLE_ADMIN)){
-			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+ROLE_ADMIN+"';");
-		}else if (rol.equalsIgnoreCase(ROLE_DOMAIN_ADMIN)){
-			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+ROLE_DOMAIN_ADMIN+"';");
-		}else if (rol.equalsIgnoreCase(ROLE_DOMAIN_ACCOUNT)){
-			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+ROLE_DOMAIN_ACCOUNT+"';");
+		if(rol==null){
+			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+UserVO.ROLE_DOMAIN_ADMIN+"';");
+		}else if(rol.equalsIgnoreCase(UserVO.ROLE_ADMIN)){
+			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+UserVO.ROLE_ADMIN+"';");
+		}else if (rol.equalsIgnoreCase(UserVO.ROLE_DOMAIN_ADMIN)){
+			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+UserVO.ROLE_DOMAIN_ADMIN+"';");
+		}else if (rol.equalsIgnoreCase(UserVO.ROLE_DOMAIN_ACCOUNT)){
+			roleAdminId = template.getJdbcOperations().queryForInt("SELECT `"+AuthorityMapper.ID+"` FROM `"+AuthorityMapper.DATABASE+"`.`"+AuthorityMapper.TABLE_NAME+"` WHERE `"+AuthorityMapper.AUTHORITY+"` = '"+UserVO.ROLE_DOMAIN_ACCOUNT+"';");
 		}
+		
 		MapSqlParameterSource aUsource = new MapSqlParameterSource();
 		aUsource.addValue("authId", roleAdminId);
 		aUsource.addValue("userId", userKey.getKey().intValue());

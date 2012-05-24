@@ -11,6 +11,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UserVO {
 
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String ROLE_DOMAIN_ADMIN = "ROLE_DOMAIN_ADMIN";
+	public static final String ROLE_DOMAIN_ACCOUNT = "ROLE_DOMAIN_ACCOUNT";
+	
 	private String name;
 	private String lastName;
 	private String notifyEmail;
@@ -108,6 +112,31 @@ public class UserVO {
 
 	public void setAccount(String account) {
 		this.account = account;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserVO other = (UserVO) obj;
+		if (userName == null) {
+			if (other.userName != null)
+				return false;
+		} else if (!userName.equals(other.userName))
+			return false;
+		return true;
 	}
 	
 }

@@ -28,17 +28,18 @@
 		<property name="defaultViews">
 			<list>
 				<!-- JSON View -->
-				<bean
-					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
-				</bean>
+				<bean id="jacksonJsonView"
+					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
 				<!-- JAXB XML View -->
-				<bean class="org.springframework.web.servlet.view.xml.MarshallingView">
+				<bean id="marshallingView"
+					class="org.springframework.web.servlet.view.xml.MarshallingView">
 					<constructor-arg>
 						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 							<property name="classesToBeBound">
 								<list>
 									<value>org.mxhero.webapi.vo.UserVO</value>
 									<value>org.mxhero.webapi.vo.PageVO</value>
+									<value>org.mxhero.webapi.vo.SystemPropertyVO</value>
 								</list>
 							</property>
 						</bean>
@@ -49,7 +50,46 @@
 		<property name="ignoreAcceptHeader" value="true" />
 	</bean>
 
-	<!-- Should be defined last! -->
-	<mvc:annotation-driven />
+	<mvc:interceptors>
+		<bean id="localeChangeInterceptor"
+			class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="lang" />
+		</bean>
+	</mvc:interceptors>
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver" />
 
+	<!-- Should be defined last! --> 
+	<mvc:annotation-driven ignoreDefaultModelOnRedirect="true" >
+		<mvc:message-converters>
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
+				<bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"/>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- Allow Exceptions to be handled in annotated methods if desired. Otherwise 
+		fallback to the 'restExceptionResolver' below: -->
+	<bean id="annotationMethodHandlerExceptionResolver"
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
+		<property name="order" value="0" />
+	</bean>
+	<bean id="restExceptionResolver" class="org.mxhero.webapi.restful.handler.RestExceptionHandler">
+		<property name="order" value="100" />
+		<property name="errorResolver">
+			<bean class="org.mxhero.webapi.restful.handler.DefaultRestErrorResolver">
+				<property name="localeResolver" ref="localeResolver" />
+				<property name="defaultMoreInfoUrl" value="mailto:support@mxhero.com" />
+				<property name="exceptionMappingDefinitions">
+					<map>
+						<!-- 404 -->
+						<entry
+							key="org.mxhero.webapi.service.exception.UnknownResourceException"
+							value="404, _exmsg" />
+						<!-- 500 (catch all): -->
+						<entry key="Throwable" value="500" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
 </beans>
