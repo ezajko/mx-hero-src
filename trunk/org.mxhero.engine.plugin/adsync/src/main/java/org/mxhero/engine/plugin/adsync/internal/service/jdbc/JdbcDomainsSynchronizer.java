@@ -43,6 +43,8 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 	private Boolean useMailAlternateAddress = false;
 	
 	private DomainAdLdapRepository repository;
+	
+	private String recipientMail;
 
 	@Autowired(required=true)
 	public JdbcDomainsSynchronizer(DomainAdLdapRepository repository) {
@@ -134,7 +136,13 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 
 	private void sendMail(DomainAdLdap domainAd,String errorMessage){
 		if(inputService!=null && domainAd!=null && domainAd.getNotifyEmail()!=null){
-			MailSender.sendMail(inputService, domainAd.getNotifyEmail(), errorMessage, senderMail, outputService);
+			if(recipientMail!=null && !recipientMail.trim().isEmpty()){
+				MailSender.sendMail(inputService, recipientMail,
+						errorMessage, senderMail, outputService);
+			}else{
+				MailSender.sendMail(inputService, domainAd.getNotifyEmail(),
+						errorMessage, senderMail, outputService);
+			}
 		}
 	}
 
@@ -184,6 +192,14 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 
 	public void setUseMailAlternateAddress(Boolean useMailAlternateAddress) {
 		this.useMailAlternateAddress = useMailAlternateAddress;
+	}
+
+	public String getRecipientMail() {
+		return recipientMail;
+	}
+
+	public void setRecipientMail(String recipientMail) {
+		this.recipientMail = recipientMail;
 	}
 	
 }
