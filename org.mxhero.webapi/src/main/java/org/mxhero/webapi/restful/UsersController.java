@@ -1,5 +1,7 @@
 package org.mxhero.webapi.restful;
 
+import java.util.Set;
+
 import org.mxhero.webapi.service.UserService;
 import org.mxhero.webapi.vo.PageVO;
 import org.mxhero.webapi.vo.UserVO;
@@ -7,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,13 +43,27 @@ public class UsersController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public UserVO create(@RequestBody UserVO user){
-		return new UserVO();
+		String definedRole = UserVO.ROLE_DOMAIN_ACCOUNT;
+		Set<String> authorities = AuthorityUtils.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+		if(authorities.contains(UserVO.ROLE_ADMIN)){
+			if(user.getDomain()==null){
+				definedRole = UserVO.ROLE_ADMIN;
+			}else{
+				if(user.getAccount()==null){
+					definedRole = UserVO.ROLE_DOMAIN_ADMIN;
+				}else{
+					definedRole = UserVO.ROLE_DOMAIN_ACCOUNT;
+				}
+			}
+		}
+		return userService.create(user,definedRole);
 	}
 	
 	@PreAuthorize("permitAll")
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void resetPassword(String email){
+		userService.resetPassword(email);
 	}
 	
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_DOMAIN_ADMIN') or (hasRole('ROLE_DOMAIN_ACCOUNT') and #username == principal.username)")

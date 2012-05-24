@@ -7,7 +7,7 @@ public interface UserService {
 	
 	public PageVO<UserVO> readAll(String domain, Integer limit, Integer offset );
 	
-	public UserVO create(UserVO user);
+	public UserVO create(UserVO user, String role);
 	
 	public void resetPassword(String email);
 	
