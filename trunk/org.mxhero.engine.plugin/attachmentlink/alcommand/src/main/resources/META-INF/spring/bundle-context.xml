@@ -22,8 +22,8 @@
 		persistent-id="org.mxhero.engine.plugin.attachmentlink">
 		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
 		<prop key="jdbcUrl">jdbc:mysql://localhost:3306/attachments?sessionVariables=FOREIGN_KEY_CHECKS=0&amp;useUnicode=true&amp;characterEncoding=UTF-8</prop>
-		<prop key="jdbcUserName">attachmentstest</prop>
-		<prop key="jdbcPassord">attachmentstest</prop>
+		<prop key="jdbcUserName">mxhero</prop>
+		<prop key="jdbcPassord">mxhero</prop>
 		<prop key="idleConnectionTestPeriod">1</prop>
 		<prop key="idleMaxAge">5</prop>
 		<prop key="maxConnectionsPerPartition">15</prop>

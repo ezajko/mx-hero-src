@@ -188,8 +188,8 @@
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<url>jdbc:mysql://localhost:3306/attachments</url>
-					<username>attachmentlink</username>
-					<password>attachmentlink</password>
+					<username>mxhero</username>
+					<password>mxhero</password>
 					<skip>${maven.test.skip}</skip>
 				</configuration>
 				<executions>
