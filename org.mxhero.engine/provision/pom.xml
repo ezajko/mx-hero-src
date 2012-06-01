@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.mxhero</groupId>
 		<artifactId>engine</artifactId>
-		<version>1.2.1</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<properties>
@@ -19,14 +19,6 @@
 	<name>engine - imported bundles</name>
 
 	<packaging>pom</packaging>
-
-	<repositories>
-		<repository>
-			<id>com.mxhero.repository.releases</id>
-			<name>mxHero Repository</name>
-			<url>http://repository.mxhero.com:8081/nexus/content/repositories/releases</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 

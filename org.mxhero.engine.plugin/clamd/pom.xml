@@ -18,6 +18,15 @@
 
 	<packaging>bundle</packaging>
 
+
+	<distributionManagement>
+		<repository>
+			<id>mxhero-nexus</id>
+			<name>mxHero Repository</name>
+			<url>http://repository.mxhero.com:8081/nexus/content/repositories/org.mxhero.releases</url>
+		</repository>
+	</distributionManagement>
+
 	<build>
 		<finalName>${bundle.symbolicName}-${pom.version}</finalName>
 		<resources>
@@ -80,7 +89,7 @@
 			<type>pom</type>
 			<groupId>org.mxhero.engine.build</groupId>
 			<artifactId>provision</artifactId>
-			<version>1.2.1</version>
+			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -100,7 +109,7 @@
 		<dependency>
 			<groupId>org.mxhero.engine</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.5.0</version>
+			<version>1.6.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

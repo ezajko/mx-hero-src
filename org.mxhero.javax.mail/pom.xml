@@ -55,6 +55,14 @@
     </plugins>
   </build>
 
+	<distributionManagement>
+		<repository>
+			<id>mxhero-nexus</id>
+			<name>mxHero Repository</name>
+			<url>http://repository.mxhero.com:8081/nexus/content/repositories/org.mxhero.releases</url>
+		</repository>
+	</distributionManagement>
+
   <dependencies>
     <dependency>
 		<groupId>javax.mail</groupId>
