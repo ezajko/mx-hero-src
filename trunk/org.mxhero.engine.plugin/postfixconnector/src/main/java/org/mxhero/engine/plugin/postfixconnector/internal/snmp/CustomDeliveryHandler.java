@@ -38,6 +38,8 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 
 	private List<Delivery> deliveries = new ArrayList<Delivery>();
 	private String from;
+	private String ret;
+	private String notify;
 	
 	/**
 	 * Basic constructor.
@@ -133,13 +135,27 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 
 		for (Delivery delivery : list)
 		{				
-		    delivery.getListener().deliver(getSessionContext(), this.from, 
-		    		delivery.getRecipient(), SharedStreamUtils.getPrivateInputStream(useCopy, data));
+		    delivery.getListener().deliver(getSessionContext(), 
+		    		this.from, 
+		    		delivery.getRecipient(), 
+		    		SharedStreamUtils.getPrivateInputStream(useCopy, data),
+		    		ret,
+		    		notify);
 		    
 		    // Use a stream copy on second iteration if not the case yet
 		    useCopy = true;
 		}
 
+	}
+
+	@Override
+	public void ret(String ret) {
+		this.ret=ret;
+	}
+
+	@Override
+	public void notify(String notify) {
+		this.notify=notify;
 	}
 
 }

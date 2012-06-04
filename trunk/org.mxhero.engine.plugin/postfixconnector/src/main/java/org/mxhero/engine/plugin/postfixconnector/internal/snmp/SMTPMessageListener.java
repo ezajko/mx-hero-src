@@ -6,7 +6,6 @@ import java.io.InputStream;
 import org.mailster.smtp.api.SessionContext;
 import org.mailster.smtp.api.listener.MessageListener;
 import org.mailster.smtp.command.impl.MailCommand;
-import org.mailster.smtp.command.impl.ReceiptCommand;
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.finders.UserFinder;
@@ -48,7 +47,7 @@ public final class SMTPMessageListener implements MessageListener {
 	 */
 	@Override
 	public void deliver(SessionContext ctx, String from, String recipient,
-			InputStream data) throws IOException {
+			InputStream data, String ret, String notify) throws IOException {
 
 		MimeMail mail =null;
 		try {
@@ -57,16 +56,14 @@ public final class SMTPMessageListener implements MessageListener {
 			mail.getMessage().removeHeader(ConnectorProperties.RET_HEADER);
 			mail.getMessage().removeHeader(ConnectorProperties.NOTIFY_HEADER);
 			mail.getMessage().removeHeader(ConnectorProperties.ID_HEADER);
-			Object retValue = ctx.getAttribute(MailCommand.RET);
-			Object notifyValue = ctx.getAttribute(ReceiptCommand.NOTIFY+"-"+recipient);
-			if(notifyValue!=null){
-				if(retValue==null){
-					retValue=MailCommand.RET_HDRS;
+			if(notify!=null){
+				if(ret==null){
+					ret=MailCommand.RET_HDRS;
 				}
-				mail.getMessage().addHeader(ConnectorProperties.RET_HEADER, retValue.toString());
-				mail.getMessage().addHeader(ConnectorProperties.NOTIFY_HEADER, notifyValue.toString());
+				mail.getMessage().addHeader(ConnectorProperties.RET_HEADER, ret);
+				mail.getMessage().addHeader(ConnectorProperties.NOTIFY_HEADER, notify);
 				mail.getMessage().addHeader(ConnectorProperties.ID_HEADER, mail.getTime().getTime()+"-"+mail.getSequence());
-				log.trace("ret:"+retValue+" notify:"+notifyValue);
+				log.trace("ret:"+ret+" notify:"+notify);
 			}
 			mail.getMessage().saveChanges();
 		} catch (Exception e1) {
