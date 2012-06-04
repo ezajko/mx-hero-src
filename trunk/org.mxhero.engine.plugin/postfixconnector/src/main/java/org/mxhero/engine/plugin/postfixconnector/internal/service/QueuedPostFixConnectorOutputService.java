@@ -81,6 +81,8 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 							&& !Pattern.compile("^\\s*NEVER", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()){
 						notifyValue= "NEVER "+notifyValue;
 					}
+					notifyValue=notifyValue+" ORCPT=rfc822;"+mail.getRecipient();
+					
 					String[] retHeaders = msg.getHeader(ConnectorProperties.RET_HEADER);
 					if(retHeaders!=null && retHeaders.length>0 && retHeaders[0]!=null && !retHeaders[0].trim().isEmpty()){
 						retValue = retHeaders[0].trim();
