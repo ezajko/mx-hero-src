@@ -12,23 +12,21 @@
 		pre-post-annotations="enabled" 
 		authentication-manager-ref="authenticationManager"
 		proxy-target-class="false">
-		<sec:expression-handler ref="expressionHandler"/>
 	</sec:global-method-security>
 
-	<beans:bean id="expressionHandler"
-	      class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-	        <beans:property name="permissionEvaluator">
-	        	<beans:bean id="webapiPermissionEvaluator" 
-	        		class="org.mxhero.webapi.security.WebapiPermissionEvaluator"/>
-	        </beans:property>
-	</beans:bean>
+
 
  	<sec:http create-session="stateless" 
  			use-expressions="true">
-		<sec:http-basic />
+		<sec:http-basic entry-point-ref="customBasicEntryPoint"/>
 		<sec:intercept-url pattern="/api/v1/**" access="isFullyAuthenticated()"/>
-		<sec:intercept-url pattern="/api/v1/users/resetPassword" access="none"/>
+		<sec:intercept-url pattern="/api/v1/users/resetPassword" access="permitAll"/>
 	</sec:http>
+
+	<beans:bean id="customBasicEntryPoint" 
+	class="org.mxhero.webapi.security.CustomBasicAuthentication">
+		<beans:property name="realmName" value="org.mxhero.webapi"/>
+	</beans:bean>
 
 	<sec:authentication-manager alias="authenticationManager">
 		<sec:authentication-provider user-service-ref="jdbcUserDetailsService">

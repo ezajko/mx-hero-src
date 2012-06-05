@@ -92,33 +92,46 @@ public class JdbcUserService implements UserService{
 				ms.getMessage(MAIL_PASSWORD_RECOVERY_BODY, null, new Locale(user.getLocale().split("_")[0],user.getLocale().split("_")[1])).replace(REPLACE_USER,user.getUserName()).replace(REPLACE_PASSWORD, newPassword), 
 				user.getNotifyEmail(), 
 				systemProperties);
-		userRepository.setPassword(newPassword, user.getUserName());
-		
+		if(userRepository.setPassword(newPassword, user.getUserName())!=true){
+			throw new UnknownResourceException("user.not.found");
+		}
 	}
 
 	@Override
 	public UserVO read(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		UserVO user = userRepository.finbByUserName(username);
+		if(user==null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		return user;
 	}
 
 	@Override
 	public void update(String username, UserVO user) {
-		// TODO Auto-generated method stub
-		
+		if(user==null){
+			throw new IllegalArgumentException("user.is.null");
+		}
+		if(username.equalsIgnoreCase(user.getUserName())){
+			throw new IllegalArgumentException("user.not.match");
+		}
+		userRepository.update(user);
 	}
 
 	@Override
 	public void changePassword(String username, String oldPassword,
 			String newPassword, String domain) {
-		// TODO Auto-generated method stub
-		
+		UserVO user = userRepository.finbByUserName(username);
+		if(user==null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		if(userRepository.changePassword(oldPassword, newPassword, username)){
+			throw new IllegalArgumentException("user.oldpassword.not.match");
+		}
 	}
 
 	@Override
 	public void delete(String username, String domain) {
-		// TODO Auto-generated method stub
-		
+		userRepository.delete(username, domain);
 	}
 
 }

@@ -14,4 +14,6 @@ public interface SystemPropertyRepository {
 	public void save(SystemPropertyVO property);
 	
 	public void save(Collection<SystemPropertyVO> properties);
+	
+	public void delete(String propertyKey);
 }

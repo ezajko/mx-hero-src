@@ -73,10 +73,10 @@
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver">
 		<property name="order" value="0" />
 	</bean>
-	<bean id="restExceptionResolver" class="org.mxhero.webapi.restful.handler.RestExceptionHandler">
+	<bean id="restExceptionResolver" class="org.mxhero.webapi.restful.exception.handler.RestExceptionHandler">
 		<property name="order" value="100" />
 		<property name="errorResolver">
-			<bean class="org.mxhero.webapi.restful.handler.DefaultRestErrorResolver">
+			<bean class="org.mxhero.webapi.restful.exception.handler.DefaultRestErrorResolver">
 				<property name="localeResolver" ref="localeResolver" />
 				<property name="defaultMoreInfoUrl" value="mailto:support@mxhero.com" />
 				<property name="exceptionMappingDefinitions">
@@ -85,6 +85,10 @@
 						<entry
 							key="org.mxhero.webapi.service.exception.UnknownResourceException"
 							value="404, _exmsg" />
+							<!-- 409 -->
+						<entry
+							key="org.mxhero.webapi.service.exception.ConfictResourceException"
+							value="409_exmsg" />
 						<!-- 500 (catch all): -->
 						<entry key="Throwable" value="500" />
 					</map>

@@ -85,4 +85,13 @@ public class JdbcSystemPropertyRepository implements SystemPropertyRepository{
 		return source;
 	}
 
+	@Override
+	public void delete(String propertyKey) {
+		String sql = "DELETE FROM `"+SystemPropertyMapper.DATABASE+"`.`"+SystemPropertyMapper.TABLE_NAME+"` " +
+				" WHERE `"+SystemPropertyMapper.KEY+"` = :key ;";
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		source.addValue("key", propertyKey);
+		template.update(sql, source);
+	}
+
 }

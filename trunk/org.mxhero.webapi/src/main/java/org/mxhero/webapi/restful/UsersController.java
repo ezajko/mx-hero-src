@@ -25,14 +25,6 @@ public class UsersController {
 	@Autowired(required=true)
 	private UserService userService;
 
-	public UserService getUserService() {
-		return userService;
-	}
-
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain = principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
 	public PageVO<UserVO> readAll(String domain, Integer limit, Integer offset ) {	
@@ -70,13 +62,14 @@ public class UsersController {
 	@PostAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and returnObject.domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #username == principal.username)")
 	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
 	public UserVO read(@PathVariable("username")String username) {	
-		return new UserVO();
+		return userService.read(username);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #user.domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #username == principal.username and #user.username == principal.username)")
 	@RequestMapping(value = "/{username}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void update(@PathVariable("username") String username, @RequestBody UserVO user){
+		userService.update(username, user);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #username == principal.username and #domain == principal.domain)")
@@ -85,10 +78,18 @@ public class UsersController {
 	public void changePassword(@PathVariable("username") String username, String oldPassword, String newPassword, String domain){
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #username == principal.username and #domain == principal.domain)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) ")
 	@RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void delete(@PathVariable("username") String username, String domain){
 	}
 	
+	
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 }

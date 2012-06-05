@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 
 @XmlRootElement(name = "page")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value={UserVO.class,SystemPropertyVO.class})
+@XmlSeeAlso(value={UserVO.class,SystemPropertyVO.class,DomainVO.class})
 public class PageVO <T>{
 
 	@XmlAnyElement(lax=true)
