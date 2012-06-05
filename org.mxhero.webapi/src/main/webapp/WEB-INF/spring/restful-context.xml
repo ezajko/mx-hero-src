@@ -21,7 +21,6 @@
 		<property name="mediaTypes">
 			<map>
 				<entry key="json" value="application/json" />
-				<entry key="xml" value="application/xml" />
 			</map>
 		</property>
 
@@ -30,21 +29,6 @@
 				<!-- JSON View -->
 				<bean id="jacksonJsonView"
 					class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
-				<!-- JAXB XML View -->
-				<bean id="marshallingView"
-					class="org.springframework.web.servlet.view.xml.MarshallingView">
-					<constructor-arg>
-						<bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-							<property name="classesToBeBound">
-								<list>
-									<value>org.mxhero.webapi.vo.UserVO</value>
-									<value>org.mxhero.webapi.vo.PageVO</value>
-									<value>org.mxhero.webapi.vo.SystemPropertyVO</value>
-								</list>
-							</property>
-						</bean>
-					</constructor-arg>
-				</bean>
 			</list>
 		</property>
 		<property name="ignoreAcceptHeader" value="true" />
@@ -63,7 +47,6 @@
 	<mvc:annotation-driven ignoreDefaultModelOnRedirect="true" >
 		<mvc:message-converters>
 				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"/>
-				<bean class="org.springframework.http.converter.xml.Jaxb2RootElementHttpMessageConverter"/>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 

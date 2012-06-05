@@ -2,20 +2,8 @@ package org.mxhero.webapi.vo;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-
-@XmlRootElement(name = "page")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso(value={UserVO.class,SystemPropertyVO.class,DomainVO.class})
 public class PageVO <T>{
 
-	@XmlAnyElement(lax=true)
-	@XmlElementWrapper(name="elements")
 	private List<T> elements;
 	
 	private Integer totalElements;

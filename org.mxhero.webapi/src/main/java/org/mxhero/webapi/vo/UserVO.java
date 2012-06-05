@@ -1,14 +1,8 @@
 package org.mxhero.webapi.vo;
 
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement(name = "user")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class UserVO {
 
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
@@ -22,7 +16,7 @@ public class UserVO {
 	private Calendar created;
 	private String locale;
 	private String password;
-	private Collection<String> authorities;
+	private List<String> authorities;
 	private Boolean soundsEnabled;
 	private String domain;
 	private String account;
@@ -82,11 +76,11 @@ public class UserVO {
 		this.password = password;
 	}
 	
-	public Collection<String> getAuthorities() {
+	public List<String> getAuthorities() {
 		return authorities;
 	}
 	
-	public void setAuthorities(Collection<String> authorities) {
+	public void setAuthorities(List<String> authorities) {
 		this.authorities = authorities;
 	}
 	
