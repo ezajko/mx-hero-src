@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.mxhero.webapi.restful.handler;
+package org.mxhero.webapi.restful.exception.handler;
 
 import org.springframework.web.context.request.ServletWebRequest;
 
