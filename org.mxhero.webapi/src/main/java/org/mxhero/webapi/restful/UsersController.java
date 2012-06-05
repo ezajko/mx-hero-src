@@ -31,7 +31,7 @@ public class UsersController {
 		return userService.readAll(domain, limit, offset);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_ADMIN') and #user.domain == principal.domain)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #user.domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public UserVO create(@RequestBody UserVO user){
