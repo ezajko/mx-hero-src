@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/domains")
-public class DomainsController {
+public class DomainController {
 
 	@Autowired(required=true)
 	private DomainService domainService;
@@ -42,14 +42,14 @@ public class DomainsController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domainVO.domain == principal.domain)")
 	@RequestMapping(value = "/{domain}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void update(@PathVariable("domain")String domain, DomainVO domainVO){
+	public void update(@PathVariable("domain")String domain,  @RequestBody DomainVO domainVO){
 		domainService.update(domainVO);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{domain}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void delete(String domain){
+	public void delete(@PathVariable("domain")String domain){
 		domainService.delete(domain);
 	}
 
