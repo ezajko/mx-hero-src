@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
 @RequestMapping("/system/properties")
-public class SystemPropertiesController {
+public class SystemPropertyController {
 	
 	@Autowired(required=true)
 	private SystemPropertiesService systemPropertiesService;

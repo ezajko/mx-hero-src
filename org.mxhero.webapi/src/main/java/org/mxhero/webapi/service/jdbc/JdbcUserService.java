@@ -114,6 +114,10 @@ public class JdbcUserService implements UserService{
 		if(username.equalsIgnoreCase(user.getUserName())){
 			throw new IllegalArgumentException("user.not.match");
 		}
+		UserVO userInserted = userRepository.finbByUserName(username);
+		if(userInserted==null || userInserted.getDomain() == null || !userInserted.getDomain().equalsIgnoreCase(user.getDomain())){
+			throw new UnknownResourceException("user.not.found");
+		}
 		userRepository.update(user);
 	}
 

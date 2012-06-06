@@ -14,17 +14,17 @@
 		proxy-target-class="false">
 	</sec:global-method-security>
 
-
+	<sec:http security="none" pattern="/api/v1/help"/>
+	<sec:http security="none" pattern="/api/v1/users/resetPassword"/>
 
  	<sec:http create-session="stateless" 
  			use-expressions="true">
 		<sec:http-basic entry-point-ref="customBasicEntryPoint"/>
 		<sec:intercept-url pattern="/api/v1/**" access="isFullyAuthenticated()"/>
-		<sec:intercept-url pattern="/api/v1/users/resetPassword" access="permitAll"/>
 	</sec:http>
 
 	<beans:bean id="customBasicEntryPoint" 
-	class="org.mxhero.webapi.security.CustomBasicAuthentication">
+		class="org.mxhero.webapi.security.CustomBasicAuthentication">
 		<beans:property name="realmName" value="org.mxhero.webapi"/>
 	</beans:bean>
 
