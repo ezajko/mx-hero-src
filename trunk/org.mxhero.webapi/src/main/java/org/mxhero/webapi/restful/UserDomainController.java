@@ -1,6 +1,7 @@
 package org.mxhero.webapi.restful;
 
 import org.mxhero.webapi.service.UserService;
+import org.mxhero.webapi.service.exception.UnknownResourceException;
 import org.mxhero.webapi.vo.PageVO;
 import org.mxhero.webapi.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,27 @@ public class UserDomainController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public void delete(@PathVariable("domain") String domain, @PathVariable("username") String username){
 		userService.delete(username, domain);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain")
+	@RequestMapping(value = "/{username}/changePassword", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void changePassword(@PathVariable("domain") String domain, @PathVariable("username") String username, String oldPassword, String newPassword){
+		userService.changePassword(username, oldPassword, newPassword, domain);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain")
+	@RequestMapping(value = "/{username}/setPassword", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void setPassword(@PathVariable("domain") String domain, @PathVariable("username") String username, String newPassword){
+		UserVO user = userService.read(username);
+		if(user==null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		if(user.getDomain()==null || !user.getDomain().equalsIgnoreCase(domain)){
+			throw new UnknownResourceException("user.not.found");
+		}
+		userService.setPassword(username, newPassword);
 	}
 	
 	public UserService getUserService() {

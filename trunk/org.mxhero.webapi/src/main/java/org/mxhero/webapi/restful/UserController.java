@@ -72,6 +72,13 @@ public class UserController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/{username}/setPassword", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void setPassword(@PathVariable("username") String username, String newPassword){
+		userService.setPassword(username, newPassword);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void delete(@PathVariable("username") String username){

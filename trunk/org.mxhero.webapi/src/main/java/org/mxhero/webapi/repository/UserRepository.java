@@ -11,7 +11,7 @@ public interface UserRepository {
 	
 	UserVO insert(UserVO applicationUser, String rol, String password);
 
-	void delete(String  username, String domain);
+	void delete(String  username);
 	
 	UserVO finbByNotifyEmail(String email);
 

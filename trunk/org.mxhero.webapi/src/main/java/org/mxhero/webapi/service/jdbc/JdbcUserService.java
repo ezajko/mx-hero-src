@@ -128,14 +128,42 @@ public class JdbcUserService implements UserService{
 		if(user==null){
 			throw new UnknownResourceException("user.not.found");
 		}
+		if(user.getDomain()!=null){
+			if(!user.getDomain().equalsIgnoreCase(domain)){
+				throw new UnknownResourceException("user.not.found");
+			}
+		}else if(domain!=null){
+			throw new UnknownResourceException("user.not.found");
+		}
 		if(userRepository.changePassword(oldPassword, newPassword, username)){
 			throw new IllegalArgumentException("user.oldpassword.not.match");
 		}
+		userRepository.changePassword(oldPassword, newPassword, username);
 	}
 
 	@Override
 	public void delete(String username, String domain) {
-		userRepository.delete(username, domain);
+		UserVO user = userRepository.finbByUserName(username);
+		if(user==null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		if(user.getDomain()!=null){
+			if(!user.getDomain().equalsIgnoreCase(domain)){
+				throw new UnknownResourceException("user.not.found");
+			}
+		}else if(domain!=null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		userRepository.delete(username);
+	}
+
+	@Override
+	public void setPassword(String username, String newPassword) {
+		UserVO user = userRepository.finbByUserName(username);
+		if(user==null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		userRepository.setPassword(newPassword, username);
 	}
 
 }
