@@ -19,4 +19,6 @@ public interface UserService {
 	
 	public void delete(String username, String domain);
 	
+	public void setPassword(String username, String newPassword);
+	
 }

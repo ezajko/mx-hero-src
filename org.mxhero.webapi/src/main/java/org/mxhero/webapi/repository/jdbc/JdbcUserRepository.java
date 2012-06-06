@@ -142,14 +142,10 @@ public class JdbcUserRepository extends BaseJdbcDao<UserVO> implements UserRepos
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void delete(String username, String domain) {
+	public void delete(String username) {
 		MapSqlParameterSource source = new MapSqlParameterSource("username",username);
 		String userSql = "DELETE FROM `"+UserMapper.DATABASE+"`.`"+UserMapper.TABLE_NAME+"`" +
 				" WHERE `"+UserMapper.USER_NAME+"` = :username";
-		if(domain!=null){
-			source.addValue("domain", domain);
-			userSql = userSql + " AND `"+UserMapper.DOMAIN+"` = :domain;";
-		}
 		template.update(userSql,source);
 	}
 	
