@@ -1,11 +1,11 @@
 package org.mxhero.webapi.vo;
 
 import java.util.Calendar;
-import java.util.Collection;
+import java.util.List;
 
 public class RuleVO {
 
-	private Integer id;
+	private Long id;
 	
 	private String domain;
 	
@@ -21,19 +21,19 @@ public class RuleVO {
 	
 	private String adminOrder;
 	
-	private Integer featureId;
+	private String component;
 
 	private RuleDirectionVO fromDirection;
 	
 	private RuleDirectionVO toDirection;
 	
-	private Collection<RulePropertyVO> properties;
+	private List<RulePropertyVO> properties;
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -101,11 +101,11 @@ public class RuleVO {
 		this.toDirection = toDirection;
 	}
 
-	public Collection<RulePropertyVO> getProperties() {
+	public List<RulePropertyVO> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(Collection<RulePropertyVO> properties) {
+	public void setProperties(List<RulePropertyVO> properties) {
 		this.properties = properties;
 	}
 
@@ -116,13 +116,13 @@ public class RuleVO {
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
-	
-	public Integer getFeatureId() {
-		return featureId;
+
+	public String getComponent() {
+		return component;
 	}
 
-	public void setFeatureId(Integer featureId) {
-		this.featureId = featureId;
+	public void setComponent(String component) {
+		this.component = component;
 	}
 
 	@Override

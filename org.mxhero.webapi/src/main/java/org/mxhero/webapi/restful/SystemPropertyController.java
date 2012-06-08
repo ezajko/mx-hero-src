@@ -30,7 +30,7 @@ public class SystemPropertyController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public SystemPropertyVO create(@PathVariable("key")String key, String value){
+	public SystemPropertyVO create(String key, String value){
 		return systemPropertiesService.create(key, value);
 	}
 	
