@@ -7,25 +7,25 @@ import org.mxhero.webapi.vo.RuleVO;
 
 public interface RuleRepository {
 
-	void delete(Integer ruleId);
+	void delete(Long ruleId);
 	
-	void deleteByDomain(String domainId);
+	void deleteByDomain(String domain);
 	
-	void deleteByAccount(String domainId, String account);
+	void deleteByAccount(String domain, String account);
 	
-	void deleteByGroup(String domainId, String group);
+	void deleteByGroup(String domain, String group);
 	
-	boolean checkFromTo(String domainId, Integer featureId, String fromFreeValue, String toFreeValue, Integer ruleId);
+	boolean checkFromTo(String domain, String component, String fromFreeValue, String toFreeValue);
 	
-	Integer insert(RuleVO rule);
+	Long insert(RuleVO rule);
 	
 	void update(RuleVO rule);
 	
-	void toggleStatus(Integer ruleId);
+	void toggleStatus(Long ruleId);
 	
-	List<RuleVO> findByDomainId(String domainId, Integer featureId);
+	List<RuleVO> findByDomainId(String domain, String component);
 	
-	List<RuleVO> findWitNullDomain(Integer featureId);
+	List<RuleVO> findWitNullDomain(String component);
 	
-	RuleVO findById(Integer ruleId);
+	RuleVO findById(Long ruleId);
 }

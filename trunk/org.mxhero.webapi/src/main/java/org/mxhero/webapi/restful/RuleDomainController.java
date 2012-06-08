@@ -16,31 +16,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
-@RequestMapping("/rules")
-public class RuleController {
+@RequestMapping("/domains/{domain}/rules")
+public class RuleDomainController {
 
 	@Autowired(required=true)
 	private RuleService ruleService;
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<RuleVO> readAll(String component){
-		return ruleService.readAll(null,component);
+	public List<RuleVO> readAll(@PathVariable("domain") String domain, String component){
+		return ruleService.readAll(domain,component);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public RuleVO create(@RequestBody RuleVO ruleVO){
+	public RuleVO create(@PathVariable("domain") String domain, @RequestBody RuleVO ruleVO){
 		if(ruleVO.getDomain()!=null){
 			throw new IllegalArgumentException("rule.domain.admin.only");
 		}
 		return ruleService.create(ruleVO);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public RuleVO read(@PathVariable("id")Long id){
+	public RuleVO read(@PathVariable("domain") String domain, @PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()!=null){
 			throw new UnknownResourceException("rule.not.found");
@@ -48,10 +48,10 @@ public class RuleController {
 		return rule;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void update(@PathVariable("id")Long id,  @RequestBody RuleVO ruleVO){
+	public void update(@PathVariable("domain") String domain, @PathVariable("id")Long id,  @RequestBody RuleVO ruleVO){
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()!=null || ruleVO.getDomain()!=null){
 			throw new IllegalArgumentException("rule.domain.admin.only");
@@ -59,12 +59,12 @@ public class RuleController {
 		ruleService.update(ruleVO);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void delete(@PathVariable("id")Long id){
+	public void delete(@PathVariable("domain") String domain, @PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
-		if(rule.getDomain()!=null){
+		if(!domain.equalsIgnoreCase(rule.getDomain())){
 			throw new UnknownResourceException("rule.not.found");
 		}
 		ruleService.delete(id);
@@ -77,5 +77,4 @@ public class RuleController {
 	public void setRuleService(RuleService ruleService) {
 		this.ruleService = ruleService;
 	}
-
 }

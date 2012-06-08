@@ -40,10 +40,9 @@ public class RuleMapper implements RowMapper<RuleVO>{
 		
 		rule.setToDirection(new RuleDirectionVO());
 		rule.getToDirection().setId(rs.getInt(TO_DIRECTION_ID));
-		
-		rule.setFeatureId(rs.getInt(FEATURE_ID));
+		rule.setComponent(rs.getString(FeatureMapper.COMPONENT));
 		rule.setEnabled(rs.getBoolean(ENABLED));
-		rule.setId(rs.getInt(ID));
+		rule.setId(rs.getLong(ID));
 		rule.setName(rs.getString(LABEL));
 		rule.setTwoWays(rs.getBoolean(TWO_WAYS));
 		rule.setDomain(rs.getString(DOMAIN_ID));

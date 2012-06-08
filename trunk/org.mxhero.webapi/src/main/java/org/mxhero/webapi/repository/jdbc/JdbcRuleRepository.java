@@ -6,6 +6,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.mxhero.webapi.repository.RuleRepository;
+import org.mxhero.webapi.repository.jdbc.mapper.FeatureMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.RuleDirectionMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.RuleMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.RulePropertyMapper;
@@ -30,8 +31,10 @@ public class JdbcRuleRepository implements RuleRepository{
 			" `"+RuleMapper.FROM_DIRECTION_ID+"`, `"+RuleMapper.ID+"`," +
 			" `"+RuleMapper.LABEL+"`, `"+RuleMapper.TO_DIRECTION_ID+"`," +
 			" `"+RuleMapper.TWO_WAYS+"`,`"+RuleMapper.UPDATED+"`," +
-			" `"+RuleMapper.DOMAIN_ID+"`, `"+RuleMapper.FEATURE_ID+"`" +
-			" FROM `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"`";
+			" `"+RuleMapper.DOMAIN_ID+"`, `"+FeatureMapper.COMPONENT+"`" +
+			" FROM `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"`" +
+			" INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` "
+					+" ON `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.ID+"` = `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.FEATURE_ID+"` ";
 	
 	private NamedParameterJdbcTemplate template;
 	
@@ -42,7 +45,7 @@ public class JdbcRuleRepository implements RuleRepository{
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void delete(Integer ruleId) {
+	public void delete(Long ruleId) {
 		String propertiesSql = "DELETE FROM `"+RulePropertyMapper.DATABASE+"`.`"+RulePropertyMapper.TABLE_NAME+"`" +
 				" WHERE `"+RulePropertyMapper.RULE_ID+"` = :ruleId ;";
 		template.update(propertiesSql, new MapSqlParameterSource("ruleId",ruleId));
@@ -62,9 +65,9 @@ public class JdbcRuleRepository implements RuleRepository{
 		String idsSql = "SELECT DISTINCT `"+RuleDirectionMapper.RULE_ID+"` " +
 				" FROM `"+RuleDirectionMapper.DATABASE+"`.`"+RuleDirectionMapper.TABLE_NAME+"` " +
 				" WHERE `"+RuleDirectionMapper.DOMAIN+"` = :domainId ;";
-		List<Integer> ids = template.queryForList(idsSql, new MapSqlParameterSource("domainId",domainId), Integer.class);
+		List<Long> ids = template.queryForList(idsSql, new MapSqlParameterSource("domainId",domainId), Long.class);
 		if(ids!=null && ids.size()>0){
-			for(Integer id : ids){
+			for(Long id : ids){
 				delete(id);
 			}
 		}
@@ -79,9 +82,9 @@ public class JdbcRuleRepository implements RuleRepository{
 				" AND `"+RuleDirectionMapper.ACCOUNT+"` = :accountId ;";
 		MapSqlParameterSource source = new MapSqlParameterSource("domainId",domainId);
 		source.addValue("accountId", accountId);
-		List<Integer> ids = template.queryForList(idsSql, source, Integer.class);
+		List<Long> ids = template.queryForList(idsSql, source, Long.class);
 		if(ids!=null && ids.size()>0){
-			for(Integer id : ids){
+			for(Long id : ids){
 				delete(id);
 			}
 		}
@@ -96,34 +99,31 @@ public class JdbcRuleRepository implements RuleRepository{
 				" AND `"+RuleDirectionMapper.GROUP_NAME+"` = :group ;";
 		MapSqlParameterSource source = new MapSqlParameterSource("domainId",domainId);
 		source.addValue("group", group);
-		List<Integer> ids = template.queryForList(idsSql, source, Integer.class);
+		List<Long> ids = template.queryForList(idsSql, source, Long.class);
 		if(ids!=null && ids.size()>0){
-			for(Integer id : ids){
+			for(Long id : ids){
 				delete(id);
 			}
 		}
 	}
 
 	@Override
-	public boolean checkFromTo(String domainId, Integer featureId,
-			String fromFreeValue, String toFreeValue, Integer ruleId) {
+	public boolean checkFromTo(String domainId, String component,
+			String fromFreeValue, String toFreeValue) {
 		String sql = "SELECT SUM(1) FROM `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"` rules" +
 				" INNER JOIN `"+RuleDirectionMapper.DATABASE+"`.`"+RuleDirectionMapper.TABLE_NAME+"` from_directions" +
 				" ON from_directions.`"+RuleDirectionMapper.ID+"` = rules.`"+RuleMapper.FROM_DIRECTION_ID+"`" +
 				" INNER JOIN `"+RuleDirectionMapper.DATABASE+"`.`"+RuleDirectionMapper.TABLE_NAME+"` to_directions" +
 				" ON to_directions.`"+RuleDirectionMapper.ID+"` = rules.`"+RuleMapper.TO_DIRECTION_ID+"`" +
+				" INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` features" +
+				" ON features.`"+FeatureMapper.ID+"` = rules.`"+RuleMapper.FEATURE_ID+"` " +
 				" WHERE to_directions.`"+RuleDirectionMapper.FREE_VALUE+"` = :toFreeValue" +
 				" AND from_directions.`"+RuleDirectionMapper.FREE_VALUE+"` = :fromFreeValue" +
-				" AND rules.`"+RuleMapper.FEATURE_ID+"` = :featureId"; 
+				" AND features.`"+FeatureMapper.COMPONENT+"` = :component"; 
 		
-		MapSqlParameterSource source = new MapSqlParameterSource("featureId",featureId);
+		MapSqlParameterSource source = new MapSqlParameterSource("component",component);
 		source.addValue("toFreeValue", toFreeValue);
 		source.addValue("fromFreeValue", fromFreeValue);
-		
-		if(ruleId!=null){
-			sql = sql + " AND rules.`"+RuleMapper.ID+"` <> :ruleId";
-			source.addValue("ruleId", ruleId);
-		}
 
 		if(domainId!=null){
 			sql = sql + " AND rules.`"+RuleMapper.DOMAIN_ID+"` = :domainId ;";
@@ -136,7 +136,7 @@ public class JdbcRuleRepository implements RuleRepository{
 
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public Integer insert(RuleVO rule) {
+	public Long insert(RuleVO rule) {
 		String ruleInsertSql = "INSERT INTO `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"`" +
 				" (`"+RuleMapper.ADMIN_ORDER+"`,`"+RuleMapper.CREATED+"`,`"+RuleMapper.DOMAIN_ID+"`," +
 				" `"+RuleMapper.ENABLED+"`,`"+RuleMapper.FEATURE_ID+"`,`"+RuleMapper.LABEL+"`," +
@@ -147,7 +147,7 @@ public class JdbcRuleRepository implements RuleRepository{
 		ruleSource.addValue("created", Calendar.getInstance().getTime());
 		ruleSource.addValue("domainId", rule.getDomain());
 		ruleSource.addValue("enabled", true);
-		ruleSource.addValue("featureId", rule.getFeatureId());
+		ruleSource.addValue("featureId", template.queryForLong(" SELECT `"+FeatureMapper.COMPONENT+"` FROM `"+FeatureMapper.TABLE_NAME+"` WHERE `"+FeatureMapper.COMPONENT+"` = :component", new MapSqlParameterSource("component",rule.getComponent())));
 		ruleSource.addValue("label", rule.getName());
 		ruleSource.addValue("twoWays", rule.getTwoWays());
 		ruleSource.addValue("updated", Calendar.getInstance().getTime());
@@ -164,10 +164,10 @@ public class JdbcRuleRepository implements RuleRepository{
 		template.update(updateDirectionsSql, ruleDirectionsSource);
 		if(rule.getProperties()!=null && rule.getProperties().size()>0){
 			for(RulePropertyVO property : rule.getProperties()){
-				insertProperty(property,ruleKey.getKey().intValue());
+				insertProperty(property,ruleKey.getKey().longValue());
 			}
 		}
-		return ruleKey.getKey().intValue();
+		return ruleKey.getKey().longValue();
 	}
 
 	private Integer insertDirection(RuleDirectionVO direction, Integer ruleId){
@@ -187,7 +187,7 @@ public class JdbcRuleRepository implements RuleRepository{
 		return directionKey.getKey().intValue();
 	}
 	
-	private void insertProperty(RulePropertyVO property, Integer ruleId){
+	private void insertProperty(RulePropertyVO property, Long ruleId){
 		String sql = "INSERT INTO `"+RulePropertyMapper.DATABASE+"`.`"+RulePropertyMapper.TABLE_NAME+"`" +
 				" (`"+RulePropertyMapper.PROPERTY_KEY+"`,`"+RulePropertyMapper.PROPERTY_VALUE+"`,`"+RulePropertyMapper.RULE_ID+"`)" +
 				" VALUES(:key,:value,:ruleId)";
@@ -241,7 +241,7 @@ public class JdbcRuleRepository implements RuleRepository{
 	
 	@Override
 	@Transactional(value="mxhero",readOnly=false)
-	public void toggleStatus(Integer ruleId) {
+	public void toggleStatus(Long ruleId) {
 		String sql = "UPDATE `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"`" +
 				" SET `"+RuleMapper.ENABLED+"` = NOT `"+RuleMapper.ENABLED+"`" +
 				" WHERE `"+RuleMapper.ID+"` = :ruleId ;";
@@ -249,13 +249,31 @@ public class JdbcRuleRepository implements RuleRepository{
 	}
 
 	@Override
-	public List<RuleVO> findByDomainId(String domainId, Integer featureId) {
-		String sql = SELECT +
-				" WHERE `"+RuleMapper.DOMAIN_ID+"` = :domainId" +
-				" AND `"+RuleMapper.FEATURE_ID+"` = :featureId ;";
-		MapSqlParameterSource source = new MapSqlParameterSource("featureId",featureId);
-		source.addValue("domainId", domainId);
-		List<RuleVO> rules = template.query(sql, source, new RuleMapper());
+	public List<RuleVO> findByDomainId(String domain, String component) {
+		String sql = SELECT;		
+		String where = null;
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		if(component!=null){
+			
+			where = " WHERE  `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.COMPONENT+"` = :component ";
+			source.addValue("component", component);
+		}
+		if(domain!=null){
+			if(where == null){
+				where = " WHERE ";
+			}else{
+				where = where+" AND ";
+			}
+			where = where + " `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.DOMAIN_ID+"` = :domain ";
+			source.addValue("domain", domain);
+		}
+		List<RuleVO> rules = null;
+		if(where==null){
+			rules = template.query(sql+where, source, new RuleMapper());
+		}else{
+			rules = template.getJdbcOperations().query(sql, new RuleMapper());
+		}
+		
 		if(rules!=null && rules.size()>0){
 			for(RuleVO rule : rules){
 				rule.setToDirection(findDirectionById(rule.getToDirection().getId()));
@@ -268,12 +286,24 @@ public class JdbcRuleRepository implements RuleRepository{
 	}
 
 	@Override
-	public List<RuleVO> findWitNullDomain(Integer featureId) {
+	public List<RuleVO> findWitNullDomain(String component) {
 		String sql = SELECT +
 				" WHERE `"+RuleMapper.DOMAIN_ID+"` IS NULL" +
-				" AND `"+RuleMapper.FEATURE_ID+"` = :featureId ;";
-		MapSqlParameterSource source = new MapSqlParameterSource("featureId",featureId);
-		List<RuleVO> rules = template.query(sql, source, new RuleMapper());
+				" AND `"+RuleMapper.FEATURE_ID+"` = :component ;";
+		String where = null;
+		MapSqlParameterSource source = new MapSqlParameterSource();
+		if(component!=null){
+			sql = sql + " INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` "
+					+" ON `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.ID+"` = `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.FEATURE_ID+"` ";
+			where = " AND  `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.COMPONENT+"` = :component ";
+			source.addValue("component", component);
+		}
+		List<RuleVO> rules = null;
+		if(where==null){
+			rules = template.query(sql+where, source, new RuleMapper());
+		}else{
+			rules = template.getJdbcOperations().query(sql, new RuleMapper());
+		}
 		if(rules!=null && rules.size()>0){
 			for(RuleVO rule : rules){
 				rule.setToDirection(findDirectionById(rule.getToDirection().getId()));
@@ -299,7 +329,7 @@ public class JdbcRuleRepository implements RuleRepository{
 		return null;
 	}
 
-	private List<RulePropertyVO> findPropertiesByRuleId(Integer ruleId){
+	private List<RulePropertyVO> findPropertiesByRuleId(Long ruleId){
 		String sql = "SELECT `"+RulePropertyMapper.ID+"`, `"+RulePropertyMapper.PROPERTY_KEY+"`, `"+RulePropertyMapper.PROPERTY_VALUE+"`" +
 				" FROM `"+RulePropertyMapper.DATABASE+"`.`"+RulePropertyMapper.TABLE_NAME+"`" +
 				" WHERE `"+RulePropertyMapper.RULE_ID+"` = :ruleId";
@@ -307,7 +337,7 @@ public class JdbcRuleRepository implements RuleRepository{
 	}
 
 	@Override
-	public RuleVO findById(Integer ruleId) {
+	public RuleVO findById(Long ruleId) {
 		String sql = SELECT + " WHERE `"+RuleMapper.ID+"` = :ruleId";
 		MapSqlParameterSource source = new MapSqlParameterSource("ruleId",ruleId);
 		List<RuleVO> rules = template.query(sql, source, new RuleMapper());

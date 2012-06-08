@@ -23,7 +23,7 @@ public class LdapController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public LdapVO create(@PathVariable("domain")String domain, @RequestBody LdapVO ldapVO){
-		return ldapService.create(domain, ldapVO);
+		return ldapService.create(ldapVO);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
@@ -36,7 +36,7 @@ public class LdapController {
 	@RequestMapping(method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void update(@PathVariable("domain")String domain,  @RequestBody LdapVO ldapVO){
-		ldapService.update(domain, ldapVO);
+		ldapService.update(ldapVO);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")

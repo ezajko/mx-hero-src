@@ -19,11 +19,11 @@ public class JdbcLdapService implements LdapService{
 	}
 
 	@Override
-	public LdapVO create(String domain, LdapVO domainVO) {
-		if(ldapRepository.findByDomainId(domain)!=null){
+	public LdapVO create(LdapVO ldapVO) {
+		if(ldapRepository.findByDomainId(ldapVO.getDomainId())!=null){
 			throw new ConflictResourceException("system.property.already.exists");
 		}
-		return ldapRepository.insert(domainVO);
+		return ldapRepository.insert(ldapVO);
 	}
 
 	@Override
@@ -36,8 +36,8 @@ public class JdbcLdapService implements LdapService{
 	}
 
 	@Override
-	public void update(String domain, LdapVO ldapVO) {
-		if(ldapRepository.findByDomainId(domain)!=null){
+	public void update(LdapVO ldapVO) {
+		if(ldapRepository.findByDomainId(ldapVO.getDomainId())!=null){
 			throw new UnknownResourceException("domain.ldap.not.found");
 		}
 		ldapRepository.update(ldapVO);
