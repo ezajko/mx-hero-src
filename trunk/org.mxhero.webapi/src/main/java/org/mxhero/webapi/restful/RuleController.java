@@ -60,6 +60,18 @@ public class RuleController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@RequestMapping(value = "/{id}/status", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void status(@PathVariable("id")Long id,  Boolean enabled){
+		RuleVO rule = ruleService.read(id);
+		if(rule.getDomain()!=null){
+			throw new IllegalArgumentException("rule.domain.admin.only");
+		}
+		rule.setEnabled(enabled);
+		ruleService.update(rule);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void delete(@PathVariable("id")Long id){

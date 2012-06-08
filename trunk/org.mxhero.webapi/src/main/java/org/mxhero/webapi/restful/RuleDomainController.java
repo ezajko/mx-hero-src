@@ -54,9 +54,21 @@ public class RuleDomainController {
 	public void update(@PathVariable("domain") String domain, @PathVariable("id")Long id,  @RequestBody RuleVO ruleVO){
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()!=null || ruleVO.getDomain()!=null){
-			throw new IllegalArgumentException("rule.domain.admin.only");
+			throw new UnknownResourceException("rule.not.found");
 		}
 		ruleService.update(ruleVO);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
+	@RequestMapping(value = "/{id}/status", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void status(@PathVariable("domain") String domain, @PathVariable("id")Long id,  Boolean enabled){
+		RuleVO rule = ruleService.read(id);
+		if(domain.equalsIgnoreCase(rule.getDomain())){
+			throw new UnknownResourceException("rule.not.found");
+		}
+		rule.setEnabled(enabled);
+		ruleService.update(rule);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
