@@ -23,9 +23,10 @@ public interface RuleRepository {
 	
 	void toggleStatus(Long ruleId);
 	
-	List<RuleVO> findByDomainId(String domain, String component);
+	List<RuleVO> findByDomainAndAccount(String domain, String account, String component);
 	
 	List<RuleVO> findWitNullDomain(String component);
 	
 	RuleVO findById(Long ruleId);
+	
 }

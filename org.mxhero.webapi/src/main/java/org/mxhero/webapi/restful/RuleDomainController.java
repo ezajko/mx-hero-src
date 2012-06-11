@@ -3,6 +3,7 @@ package org.mxhero.webapi.restful;
 import java.util.List;
 
 import org.mxhero.webapi.service.RuleService;
+import org.mxhero.webapi.service.exception.NotAllowedException;
 import org.mxhero.webapi.service.exception.UnknownResourceException;
 import org.mxhero.webapi.vo.RuleVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,17 @@ public class RuleDomainController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
 	public List<RuleVO> readAll(@PathVariable("domain") String domain, String component){
-		return ruleService.readAll(domain,component);
+		return ruleService.readAll(domain,null,component);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public RuleVO create(@PathVariable("domain") String domain, @RequestBody RuleVO ruleVO){
-		if(ruleVO.getDomain()!=null){
-			throw new IllegalArgumentException("rule.domain.admin.only");
+		if(ruleVO.getDomain()==null 
+				|| (!domain.equalsIgnoreCase(ruleVO.getFromDirection().getDomain()) 
+					&& !domain.equalsIgnoreCase(ruleVO.getToDirection().getDomain()))){
+			throw new NotAllowedException("rule.domain.only");
 		}
 		return ruleService.create(ruleVO);
 	}
@@ -55,6 +58,11 @@ public class RuleDomainController {
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()!=null || ruleVO.getDomain()!=null){
 			throw new UnknownResourceException("rule.not.found");
+		}
+		if(ruleVO.getDomain()==null 
+				|| (!domain.equalsIgnoreCase(ruleVO.getFromDirection().getDomain()) 
+					&& !domain.equalsIgnoreCase(ruleVO.getToDirection().getDomain()))){
+			throw new NotAllowedException("rule.domain.only");
 		}
 		ruleService.update(ruleVO);
 	}
