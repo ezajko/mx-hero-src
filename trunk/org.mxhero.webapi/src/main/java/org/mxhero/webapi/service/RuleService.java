@@ -6,7 +6,7 @@ import org.mxhero.webapi.vo.RuleVO;
 
 public interface RuleService {
 
-	public List<RuleVO> readAll(String domain, String component);
+	public List<RuleVO> readAll(String domain, String account, String component);
 	
 	public RuleVO create(RuleVO ruleVO);
 	

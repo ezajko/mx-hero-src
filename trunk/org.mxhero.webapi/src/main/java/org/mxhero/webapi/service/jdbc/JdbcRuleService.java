@@ -22,11 +22,11 @@ public class JdbcRuleService implements RuleService{
 	}
 
 	@Override
-	public List<RuleVO> readAll(String domain, String component) {
+	public List<RuleVO> readAll(String domain, String account, String component) {
 		if(domain==null){
 			return ruleRepository.findWitNullDomain(component);
 		}
-		return ruleRepository.findByDomainId(domain, component);
+		return ruleRepository.findByDomainAndAccount(domain, account, component);
 	}
 
 	@Override

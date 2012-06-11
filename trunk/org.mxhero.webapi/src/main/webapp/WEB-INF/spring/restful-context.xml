@@ -69,6 +69,11 @@
 							key="org.mxhero.webapi.service.exception.UnknownResourceException"
 							value="404, _exmsg" />
 							<!-- 409 -->
+						<!-- 405 -->
+						<entry
+							key="org.mxhero.webapi.service.exception.NotAllowedException"
+							value="405, _exmsg" />
+							<!-- 409 -->
 						<entry
 							key="org.mxhero.webapi.service.exception.ConfictResourceException"
 							value="409_exmsg" />

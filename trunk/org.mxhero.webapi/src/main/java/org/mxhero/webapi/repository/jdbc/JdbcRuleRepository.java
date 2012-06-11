@@ -26,15 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(value="mxhero",readOnly=false)
 public class JdbcRuleRepository implements RuleRepository{
 
-	private static final String SELECT = "SELECT `"+RuleMapper.ADMIN_ORDER+"`," +
-			" `"+RuleMapper.CREATED+"`, `"+RuleMapper.ENABLED+"`," +
-			" `"+RuleMapper.FROM_DIRECTION_ID+"`, `"+RuleMapper.ID+"`," +
-			" `"+RuleMapper.LABEL+"`, `"+RuleMapper.TO_DIRECTION_ID+"`," +
-			" `"+RuleMapper.TWO_WAYS+"`,`"+RuleMapper.UPDATED+"`," +
-			" `"+RuleMapper.DOMAIN_ID+"`, `"+FeatureMapper.COMPONENT+"`" +
-			" FROM `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"`" +
-			" INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` "
-					+" ON `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.ID+"` = `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.FEATURE_ID+"` ";
+	private static final String SELECT = "SELECT r.`"+RuleMapper.ADMIN_ORDER+"`," +
+			" r.`"+RuleMapper.CREATED+"`, r.`"+RuleMapper.ENABLED+"`," +
+			" r.`"+RuleMapper.FROM_DIRECTION_ID+"`, r.`"+RuleMapper.ID+"`," +
+			" r.`"+RuleMapper.LABEL+"`, r.`"+RuleMapper.TO_DIRECTION_ID+"`," +
+			" r.`"+RuleMapper.TWO_WAYS+"`, r.`"+RuleMapper.UPDATED+"`," +
+			" r.`"+RuleMapper.DOMAIN_ID+"`, r.`"+FeatureMapper.COMPONENT+"`" +
+			" FROM `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"` r" +
+			" INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` f"+
+			" ON f.`"+FeatureMapper.ID+"` = r.`"+RuleMapper.FEATURE_ID+"` ";
 	
 	private NamedParameterJdbcTemplate template;
 	
@@ -249,13 +249,12 @@ public class JdbcRuleRepository implements RuleRepository{
 	}
 
 	@Override
-	public List<RuleVO> findByDomainId(String domain, String component) {
+	public List<RuleVO> findByDomainAndAccount(String domain, String account, String component) {
 		String sql = SELECT;		
 		String where = null;
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		if(component!=null){
-			
-			where = " WHERE  `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.COMPONENT+"` = :component ";
+			where = " WHERE  f.`"+FeatureMapper.COMPONENT+"` = :component ";
 			source.addValue("component", component);
 		}
 		if(domain!=null){
@@ -264,8 +263,22 @@ public class JdbcRuleRepository implements RuleRepository{
 			}else{
 				where = where+" AND ";
 			}
-			where = where + " `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.DOMAIN_ID+"` = :domain ";
+			where = where + " r.`"+RuleMapper.DOMAIN_ID+"` = :domain ";
 			source.addValue("domain", domain);
+		}
+		if(account!=null){
+			if(where == null){
+				where = " WHERE ";
+			}else{
+				where = where+" AND ";
+			}
+			where = where + " `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.ID+"` EXISTS(" +
+					" SELECT 1 FROM `"+RuleDirectionMapper.TABLE_NAME+"` d" +
+					" WHERE d.`"+RuleDirectionMapper.RULE_ID+"` = r.`"+RuleMapper.ID+"`" +
+					" AND d.`"+RuleDirectionMapper.DOMAIN+"` = :accountDomain " +
+					" AND d.`"+RuleDirectionMapper.ACCOUNT+"` = :account) ";
+			source.addValue("accountDomain", domain);
+			source.addValue("accountDomain", account);
 		}
 		List<RuleVO> rules = null;
 		if(where==null){
@@ -287,9 +300,7 @@ public class JdbcRuleRepository implements RuleRepository{
 
 	@Override
 	public List<RuleVO> findWitNullDomain(String component) {
-		String sql = SELECT +
-				" WHERE `"+RuleMapper.DOMAIN_ID+"` IS NULL" +
-				" AND `"+RuleMapper.FEATURE_ID+"` = :component ;";
+		String sql = SELECT;
 		String where = null;
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		if(component!=null){

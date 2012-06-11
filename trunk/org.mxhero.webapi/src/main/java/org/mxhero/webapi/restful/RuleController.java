@@ -25,7 +25,7 @@ public class RuleController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
 	public List<RuleVO> readAll(String component){
-		return ruleService.readAll(null,component);
+		return ruleService.readAll(null,null,component);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
