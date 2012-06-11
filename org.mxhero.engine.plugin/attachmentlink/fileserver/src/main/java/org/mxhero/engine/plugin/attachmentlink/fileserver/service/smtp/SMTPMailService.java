@@ -51,7 +51,7 @@ public class SMTPMailService implements MailService{
 				}
 				sb.append(content.substring(lastIndex));
 				
-				if(config.getSignature()!=null && config.getSignature().trim()!=null){
+				if(config.getSignature()!=null && !config.getSignature().trim().isEmpty()){
 					sb.append(config.getSignature());
 				}
 				content=sb.toString();
