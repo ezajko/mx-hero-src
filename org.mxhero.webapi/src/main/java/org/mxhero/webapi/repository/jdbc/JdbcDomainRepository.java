@@ -13,7 +13,7 @@ import org.mxhero.webapi.infrastructure.pagination.jdbc.BaseJdbcDao;
 import org.mxhero.webapi.infrastructure.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.webapi.repository.DomainRepository;
 import org.mxhero.webapi.repository.jdbc.mapper.DomainMapper;
-import org.mxhero.webapi.repository.jdbc.mapper.EmailAccountAliasMapper;
+import org.mxhero.webapi.repository.jdbc.mapper.AccountAliasMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.UserMapper;
 import org.mxhero.webapi.vo.DomainVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,9 +98,9 @@ public class JdbcDomainRepository extends BaseJdbcDao<DomainVO> implements Domai
 		MapSqlParameterSource source = new MapSqlParameterSource("domainId",domainId);
 		source.addValue("alias", alias);
 		
-		String accountSql = "DELETE FROM `"+EmailAccountAliasMapper.DATABASE+"`.`"+EmailAccountAliasMapper.TABLE_NAME+"`" +
-				" WHERE `"+EmailAccountAliasMapper.DOMAIN_ALIAS+"` = :alias " +
-				" AND `"+EmailAccountAliasMapper.DOMAIN_ID+"` = :domainId ;";
+		String accountSql = "DELETE FROM `"+AccountAliasMapper.DATABASE+"`.`"+AccountAliasMapper.TABLE_NAME+"`" +
+				" WHERE `"+AccountAliasMapper.DOMAIN_ALIAS+"` = :alias " +
+				" AND `"+AccountAliasMapper.DOMAIN_ID+"` = :domainId ;";
 		template.update(accountSql,source);
 		
 		String sql = "DELETE FROM  `"+DomainMapper.DATABASE+"`.`"+DomainMapper.ALIASES_TABLE_NAME+"`" +

@@ -6,8 +6,8 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.mxhero.webapi.repository.LdapRepository;
-import org.mxhero.webapi.repository.jdbc.mapper.EmailAccountAliasMapper;
-import org.mxhero.webapi.repository.jdbc.mapper.EmailAccountMapper;
+import org.mxhero.webapi.repository.jdbc.mapper.AccountAliasMapper;
+import org.mxhero.webapi.repository.jdbc.mapper.AccountMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.LdapMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.LdapPropertyMapper;
 import org.mxhero.webapi.vo.LdapPropertyVO;
@@ -150,15 +150,15 @@ public class JdbcLdapRepository implements LdapRepository{
 		String sql = "DELETE FROM `"+LdapMapper.DATABASE+"`.`"+LdapMapper.TABLE_NAME+"`" +
 				" WHERE `"+LdapMapper.DOMAIN+"` = :domainId";
 		template.update(sql, new MapSqlParameterSource("domainId", domainId));
-		String emailAliasesSql = "UPDATE `"+EmailAccountMapper.DATABASE+"`.`"+EmailAccountMapper.TABLE_NAME+"`" +
-				" SET `"+EmailAccountMapper.DATA_SOURCE+"` = :dataSource " +
-				" WHERE `"+EmailAccountMapper.DOMAIN_ID+"` = :domainId; ";
+		String emailAliasesSql = "UPDATE `"+AccountMapper.DATABASE+"`.`"+AccountMapper.TABLE_NAME+"`" +
+				" SET `"+AccountMapper.DATA_SOURCE+"` = :dataSource " +
+				" WHERE `"+AccountMapper.DOMAIN_ID+"` = :domainId; ";
 		MapSqlParameterSource emailParams = new MapSqlParameterSource("domainId", domainId);
 		emailParams.addValue("dataSource", LdapVO.MANUAL);
 		template.update(emailAliasesSql, emailParams);
-		String emailSql = "UPDATE `"+EmailAccountAliasMapper.DATABASE+"`.`"+EmailAccountAliasMapper.TABLE_NAME+"`" +
-				" SET `"+EmailAccountAliasMapper.DATA_SOURCE+"` = :dataSource " +
-				" WHERE `"+EmailAccountAliasMapper.DOMAIN_ID+"` = :domainId; ";
+		String emailSql = "UPDATE `"+AccountAliasMapper.DATABASE+"`.`"+AccountAliasMapper.TABLE_NAME+"`" +
+				" SET `"+AccountAliasMapper.DATA_SOURCE+"` = :dataSource " +
+				" WHERE `"+AccountAliasMapper.DOMAIN_ID+"` = :domainId; ";
 		template.update(emailSql, emailParams);
 	}
 

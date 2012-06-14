@@ -17,6 +17,8 @@ public interface UserRepository {
 
 	UserVO finbByUserName(String userName);
 	
+	UserVO finbByAccount(String domain, String account);
+	
 	boolean changePassword(String oldPassword, String newPassword, String username);
 	
 	boolean setPassword(String newPassword, String username);
