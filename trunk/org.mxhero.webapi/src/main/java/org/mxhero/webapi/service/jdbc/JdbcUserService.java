@@ -166,4 +166,13 @@ public class JdbcUserService implements UserService{
 		userRepository.setPassword(newPassword, username);
 	}
 
+	@Override
+	public UserVO readByAccount(String domain, String account) {
+		UserVO user = userRepository.finbByAccount(domain, account);
+		if(user==null){
+			throw new UnknownResourceException("user.not.found");
+		}
+		return user;
+	}
+
 }

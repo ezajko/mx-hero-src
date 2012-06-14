@@ -198,6 +198,20 @@ public class JdbcUserRepository extends BaseJdbcDao<UserVO> implements UserRepos
 		return user;
 	}
 	
+	@Override
+	public UserVO finbByAccount(String domain, String account) {
+		String sql = SELECT + " WHERE `"+UserMapper.ACCOUNT+"` = :account  AND `"+UserMapper.DOMAIN+"` = :domain";
+		UserVO user = null;
+		MapSqlParameterSource source = new MapSqlParameterSource("account",account);
+		source.addValue("domain", domain);
+		List<UserVO> users = template.query(sql,source, new UserMapper());
+		if(users!=null && users.size()>0){
+			user = users.get(0);
+			user.setAuthorities(getAuthorities(user.getUserName()));
+		}
+		return user;
+	}
+	
 	private UserVO finbById(Integer id) {
 		String sql = SELECT + " WHERE `"+UserMapper.ID+"` = :id ;";
 		UserVO user = null;

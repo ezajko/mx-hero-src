@@ -7,7 +7,7 @@ import java.util.Calendar;
 import org.mxhero.webapi.vo.AccountVO;
 import org.springframework.jdbc.core.RowMapper;
 
-public class EmailAccountMapper implements RowMapper<AccountVO>{
+public class AccountMapper implements RowMapper<AccountVO>{
 
 	public static final String DATABASE="mxhero";
 	public static final String TABLE_NAME="email_accounts";

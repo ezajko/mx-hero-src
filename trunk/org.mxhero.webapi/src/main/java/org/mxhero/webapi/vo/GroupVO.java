@@ -1,26 +1,19 @@
 package org.mxhero.webapi.vo;
 
 import java.util.Calendar;
-import java.util.Collection;
 
-public class AccountVO {
-
-	public static final String MANUAL="manual";
+public class GroupVO {
 	
-	private String account;
+	private String name;
 	
 	private String domain;
+	
+	private String description;
 	
 	private Calendar createdDate;
 	
 	private Calendar updatedDate;
-	
-	private String group;
-	
-	private Collection<AccountAliasVO> aliases;
-	
-	private String dataSource;
-	
+
 	public String getDomain() {
 		return domain;
 	}
@@ -29,12 +22,20 @@ public class AccountVO {
 		this.domain = domain;
 	}
 
-	public String getAccount() {
-		return account;
+	public String getName() {
+		return name;
 	}
 
-	public void setAccount(String account) {
-		this.account = account;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Calendar getCreatedDate() {
@@ -53,36 +54,12 @@ public class AccountVO {
 		this.updatedDate = updatedDate;
 	}
 
-	public String getGroup() {
-		return group;
-	}
-
-	public void setGroup(String group) {
-		this.group = group;
-	}
-
-	public Collection<AccountAliasVO> getAliases() {
-		return aliases;
-	}
-
-	public void setAliases(Collection<AccountAliasVO> aliases) {
-		this.aliases = aliases;
-	}
-
-	public String getDataSource() {
-		return dataSource;
-	}
-
-	public void setDataSource(String dataSource) {
-		this.dataSource = dataSource;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((account == null) ? 0 : account.hashCode());
 		result = prime * result + ((domain == null) ? 0 : domain.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -94,16 +71,16 @@ public class AccountVO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AccountVO other = (AccountVO) obj;
-		if (account == null) {
-			if (other.account != null)
-				return false;
-		} else if (!account.equals(other.account))
-			return false;
+		GroupVO other = (GroupVO) obj;
 		if (domain == null) {
 			if (other.domain != null)
 				return false;
 		} else if (!domain.equals(other.domain))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.mxhero.webapi.vo.AccountAliasVO;
 import org.springframework.jdbc.core.RowMapper;
 
-public class EmailAccountAliasMapper implements RowMapper<AccountAliasVO>{
+public class AccountAliasMapper implements RowMapper<AccountAliasVO>{
 
 	public static final String DATABASE="mxhero";
 	public static final String TABLE_NAME="account_aliases";

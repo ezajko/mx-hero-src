@@ -23,13 +23,13 @@ public class RuleDomainAccountController {
 	@Autowired(required=true)
 	private RuleService ruleService;
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #account = principal.account)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<RuleVO> readAll(@PathVariable("domain") String domain,@PathVariable("account") String account, String component){
+	public List<RuleVO> readAll(@PathVariable("domain") String domain, @PathVariable("account") String account, String component){
 		return ruleService.readAll(domain,account,component);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #account = principal.account and #ruleVO.domain == principal.domain)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public RuleVO create(@PathVariable("domain") String domain,@PathVariable("account") String account, @RequestBody RuleVO ruleVO){
@@ -43,7 +43,7 @@ public class RuleDomainAccountController {
 		return ruleService.create(ruleVO);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #account = principal.account)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public RuleVO read(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
@@ -57,7 +57,7 @@ public class RuleDomainAccountController {
 		return rule;
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain and #account = principal.account and #id==#ruleVO.id)")
+	@PreAuthorize("and #id==#ruleVO.id and (hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain ) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account))")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void update(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id,  @RequestBody RuleVO ruleVO){
@@ -79,7 +79,7 @@ public class RuleDomainAccountController {
 		ruleService.update(ruleVO);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #account = principal.account)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(value = "/{id}/status", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void status(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id,  Boolean enabled){
@@ -95,7 +95,7 @@ public class RuleDomainAccountController {
 		ruleService.update(rule);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #account = principal.account)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void delete(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id){
