@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.mxhero.webapi.repository.jdbc.mapper.UserMapper;
 import org.mxhero.webapi.security.CustomUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository("jdbcUserDetailsService")
 public class JdbcUserDetailsService implements UserDetailsService {
 
+	private static Logger log = LoggerFactory.getLogger(JdbcUserDetailsService.class);
+	
 	private UserFinder userFinder;
 	
 	@Autowired(required=true)
@@ -29,6 +33,7 @@ public class JdbcUserDetailsService implements UserDetailsService {
 	@Transactional(value="mxhero",readOnly=true)
 	public UserDetails loadUserByUsername(String username)
 			throws UsernameNotFoundException, DataAccessException {
+		log.debug("USERNAME:"+username);
 		CustomUser user = null;
 		Map<String, Object> userResult = userFinder.loadUserByUsername(username);
 		if(userResult==null){

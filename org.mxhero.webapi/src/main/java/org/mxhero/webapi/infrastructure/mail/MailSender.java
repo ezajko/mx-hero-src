@@ -1,5 +1,6 @@
 package org.mxhero.webapi.infrastructure.mail;
 
+import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.Session;
@@ -20,7 +21,7 @@ public abstract class MailSender {
 	
 	private static final String MAIL_MISSING_CONFIGURATION="mail.missing.configuration";
 	
-	public static void send(String subject, String body, String recipient, Properties properties ){
+	public static void send(String subject, String body, String recipient, Map<String,String> properties ){
 				 
 		 if(properties==null||
 			properties.get(SystemPropertyVO.MAIL_SMTP_HOST)==null||

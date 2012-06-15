@@ -132,7 +132,7 @@ public class JdbcUserRepository extends BaseJdbcDao<UserVO> implements UserRepos
 				" WHERE `"+UserMapper.USER_NAME+"` = :username;";
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		source.addValue("userLastName", applicationUser.getLastName());
-		source.addValue("userName", applicationUser.getUserName());
+		source.addValue("userName", applicationUser.getName());
 		source.addValue("notifyEmail", applicationUser.getNotifyEmail());
 		source.addValue("locale", applicationUser.getLocale());
 		source.addValue("soundsEnabled", applicationUser.getSoundsEnabled());
