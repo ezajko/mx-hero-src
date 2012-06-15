@@ -10,7 +10,9 @@ import org.mxhero.webapi.vo.AccountPropertyVO;
 import org.mxhero.webapi.vo.AccountVO;
 import org.mxhero.webapi.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service("jdbcDomainAccountService")
 public class JdbcDomainAccountService implements DomainAccountService{
 
 	private AccountRepository accountRepository;
