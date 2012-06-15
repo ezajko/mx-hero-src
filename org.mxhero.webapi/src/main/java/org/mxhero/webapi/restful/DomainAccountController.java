@@ -1,7 +1,11 @@
 package org.mxhero.webapi.restful;
 
+import java.util.List;
+
 import org.mxhero.webapi.service.DomainAccountService;
 import org.mxhero.webapi.service.exception.ConflictResourceException;
+import org.mxhero.webapi.vo.AccountPropertiesVO;
+import org.mxhero.webapi.vo.AccountPropertyVO;
 import org.mxhero.webapi.vo.AccountVO;
 import org.mxhero.webapi.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,26 @@ public class DomainAccountController {
 		accountService.delete(domain, account);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
+	@RequestMapping(value = "/{account}/properties", method = RequestMethod.GET)
+	public List<AccountPropertyVO> readAllAccountProperties(@PathVariable("domain")String domain, @PathVariable("account")String account){
+		return accountService.readProperties(domain, account);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
+	@RequestMapping(value = "/{account}/properties", method = RequestMethod.PUT)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void updateAllAccountProperties(@PathVariable("domain")String domain, @PathVariable("account")String account, @RequestBody AccountPropertiesVO properties){
+		accountService.updateProperties(domain, account, properties);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
+	@RequestMapping(value = "/{account}/properties", method = RequestMethod.DELETE)
+	@ResponseStatus(value = HttpStatus.OK)
+	public void deleteAllAccountProperties(@PathVariable("domain")String domain, @PathVariable("account")String account){
+		accountService.deleteProperties(domain, account);
+	}
+	
 	public DomainAccountService getAccountService() {
 		return accountService;
 	}
