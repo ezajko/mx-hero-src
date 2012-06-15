@@ -57,7 +57,7 @@ public class RuleDomainAccountController {
 		return rule;
 	}
 	
-	@PreAuthorize("and #id==#ruleVO.id and (hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain ) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account))")
+	@PreAuthorize("#id==#ruleVO.id and (hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain ) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account))")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void update(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id,  @RequestBody RuleVO ruleVO){

@@ -10,7 +10,9 @@ import org.mxhero.webapi.vo.AccountVO;
 import org.mxhero.webapi.vo.GroupVO;
 import org.mxhero.webapi.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service("jdbcGroupService")
 public class JdbcGroupService implements GroupService{
 
 	private GroupRepository groupRepository;
