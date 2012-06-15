@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 
 import org.mxhero.webapi.repository.jdbc.mapper.AuthorityMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.UserMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
@@ -17,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository("jdbcUserFinder")
 public class JdbcUserFinder implements UserFinder{
-
+	private static Logger log = LoggerFactory.getLogger(JdbcUserFinder.class);
 	private NamedParameterJdbcTemplate template;
 
 	@Autowired(required=true)
@@ -28,6 +30,7 @@ public class JdbcUserFinder implements UserFinder{
 	@Transactional(value="mxhero",readOnly=true)
 	public Map<String, Object> loadUserByUsername(String username)
 			throws DataAccessException {
+		log.debug("USERNAME:"+username);
 		String sql = "SELECT `"+UserMapper.ID+"`,`"+UserMapper.PASSWORD+"`,`"+UserMapper.USER_NAME+"`,`"+UserMapper.ENABLED+"`" +
 				" FROM `"+UserMapper.DATABASE+"`.`"+UserMapper.TABLE_NAME+"`" +
 				" WHERE `"+UserMapper.USER_NAME+"` = :userName ;";

@@ -1,7 +1,8 @@
 package org.mxhero.webapi.service.jdbc;
 
+import java.util.HashMap;
 import java.util.Locale;
-import java.util.Properties;
+import java.util.Map;
 
 import org.mxhero.webapi.infrastructure.RandomPassword;
 import org.mxhero.webapi.infrastructure.mail.MailSender;
@@ -15,6 +16,7 @@ import org.mxhero.webapi.vo.SystemPropertyVO;
 import org.mxhero.webapi.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.AbstractMessageSource;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +31,14 @@ public class JdbcUserService implements UserService{
 	private UserRepository userRepository;
 	private SystemPropertyRepository systemPropertyRepository;
 	private AbstractMessageSource ms;
+	private PasswordEncoder encoder;
 	
 	@Autowired(required=true)
-	public JdbcUserService(UserRepository userRepository, SystemPropertyRepository systemPropertyRepository, AbstractMessageSource ms) {
+	public JdbcUserService(UserRepository userRepository, SystemPropertyRepository systemPropertyRepository, AbstractMessageSource ms, PasswordEncoder encoder) {
 		this.userRepository = userRepository;
 		this.systemPropertyRepository = systemPropertyRepository;
 		this.ms = ms;
+		this.encoder = encoder;
 	}
 
 	@Transactional(readOnly=true)
@@ -51,6 +55,7 @@ public class JdbcUserService implements UserService{
 		return userVOPage;
 	}
 
+	@Transactional(readOnly=false)
 	@Override
 	public UserVO create(UserVO user, String role) {
 		if(role==null){
@@ -72,17 +77,19 @@ public class JdbcUserService implements UserService{
 				throw new IllegalArgumentException("user.create.account.empty");
 			}
 		}
-		UserVO userCreated = userRepository.insert(user, role, user.getPassword());
+		
+		UserVO userCreated = userRepository.insert(user, role, encoder.encodePassword(user.getPassword(),null));
 		return userCreated;
 	}
 
+	@Transactional(readOnly=false)
 	@Override
 	public void resetPassword(String email) {
 		UserVO user = userRepository.finbByNotifyEmail(email);
 		if(user==null){
 			throw new UnknownResourceException("user.not.found");
 		}
-		Properties systemProperties = new Properties();
+		Map<String,String> systemProperties = new HashMap<String, String>();
 		String newPassword = RandomPassword.getRandomString(6);
 		for(SystemPropertyVO property : systemPropertyRepository.findAll()){
 			systemProperties.put(property.getPropertyKey(), property.getPropertyValue());
@@ -92,11 +99,12 @@ public class JdbcUserService implements UserService{
 				ms.getMessage(MAIL_PASSWORD_RECOVERY_BODY, null, new Locale(user.getLocale().split("_")[0],user.getLocale().split("_")[1])).replace(REPLACE_USER,user.getUserName()).replace(REPLACE_PASSWORD, newPassword), 
 				user.getNotifyEmail(), 
 				systemProperties);
-		if(userRepository.setPassword(newPassword, user.getUserName())!=true){
+		if(userRepository.setPassword( encoder.encodePassword(newPassword,null), user.getUserName())!=true){
 			throw new UnknownResourceException("user.not.found");
 		}
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public UserVO read(String username) {
 		UserVO user = userRepository.finbByUserName(username);
@@ -106,21 +114,26 @@ public class JdbcUserService implements UserService{
 		return user;
 	}
 
+	@Transactional(readOnly=false)
 	@Override
 	public void update(String username, UserVO user) {
 		if(user==null){
 			throw new IllegalArgumentException("user.is.null");
 		}
-		if(username.equalsIgnoreCase(user.getUserName())){
+		if(!username.equalsIgnoreCase(user.getUserName())){
 			throw new IllegalArgumentException("user.not.match");
 		}
 		UserVO userInserted = userRepository.finbByUserName(username);
-		if(userInserted==null || userInserted.getDomain() == null || !userInserted.getDomain().equalsIgnoreCase(user.getDomain())){
+		if(userInserted==null 
+				||(userInserted.getDomain()==null && user.getDomain()!=null)
+				||(user.getDomain()==null && userInserted.getDomain()!=null)
+				||(userInserted.getDomain()!=null && user.getDomain()!=null &&!userInserted.getDomain().equalsIgnoreCase(user.getDomain()))){
 			throw new UnknownResourceException("user.not.found");
 		}
 		userRepository.update(user);
 	}
 
+	@Transactional(readOnly=false)
 	@Override
 	public void changePassword(String username, String oldPassword,
 			String newPassword, String domain) {
@@ -138,9 +151,10 @@ public class JdbcUserService implements UserService{
 		if(userRepository.changePassword(oldPassword, newPassword, username)){
 			throw new IllegalArgumentException("user.oldpassword.not.match");
 		}
-		userRepository.changePassword(oldPassword, newPassword, username);
+		userRepository.changePassword(encoder.encodePassword(oldPassword,null), encoder.encodePassword(newPassword,null), username);
 	}
 
+	@Transactional(readOnly=false)
 	@Override
 	public void delete(String username, String domain) {
 		UserVO user = userRepository.finbByUserName(username);
@@ -157,15 +171,17 @@ public class JdbcUserService implements UserService{
 		userRepository.delete(username);
 	}
 
+	@Transactional(readOnly=false)
 	@Override
 	public void setPassword(String username, String newPassword) {
 		UserVO user = userRepository.finbByUserName(username);
 		if(user==null){
 			throw new UnknownResourceException("user.not.found");
 		}
-		userRepository.setPassword(newPassword, username);
+		userRepository.setPassword(encoder.encodePassword(newPassword,null), username);
 	}
 
+	@Transactional(readOnly=true)
 	@Override
 	public UserVO readByAccount(String domain, String account) {
 		UserVO user = userRepository.finbByAccount(domain, account);

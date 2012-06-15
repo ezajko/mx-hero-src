@@ -19,7 +19,7 @@
 
  	<sec:http create-session="stateless" 
  			use-expressions="true">
-		<sec:http-basic entry-point-ref="customBasicEntryPoint"/>
+		<sec:http-basic />
 		<sec:intercept-url pattern="/api/v1/**" access="isFullyAuthenticated()"/>
 	</sec:http>
 
@@ -27,6 +27,9 @@
 		class="org.mxhero.webapi.security.CustomBasicAuthentication">
 		<beans:property name="realmName" value="org.mxhero.webapi"/>
 	</beans:bean>
+
+	<beans:bean
+			class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
 
 	<sec:authentication-manager alias="authenticationManager">
 		<sec:authentication-provider user-service-ref="jdbcUserDetailsService">
