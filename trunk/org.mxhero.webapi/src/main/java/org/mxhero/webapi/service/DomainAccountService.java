@@ -1,5 +1,8 @@
 package org.mxhero.webapi.service;
 
+import java.util.List;
+
+import org.mxhero.webapi.vo.AccountPropertyVO;
 import org.mxhero.webapi.vo.AccountVO;
 import org.mxhero.webapi.vo.PageVO;
 
@@ -15,4 +18,9 @@ public interface DomainAccountService {
 	
 	public void delete(String domain, String account);
 	
+	public void updateProperties(String domain, String account, List<AccountPropertyVO> properties);
+	
+	public List<AccountPropertyVO> readProperties(String domain, String account);
+	
+	public void deleteProperties(String domain, String account);
 }

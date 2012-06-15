@@ -1,7 +1,10 @@
 package org.mxhero.webapi.repository;
 
+import java.util.List;
+
 import org.mxhero.webapi.infrastructure.pagination.common.PageResult;
 import org.mxhero.webapi.vo.AccountAliasVO;
+import org.mxhero.webapi.vo.AccountPropertyVO;
 import org.mxhero.webapi.vo.AccountVO;
 
 public interface AccountRepository {
@@ -25,4 +28,11 @@ public interface AccountRepository {
 	PageResult<AccountVO> findMembersByDomainIdWithoutGroup(String domain, Integer pageNo, Integer pageSize);
 
 	PageResult<AccountVO> findAll(String domain, String account, String group, Integer pageNo, Integer pageSize);
+	
+	List<AccountPropertyVO> readProperties(String account, String domainId);
+	
+	void refreshProperties(String account, String domainId, List<AccountPropertyVO> properties);
+	
+	void deleteProperties(String account, String domainId);
+	
 }

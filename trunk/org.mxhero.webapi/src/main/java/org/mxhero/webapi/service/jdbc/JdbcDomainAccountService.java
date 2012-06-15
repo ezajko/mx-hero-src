@@ -1,9 +1,12 @@
 package org.mxhero.webapi.service.jdbc;
 
+import java.util.List;
+
 import org.mxhero.webapi.infrastructure.pagination.common.PageResult;
 import org.mxhero.webapi.repository.AccountRepository;
 import org.mxhero.webapi.service.DomainAccountService;
 import org.mxhero.webapi.service.exception.UnknownResourceException;
+import org.mxhero.webapi.vo.AccountPropertyVO;
 import org.mxhero.webapi.vo.AccountVO;
 import org.mxhero.webapi.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +67,33 @@ public class JdbcDomainAccountService implements DomainAccountService{
 			throw new UnknownResourceException("domain.account.not.found");
 		}
 		accountRepository.delete(account, domain);
+	}
+
+	@Override
+	public void updateProperties(String domain, String account, List<AccountPropertyVO> properties) {
+		AccountVO insertedAccount = accountRepository.findById(account, domain);
+		if(insertedAccount==null){
+			throw new UnknownResourceException("domain.account.not.found");
+		}
+		accountRepository.refreshProperties(account, domain, properties);
+	}
+
+	@Override
+	public List<AccountPropertyVO> readProperties(String domain, String account) {
+		AccountVO insertedAccount = accountRepository.findById(account, domain);
+		if(insertedAccount==null){
+			throw new UnknownResourceException("domain.account.not.found");
+		}
+		return accountRepository.readProperties(account, domain);
+	}
+
+	@Override
+	public void deleteProperties(String domain, String account) {
+		AccountVO insertedAccount = accountRepository.findById(account, domain);
+		if(insertedAccount==null){
+			throw new UnknownResourceException("domain.account.not.found");
+		}
+		accountRepository.deleteProperties(account, domain);
 	}
 
 }
