@@ -1,8 +1,5 @@
 package org.mxhero.webapi.restful.integration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,14 +42,14 @@ public class SystemPropertyControllerTest {
 	
 	@Test
 	public void create(){
-		String url = base+type+"?key={key}&value={value}";
-		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("key", "somekey");
-		parameters.put("value", "somevalue");
-		try{propertiesService.delete("somekey");}catch(UnknownResourceException e){}
-		template.postForEntity(url, null, Object.class,parameters);
-		Assert.assertTrue(propertiesService.read("somekey").getValue().equalsIgnoreCase("somevalue"));
-		propertiesService.delete("somekey");
+		String url = base+type;
+		SystemPropertyVO property = new SystemPropertyVO();
+		property.setKey("somekey");
+		property.setValue("somevalue");
+		try{propertiesService.delete(property.getKey());}catch(UnknownResourceException e){}
+		template.postForEntity(url, property, Object.class);
+		Assert.assertTrue(propertiesService.read(property.getKey()).getValue().equalsIgnoreCase(property.getValue()));
+		propertiesService.delete(property.getKey());
 	}
 
 	@Test
@@ -71,7 +68,7 @@ public class SystemPropertyControllerTest {
 		propertiesService.create("somekey", "somevalue");
 		SystemPropertyVO property = new SystemPropertyVO();
 		property.setKey("somekey");
-		property.setKey("TEST");
+		property.setValue("TEST");
 		template.put(url, property);
 		propertiesService.delete("somekey");
 	}

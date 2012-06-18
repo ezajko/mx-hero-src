@@ -36,7 +36,7 @@ public class LdapMapper implements RowMapper<LdapVO> {
 		adladap.setBase(rs.getString(BASE));
 		adladap.setDirectoryType(rs.getString(DIRECTORY_TYPE));
 		adladap.setDnAuthenticate(rs.getString(DN_AUTHENTICATE));
-		adladap.setDomainId(rs.getString(DOMAIN));
+		adladap.setDomain(rs.getString(DOMAIN));
 		adladap.setError(rs.getString(LAST_ERROR));
 		adladap.setFilter(rs.getString(FILTER));
 		if(rs.getTimestamp(LAST_UPDATE)!=null){

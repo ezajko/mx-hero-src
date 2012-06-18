@@ -7,6 +7,7 @@ import org.mxhero.webapi.service.exception.UnknownResourceException;
 import org.mxhero.webapi.vo.LdapVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("jdbcLdapService")
 public class JdbcLdapService implements LdapService{
@@ -19,14 +20,16 @@ public class JdbcLdapService implements LdapService{
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public LdapVO create(LdapVO ldapVO) {
-		if(ldapRepository.findByDomainId(ldapVO.getDomainId())!=null){
-			throw new ConflictResourceException("system.property.already.exists");
+		if(ldapRepository.findByDomainId(ldapVO.getDomain())!=null){
+			throw new ConflictResourceException("domain.ldap.already.exists");
 		}
 		return ldapRepository.insert(ldapVO);
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public LdapVO read(String domain) {
 		LdapVO result = ldapRepository.findByDomainId(domain);
 		if(result==null){
@@ -36,16 +39,18 @@ public class JdbcLdapService implements LdapService{
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public void update(LdapVO ldapVO) {
-		if(ldapRepository.findByDomainId(ldapVO.getDomainId())!=null){
+		if(ldapRepository.findByDomainId(ldapVO.getDomain())==null){
 			throw new UnknownResourceException("domain.ldap.not.found");
 		}
 		ldapRepository.update(ldapVO);
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public void delete(String domain) {
-		if(ldapRepository.findByDomainId(domain)!=null){
+		if(ldapRepository.findByDomainId(domain)==null){
 			throw new UnknownResourceException("domain.ldap.not.found");
 		}
 		ldapRepository.deleteByDomainId(domain);

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,8 +31,8 @@ public class SystemPropertyController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public SystemPropertyVO create(String key, String value){
-		return systemPropertiesService.create(key, value);
+	public SystemPropertyVO create(@RequestBody SystemPropertyVO propertyVO){
+		return systemPropertiesService.create(propertyVO.getKey(), propertyVO.getValue());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -43,7 +44,7 @@ public class SystemPropertyController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{key}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void update(@PathVariable("key")String key, SystemPropertyVO propertyVO){
+	public void update(@PathVariable("key")String key, @RequestBody SystemPropertyVO propertyVO){
 		if(!key.equals(propertyVO.getKey())){
 			throw new IllegalArgumentException("key does not match");
 		}

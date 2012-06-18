@@ -7,7 +7,7 @@ public class LdapVO {
 
 	public static final String MANUAL="manual";
 	
-	private String domainId;
+	private String domain;
 	private String directoryType;
 	private String addres;
 	private String port;
@@ -23,12 +23,12 @@ public class LdapVO {
 	private String dnAuthenticate;
 	private List<LdapPropertyVO> properties;
 	
-	public String getDomainId() {
-		return domainId;
+	public String getDomain() {
+		return domain;
 	}
 	
-	public void setDomainId(String domainId) {
-		this.domainId = domainId;
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 	
 	public String getDirectoryType() {
