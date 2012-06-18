@@ -7,6 +7,8 @@ import java.util.Map;
 import org.mxhero.webapi.infrastructure.RandomPassword;
 import org.mxhero.webapi.infrastructure.mail.MailSender;
 import org.mxhero.webapi.infrastructure.pagination.common.PageResult;
+import org.mxhero.webapi.repository.AccountRepository;
+import org.mxhero.webapi.repository.DomainRepository;
 import org.mxhero.webapi.repository.SystemPropertyRepository;
 import org.mxhero.webapi.repository.UserRepository;
 import org.mxhero.webapi.service.UserService;
@@ -32,13 +34,17 @@ public class JdbcUserService implements UserService{
 	private SystemPropertyRepository systemPropertyRepository;
 	private AbstractMessageSource ms;
 	private PasswordEncoder encoder;
+	private DomainRepository domainRepository;
+	private AccountRepository accountRepository;
 	
 	@Autowired(required=true)
-	public JdbcUserService(UserRepository userRepository, SystemPropertyRepository systemPropertyRepository, AbstractMessageSource ms, PasswordEncoder encoder) {
+	public JdbcUserService(UserRepository userRepository, SystemPropertyRepository systemPropertyRepository, AbstractMessageSource ms, PasswordEncoder encoder, DomainRepository domainRepository, AccountRepository accountRepository) {
 		this.userRepository = userRepository;
 		this.systemPropertyRepository = systemPropertyRepository;
 		this.ms = ms;
 		this.encoder = encoder;
+		this.domainRepository = domainRepository;
+		this.accountRepository = accountRepository;
 	}
 
 	@Transactional(readOnly=true)
@@ -69,12 +75,21 @@ public class JdbcUserService implements UserService{
 			if(user.getDomain()==null || user.getDomain().isEmpty()){
 				throw new IllegalArgumentException("user.create.domain.empty");
 			}
+			if(domainRepository.findById(user.getDomain())==null){
+				throw new UnknownResourceException("domain.not.found");
+			}
 		}else if(role.equalsIgnoreCase(UserVO.ROLE_DOMAIN_ACCOUNT)){
 			if(user.getDomain()==null || user.getDomain().isEmpty()){
 				throw new IllegalArgumentException("user.create.domain.empty");
 			}
+			if(domainRepository.findById(user.getDomain())==null){
+				throw new UnknownResourceException("domain.not.found");
+			}
 			if(user.getAccount()==null || user.getAccount().isEmpty()){
 				throw new IllegalArgumentException("user.create.account.empty");
+			}
+			if(accountRepository.findById(user.getAccount(), user.getDomain())==null){
+				throw new IllegalArgumentException("domain.account.not.found");
 			}
 		}
 		

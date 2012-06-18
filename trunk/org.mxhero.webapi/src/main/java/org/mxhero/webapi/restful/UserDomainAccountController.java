@@ -19,7 +19,7 @@ public class UserDomainAccountController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@PostAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and returnObject.domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and returnObject.domain == principal.domain and returnObject.account = principal.account)")
-	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public UserVO read(@PathVariable("domain") String domain, @PathVariable("account")String account) {	
 		return userService.readByAccount(domain, account);
 	}

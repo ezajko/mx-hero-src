@@ -3,6 +3,7 @@ package org.mxhero.webapi.service.jdbc;
 import org.mxhero.webapi.infrastructure.pagination.common.PageResult;
 import org.mxhero.webapi.repository.AccountRepository;
 import org.mxhero.webapi.repository.GroupRepository;
+import org.mxhero.webapi.repository.RuleRepository;
 import org.mxhero.webapi.service.GroupService;
 import org.mxhero.webapi.service.exception.ConflictResourceException;
 import org.mxhero.webapi.service.exception.UnknownResourceException;
@@ -17,11 +18,13 @@ public class JdbcGroupService implements GroupService{
 
 	private GroupRepository groupRepository;
 	private AccountRepository accountRepository;
+	private RuleRepository ruleRepository;
 	
 	@Autowired
-	public JdbcGroupService(GroupRepository groupRepository, AccountRepository accountRepository) {
+	public JdbcGroupService(GroupRepository groupRepository, AccountRepository accountRepository, RuleRepository ruleRepository) {
 		this.groupRepository = groupRepository;
 		this.accountRepository = accountRepository;
+		this.ruleRepository = ruleRepository;
 	}
 
 	@Override
@@ -69,6 +72,7 @@ public class JdbcGroupService implements GroupService{
 		if(group==null){
 			throw new UnknownResourceException("domain.group.not.found");
 		}
+		ruleRepository.deleteByGroup(domain, name);
 		groupRepository.delete(name, domain);
 	}
 

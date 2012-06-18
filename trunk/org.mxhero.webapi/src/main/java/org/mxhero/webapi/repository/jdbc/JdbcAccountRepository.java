@@ -16,7 +16,6 @@ import org.mxhero.webapi.repository.jdbc.mapper.AccountAliasMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.AccountMapper;
 import org.mxhero.webapi.repository.jdbc.mapper.AccountPropertyMapper;
 import org.mxhero.webapi.vo.AccountAliasVO;
-import org.mxhero.webapi.vo.AccountPropertiesVO;
 import org.mxhero.webapi.vo.AccountPropertyVO;
 import org.mxhero.webapi.vo.AccountVO;
 import org.springframework.beans.factory.annotation.Autowired;

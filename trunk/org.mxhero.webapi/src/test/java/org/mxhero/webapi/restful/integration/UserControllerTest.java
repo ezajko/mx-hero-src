@@ -1,6 +1,5 @@
 package org.mxhero.webapi.restful.integration;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,15 +46,7 @@ public class UserControllerTest {
 	@Test
 	public void create(){
 		String url = base+".json";
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
-		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
-		user.setSoundsEnabled(false);
+		UserVO user = Utils.getUser("test");
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 		template.postForEntity(url, user, Object.class);
 		userService.delete("test", null);
@@ -66,15 +57,8 @@ public class UserControllerTest {
 		String url = base+"/resetPassword.json?email={email}";
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("email", "test@test.com");
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
+		UserVO user =  Utils.getUser("test");
 		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
-		user.setSoundsEnabled(false);
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 			userService.create(user, UserVO.ROLE_ADMIN);
 		try{
@@ -86,15 +70,7 @@ public class UserControllerTest {
 	@Test
 	public void read() {	
 		String url = base+"/test.json";
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
-		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
-		user.setSoundsEnabled(false);
+		UserVO user = Utils.getUser("test");
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 		userService.create(user, UserVO.ROLE_ADMIN);
 		template.getForEntity(url, Object.class);
@@ -104,15 +80,7 @@ public class UserControllerTest {
 	@Test
 	public void update(){
 		String url = base+"/test.json";
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
-		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
-		user.setSoundsEnabled(false);
+		UserVO user = Utils.getUser("test");
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 		userService.create(user, UserVO.ROLE_ADMIN);
 		user.setName("NO");
@@ -127,14 +95,7 @@ public class UserControllerTest {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("newPassword", "test@test.com");
 		parameters.put("oldPassword", "password");
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
-		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
+		UserVO user = Utils.getUser("test");
 		user.setSoundsEnabled(false);
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 		userService.create(user, UserVO.ROLE_ADMIN);
@@ -146,15 +107,7 @@ public class UserControllerTest {
 		String url = base+"/test/setPassword.json?newPassword={newPassword}";
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("newPassword", "test@test.com");
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
-		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
-		user.setSoundsEnabled(false);
+		UserVO user = Utils.getUser("test");
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 		userService.create(user, UserVO.ROLE_ADMIN);
 		template.put(url, null, parameters);
@@ -163,14 +116,7 @@ public class UserControllerTest {
 	@Test
 	public void delete(){
 		String url = base+"/test.json";
-		UserVO user = new UserVO();
-		user.setCreated(Calendar.getInstance());
-		user.setLastName("test");
-		user.setName("test");
-		user.setNotifyEmail("test@test.com");
-		user.setPassword("password");
-		user.setUserName("test");
-		user.setLocale("en_US");
+		UserVO user = Utils.getUser("test");
 		user.setSoundsEnabled(false);
 		try{userService.delete("test", null);}catch(UnknownResourceException e){}
 		userService.create(user, UserVO.ROLE_ADMIN);
