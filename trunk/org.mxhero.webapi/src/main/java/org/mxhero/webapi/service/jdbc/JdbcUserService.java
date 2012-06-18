@@ -107,7 +107,7 @@ public class JdbcUserService implements UserService{
 		Map<String,String> systemProperties = new HashMap<String, String>();
 		String newPassword = RandomPassword.getRandomString(6);
 		for(SystemPropertyVO property : systemPropertyRepository.findAll()){
-			systemProperties.put(property.getPropertyKey(), property.getPropertyValue());
+			systemProperties.put(property.getKey(), property.getValue());
 		}
 		MailSender.send(
 				ms.getMessage(MAIL_PASSWORD_RECOVERY_SUBJECT, null, new Locale(user.getLocale().split("_")[0],user.getLocale().split("_")[1])), 

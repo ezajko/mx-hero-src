@@ -25,10 +25,10 @@ public class UserDomainController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
 	public PageVO<UserVO> readAll(@PathVariable("domain") String domain, Integer limit, Integer offset ) {	
-		return userService.readAll(null, limit, offset);
+		return userService.readAll(domain, limit, offset);
 	}
 	
-	@PreAuthorize("(hasRole('ROLE_ADMIN') and #domain == user.domain) or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #user.domain == principal.domain and #user.account!=null)")
+	@PreAuthorize("hasRole('ROLE_ADMIN')  or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #user.domain == principal.domain and #user.account!=null)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
 	public UserVO create(@PathVariable("domain") String domain, @RequestBody UserVO user){
@@ -42,7 +42,7 @@ public class UserDomainController {
 		return userService.read(username);
 	}
 	
-	@PreAuthorize("(hasRole('ROLE_ADMIN') and #domain == #user.domain) or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #user.domain == principal.domain)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #user.domain == principal.domain)")
 	@RequestMapping(value = "/{username}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void update(@PathVariable("domain") String domain, @PathVariable("username") String username, @RequestBody UserVO user){

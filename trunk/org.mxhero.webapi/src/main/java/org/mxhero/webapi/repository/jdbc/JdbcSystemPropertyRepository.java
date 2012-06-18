@@ -54,8 +54,8 @@ public class JdbcSystemPropertyRepository implements SystemPropertyRepository{
 				" ON DUPLICATE KEY UPDATE `"+SystemPropertyMapper.VALUE+"` = VALUES(`"+SystemPropertyMapper.VALUE+"`);";
 		if(property!=null){
 			MapSqlParameterSource source = new MapSqlParameterSource();
-			source.addValue("key", property.getPropertyKey());
-			source.addValue("value", property.getPropertyValue());
+			source.addValue("key", property.getKey());
+			source.addValue("value", property.getValue());
 			template.update(sql, source);
 		}
 	}
@@ -77,8 +77,8 @@ public class JdbcSystemPropertyRepository implements SystemPropertyRepository{
 		int i = 0;
 		for(SystemPropertyVO property : properties){
 			MapSqlParameterSource map = new MapSqlParameterSource();
-			map.addValue("key", property.getPropertyKey());
-			map.addValue("value", property.getPropertyValue());
+			map.addValue("key", property.getKey());
+			map.addValue("value", property.getValue());
 			source[i]=map;
 			++i;
 		}

@@ -31,8 +31,8 @@ public class JdbcSystemPropertiesService implements SystemPropertiesService{
 			throw new ConflictResourceException("system.property.already.exists");
 		}
 		SystemPropertyVO newProperty = new SystemPropertyVO();
-		newProperty.setPropertyKey(key);
-		newProperty.setPropertyValue(value);
+		newProperty.setKey(key);
+		newProperty.setValue(value);
 		repository.save(newProperty);
 		return newProperty;
 	}
@@ -52,7 +52,7 @@ public class JdbcSystemPropertiesService implements SystemPropertiesService{
 		if(property == null){
 			throw new UnknownResourceException("system.property.not.found");
 		}
-		property.setPropertyValue(value);
+		property.setValue(value);
 		repository.save(property);
 	}
 
