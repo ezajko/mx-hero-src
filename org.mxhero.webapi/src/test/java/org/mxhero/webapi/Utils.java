@@ -25,6 +25,8 @@ public abstract class Utils {
 		user.setName(username);
 		user.setUserName(username);
 		user.setPassword(PASSWORD);
+		user.setLocale("en_US");
+		user.setSoundsEnabled(false);
 		return user;
 	}
 	

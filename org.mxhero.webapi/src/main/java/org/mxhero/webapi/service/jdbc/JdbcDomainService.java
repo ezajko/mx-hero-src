@@ -1,7 +1,9 @@
 package org.mxhero.webapi.service.jdbc;
 
 import org.mxhero.webapi.infrastructure.pagination.common.PageResult;
+import org.mxhero.webapi.repository.AccountRepository;
 import org.mxhero.webapi.repository.DomainRepository;
+import org.mxhero.webapi.repository.RuleRepository;
 import org.mxhero.webapi.service.DomainService;
 import org.mxhero.webapi.service.exception.UnknownResourceException;
 import org.mxhero.webapi.vo.DomainVO;
@@ -13,10 +15,14 @@ import org.springframework.stereotype.Service;
 public class JdbcDomainService implements DomainService{
 
 	private DomainRepository domainRepository;
+	private AccountRepository accountRepository;
+	private RuleRepository ruleRepository;
 	
 	@Autowired(required=true)
-	public JdbcDomainService(DomainRepository domainRepository) {
+	public JdbcDomainService(DomainRepository domainRepository, AccountRepository accountRepository, RuleRepository ruleRepository) {
 		this.domainRepository = domainRepository;
+		this.accountRepository = accountRepository;
+		this.ruleRepository = ruleRepository;
 	}
 
 	@Override
@@ -61,6 +67,8 @@ public class JdbcDomainService implements DomainService{
 		if(insertedDomain==null){
 			throw new UnknownResourceException("domain.not.found");
 		}
+		accountRepository.deleteByDomainId(domain);
+		ruleRepository.deleteByDomain(domain);
 		domainRepository.delete(domain);
 	}
 
