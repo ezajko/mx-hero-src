@@ -10,6 +10,7 @@ import org.mxhero.webapi.vo.RulePropertyVO;
 import org.mxhero.webapi.vo.RuleVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("jdbcRuleService")
 public class JdbcRuleService implements RuleService{
@@ -22,6 +23,7 @@ public class JdbcRuleService implements RuleService{
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public List<RuleVO> readAll(String domain, String account, String component) {
 		if(domain==null){
 			return ruleRepository.findWitNullDomain(component);
@@ -30,6 +32,7 @@ public class JdbcRuleService implements RuleService{
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public RuleVO create(RuleVO ruleVO) {
 		if(ruleRepository.checkFromTo(ruleVO.getDomain(), ruleVO.getComponent(), ruleVO.getFromDirection().getFreeValue(), ruleVO.getToDirection().getFreeValue())){
 			throw new ConflictResourceException("rules.already.exists.for.component");
@@ -43,6 +46,7 @@ public class JdbcRuleService implements RuleService{
 	}
 
 	@Override
+	@Transactional(readOnly=true)
 	public RuleVO read(Long id) {
 		RuleVO rule = ruleRepository.findById(id);
 		if(rule==null){
@@ -52,6 +56,7 @@ public class JdbcRuleService implements RuleService{
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public void update(RuleVO ruleVO) {
 		RuleVO rule = ruleRepository.findById(ruleVO.getId());
 		if(rule==null){
@@ -61,6 +66,7 @@ public class JdbcRuleService implements RuleService{
 	}
 
 	@Override
+	@Transactional(readOnly=false)
 	public void delete(Long id) {
 		RuleVO rule = ruleRepository.findById(id);
 		if(rule==null){

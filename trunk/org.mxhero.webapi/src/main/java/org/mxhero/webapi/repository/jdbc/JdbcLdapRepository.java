@@ -81,24 +81,24 @@ public class JdbcLdapRepository implements LdapRepository{
 		source.addValue("sslFlag", domainAdLdapVO.getSslFlag());
 		source.addValue("user", domainAdLdapVO.getUser());
 		source.addValue("dnAuthenticate", domainAdLdapVO.getDnAuthenticate());
-		source.addValue("domainId", domainAdLdapVO.getDomainId());
+		source.addValue("domainId", domainAdLdapVO.getDomain());
 		template.update(sql, source);
 		
 		template.update("DELETE FROM `"+LdapPropertyMapper.DATABASE+"`.`"+LdapPropertyMapper.TABLE_NAME+"` WHERE `"+LdapPropertyMapper.DOMAIN+"` = :domainId"
-				, new MapSqlParameterSource("domainId",domainAdLdapVO.getDomainId()));
+				, new MapSqlParameterSource("domainId",domainAdLdapVO.getDomain()));
 		if(domainAdLdapVO.getProperties()!=null){
 			for(LdapPropertyVO property : domainAdLdapVO.getProperties()){
 				MapSqlParameterSource propertySource = new MapSqlParameterSource();
 				propertySource.addValue("name", property.getName());
 				propertySource.addValue("key", property.getKey());
-				propertySource.addValue("domain", domainAdLdapVO.getDomainId());
+				propertySource.addValue("domain", domainAdLdapVO.getDomain());
 				template.update("INSERT INTO `"+LdapPropertyMapper.DATABASE+"`.`"+LdapPropertyMapper.TABLE_NAME+"` " +
 						" (`"+LdapPropertyMapper.PROPERTY_NAME+"`,`"+LdapPropertyMapper.PROPERTY_KEY+"`,`"+LdapPropertyMapper.DOMAIN+"`) " +
 						" VALUES (:name,:key,:domain) ;",propertySource);
 			}
 		}
 		
-		return findByDomainId(domainAdLdapVO.getDomainId());
+		return findByDomainId(domainAdLdapVO.getDomain());
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class JdbcLdapRepository implements LdapRepository{
 				" VALUES (:domainId, :address, :base, :directoryType, :filter, :nextUpdate," +
 				" :overrideFlag, :password, :port, :sslFlag, :user, :dnAuthenticate) ;";
 		MapSqlParameterSource source = new MapSqlParameterSource();
-		source.addValue("domainId", domainAdLdapVO.getDomainId());
+		source.addValue("domainId", domainAdLdapVO.getDomain());
 		source.addValue("address", domainAdLdapVO.getAddres());
 		source.addValue("base", domainAdLdapVO.getBase());
 		source.addValue("directoryType", domainAdLdapVO.getDirectoryType());
@@ -129,19 +129,19 @@ public class JdbcLdapRepository implements LdapRepository{
 		source.addValue("dnAuthenticate", domainAdLdapVO.getDnAuthenticate());
 		template.update(sql, source);
 		template.update("DELETE FROM `"+LdapPropertyMapper.DATABASE+"`.`"+LdapPropertyMapper.TABLE_NAME+"` WHERE `"+LdapPropertyMapper.DOMAIN+"` = :domainId"
-				, new MapSqlParameterSource("domainId",domainAdLdapVO.getDomainId()));
+				, new MapSqlParameterSource("domainId",domainAdLdapVO.getDomain()));
 		if(domainAdLdapVO.getProperties()!=null){
 			for(LdapPropertyVO property : domainAdLdapVO.getProperties()){
 				MapSqlParameterSource propertySource = new MapSqlParameterSource();
 				propertySource.addValue("name", property.getName());
 				propertySource.addValue("key", property.getKey());
-				propertySource.addValue("domain", domainAdLdapVO.getDomainId());
+				propertySource.addValue("domain", domainAdLdapVO.getDomain());
 				template.update("INSERT INTO `"+LdapPropertyMapper.DATABASE+"`.`"+LdapPropertyMapper.TABLE_NAME+"` " +
 						" (`"+LdapPropertyMapper.PROPERTY_NAME+"`,`"+LdapPropertyMapper.PROPERTY_KEY+"`,`"+LdapPropertyMapper.DOMAIN+"`) " +
 						" VALUES (:name,:key,:domain) ;",propertySource);
 			}
 		}		
-		return findByDomainId(domainAdLdapVO.getDomainId());
+		return findByDomainId(domainAdLdapVO.getDomain());
 	}
 
 	@Override
