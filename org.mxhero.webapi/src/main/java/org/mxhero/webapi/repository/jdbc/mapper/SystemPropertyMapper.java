@@ -19,8 +19,8 @@ public class SystemPropertyMapper implements RowMapper<SystemPropertyVO>{
 			throws SQLException {
 		SystemPropertyVO systemProperty = new SystemPropertyVO();
 		
-		systemProperty.setPropertyKey(rs.getString(KEY));
-		systemProperty.setPropertyValue(rs.getString(VALUE));
+		systemProperty.setKey(rs.getString(KEY));
+		systemProperty.setValue(rs.getString(VALUE));
 		
 		return systemProperty;
 	}

@@ -12,7 +12,6 @@ import org.mxhero.webapi.service.UserService;
 import org.mxhero.webapi.service.exception.UnknownResourceException;
 import org.mxhero.webapi.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpServerErrorException;
@@ -39,8 +38,7 @@ public class UserControllerTest {
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("limit", "10");
 		parameters.put("offset", "0");
-		ResponseEntity<Object> page = template.getForEntity(url, Object.class, parameters); 
-		Assert.assertTrue(true);
+		template.getForEntity(url, Object.class, parameters); 
 	}
 	
 	@Test

@@ -13,24 +13,24 @@ public class SystemPropertyVO {
 	public final static String EXTERNAL_LOGO_PATH="external.logo.path";
 	public final static String NEWS_FEED_ENABLED="news.feed.enabled";
 	
-	private String propertyKey;
+	private String key;
 	
-	private String propertyValue;
+	private String value;
 
-	public String getPropertyKey() {
-		return propertyKey;
+	public String getKey() {
+		return key;
 	}
 
-	public void setPropertyKey(String propertyKey) {
-		this.propertyKey = propertyKey;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
-	public String getPropertyValue() {
-		return propertyValue;
+	public String getValue() {
+		return value;
 	}
 
-	public void setPropertyValue(String propertyValue) {
-		this.propertyValue = propertyValue;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class SystemPropertyVO {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((propertyKey == null) ? 0 : propertyKey.hashCode());
+				+ ((key == null) ? 0 : key.hashCode());
 		return result;
 	}
 
@@ -51,10 +51,10 @@ public class SystemPropertyVO {
 		if (getClass() != obj.getClass())
 			return false;
 		SystemPropertyVO other = (SystemPropertyVO) obj;
-		if (propertyKey == null) {
-			if (other.propertyKey != null)
+		if (key == null) {
+			if (other.key != null)
 				return false;
-		} else if (!propertyKey.equals(other.propertyKey))
+		} else if (!key.equals(other.key))
 			return false;
 		return true;
 	}

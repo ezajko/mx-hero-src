@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mxhero.webapi.Utils;
-import org.mxhero.webapi.repository.AccountRepository;
 import org.mxhero.webapi.service.DomainAccountService;
 import org.mxhero.webapi.service.DomainService;
 import org.mxhero.webapi.service.UserService;

@@ -43,8 +43,11 @@ public class SystemPropertyController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{key}", method = RequestMethod.PUT)
 	@ResponseStatus(value = HttpStatus.OK)
-	public void update(@PathVariable("key")String key, String value){
-		systemPropertiesService.update(key, value);
+	public void update(@PathVariable("key")String key, SystemPropertyVO propertyVO){
+		if(!key.equals(propertyVO.getKey())){
+			throw new IllegalArgumentException("key does not match");
+		}
+		systemPropertiesService.update(propertyVO.getKey(), propertyVO.getValue());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
