@@ -168,6 +168,12 @@ public class JdbcDomainRepository extends BaseJdbcDao<DomainVO> implements Domai
 	@Override
 	public PageResult<DomainVO> findAll(Integer pageNo, Integer pageSize) {
 		String sql = SELECT;
+		if(pageNo==null){
+			pageNo=0;
+		}
+		if(pageSize==null){
+			pageSize=20;
+		}
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		JdbcPageInfo pi = new JdbcPageInfo();
 		pi.setOrderByList(new ArrayList<String>());

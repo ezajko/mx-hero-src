@@ -40,6 +40,9 @@ public class JdbcDomainService implements DomainService{
 	public DomainVO create(DomainVO domainVO) {
 		domainRepository.insert(domainVO);
 		DomainVO insertedDomain = domainRepository.findById(domainVO.getDomain());
+		if(insertedDomain==null){
+			throw new UnknownResourceException("domain.not.found");
+		}
 		return insertedDomain;
 	}
 
