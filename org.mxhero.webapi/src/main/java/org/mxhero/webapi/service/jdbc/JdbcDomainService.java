@@ -3,6 +3,7 @@ package org.mxhero.webapi.service.jdbc;
 import org.mxhero.webapi.infrastructure.pagination.common.PageResult;
 import org.mxhero.webapi.repository.AccountRepository;
 import org.mxhero.webapi.repository.DomainRepository;
+import org.mxhero.webapi.repository.GroupRepository;
 import org.mxhero.webapi.repository.LdapRepository;
 import org.mxhero.webapi.repository.RuleRepository;
 import org.mxhero.webapi.service.DomainService;
@@ -19,13 +20,15 @@ public class JdbcDomainService implements DomainService{
 	private AccountRepository accountRepository;
 	private RuleRepository ruleRepository;
 	private LdapRepository ldapRepository;
+	private GroupRepository groupRepository;
 	
 	@Autowired(required=true)
-	public JdbcDomainService(DomainRepository domainRepository, AccountRepository accountRepository, RuleRepository ruleRepository, LdapRepository ldapRepository) {
+	public JdbcDomainService(DomainRepository domainRepository, AccountRepository accountRepository, RuleRepository ruleRepository, LdapRepository ldapRepository, GroupRepository groupRepository) {
 		this.domainRepository = domainRepository;
 		this.accountRepository = accountRepository;
 		this.ruleRepository = ruleRepository;
 		this.ldapRepository = ldapRepository;
+		this.groupRepository = groupRepository;
 	}
 
 	@Override
@@ -76,6 +79,7 @@ public class JdbcDomainService implements DomainService{
 		accountRepository.deleteByDomainId(domain);
 		ruleRepository.deleteByDomain(domain);
 		ldapRepository.deleteByDomainId(domain);
+		groupRepository.deleteByDomainId(domain);
 		domainRepository.delete(domain);
 	}
 

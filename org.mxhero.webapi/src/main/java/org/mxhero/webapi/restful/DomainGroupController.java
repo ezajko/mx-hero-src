@@ -44,7 +44,7 @@ public class DomainGroupController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public GroupVO read(@PathVariable("domain")String domain, @PathVariable("name")String name){
 		GroupVO groupVO = groupService.read(domain,name);
 		if(!domain.equalsIgnoreCase(groupVO.getDomain())){
@@ -86,14 +86,14 @@ public class DomainGroupController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
-	@RequestMapping(value = "/{name}/accounts/{account}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{name}/accounts/{account}/add", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public void addAccount(@PathVariable("domain")String domain, @PathVariable("name")String name, @PathVariable("account")String account){
-		groupService.addAccount(domain, name, account);
+	public AccountVO addAccount(@PathVariable("domain")String domain, @PathVariable("name")String name, @PathVariable("account")String account){
+		return groupService.addAccount(domain, name, account);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
-	@RequestMapping(value = "/{name}/accounts/remove", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{name}/accounts/{account}/remove", method = RequestMethod.DELETE)
 	@ResponseStatus(value = HttpStatus.OK)
 	public void removeAccount(@PathVariable("domain")String domain, @PathVariable("name")String name, @PathVariable("account")String account){
 		groupService.removeAccount(domain, name, account);
