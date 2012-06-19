@@ -99,7 +99,7 @@ public class JdbcGroupService implements GroupService{
 	}
 
 	@Override
-	public void addAccount(String domain, String name,
+	public AccountVO addAccount(String domain, String name,
 			String account) {
 		AccountVO accountVO = accountRepository.findById(account, domain);
 		if(accountVO==null){
@@ -110,6 +110,7 @@ public class JdbcGroupService implements GroupService{
 		}
 		accountVO.setGroup(name);
 		accountRepository.update(accountVO);
+		return accountVO;
 	}
 
 	@Override

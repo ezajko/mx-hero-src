@@ -20,7 +20,7 @@ public interface GroupService {
 
 	public PageVO<AccountVO> readAllGroupAccounts(String domain, String name, Integer limit, Integer offset);
 
-	public void addAccount(String domain, String name, String account);
+	public AccountVO addAccount(String domain, String name, String account);
 
 	public void removeAccount(String domain, String name, String account);
 }
