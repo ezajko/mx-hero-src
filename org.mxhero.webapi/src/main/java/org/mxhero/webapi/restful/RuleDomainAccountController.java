@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -25,14 +26,14 @@ public class RuleDomainAccountController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<RuleVO> readAll(@PathVariable("domain") String domain, @PathVariable("account") String account, String component){
+	public @ResponseBody List<RuleVO> readAll(@PathVariable("domain") String domain, @PathVariable("account") String account, String component){
 		return ruleService.readAll(domain,account,component);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public RuleVO create(@PathVariable("domain") String domain,@PathVariable("account") String account, @RequestBody RuleVO ruleVO){
+	public @ResponseBody RuleVO create(@PathVariable("domain") String domain,@PathVariable("account") String account, @RequestBody RuleVO ruleVO){
 		if(ruleVO.getDomain()==null 
 				|| (!domain.equalsIgnoreCase(ruleVO.getFromDirection().getDomain()) 
 					&& !domain.equalsIgnoreCase(ruleVO.getToDirection().getDomain()))
@@ -45,7 +46,7 @@ public class RuleDomainAccountController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public RuleVO read(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id){
+	public @ResponseBody RuleVO read(@PathVariable("domain") String domain, @PathVariable("account") String account, @PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()==null 
 				|| (!domain.equalsIgnoreCase(rule.getFromDirection().getDomain()) 

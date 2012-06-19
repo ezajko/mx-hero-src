@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -22,13 +23,13 @@ public class LdapController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ldapVO.domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public LdapVO create(@PathVariable("domain")String domain, @RequestBody LdapVO ldapVO){
+	public @ResponseBody LdapVO create(@PathVariable("domain")String domain, @RequestBody LdapVO ldapVO){
 		return ldapService.create(ldapVO);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
-	public LdapVO read(@PathVariable("domain")String domain){
+	public @ResponseBody LdapVO read(@PathVariable("domain")String domain){
 		return ldapService.read(domain);
 	}
 	

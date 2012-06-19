@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/domains/{domain}/accounts/{account}/user")
@@ -20,7 +21,7 @@ public class UserDomainAccountController {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and #domain == principal.domain and #account = principal.account)")
 	@PostAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and returnObject.domain == principal.domain) or (hasRole('ROLE_DOMAIN_ACCOUNT') and returnObject.domain == principal.domain and returnObject.account = principal.account)")
 	@RequestMapping(method = RequestMethod.GET)
-	public UserVO read(@PathVariable("domain") String domain, @PathVariable("account")String account) {	
+	public @ResponseBody UserVO read(@PathVariable("domain") String domain, @PathVariable("account")String account) {	
 		return userService.readByAccount(domain, account);
 	}
 

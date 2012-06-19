@@ -20,7 +20,6 @@ public class RulePropertyMapper implements RowMapper<RulePropertyVO>{
 	public RulePropertyVO mapRow(ResultSet rs, int rowNum)
 			throws SQLException {
 		RulePropertyVO property = new RulePropertyVO();
-		property.setId(rs.getInt(ID));
 		property.setPropertyKey(rs.getString(PROPERTY_KEY));
 		property.setPropertyValue(rs.getString(PROPERTY_VALUE));
 		return property;

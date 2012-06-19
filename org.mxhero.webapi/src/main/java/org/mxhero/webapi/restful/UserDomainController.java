@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -24,21 +25,21 @@ public class UserDomainController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
-	public PageVO<UserVO> readAll(@PathVariable("domain") String domain, Integer limit, Integer offset ) {	
+	public @ResponseBody PageVO<UserVO> readAll(@PathVariable("domain") String domain, Integer limit, Integer offset ) {	
 		return userService.readAll(domain, limit, offset);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')  or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #user.domain == principal.domain and #user.account!=null)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public UserVO create(@PathVariable("domain") String domain, @RequestBody UserVO user){
+	public @ResponseBody UserVO create(@PathVariable("domain") String domain, @RequestBody UserVO user){
 		return userService.create(user,UserVO.ROLE_DOMAIN_ACCOUNT);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@PostAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and returnObject.domain == principal.domain)")
 	@RequestMapping(value = "/{username}", method = RequestMethod.GET)
-	public UserVO read(@PathVariable("domain") String domain, @PathVariable("username")String username) {	
+	public @ResponseBody UserVO read(@PathVariable("domain") String domain, @PathVariable("username")String username) {	
 		return userService.read(username);
 	}
 	

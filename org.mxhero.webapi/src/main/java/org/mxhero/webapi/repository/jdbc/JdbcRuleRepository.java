@@ -31,7 +31,7 @@ public class JdbcRuleRepository implements RuleRepository{
 			" r.`"+RuleMapper.FROM_DIRECTION_ID+"`, r.`"+RuleMapper.ID+"`," +
 			" r.`"+RuleMapper.LABEL+"`, r.`"+RuleMapper.TO_DIRECTION_ID+"`," +
 			" r.`"+RuleMapper.TWO_WAYS+"`, r.`"+RuleMapper.UPDATED+"`," +
-			" r.`"+RuleMapper.DOMAIN_ID+"`, r.`"+FeatureMapper.COMPONENT+"`" +
+			" r.`"+RuleMapper.DOMAIN_ID+"`, f.`"+FeatureMapper.COMPONENT+"`" +
 			" FROM `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"` r" +
 			" INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` f"+
 			" ON f.`"+FeatureMapper.ID+"` = r.`"+RuleMapper.FEATURE_ID+"` ";
@@ -147,7 +147,7 @@ public class JdbcRuleRepository implements RuleRepository{
 		ruleSource.addValue("created", Calendar.getInstance().getTime());
 		ruleSource.addValue("domainId", rule.getDomain());
 		ruleSource.addValue("enabled", true);
-		ruleSource.addValue("featureId", template.queryForLong(" SELECT `"+FeatureMapper.COMPONENT+"` FROM `"+FeatureMapper.TABLE_NAME+"` WHERE `"+FeatureMapper.COMPONENT+"` = :component", new MapSqlParameterSource("component",rule.getComponent())));
+		ruleSource.addValue("featureId", template.queryForLong(" SELECT `"+FeatureMapper.ID+"` FROM `"+FeatureMapper.TABLE_NAME+"` WHERE `"+FeatureMapper.COMPONENT+"` = :component", new MapSqlParameterSource("component",rule.getComponent())));
 		ruleSource.addValue("label", rule.getName());
 		ruleSource.addValue("twoWays", rule.getTwoWays());
 		ruleSource.addValue("updated", Calendar.getInstance().getTime());
@@ -203,13 +203,14 @@ public class JdbcRuleRepository implements RuleRepository{
 	public void update(RuleVO rule) {
 		String sql = "UPDATE `"+RuleMapper.DATABASE+"`.`"+RuleMapper.TABLE_NAME+"` " +
 				" SET `"+RuleMapper.ADMIN_ORDER+"` = :adminOrder ,`"+RuleMapper.LABEL+"` = :label," +
-				" `"+RuleMapper.TWO_WAYS+"` = :twoWays,`"+RuleMapper.UPDATED+"` = :updated" +
+				" `"+RuleMapper.TWO_WAYS+"` = :twoWays,`"+RuleMapper.UPDATED+"` = :updated,`"+RuleMapper.ENABLED+"` = :enabled" +
 				" WHERE `"+RuleMapper.ID+"` = :ruleId;";
 		MapSqlParameterSource source = new MapSqlParameterSource("ruleId",rule.getId());
 		source.addValue("updated", Calendar.getInstance().getTime());
 		source.addValue("label", rule.getName());
 		source.addValue("twoWays", rule.getTwoWays());
 		source.addValue("adminOrder", rule.getAdminOrder());
+		source.addValue("enabled", rule.getEnabled());
 		template.update(sql, source);
 		updateDirection(rule.getFromDirection());
 		updateDirection(rule.getToDirection());
@@ -304,13 +305,11 @@ public class JdbcRuleRepository implements RuleRepository{
 		String where = null;
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		if(component!=null){
-			sql = sql + " INNER JOIN `"+FeatureMapper.DATABASE+"`.`"+FeatureMapper.TABLE_NAME+"` "
-					+" ON `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.ID+"` = `"+RuleMapper.TABLE_NAME+"`.`"+RuleMapper.FEATURE_ID+"` ";
-			where = " AND  `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.COMPONENT+"` = :component ";
+			where = " WHERE  `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.COMPONENT+"` = :component ";
 			source.addValue("component", component);
 		}
 		List<RuleVO> rules = null;
-		if(where==null){
+		if(where!=null){
 			rules = template.query(sql+where, source, new RuleMapper());
 		}else{
 			rules = template.getJdbcOperations().query(sql, new RuleMapper());
@@ -349,11 +348,15 @@ public class JdbcRuleRepository implements RuleRepository{
 
 	@Override
 	public RuleVO findById(Long ruleId) {
-		String sql = SELECT + " WHERE `"+RuleMapper.ID+"` = :ruleId";
+		String sql = SELECT + " WHERE r.`"+RuleMapper.ID+"` = :ruleId";
 		MapSqlParameterSource source = new MapSqlParameterSource("ruleId",ruleId);
 		List<RuleVO> rules = template.query(sql, source, new RuleMapper());
 		if(rules!=null && rules.size()>0){
-			return rules.get(0);
+			RuleVO rule = rules.get(0);
+			rule.setToDirection(findDirectionById(rule.getToDirection().getId()));
+			rule.setFromDirection(findDirectionById(rule.getFromDirection().getId()));
+			rule.setProperties(findPropertiesByRuleId(rule.getId()));
+			return rule;
 		}
 		return null;
 	}

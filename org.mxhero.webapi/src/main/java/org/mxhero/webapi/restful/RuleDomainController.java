@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -25,14 +26,14 @@ public class RuleDomainController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<RuleVO> readAll(@PathVariable("domain") String domain, String component){
+	public @ResponseBody List<RuleVO> readAll(@PathVariable("domain") String domain, String component){
 		return ruleService.readAll(domain,null,component);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain and #ruleVO.domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public RuleVO create(@PathVariable("domain") String domain, @RequestBody RuleVO ruleVO){
+	public @ResponseBody RuleVO create(@PathVariable("domain") String domain, @RequestBody RuleVO ruleVO){
 		if(ruleVO.getDomain()==null 
 				|| (!domain.equalsIgnoreCase(ruleVO.getFromDirection().getDomain()) 
 					&& !domain.equalsIgnoreCase(ruleVO.getToDirection().getDomain()))){
@@ -43,7 +44,7 @@ public class RuleDomainController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public RuleVO read(@PathVariable("domain") String domain, @PathVariable("id")Long id){
+	public @ResponseBody RuleVO read(@PathVariable("domain") String domain, @PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()!=null){
 			throw new UnknownResourceException("rule.not.found");

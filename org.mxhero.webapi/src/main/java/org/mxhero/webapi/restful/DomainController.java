@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -22,20 +23,20 @@ public class DomainController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
-	public PageVO<DomainVO> readAll(Integer limit, Integer offset){
+	public @ResponseBody PageVO<DomainVO> readAll(Integer limit, Integer offset){
 		return domainService.readAll(limit, offset);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public DomainVO create(@RequestBody DomainVO domainVO){
+	public @ResponseBody DomainVO create(@RequestBody DomainVO domainVO){
 		return domainService.create(domainVO);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{domain}", method = RequestMethod.GET)
-	public DomainVO read(@PathVariable("domain")String domain){
+	public @ResponseBody DomainVO read(@PathVariable("domain")String domain){
 		return domainService.read(domain);
 	}
 	

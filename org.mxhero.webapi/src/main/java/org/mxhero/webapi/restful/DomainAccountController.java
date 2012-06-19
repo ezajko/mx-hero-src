@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -27,14 +28,14 @@ public class DomainAccountController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
-	public PageVO<AccountVO> readAll(@PathVariable("domain")String domain, Integer limit, Integer offset){
+	public @ResponseBody PageVO<AccountVO> readAll(@PathVariable("domain")String domain, Integer limit, Integer offset){
 		return accountService.readAll(domain, limit, offset);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public AccountVO create(@PathVariable("domain")String domain, @RequestBody AccountVO accountVO){
+	public @ResponseBody AccountVO create(@PathVariable("domain")String domain, @RequestBody AccountVO accountVO){
 		if(!domain.equalsIgnoreCase(accountVO.getDomain())){
 			throw new ConflictResourceException("domain.account.domains.not.match");
 		}
@@ -43,7 +44,7 @@ public class DomainAccountController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{account}", method = RequestMethod.GET)
-	public AccountVO read(@PathVariable("domain")String domain, @PathVariable("account")String account){
+	public @ResponseBody AccountVO read(@PathVariable("domain")String domain, @PathVariable("account")String account){
 		return accountService.read(domain, account);
 	}
 	
@@ -69,7 +70,7 @@ public class DomainAccountController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{account}/properties", method = RequestMethod.GET)
-	public List<AccountPropertyVO> readAllAccountProperties(@PathVariable("domain")String domain, @PathVariable("account")String account){
+	public @ResponseBody List<AccountPropertyVO> readAllAccountProperties(@PathVariable("domain")String domain, @PathVariable("account")String account){
 		return accountService.readProperties(domain, account);
 	}
 	
