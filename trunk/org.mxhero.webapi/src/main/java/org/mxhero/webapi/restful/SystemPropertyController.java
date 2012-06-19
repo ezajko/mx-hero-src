@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -24,20 +25,20 @@ public class SystemPropertyController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<SystemPropertyVO> readAll(){
+	public @ResponseBody List<SystemPropertyVO> readAll(){
 		return systemPropertiesService.readAll();
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public SystemPropertyVO create(@RequestBody SystemPropertyVO propertyVO){
+	public @ResponseBody SystemPropertyVO create(@RequestBody SystemPropertyVO propertyVO){
 		return systemPropertiesService.create(propertyVO.getKey(), propertyVO.getValue());
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{key}", method = RequestMethod.GET)
-	public SystemPropertyVO read(@PathVariable("key")String key){
+	public @ResponseBody SystemPropertyVO read(@PathVariable("key")String key){
 		return systemPropertiesService.read(key);	
 	}
 	

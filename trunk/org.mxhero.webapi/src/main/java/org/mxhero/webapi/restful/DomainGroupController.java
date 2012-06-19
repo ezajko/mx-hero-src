@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -29,14 +30,14 @@ public class DomainGroupController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.GET)
-	public PageVO<GroupVO> readAll(@PathVariable("domain")String domain, Integer limit, Integer offset){
+	public @ResponseBody PageVO<GroupVO> readAll(@PathVariable("domain")String domain, Integer limit, Integer offset){
 		return groupService.readAll(domain, limit, offset);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public GroupVO create(@PathVariable("domain")String domain, @RequestBody GroupVO groupVO){
+	public @ResponseBody GroupVO create(@PathVariable("domain")String domain, @RequestBody GroupVO groupVO){
 		if(!domain.equalsIgnoreCase(groupVO.getDomain())){
 			throw new ConflictResourceException("domain.group.domain.not.match");
 		}
@@ -45,7 +46,7 @@ public class DomainGroupController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
-	public GroupVO read(@PathVariable("domain")String domain, @PathVariable("name")String name){
+	public @ResponseBody GroupVO read(@PathVariable("domain")String domain, @PathVariable("name")String name){
 		GroupVO groupVO = groupService.read(domain,name);
 		if(!domain.equalsIgnoreCase(groupVO.getDomain())){
 			throw new UnknownResourceException("domain.group.not.found");
@@ -75,20 +76,20 @@ public class DomainGroupController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/accounts/available", method = RequestMethod.GET)
-	public PageVO<AccountVO> readAllNoGroupAccounts(@PathVariable("domain")String domain, Integer limit, Integer offset){
+	public @ResponseBody PageVO<AccountVO> readAllNoGroupAccounts(@PathVariable("domain")String domain, Integer limit, Integer offset){
 		return groupService.readAllNoGroupAccounts(domain, limit, offset);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{name}/accounts", method = RequestMethod.GET)
-	public PageVO<AccountVO> readAllGroupAccounts(@PathVariable("domain")String domain, @PathVariable("name")String name, Integer limit, Integer offset){
+	public @ResponseBody PageVO<AccountVO> readAllGroupAccounts(@PathVariable("domain")String domain, @PathVariable("name")String name, Integer limit, Integer offset){
 		return groupService.readAllGroupAccounts(domain, name, limit, offset);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_DOMAIN_ADMIN') and #domain == principal.domain)")
 	@RequestMapping(value = "/{name}/accounts/{account}/add", method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public AccountVO addAccount(@PathVariable("domain")String domain, @PathVariable("name")String name, @PathVariable("account")String account){
+	public @ResponseBody AccountVO addAccount(@PathVariable("domain")String domain, @PathVariable("name")String name, @PathVariable("account")String account){
 		return groupService.addAccount(domain, name, account);
 	}
 	

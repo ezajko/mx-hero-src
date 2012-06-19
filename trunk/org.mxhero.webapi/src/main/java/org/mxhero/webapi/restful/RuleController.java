@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Controller
@@ -24,14 +25,14 @@ public class RuleController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<RuleVO> readAll(String component){
+	public @ResponseBody List<RuleVO> readAll(String component){
 		return ruleService.readAll(null,null,component);
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public RuleVO create(@RequestBody RuleVO ruleVO){
+	public @ResponseBody RuleVO create(@RequestBody RuleVO ruleVO){
 		if(ruleVO.getDomain()!=null){
 			throw new IllegalArgumentException("rule.domain.admin.only");
 		}
@@ -40,7 +41,7 @@ public class RuleController {
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	public RuleVO read(@PathVariable("id")Long id){
+	public @ResponseBody RuleVO read(@PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
 		if(rule.getDomain()!=null){
 			throw new UnknownResourceException("rule.not.found");
