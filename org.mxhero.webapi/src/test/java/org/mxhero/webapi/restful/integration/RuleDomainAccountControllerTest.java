@@ -5,13 +5,18 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mxhero.webapi.Utils;
+import org.mxhero.webapi.service.DomainAccountService;
+import org.mxhero.webapi.service.DomainService;
 import org.mxhero.webapi.service.RuleService;
 import org.mxhero.webapi.service.UserService;
 import org.mxhero.webapi.service.exception.UnknownResourceException;
+import org.mxhero.webapi.vo.AccountVO;
+import org.mxhero.webapi.vo.DomainVO;
 import org.mxhero.webapi.vo.RuleDirectionVO;
 import org.mxhero.webapi.vo.RulePropertyVO;
 import org.mxhero.webapi.vo.RuleVO;
@@ -23,18 +28,23 @@ import org.springframework.web.client.RestTemplate;
 
 @RunWith(SpringJUnit4ClassRunner.class) 
 @ContextConfiguration(locations = {"file:src/test/resources/infrastructure-context.xml","file:src/test/resources/admin-test-context.xml"})
-public class RuleControllerTest {
+public class RuleDomainAccountControllerTest {
 
 	@Autowired
 	private UserService userService;
-	
 	@Autowired
 	private RuleService ruleService;
+	@Autowired
+	private DomainService domainService;
+	@Autowired
+	private DomainAccountService accountService;
 
 	@Autowired
 	private RestTemplate template;
-	private String base = "http://localhost:8080/webapi/api/v1/rules";
+	private String base = "http://localhost:8080/webapi/api/v1/domains/{domain}/accounts/{account}/rules";
 	private String type = ".json";
+	private String domainName = "test.com";
+	String accountName = "jhon";
 	
 	@Before
 	public void init(){
@@ -45,17 +55,32 @@ public class RuleControllerTest {
 				ruleService.delete(rule.getId());
 			}
 		}
+		try{domainService.delete(domainName);}catch(UnknownResourceException e){}
+		DomainVO domain = new DomainVO();
+		domain.setDomain(domainName);
+		domain.setServer("smtp.server");
+		domainService.create(domain);
+		try{accountService.delete(domainName,accountName);}catch(UnknownResourceException e){}
+		AccountVO accountVO = new AccountVO();
+		accountVO.setDomain(domainName);
+		accountVO.setAccount(accountName);
+	}
+	
+	@After
+	public void clean(){
+		try{domainService.delete(domainName);}catch(UnknownResourceException e){}
+		try{accountService.delete(domainName,accountName);}catch(UnknownResourceException e){}
 	}
 	
 	@Test
 	public void readAll(){
-		String url = (base+"?component=org.mxhero.feature.attachmentblock"+type);
+		String url = (base.replace("{domain}", domainName).replace("{account}", accountName)+"?component=org.mxhero.feature.attachmentblock"+type);
 		template.getForObject(url, Object.class);
 	}
 	
 	@Test
 	public void create(){
-		String url = (base+type);
+		String url = (base.replace("{domain}", domainName).replace("{account}", accountName)+type);
 		RuleVO ruleVO = getRule();
 		ruleVO = template.postForObject(url, ruleVO, RuleVO.class);
 		ruleService.delete(ruleVO.getId());
@@ -63,7 +88,7 @@ public class RuleControllerTest {
 
 	@Test
 	public void read(){
-		String url = (base+"/{id}"+type);
+		String url = (base.replace("{domain}", domainName).replace("{account}", accountName)+"/{id}"+type);
 		RuleVO ruleVO = getRule();
 		ruleVO = ruleService.create(ruleVO);
 		RuleVO readRuleVO = template.getForObject(url.replace("{id}", ruleVO.getId().toString()), RuleVO.class);
@@ -73,7 +98,7 @@ public class RuleControllerTest {
 	
 	@Test
 	public void update(){
-		String url = (base+"/{id}"+type);
+		String url = (base.replace("{domain}", domainName).replace("{account}", accountName)+"/{id}"+type);
 		RuleVO ruleVO = getRule();
 		ruleVO = ruleService.create(ruleVO);
 		ruleVO.setEnabled(false);
@@ -85,7 +110,7 @@ public class RuleControllerTest {
 
 	@Test
 	public void status(){
-		String url = (base+"/{id}/status"+type+"?enabled=false");
+		String url = (base.replace("{domain}", domainName).replace("{account}", accountName)+"/{id}/status"+type+"?enabled=false");
 		RuleVO ruleVO = getRule();
 		ruleVO = ruleService.create(ruleVO);
 		template.put(url.replace("{id}", ruleVO.getId().toString()),null);
@@ -96,7 +121,7 @@ public class RuleControllerTest {
 
 	@Test
 	public void delete(){
-		String url = (base+"/{id}"+type);
+		String url = (base.replace("{domain}", domainName).replace("{account}", accountName)+"/{id}"+type);
 		RuleVO ruleVO = getRule();
 		ruleVO = ruleService.create(ruleVO);
 		template.delete(url.replace("{id}", ruleVO.getId().toString()));
@@ -109,13 +134,15 @@ public class RuleControllerTest {
 		ruleVO.setComponent("org.mxhero.feature.attachmentblock");
 		ruleVO.setTwoWays(false);
 		ruleVO.setName("some name");
+		ruleVO.setDomain(domainName);
 		RuleDirectionVO from = new RuleDirectionVO();
 		from.setDirectionType("anyone");
 		from.setFreeValue("anyone");
 		RuleDirectionVO to = new RuleDirectionVO();
 		to.setDirectionType("domain");
-		to.setFreeValue("test.com");
-		to.setDomain("test.com");
+		to.setFreeValue(accountName+"@"+domainName);
+		to.setDomain(domainName);
+		to.setAccount(accountName);
 		ruleVO.setFromDirection(from);
 		ruleVO.setToDirection(to);
 		ruleVO.setProperties(new ArrayList<RulePropertyVO>());

@@ -305,7 +305,7 @@ public class JdbcRuleRepository implements RuleRepository{
 		String where = null;
 		MapSqlParameterSource source = new MapSqlParameterSource();
 		if(component!=null){
-			where = " WHERE  `"+FeatureMapper.TABLE_NAME+"`.`"+FeatureMapper.COMPONENT+"` = :component ";
+			where = " WHERE  f.`"+FeatureMapper.COMPONENT+"` = :component ";
 			source.addValue("component", component);
 		}
 		List<RuleVO> rules = null;

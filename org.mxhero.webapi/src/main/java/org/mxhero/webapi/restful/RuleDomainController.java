@@ -46,7 +46,7 @@ public class RuleDomainController {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public @ResponseBody RuleVO read(@PathVariable("domain") String domain, @PathVariable("id")Long id){
 		RuleVO rule = ruleService.read(id);
-		if(rule.getDomain()!=null){
+		if(!domain.equalsIgnoreCase(rule.getDomain())){
 			throw new UnknownResourceException("rule.not.found");
 		}
 		return rule;
@@ -57,7 +57,7 @@ public class RuleDomainController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public void update(@PathVariable("domain") String domain, @PathVariable("id")Long id,  @RequestBody RuleVO ruleVO){
 		RuleVO rule = ruleService.read(id);
-		if(rule.getDomain()!=null || ruleVO.getDomain()!=null){
+		if(!domain.equalsIgnoreCase(rule.getDomain())){
 			throw new UnknownResourceException("rule.not.found");
 		}
 		if(ruleVO.getDomain()==null 
@@ -73,7 +73,7 @@ public class RuleDomainController {
 	@ResponseStatus(value = HttpStatus.OK)
 	public void status(@PathVariable("domain") String domain, @PathVariable("id")Long id,  Boolean enabled){
 		RuleVO rule = ruleService.read(id);
-		if(domain.equalsIgnoreCase(rule.getDomain())){
+		if(!domain.equalsIgnoreCase(rule.getDomain())){
 			throw new UnknownResourceException("rule.not.found");
 		}
 		rule.setEnabled(enabled);
