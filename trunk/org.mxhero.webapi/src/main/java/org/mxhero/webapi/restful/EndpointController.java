@@ -23,10 +23,8 @@ public class EndpointController {
 	public @ResponseBody String show() {
 		String result = "";
 	    for (RequestMappingInfo element : requestMappingHandlerMapping.getHandlerMethods().keySet()) {
-	        result += "<p>" + element.getPatternsCondition() + "<br>";
+	        result += "<p>" + element.getPatternsCondition();
 	        result += element.getMethodsCondition() + "<br>";
-	        result += element.getParamsCondition() + "<br>";
-	        result += element.getProducesCondition() + "<br>";
 	    }
 	    return result;
 	}
