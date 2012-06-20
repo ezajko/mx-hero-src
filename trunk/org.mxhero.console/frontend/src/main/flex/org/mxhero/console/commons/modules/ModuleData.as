@@ -1,6 +1,6 @@
 package org.mxhero.console.commons.modules
 {
-	import mx.modules.ModuleLoader;
+	import spark.modules.ModuleLoader;
 
 	[Bindable]
 	public class ModuleData

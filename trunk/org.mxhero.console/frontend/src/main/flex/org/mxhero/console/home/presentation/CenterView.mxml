@@ -65,7 +65,7 @@
 								currentState="{model.periodState}"
 								/>
 		<s:HGroup width="100%">
-			<mx:Spacer minWidth="100" width="100%"/>
+			<s:Spacer minWidth="100" width="100%"/>
 			<s:ButtonBar id="periodBar"
 						 buttonMode="true" 
 						 change="buttonbar1_changeHandler(event)"

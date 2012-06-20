@@ -50,20 +50,23 @@
 							 backLinkFunction="{model.goBack}"
 							 backLinkTooltip="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_TOOLTIP)}"/>
 	<s:VGroup gap="10" paddingLeft="10" paddingRight="10" paddingBottom="10" paddingTop="10">
-		<mx:Form>
-			<mx:FormItem>
+		<s:Form>
+			<s:layout>
+				<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+			</s:layout>
+			<s:FormItem>
 				<s:CheckBox id="activateCb" 
 							selected="@{model.hasQuarentine}"
 							label="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.ACTIVATE_LABEL)}"/>
-			</mx:FormItem>	
-			<mx:Spacer height="10"/>
-			<mx:FormItem>
-				<mx:HBox>
+			</s:FormItem>	
+			<s:Spacer height="10"/>
+			<s:FormItem>
+				<s:HGroup>
 					<s:Label fontWeight="bold" text="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.REDIRECT_EMAIL_LABEL)}"/>
 					<s:TextInput id="emailTi" width="200" enabled="{activateCb.selected}" text="@{model.quarantine.email}"/>
-				</mx:HBox>
-			</mx:FormItem>
-		</mx:Form>
+				</s:HGroup>
+			</s:FormItem>
+		</s:Form>
 		<s:HGroup width="100%" horizontalAlign="right" paddingRight="15">
 			<s:Button id="saveBtt" label="{resourceManager.getString(QuarantineProperties.NAME,QuarantineProperties.SAVE_BUTTON)}" click="saveBtt_clickHandler(event)"/>
 		</s:HGroup>

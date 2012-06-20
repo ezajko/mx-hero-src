@@ -11,7 +11,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.utils.StringUtil;
 			
-			public function labelFunction(item:Object, column:DataGridColumn):String{
+			public function labelFunction(item:Object, column:GridColumn):String{
 				return item.account+"@"+item.domain;
 			}
 			
@@ -27,7 +27,7 @@
 				}
 			}
 			
-			protected function aliasesLabelFunction(item:Object, column:DataGridColumn):String{
+			protected function aliasesLabelFunction(item:Object, column:GridColumn):String{
 				var label:String="";
 				if(item.aliases!=null){
 					for each (var alias:Object in item.aliases){
@@ -57,25 +57,28 @@
 	</fx:Metadata>
 	
 	<s:Panel skinClass="org.mxhero.console.mails.skins.TitleLessPanel" width="100%">
-		<mx:DataGrid id="emailsDg"
+		<s:DataGrid id="emailsDg"
 					 dataProvider="{dataProvider}" 
 					 width="100%"
-					 height="300"
-					 paddingBottom="5">
-			<mx:columns>
-				<mx:DataGridColumn id="emailColumn" 
+					 height="300">
+			<s:columns>
+				<s:ArrayList>
+				<s:GridColumn id="emailColumn" 
 								   sortable="true"
 								   labelFunction="{labelFunction}"
 								   headerText="{resourceManager.getString(RESOURCE,'email.column.label')}"/>
-				<mx:DataGridColumn id="aliasesColumn" 
+				<s:GridColumn id="aliasesColumn" 
 								   sortable="false"
 								   labelFunction="{aliasesLabelFunction}"
 								   headerText="{resourceManager.getString(RESOURCE,'email.aliases.column.label')}"/>
-				<mx:DataGridColumn width="48" 
+				<s:GridColumn width="48" 
 								   sortable="false">
-					<mx:itemRenderer>
+					<s:itemRenderer>
 						<fx:Component>
-							<mx:HBox width="100%" horizontalAlign="center">
+							<s:GridItemRenderer width="100%">
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center"/>
+								</s:layout>
 								<fx:Script>
 									<![CDATA[
 										import flash.events.MouseEvent;
@@ -90,16 +93,17 @@
 										}
 									]]>
 								</fx:Script>
-								<mx:Image source="{DELETE}"
+								<s:Image source="{DELETE}"
 										  buttonMode="true"
 										  toolTip="{resourceManager.getString(ManagedFilterDataGrid.RESOURCE,'remove.tooltip')}"
 										  click="remove_clickHandler(event)"/>
-							</mx:HBox>		  
+							</s:GridItemRenderer>		  
 						</fx:Component>
-					</mx:itemRenderer>
-				</mx:DataGridColumn>
-			</mx:columns>
-		</mx:DataGrid>
+					</s:itemRenderer>
+				</s:GridColumn>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>
 		<s:controlBarLayout>
 			<s:HorizontalLayout verticalAlign="middle" 
 								paddingBottom="5"

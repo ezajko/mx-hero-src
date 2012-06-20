@@ -21,7 +21,7 @@
 			public var model:HomeViewPM;
 			
 			private function displayLabel(data:Object, field:String, index:Number, percentValue:Number):String {
-				var temp:String= (" " + percentValue).substr(0,5);
+				var temp:String= ((" " + percentValue)as String).substr(0,5);
 				return data.Stat + '\n' +"("+data.Qty+")"+ '\n' + temp + "%";
 			}
 

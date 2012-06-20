@@ -134,12 +134,18 @@
 
 	<fx:Declarations>
 		<s:Sequence id="effectDrop" target="{tashImg}" >
-			<mx:Blur id="blurImage" duration="150" 
-					 blurXFrom="0.0" blurXTo="10.0" 
-					 blurYFrom="0.0" blurYTo="10.0"/>
-			<mx:Blur id="unblurImage" duration="150" 
-					 blurXFrom="10.0" blurXTo="0.0" 
-					 blurYFrom="10.0" blurYTo="0.0"/>			
+			<s:AnimateFilter duration="150" id="blur">
+				<s:bitmapFilter>
+					<s:BlurFilter blurX="10.0" 
+								  blurY="10.0" />
+				</s:bitmapFilter>
+			</s:AnimateFilter>
+			<s:AnimateFilter duration="150" id="unblur">
+				<s:bitmapFilter>
+					<s:BlurFilter blurX="0.0" 
+								  blurY="0.0" />
+				</s:bitmapFilter>
+			</s:AnimateFilter>		
 		</s:Sequence>
 
 		<mx:RegExpValidator id="aliasV"  
@@ -181,7 +187,10 @@
 	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 	
 	<s:HGroup paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20" gap="20">
-		<mx:Form paddingTop="0" paddingLeft="0" paddingRight="0" paddingBottom="0" >
+		<s:Form>
+			<s:layout>
+				<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+			</s:layout>
 			<s:VGroup width="100%">
 				<component1:LabelExpanded width="100%" 
 										 labelText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_SERVER_LABEL)}"
@@ -193,23 +202,23 @@
 					<s:TextInput id="serverTi" width="100%" text="@{domain.server}"/>
 				</mx:FormItem>
 			</s:VGroup>	
-			<mx:FormItem required="true" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_DOMAIN_LABEL)}" width="100%" fontWeight.new="bold">
+			<s:FormItem required="true" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_DOMAIN_LABEL)}" width="100%" fontWeight.new="bold">
 				<s:TextInput id="domainTi" width="100%"  text="@{domain.domain}" enabled.edit="false" enabled.new="true" />
-			</mx:FormItem>
+			</s:FormItem>
 			<s:CheckBox id="administratorCheck" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CHECK_LABEL)}" selected="false"/>
-			<mx:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_PASSWORD_LABEL)}" width="100%">
+			<s:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_PASSWORD_LABEL)}" width="100%">
 				<s:TextInput id="passwordTi" displayAsPassword="true" enabled="{administratorCheck.selected}" width="100%"/>
-			</mx:FormItem>
-			<mx:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CONFIRM_LABEL)}" width="100%">
+			</s:FormItem>
+			<s:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_CONFIRM_LABEL)}" width="100%">
 				<s:TextInput id="confirmTi" displayAsPassword="true" enabled="{administratorCheck.selected}" width="100%"/>
-			</mx:FormItem>
-			<mx:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_EMAIL_LABEL)}" width="100%">
+			</s:FormItem>
+			<s:FormItem required="{administratorCheck.selected}" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ADMINISTRATOR_EMAIL_LABEL)}" width="100%">
 				<s:TextInput id="emailTi" 
 							 text.edit="@{domain.owner.email}"
 							 enabled="{administratorCheck.selected}"
 							 width="100%"/>
-			</mx:FormItem>
-		</mx:Form>
+			</s:FormItem>
+		</s:Form>
 		
 		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
 			<s:VGroup height="100%">
@@ -218,7 +227,10 @@
 										 hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 										 expandedText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}" 
 										 width="100%"/>
-					<mx:Form defaultButton="{addAliasBtt}" paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+					<s:Form defaultButton="{addAliasBtt}">
+						<s:layout>
+							<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+						</s:layout>
 						<s:HGroup>
 							<s:TextInput id="aliasTi"/>
 							<s:Button id="addAliasBtt" 
@@ -226,7 +238,7 @@
 									  click="addAliasBtt_clickHandler(event)" 
 									  buttonMode="true"/>							
 						</s:HGroup>
-					</mx:Form>
+					</s:Form>
 				<s:List id="aliasList"
 						dataProvider="{domain.aliases}" 
 						width="100%" 
@@ -241,7 +253,7 @@
 						 styleName="draghere"
 						 buttonMode="true"
 						 toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FORM_ALIASES_EXPLAIN)}"/>
-				<mx:Image id="tashImg" 
+				<s:Image id="tashImg" 
 						  source="{ImageResources.TRASHCAN}" dragEnter="image1_dragEnterHandler(event)" 
 						  dragDrop="tashImg_dragDropHandler(event)"
 						  buttonMode="true"

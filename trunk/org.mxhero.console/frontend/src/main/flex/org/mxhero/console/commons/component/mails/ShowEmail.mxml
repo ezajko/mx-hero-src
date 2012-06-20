@@ -99,17 +99,18 @@
 							label="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_TITLE)}"
 							showEffect="{fadein}" 
 							hideEffect="{fadeout}">
-			<mx:DataGrid
+			<s:DataGrid
 				variableRowHeight="false"
-				dropShadowVisible="false"
 				mouseChildren="true"
 				dataProvider="{stats}"
 				width="100%" height="100%" >
-				<mx:columns>
-					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_KEY_LABEL)}" dataField="key"/>
-					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_VALUE_LABEL)}" dataField="value"/>
-				</mx:columns>
-			</mx:DataGrid>
+				<s:columns>
+					<s:ArrayList>
+						<s:GridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_KEY_LABEL)}" dataField="key"/>
+						<s:GridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_VALUE_LABEL)}" dataField="value"/>
+					</s:ArrayList>
+				</s:columns>
+			</s:DataGrid>
 		</s:NavigatorContent>
 	</mx:ViewStack>
 

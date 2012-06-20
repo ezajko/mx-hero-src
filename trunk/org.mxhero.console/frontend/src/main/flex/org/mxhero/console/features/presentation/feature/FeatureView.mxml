@@ -195,9 +195,7 @@
 		<loader:ReportLoader
 			url="{model.selectedFeature.moduleReportUrl}"
 			height="100%" 
-			width="100%"
-			horizontalScrollPolicy="off"
-			verticalScrollPolicy="off"/>
+			width="100%"/>
 
 	</mx:HDividedBox>
 </s:Group>

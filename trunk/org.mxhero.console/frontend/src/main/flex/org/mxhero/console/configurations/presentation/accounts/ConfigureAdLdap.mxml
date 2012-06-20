@@ -203,7 +203,7 @@
 				return properties;
 			}
 			
-			protected function emailslabelFunction(item:Object, column:DataGridColumn):String{
+			protected function emailslabelFunction(item:Object, column:GridColumn):String{
 				var label:String="";
 				if(item.emails!=null){
 					for each (var alias:Object in item.emails){
@@ -232,11 +232,6 @@
 				adLdap.accountProperties.addItem(newProperty);
 			}
 			
-			
-			public function editCell(event:ListEvent):void {
-				accountPropertiesDG.editedItemPosition = {columnIndex:1, rowIndex:event.rowIndex};
-			}
-			
 			private function resultHandler(event:ResultEvent):void {
 				defaultProperties=event.result.property;
 			}
@@ -263,7 +258,9 @@
 		<mx:StringValidator id="passwordV" required="true" property="text" source="{passwordTi}"/>
 		<mx:StringValidator id="filterV" required="true" property="text" source="{filterTi}"/>
 		<mx:StringValidator id="baseV" required="true" property="text" source="{baseTi}"/>
-		<mx:HTTPService id="propertiesService" url="org/mxhero/console/configurations/adldap_properties.xml" result="resultHandler(event);"/>
+		<s:HTTPService id="propertiesService" 
+					   url="org/mxhero/console/configurations/adldap_properties.xml" 
+					   result="resultHandler(event);"/>
 	</fx:Declarations>
 	
 	<s:states> 
@@ -280,8 +277,11 @@
 	</s:layout>
 	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 	<s:Scroller height="100%">
-	<s:VGroup height="100%">
-		<mx:Form verticalGap="10" excludeFrom="result">
+	<s:VGroup height="100%" gap="0">
+		<s:Form excludeFrom="result">
+			<s:layout>
+				<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+			</s:layout>
 			<component1:LabelExpanded
 				width="100%"
 				labelExplainStyleName="labelexpanded_explain_right"
@@ -289,39 +289,39 @@
 				explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 				hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" />
 			
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_TYPE_LABEL)}" width="100%">
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_TYPE_LABEL)}" width="100%">
 				<s:DropDownList id="typeDdl"
 								dataProvider="{resources}" 
 								width="100%"
 								valueCommit="typeDdl_valueCommitHandler(event)"
 								change="typeDdl_changeHandler(event)"
 								labelFunction="{typeDdl_labelFunc}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none,result,gapps">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SERVER_ADDRESS)}" excludeFrom="none,result,gapps">
 				<s:HGroup verticalAlign="middle">
 					<s:Label text="ldap://"/>
 					<s:TextInput id="addressTi" text="@{adLdap.addres}"/>
 					<s:Label text=":"/>
 					<s:TextInput id="portTi" width="30" text="@{adLdap.port}"/>
-					<s:CheckBox textAlign="left" label="ssl" selected="@{adLdap.sslFlag}"/>
+					<s:CheckBox label="ssl" selected="@{adLdap.sslFlag}"/>
 				</s:HGroup>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_USER)}" width="100%" excludeFrom="none,result">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_USER)}" width="100%" excludeFrom="none,result">
 				<s:TextInput id="userTi" width="100%" text="@{adLdap.user}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none,result">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_PASSWORD)}" width="100%" excludeFrom="none,result">
 				<s:TextInput id="passwordTi" width="100%" text="@{adLdap.password}" displayAsPassword="true"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra,result,gapps">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_FILTER)}" width="100%" excludeFrom="none,exchange,zimbra,result,gapps">
 				<s:TextArea id="filterTi" width="100%" heightInLines="3" text="@{adLdap.filter}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none,result,gapps">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SEARCH)}" width="100%" excludeFrom="none,result,gapps">
 				<s:TextArea id="baseTi" width="100%" heightInLines="3" text="@{adLdap.base}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none,result,gapps">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_BIND_AUTHENTICATE_LABEL)}" width="100%" excludeFrom="none,result,gapps">
 				<s:TextArea id="dnAuthenticate" width="100%" heightInLines="3" text="@{adLdap.dnAuthenticate}"/>
-			</mx:FormItem>
-			<mx:FormItem width="100%" excludeFrom="none,result">
+			</s:FormItem>
+			<s:FormItem width="100%" excludeFrom="none,result">
 				<s:HGroup verticalAlign="top" width="100%">
 					<s:CheckBox selected="@{adLdap.overrideFlag}"/>
 					<component1:LabelExpanded 
@@ -331,65 +331,72 @@
 						expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_OVERRIDE_EXPLAIN)}"
 						width="100%"/>
 				</s:HGroup>
-			</mx:FormItem>
+			</s:FormItem>
 
 			<s:VGroup width="100%" excludeFrom="none,result,gapps">
 				<s:Line width="100%" height="2" />
 				<s:Label fontWeight="bold" 
 						 text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES)}"/>
-				<mx:Form defaultButton="{addPropertyBtt}">
+				<s:Form defaultButton="{addPropertyBtt}">
+					<s:layout>
+						<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+					</s:layout>
 					<s:HGroup>
 						<s:TextInput id="propertyNameTi"/>
 						<s:Button id="addPropertyBtt" 
 								  label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_ADD)}" 
 								  click="addPropertyBtt_clickHandler(event)"/>
 					</s:HGroup>
-				</mx:Form>
+				</s:Form>
 
-				<mx:DataGrid dataProvider="{adLdap.accountProperties}" 
+				<s:DataGrid dataProvider="{adLdap.accountProperties}" 
 							 id="accountPropertiesDG"
 							 width="100%" 
 							 height="100%"
 							 variableRowHeight="false"
-							 dropShadowVisible="false"
 							 mouseChildren="true"
-							 editable="true"
-							 itemClick="editCell(event)">
-					<mx:columns>
-						<mx:DataGridColumn dataField="name" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_NAME)}"
-										   minWidth="120"/>
-						<mx:DataGridColumn dataField="key" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_KEY)}"
-										   editable="true"
-										   minWidth="120"/>
-						<mx:DataGridColumn  width="42" sortable="false" resizable="false" editable="false">
-							<mx:itemRenderer>
-								<fx:Component>
-									<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
-										<fx:Script>
-											<![CDATA[
-												import org.mxhero.console.commons.resources.ImageResources;
-												import org.mxhero.console.configurations.application.resources.AccountsProperties;
-												
-												protected function deleteAccountBtt_clickHandler(event:MouseEvent):void
-												{
-													outerDocument.adLdap.accountProperties.removeItemAt(outerDocument.adLdap.accountProperties.getItemIndex(data));
-												}
-												
-											]]>
-										</fx:Script>
-										<component1:GlowButton id="deleteAccountBtt"
-															   maxGlow="10.0" 
-															   click="deleteAccountBtt_clickHandler(event)"
-															   source="{ImageResources.DELETE_ICO}" 
-															   toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_REMOVE)}"/>						
-									</mx:HBox>
-								</fx:Component>
-							</mx:itemRenderer>
-						</mx:DataGridColumn>
-					</mx:columns>
-				</mx:DataGrid>
+							 editable="true">
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn dataField="name" 
+										headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_NAME)}"
+										minWidth="120"/>
+							<s:GridColumn dataField="key" 
+											   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_KEY)}"
+											   editable="true"
+											   minWidth="120"/>
+							<s:GridColumn  width="42" sortable="false" resizable="false" editable="false">
+								<s:itemRenderer>
+									<fx:Component>
+										<s:GridItemRenderer width="100%">
+											<s:layout>
+												<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+											</s:layout>
+											<fx:Script>
+												<![CDATA[
+													import org.mxhero.console.commons.resources.ImageResources;
+													import org.mxhero.console.configurations.application.resources.AccountsProperties;
+													
+													protected function deleteAccountBtt_clickHandler(event:MouseEvent):void
+													{
+														outerDocument.adLdap.accountProperties.removeItemAt(outerDocument.adLdap.accountProperties.getItemIndex(data));
+													}
+													
+												]]>
+											</fx:Script>
+											<component1:GlowButton id="deleteAccountBtt"
+																   maxGlow="10.0" 
+																   click="deleteAccountBtt_clickHandler(event)"
+																   source="{ImageResources.DELETE_ICO}" 
+																   toolTip="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_ACCOUNT_PROPERTIES_REMOVE)}"/>						
+
+										</s:GridItemRenderer>
+									</fx:Component>
+								</s:itemRenderer>
+							</s:GridColumn>
+						</s:ArrayList>
+					</s:columns>
+				</s:DataGrid>
 				<s:HGroup width="100%" horizontalAlign="right">
 					<s:Label id="defaultsBtt" fontStyle="italic" textDecoration="underline" 
 							 text="load defaults" 
@@ -415,31 +422,35 @@
 						  click="cancelBtt_clickHandler(event)"
 						  buttonMode="true"/>
 			</s:HGroup>
-		</mx:Form>
-		<mx:Form includeIn="result">
+		</s:Form>
+		<s:Form includeIn="result">
+			<s:layout>
+				<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+			</s:layout>
 			<s:VGroup horizontalAlign="right">
-				<mx:DataGrid id="resultDG" 
+				<s:DataGrid id="resultDG" 
 							 height="250" 
 							 variableRowHeight="true"
-							 dropShadowVisible="false"
 							 dataProvider="{model.testAccounts}">
-					<mx:columns>
-						<mx:DataGridColumn dataField="uid" 
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
-										   width="150"/>
-						<mx:DataGridColumn dataField="emails"
-										   labelFunction="{emailslabelFunction}"
-										   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
-										   width="300"
-										   sortable="false"/>
-					</mx:columns>
-				</mx:DataGrid>
+					<s:columns>
+						<s:ArrayList>
+							<s:GridColumn dataField="uid" 
+										  headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+										  width="150"/>
+							<s:GridColumn dataField="emails"
+										  labelFunction="{emailslabelFunction}"
+										  headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+										  width="300"
+										  sortable="false"/>
+						</s:ArrayList>
+					</s:columns>
+				</s:DataGrid>
 				<s:Button id="okBtt"
 						  buttonMode="true"
 						  enabled="{!model.isTestting}"
 						  click="okBtt_clickHandler(event)"/>
 			</s:VGroup>
-		</mx:Form>
+		</s:Form>
 	</s:VGroup>
 	</s:Scroller>
 </s:TitleWindow>

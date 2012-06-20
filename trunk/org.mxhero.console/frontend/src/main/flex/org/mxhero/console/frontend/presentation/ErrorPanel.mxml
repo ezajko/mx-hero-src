@@ -102,7 +102,7 @@
 		<s:HorizontalLayout verticalAlign="middle" paddingLeft="4" paddingRight="4" />
 	</s:layout>
 	
-	<mx:Image id="alertImage" source="{ImageResources.ALERT_ICON}" />
+	<s:Image id="alertImage" source="{ImageResources.ALERT_ICON}" />
 	<s:TextArea id="errorText" 
 				heightInLines="1" 
 				text="{model.errorMessage}" 
