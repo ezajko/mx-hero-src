@@ -7,7 +7,7 @@
 	<packaging>war</packaging>
 
 	<build>
-		<finalName>dashboard</finalName>
+		<finalName>webapi</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
