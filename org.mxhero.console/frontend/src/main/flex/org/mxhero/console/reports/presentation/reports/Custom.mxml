@@ -181,7 +181,7 @@
 				
 			</s:VGroup>
 			
-			<mx:TabNavigator width="100%" height="600" maxWidth="800" 
+			<mx:TabNavigator width="100%" height="600" maxWidth="850" 
 							 paddingLeft="5" paddingRight="5" paddingBottom="5"
 							 creationPolicy="all">
 				<s:NavigatorContent width="100%" height="100%" 
