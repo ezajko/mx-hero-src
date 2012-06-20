@@ -198,13 +198,20 @@
 	<fx:Declarations>
 		<mx:EmailValidator id="aliasV" required="true"/>
 		<s:Sequence id="effectDrop" target="{tashImg}" >
-			<mx:Blur id="blurImage" duration="150" 
-					 blurXFrom="0.0" blurXTo="10.0" 
-					 blurYFrom="0.0" blurYTo="10.0"/>
-			<mx:Blur id="unblurImage" duration="150" 
-					 blurXFrom="10.0" blurXTo="0.0" 
-					 blurYFrom="10.0" blurYTo="0.0"/>			
+			<s:AnimateFilter duration="150" id="blur">
+				<s:bitmapFilter>
+					<s:BlurFilter blurX="10.0" 
+								  blurY="10.0" />
+				</s:bitmapFilter>
+			</s:AnimateFilter>
+			<s:AnimateFilter duration="150" id="unblur">
+				<s:bitmapFilter>
+					<s:BlurFilter blurX="0.0" 
+								  blurY="0.0" />
+				</s:bitmapFilter>
+			</s:AnimateFilter>		
 		</s:Sequence>
+		
 		<cairngorm:ValidatorGroup id="validateAll">
 			<cairngorm:validators>
 				<mx:EmailValidator id="emailV" 
@@ -228,18 +235,21 @@
 		<s:VerticalLayout paddingLeft="0" paddingBottom="0" paddingRight="0" paddingTop="0" gap="0"/>
 	</s:layout>
 	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
-	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
-		<mx:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ACCOUNT_LABEL)}" width="100%">
+	<s:Form>
+		<s:layout>
+			<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+		</s:layout>
+		<s:FormItem required="true" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ACCOUNT_LABEL)}" width="100%">
 			<s:HGroup verticalAlign="middle">
 				<s:TextInput id="emailTi" width="200" enabled="false" enabled.new="true" 
 							 text="@{account.account}"/>
 				<s:Label fontWeight="bold" text="{'@'+model.context.selectedDomain.domain}"/>
 			</s:HGroup>
-		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}" width="100%">
+		</s:FormItem>
+		<s:FormItem label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}" width="100%">
 			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="200"/>
-		</mx:FormItem>
-		<mx:Spacer height="15"/>
+		</s:FormItem>
+		<s:Spacer height="15"/>
 		<s:Label includeIn="managed" text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_MANAGED_BY_LABEL) +' '+ dataSourceLabelFunction(account) }"/>
 		<s:HGroup includeIn="edit" verticalAlign="bottom" height="100%">
 			<s:VGroup height="100%">
@@ -248,8 +258,10 @@
 										  hideText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
 										  expandedText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_ALIASES_EXPLAIN)}" 
 										  width="100%"/>
-				<mx:Form defaultButton="{addAliasBtt}" 
-						 paddingLeft="0" paddingRight="0" paddingTop="0" paddingBottom="0">
+				<s:Form defaultButton="{addAliasBtt}" >
+					<s:layout>
+						<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
+					</s:layout>
 					<s:HGroup verticalAlign="middle">
 						<s:TextInput id="aliasTi" width="150" enabled="{account.dataSource==EmailAccount.MANUAL}"/>
 						<s:Label text="@" fontWeight="bold"/>
@@ -264,7 +276,7 @@
 								  buttonMode="true"
 								  enabled="{account.dataSource==EmailAccount.MANUAL}"/>							
 					</s:HGroup>
-				</mx:Form>
+				</s:Form>
 				<s:List id="aliasList"
 						dataProvider="{account.aliases}" 
 						width="100%" 
@@ -297,7 +309,7 @@
 					  click="cancelBtt_clickHandler(event)"
 					  buttonMode="true"/>
 		</s:HGroup>
-	</mx:Form>
+	</s:Form>
 	
 </s:TitleWindow>
 

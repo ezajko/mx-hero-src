@@ -146,16 +146,19 @@
 	
 	<component:ErrorText id="errorText" width="100%" soundEnabled="{model.context.applicationUser.soundsEnabled}"/>
 	
-	<mx:Form paddingLeft="20" paddingRight="20" paddingBottom="20" paddingTop="20">
+	<s:Form>
+		<s:layout>
+			<s:FormLayout gap="10" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="0" />
+		</s:layout>
 		<s:HGroup width="100%">
-			<mx:FormItem includeIn="new" required="true" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_NAME_LABEL)}">
+			<s:FormItem includeIn="new" required="true" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_NAME_LABEL)}">
 				<s:TextInput id="nameTi" text="@{group.name}"/>
-			</mx:FormItem>
-			<mx:FormItem label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_DESCRIPTION_LABEL)}" width="100%">
+			</s:FormItem>
+			<s:FormItem label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FORM_DESCRIPTION_LABEL)}" width="100%">
 				<s:TextInput id="descriptionTi" text="@{group.description}" width="100%"/>
-			</mx:FormItem>
+			</s:FormItem>
 		</s:HGroup>
-		<mx:Spacer height="10"/>
+		<s:Spacer height="10"/>
 		<component1:LabelExpanded excludeFrom="new" 
 								  width="100%" 
 								  explainText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPAND_LABEL)}" 
@@ -281,6 +284,6 @@
 					  click="saveBtt_clickHandler(event)"/>
 			<s:Button id="cancelBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.CANCEL_LABEL)}" click="cancelBtt_clickHandler(event)"/>
 		</s:HGroup>
-	</mx:Form>
+	</s:Form>
 	
 </s:TitleWindow>

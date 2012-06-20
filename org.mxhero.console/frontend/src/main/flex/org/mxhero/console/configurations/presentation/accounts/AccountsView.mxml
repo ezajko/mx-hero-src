@@ -40,6 +40,6 @@
 							 backLink="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_LABEL)}"
 							 backLinkFunction="{model.goBack}"
 							 backLinkTooltip="{resourceManager.getString(ConfigurationsListProperties.NAME,ConfigurationsListProperties.GOBACK_TOOLTIP)}"/>
-	<mx:Spacer height="0"/>
+	<s:Spacer height="0"/>
 	<accounts:AccountsList width="100%" height="100%"/>
 </s:Group>

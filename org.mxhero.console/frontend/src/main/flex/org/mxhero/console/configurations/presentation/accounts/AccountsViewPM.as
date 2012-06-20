@@ -146,7 +146,6 @@ package org.mxhero.console.configurations.presentation.accounts
 			accountShow.currentState="new";
 			PopUpManager.addPopUp(accountShow,parent,true);
 			PopUpManager.centerPopUp(accountShow);
-			PopUpManager.centerPopUp(accountShow);
 		}
 
 		public function insertAccount(account:EmailAccount):void{

@@ -168,7 +168,7 @@
 					</s:VGroup>
 
 					
-					<mx:Spacer height="100%"/>
+					<s:Spacer height="100%"/>
 					<s:HGroup width="100%" horizontalAlign="center" verticalAlign="middle" paddingBottom="20">
 						<s:Button id="saveBtt" 
 								  click="saveBtt_clickHandler(event)"

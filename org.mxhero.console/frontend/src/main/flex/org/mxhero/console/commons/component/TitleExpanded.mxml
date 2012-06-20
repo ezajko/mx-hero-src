@@ -105,7 +105,7 @@
 					  	click="backLinkButton_clickHandler(event)"
 					   	toolTip="{backLinkTooltip}"/>
 		<s:Label styleName="titleexpanded_title" id="titleLabel" text="{title}" paddingTop="4"/>
-		<mx:Spacer width="1"/>
+		<s:Spacer width="1"/>
 		<s:Label id="expandLabel" 
 				 styleName="titleexpanded_expand"
 				 text.default="{expandedLabel}" 
