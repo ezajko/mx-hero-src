@@ -38,7 +38,7 @@ package org.mxhero.console.frontend.domain
 		[Bindable("change")]
 		public function get label():String
 		{
-			var labelResult:String=rm.getString(this.component,this._label);
+			var labelResult:String=rm.getString("features_modules",this._label);
 			if(labelResult!=null){
 				_lastLabel=labelResult;
 				if(rules!=null && rules.length>0){
@@ -55,7 +55,7 @@ package org.mxhero.console.frontend.domain
 		[Bindable("change")]
 		public function get simpleLabel():String
 		{
-			var labelResult:String=rm.getString(this.component,this._label);
+			var labelResult:String=rm.getString("features_modules",this._label);
 			if(labelResult!=null){
 				_lastLabel=labelResult;
 				return labelResult;
@@ -73,7 +73,7 @@ package org.mxhero.console.frontend.domain
 		[Bindable("change")]
 		public function get description():String
 		{
-			var descriptionResult:String=rm.getString(this.component,this._description);
+			var descriptionResult:String=rm.getString("features_modules",this._description);
 			if(descriptionResult!=null){
 				_lastDescription = descriptionResult;
 				return descriptionResult;
@@ -91,7 +91,7 @@ package org.mxhero.console.frontend.domain
 		[Bindable("change")]
 		public function get explain():String
 		{
-			var explainResult:String=rm.getString(this.component,this._explain);
+			var explainResult:String=rm.getString("features_modules",this._explain);
 			if(explainResult!=null){
 				_lastExplain=explainResult;
 				return explainResult;
