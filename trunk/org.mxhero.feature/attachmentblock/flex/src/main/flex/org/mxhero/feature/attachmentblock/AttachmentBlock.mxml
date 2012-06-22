@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
-		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
-		   verticalGap="20"
-		   paddingTop="30"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
 	<fx:Style>
@@ -43,6 +40,8 @@
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
+			
+			import spark.components.gridClasses.GridColumn;
 			
 			[Bindable]
 			private var _ap:IApplicationContext;
@@ -109,7 +108,7 @@
 				}
 			}
 
-			public function typeLabelFunction(item:Object, column:DataGridColumn):String{
+			public function typeLabelFunction(item:Object, column:GridColumn):String{
 				if(item.type=="name"){
 					return resourceManager.getString("attachmentblock","name.type.label");
 				} else if(item.type=="type"){
@@ -322,6 +321,9 @@
 	<fx:Metadata>
 		[ResourceBundle("attachmentblock")]
 	</fx:Metadata>
+	<s:layout>
+		<s:VerticalLayout  gap="20"/>
+	</s:layout>
 	
 	<s:Label text="{resourceManager.getString('attachmentblock','first.title')}" fontSize="16" fontWeight="bold"/>
 
@@ -371,45 +373,50 @@
 						  click="addFileType_clickHandler(event)"/>							
 			</s:HGroup>
 		</mx:Form>
-		<mx:DataGrid id="extensionsDg"
+		<s:DataGrid id="extensionsDg"
 					 dataProvider="{this.extensions}" 
 					 width="100%"
 					 height="250">
-			<mx:columns>
-				<mx:DataGridColumn dataField="data" 
-								   headerText="{resourceManager.getString('attachmentblock','name.label')}"/>
-				<mx:DataGridColumn dataField="type" 
-								   width="152" 
-								   headerText="{resourceManager.getString('attachmentblock','type.label')}"
-								   labelFunction="{typeLabelFunction}"/>
-				<mx:DataGridColumn width="48" >
-					<mx:itemRenderer>
-						<fx:Component>
-							<mx:HBox width="100%" horizontalAlign="center">
-								<fx:Script>
-									<![CDATA[
-										import flash.events.MouseEvent;
-										
-										[Bindable]
-										[Embed(source="/org/mxhero/feature/attachmentblock/delete.png")]
-										public static var DELETE:Class;
-										
-										protected function remove_clickHandler(event:MouseEvent):void
-										{
-											outerDocument.extensions.removeItemAt(outerDocument.extensions.getItemIndex(outerDocument.extensionsDg.selectedItem));
-										}
-									]]>
-								</fx:Script>
-								<mx:Image source="{DELETE}"
-										  buttonMode="true"
-										  toolTip="{resourceManager.getString('attachmentblock','remove.tooltip')}"
-										  click="remove_clickHandler(event)"/>
-							</mx:HBox>		  
-						</fx:Component>
-					</mx:itemRenderer>
-				</mx:DataGridColumn>
-			</mx:columns>
-		</mx:DataGrid>		
+			<s:columns>
+				<s:ArrayList>
+					<s:GridColumn dataField="data" 
+									   headerText="{resourceManager.getString('attachmentblock','name.label')}"/>
+					<s:GridColumn dataField="type" 
+									   width="152" 
+									   headerText="{resourceManager.getString('attachmentblock','type.label')}"
+									   labelFunction="{typeLabelFunction}"/>
+					<s:GridColumn width="48" >
+						<s:itemRenderer>
+							<fx:Component>
+								<s:GridItemRenderer width="100%">
+									<s:layout>
+										<s:VerticalLayout horizontalAlign="center"/>
+									</s:layout>
+									<fx:Script>
+										<![CDATA[
+											import flash.events.MouseEvent;
+											
+											[Bindable]
+											[Embed(source="/org/mxhero/feature/attachmentblock/delete.png")]
+											public static var DELETE:Class;
+											
+											protected function remove_clickHandler(event:MouseEvent):void
+											{
+												outerDocument.extensions.removeItemAt(outerDocument.extensions.getItemIndex(outerDocument.extensionsDg.selectedItem));
+											}
+										]]>
+									</fx:Script>
+									<mx:Image source="{DELETE}"
+											  buttonMode="true"
+											  toolTip="{resourceManager.getString('attachmentblock','remove.tooltip')}"
+											  click="remove_clickHandler(event)"/>
+								</s:GridItemRenderer>		  
+							</fx:Component>
+						</s:itemRenderer>
+					</s:GridColumn>
+				</s:ArrayList>
+			</s:columns>
+		</s:DataGrid>		
 		<s:HGroup width="100%" horizontalAlign="right">
 			<s:Label id="loadDefault" 
 					 text="{resourceManager.getString('attachmentblock','default.list.button')}"
@@ -444,4 +451,4 @@
 					   groupName="blockType"
 					   label="{resourceManager.getString('attachmentblock','action.discard.label')}"/>
 	</s:VGroup>
-</mx:Module>
+</s:Module>

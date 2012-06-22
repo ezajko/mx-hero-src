@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
-		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="vertical"
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
 		   creationComplete="creationCompleteHandler(event)"
-		   verticalGap="20"
-		   paddingTop="30"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
 	<fx:Declarations>
@@ -100,11 +98,13 @@
 	<fx:Metadata>
 		[ResourceBundle("wiretapsenderreceiver")]
 	</fx:Metadata>
-	
+	<s:layout>
+		<s:VerticalLayout  gap="20"/>
+	</s:layout>
 	<s:Label text="{resourceManager.getString('wiretapsenderreceiver','first.title')}" fontSize="16" fontWeight="bold"/>
 	<s:HGroup verticalAlign="middle" paddingLeft="20">
 		<s:Label text="{resourceManager.getString('wiretapsenderreceiver','email.label')}"/>
 		<s:TextInput id="emailTi" width="200"/>
 	</s:HGroup>
 	
-</mx:Module>
+</s:Module>
