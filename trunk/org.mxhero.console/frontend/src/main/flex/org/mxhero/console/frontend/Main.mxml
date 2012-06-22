@@ -27,6 +27,7 @@
 		[ResourceBundle("configurations_system")]
 		[ResourceBundle("features_list")]
 		[ResourceBundle("feature_view")]
+		[ResourceBundle("features_modules")]
 		[ResourceBundle("rule_view")]
 		[ResourceBundle("reports_list")]
 		[ResourceBundle("report_traffic")]
