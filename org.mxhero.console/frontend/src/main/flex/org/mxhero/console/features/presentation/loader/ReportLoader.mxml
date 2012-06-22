@@ -23,6 +23,7 @@
 			import mx.events.ModuleEvent;
 			
 			import org.mxhero.console.commons.feature.IReport;
+			import org.mxhero.console.features.presentation.feature.FeatureView;
 			import org.mxhero.console.features.presentation.feature.FeatureViewPM;
 			import org.mxhero.console.frontend.infrastructure.ReportServiceHandler;
 			
@@ -64,12 +65,19 @@
 			
 			public function unload():void{
 				this.reportModule=null;
+				//this.unloadModule();
+			}
+			
+			public function reload():void{
 				this.unloadModule();
+				this.loadModule();
 			}
 			
 			protected function moduleloader1_creationCompleteHandler(event:FlexEvent):void
 			{
 				FeatureViewPM.unloadReport=this.unload;
+				FeatureViewPM.reloadReport=this.reload;
+				this.reload();
 			}
 
 
@@ -81,9 +89,7 @@
 		]]>
 	</fx:Script>
 	
-	<fx:Declarations>
-		<parsley:Configure/>
-	</fx:Declarations>
+
 	<s:layout>
 		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 	</s:layout>

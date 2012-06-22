@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
-		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
-		   verticalGap="20"
-		   paddingTop="30" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
 	<fx:Declarations>
 	</fx:Declarations>
 	
-	<mx:states>
+	<s:states>
 		<s:State name="default"/>
 		<s:State name="explain"/>
-	</mx:states>
+	</s:states>
 	
 	<fx:Script>
 		<![CDATA[
@@ -125,7 +122,9 @@
 		[ResourceBundle("replytimeout")]
 		[ResourceBundle("textLayout")]
 	</fx:Metadata>
-
+	<s:layout>
+		<s:VerticalLayout  gap="20"/>
+	</s:layout>
 	<s:VGroup width="100%">
 		
 		<s:HGroup verticalAlign="bottom">
@@ -169,4 +168,4 @@
 
 
 
-</mx:Module>
+</s:Module>

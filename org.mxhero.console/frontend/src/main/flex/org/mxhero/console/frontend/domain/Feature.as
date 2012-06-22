@@ -1,5 +1,7 @@
 package org.mxhero.console.frontend.domain
 {
+	import flash.events.Event;
+	
 	import mx.collections.ArrayCollection;
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
@@ -12,8 +14,11 @@ package org.mxhero.console.frontend.domain
 		
 		public var id:Number;
 		private var _label:String;
+		private var _lastLabel:String;
 		private var _description:String;
+		private var _lastDescription:String;
 		private var _explain:String;
+		private var _lastExplain:String;
 		public var rules:ArrayCollection;
 		public var moduleUrl:String;
 		public var moduleReportUrl:String;
@@ -35,11 +40,14 @@ package org.mxhero.console.frontend.domain
 		{
 			var labelResult:String=rm.getString(this.component,this._label);
 			if(labelResult!=null){
+				_lastLabel=labelResult;
 				if(rules!=null && rules.length>0){
 					return labelResult+"("+rules.length+")";
 				}else{
 					return labelResult;
 				}
+			}else if(_lastLabel!=null){
+				return _lastLabel;
 			}
 			return _label;
 		}
@@ -49,7 +57,10 @@ package org.mxhero.console.frontend.domain
 		{
 			var labelResult:String=rm.getString(this.component,this._label);
 			if(labelResult!=null){
+				_lastLabel=labelResult;
 				return labelResult;
+			}else if(_lastLabel!=null){
+				return _lastLabel;
 			}
 			return _label;
 		}
@@ -64,7 +75,10 @@ package org.mxhero.console.frontend.domain
 		{
 			var descriptionResult:String=rm.getString(this.component,this._description);
 			if(descriptionResult!=null){
+				_lastDescription = descriptionResult;
 				return descriptionResult;
+			}else if(_lastDescription!=null){
+				return _lastDescription;
 			}
 			return _description;
 		}
@@ -79,7 +93,10 @@ package org.mxhero.console.frontend.domain
 		{
 			var explainResult:String=rm.getString(this.component,this._explain);
 			if(explainResult!=null){
+				_lastExplain=explainResult;
 				return explainResult;
+			}else if(_lastExplain!=null){
+				return _lastExplain;
 			}
 			return _explain;
 		}

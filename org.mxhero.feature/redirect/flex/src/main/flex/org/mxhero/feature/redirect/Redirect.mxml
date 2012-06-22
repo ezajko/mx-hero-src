@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
-		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
@@ -98,11 +97,13 @@
 	<fx:Metadata>
 		[ResourceBundle("redirect")]
 	</fx:Metadata>
-	
+	<s:layout>
+		<s:VerticalLayout  gap="20"/>
+	</s:layout>
 	<s:Label text="{resourceManager.getString('redirect','redirect.label')}" fontSize="16" fontWeight="bold"/>
 	<s:HGroup verticalAlign="middle" paddingLeft="20">
 		<s:Label text="{resourceManager.getString('redirect','email.addres.label')}"/>
 		<s:TextInput id="emailTi" width="300"/>
 	</s:HGroup>
 	
-</mx:Module>
+</s:Module>

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
-		   layout="vertical"
-		   verticalGap="10"
-		   paddingTop="40" 
 		   creationComplete="creationCompleteHandler(event)" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
 		   implements="org.mxhero.console.commons.feature.IFeature">
@@ -95,5 +92,7 @@
 		[ResourceBundle("enhancedbcc")]
 		[ResourceBundle("textLayout")]
 	</fx:Metadata>
-		
-</mx:Module>
+		<s:layout>
+			<s:VerticalLayout  gap="10" paddingTop="40" />
+		</s:layout>
+</s:Module>

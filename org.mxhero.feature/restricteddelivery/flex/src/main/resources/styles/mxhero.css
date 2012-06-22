@@ -30,27 +30,37 @@
 	embedAsCFF: true;	
 }
 
+
+s|Application,s|Panel,mx|Panel,mx|TitleWindow,mx|TabNavigator,mx|SwatchPanel
+{
+	background-color: #666666;
+}
+
+s|RichEditableText
+{
+	focusedTextSelectionColor: #333333;
+	unfocusedTextSelectionColor: #333333;
+}
+
+
+mx|ToolTip
+{
+	color: #000000;
+}
+
 s|global
 {
 	font-size: 14;
 	font-family: Ubuntu;
 	modal-transparency:0.1;
-}
-
-mx|global
-{
-	font-size: 14;
-	font-family: Ubuntu;
-	modal-transparency:0.1;
-	textFieldClass: ClassReference("mx.core.UIFTETextField");
-}
-
-mx|global
-{
-	font-size: 14;
-	font-family: Ubuntu;
-	modal-transparency:0.1;
-	textFieldClass: ClassReference("mx.core.UIFTETextField");
+	chrome-color: #333333;
+	color: #CCCCCC;
+	content-background-color: #777777;
+	symbol-color: #000000;
+	roll-over-color: #555555;
+	selection-color: #333333;
+	focus-color: #999999;
+	accent-color: #8C8C8C;
 }
 
 mx|RichTextEditor
@@ -87,15 +97,29 @@ mx|TextInput
 	textFieldClass: ClassReference("mx.core.UITextField");
 }
 
+mx|global
+{
+	font-size: 14;
+	font-family: Ubuntu;
+	modal-transparency:0.1;
+	textFieldClass: ClassReference("mx.core.UIFTETextField");
+}
+
 s|Label.item{
 	font-weight:bold;
 	color:#FFFFFF;
 }
+s|TextInput{
+ 	borderVisible:true;
+	borderColor:#000000;
+	textAlign:left;
+}
 
 s|TextInput.item{
 	font-weight:bold;
+	textAlign:left;
 }
-
+	
 s|ComboBox.item{
 	font-weight:bold;
 }
@@ -109,11 +133,20 @@ mx|DateField{
 	textFieldClass: ClassReference("mx.core.UIFTETextField");
 }
 
-mx|DataGridColumn{
+s|GridColumn{
 	font-weight:"bold";
 	font-size:14;
 	text-align:"center";
 	padding-left:5;
+}
+
+s|DataGrid{
+	text-selected-color:#FFFFFF;
+	text-roll-over-color:#FFFFFF;
+	font-weight:"bold";
+	drop-shadow-visible:true;
+	alternatingRowColors:#696969,#7c7b7b;
+	border-visible:true;
 }
 
 mx|DataGrid{
@@ -123,7 +156,15 @@ mx|DataGrid{
 	drop-shadow-visible:true;
 	alternating-item-colors:#696969,#7c7b7b;
 	border-visible:true;
+	defaultDataGridItemEditor: ClassReference("mx.controls.MXFTETextInput");
 	defaultDataGridItemRenderer: ClassReference("mx.controls.dataGridClasses.FTEDataGridItemRenderer");
+}
+
+mx|DataGridColumn{
+	font-weight:"bold";
+	font-size:14;
+	text-align:"center";
+	padding-left:5;
 }
 
 mx|LinkButton.titleexpanded_back
@@ -134,7 +175,8 @@ mx|LinkButton.titleexpanded_back
 	padding-right:0;
 	padding-left:0;
 	text-selected-color:#FFFFFF;
-	text-roll-over-color:#FFFFFF;	
+	text-roll-over-color:#FFFFFF;
+	text-decoration:underline;
 }
 
 s|Label.titleexpanded_title
@@ -148,6 +190,13 @@ s|Label.labelexpanded_label
 {
 	fontWeight:"bold";
 }
+
+s|Label.labelexpanded_label_fromto
+{
+	fontWeight:"bold";
+	font-size:16;
+}
+
 
 s|Label.titleexpanded_expand
 {
@@ -168,16 +217,20 @@ s|Label.labelexpanded_explain
 	color:#70B2EE;
 }
 
+s|Label.labelexpanded_explain_right
+{
+	fontWeight:"bold";
+	fontSize:14;
+	color:#70B2EE;
+	text-align:right;
+}
+
 mx|Text.labelexpanded_expandedtext
 {
 	fontStyle:"italic";
 	fontSize:14;
 }
 
-mx|FormItemLabel
-{
- 	font-weight:"bold";	
-}
 
 mx|Text.titleexpanded_text
 {
@@ -195,11 +248,21 @@ s|Label.categorylist_child
 	padding-top:4;
 }
 
+s|Label.domainList
+{
+	font-size:14;
+	font-weight:"bold";
+	text-align:"left";
+	padding-bottom:4;
+	padding-top:4;
+	padding-left:4;
+	text-decoration:underline;
+}
+
 mx|Label.categorylist_category
 {
 	font-size:20;
 	font-weight:"bold";
-	color:#FFFFFF;
 }
 
 s|Panel
@@ -208,11 +271,21 @@ s|Panel
 	background-alpha:0.6;
 }
 
+s|Panel.Home
+{
+	corner-radius:0;
+	background-alpha:0.6;
+	drop-shadow-visible:false;
+}
+
 s|Label.Alert
 {
 	font-weight:"bold";
 	color:#FF0000;
 
+}
+s|TextArea{
+	borderColor:#000000;
 }
 s|TextArea.errorPanel
 {
@@ -258,10 +331,22 @@ mx|LinkButton.action
 	font-size:16;
 }
 
+s|BorderContainer.action{
+	backgroundColor:#333333;
+	borderVisible:true;
+	dropShadowVisible:true;
+	borderStyle:solid;
+	buttonMode:true;
+	borderColor:#cccccc;
+	cornerRadius:4;
+}
+
+
 mx|LinkBar.Dashboard
 {
 	borderVisible: false;
 	contentBackgroundAlpha: 0.0;
+	color:#FFFFFF;
 	disabled-color:#FFFFFF;
 	text-roll-over-color:#FFFFFF;
 	text-selected-color:#FFFFFF;
@@ -270,6 +355,20 @@ mx|LinkBar.Dashboard
 	horizontalGap: 24;
 	separator-width:2;
 }
+
+
+mx|LinkBar.Reports
+{
+	borderVisible: false;
+	contentBackgroundAlpha: 0.0;
+	disabled-color:#FFFFFF;
+	text-roll-over-color:#FFFFFF;
+	text-selected-color:#FFFFFF;
+	fontSize: 16;
+	horizontalGap: 24;
+	separator-width:2;
+}
+
 mx|ProgressBar.loading
 {
 	color: #FFFFFF;
@@ -279,7 +378,7 @@ s|Label
 	fontSize: 14;
 }
 
-mx|FormHeading{
+s|FormHeading{
 	padding-top:0;
 	text-align:center;
 	text-indent:0;
@@ -287,10 +386,13 @@ mx|FormHeading{
 	padding-left:0;
 }
 
-mx|FormItem
+s|FormItem
 {
 	fontSize: 14;
+	textAlign:right;
 }
+
+
 s|Button.rule
 {
 	font-size:18;
@@ -316,4 +418,22 @@ mx|Text.errorText{
 
 mx|ToolTip{
 	font-size:12;
+}
+
+mx|TabNavigator{
+	border-color:#CCCCCC; 
+	corner-radius:6;
+	tab-offset:8;
+	tab-style-name:"reportsTab";
+}
+
+.reportsTab{
+	border-color:#CCCCCC;
+	cornerRadius: 8;
+}
+
+mx|LegendItem{
+	font-weight:bold;
+	font-size:12;
+	color:#FFFFFF;
 }
