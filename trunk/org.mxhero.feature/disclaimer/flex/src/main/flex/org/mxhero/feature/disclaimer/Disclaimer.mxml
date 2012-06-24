@@ -54,9 +54,10 @@
 			
 			private function loadData():void{
 				if(initialProperties!=null){
-					if(PropertyHelper.getProperty(this.initialProperties,"return.message")!=null){
+					if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue,TextConverter.TEXT_LAYOUT_FORMAT);
+					}else if(PropertyHelper.getProperty(this.initialProperties,"return.message")!=null){
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
-							;
 					}else{
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 					}
@@ -70,13 +71,17 @@
 				property.propertyKey = "return.message";
 				var t:RteHtmlParser = new RteHtmlParser();
 				t.ignoreParagraphSpace=true;
-				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
+				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString());
 				var str:String = t.StringFormat;
 				property.propertyValue = t.XMLFormat;
 				properties.addItem(property);
 				property = new FeatureRuleProperty();
 				property.propertyKey = "return.message.plain";
 				property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
+				properties.addItem(property);	
+				property = new FeatureRuleProperty();
+				property.propertyKey = "return.message.rte";
+				property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.TEXT_LAYOUT_FORMAT,ConversionType.STRING_TYPE).toString();
 				properties.addItem(property);	
 				return properties;
 			}

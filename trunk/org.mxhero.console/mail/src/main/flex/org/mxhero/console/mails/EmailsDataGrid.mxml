@@ -7,7 +7,9 @@
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
+			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
+			
 			import org.mxhero.console.mails.EmailsDataGridProperties;
 			
 			[Bindable]
@@ -24,6 +26,12 @@
 				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
 			}
 			
+			protected function method1_faultHandler(event:FaultEvent):void
+			{
+				trace(event);
+				
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -37,7 +45,7 @@
 						destination="customReportService"
 						showBusyCursor="true"
 						channelSet="{channelSet}">
-			<s:method name="getStats" result="method1_resultHandler(event)"/>
+			<s:method name="getStats" result="method1_resultHandler(event)" fault="method1_faultHandler(event)"/>
 		</s:RemoteObject>
 		<s:ChannelSet id="channelSet">
 			<s:channels>

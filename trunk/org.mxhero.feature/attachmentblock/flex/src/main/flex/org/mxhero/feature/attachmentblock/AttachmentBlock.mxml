@@ -204,7 +204,9 @@
 				property = PropertyHelper.getProperty(this.properties,"return.action");
 				if(property!=null && property.propertyValue=="true"){
 					returnRb.selected=true;
-					if(PropertyHelper.getProperty(this.properties,"return.action.text")!=null){
+					if(PropertyHelper.getProperty(this.properties,"return.action.text.rte")!=null){
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.properties,"return.action.text.rte").propertyValue,TextConverter.TEXT_LAYOUT_FORMAT);
+					}else if(PropertyHelper.getProperty(this.properties,"return.action.text")!=null){
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.properties,"return.action.text").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 					}else{
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.properties,"return.action.text.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
@@ -244,7 +246,7 @@
 					property.propertyKey = "return.action.text";
 					var t:RteHtmlParser = new RteHtmlParser();
 					t.ignoreParagraphSpace=true;
-					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
+					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString());
 					var str:String = t.StringFormat;
 					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
@@ -252,6 +254,12 @@
 					property.propertyKey = "return.action.text.plain";
 					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(property);	
+					property = new FeatureRuleProperty();
+					property.propertyKey = "return.action.text.rte";
+					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString();
+					properties.addItem(property);
+					
+					
 				} else if(discardRb.selected){
 					property = new FeatureRuleProperty();
 					property.propertyKey = "discard.action";
