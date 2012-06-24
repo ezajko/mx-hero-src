@@ -4,7 +4,7 @@
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
-		   implements="org.mxhero.console.commons.feature.IFeature">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*">
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="action"/>
@@ -12,6 +12,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
@@ -26,17 +29,18 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				editor.textFlow  = TextConverter.importToFlow(resourceManager.getString('clamav','return.default.message'),TextConverter.PLAIN_TEXT_FORMAT);
 				loadData();
 			}
 			
 			public function isValid():Boolean{
 				if(returnRb.selected){
-					if(rte.text==null || StringUtil.trim(rte.text).length<1){
-						rte.errorString=resourceManager.getString('clamav','return.message.error');
+					if(StringUtil.trim(TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString()).length<1){
+						editor.errorString=resourceManager.getString('clamav','return.message.error');
 						return false;
 					}
 				}
-				rte.errorString="";
+				editor.errorString="";
 				return true;
 			}
 			
@@ -51,10 +55,10 @@
 						dropRb.selected=true;
 					} else if(selectedAction=='return'){
 						returnRb.selected=true;
-						if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
-							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.message")!=null){
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 						}else{
-							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue;
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 						}
 					}
 				}
@@ -73,20 +77,18 @@
 					property.propertyValue="return";
 					
 					var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
+					returnMessage = new FeatureRuleProperty();
 					returnMessage.propertyKey = "return.message";
 					var t:RteHtmlParser = new RteHtmlParser();
-					t.ParseToHTML(rte.htmlText);
+					t.ignoreParagraphSpace=true;
+					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
 					var str:String = t.StringFormat;
 					returnMessage.propertyValue = t.XMLFormat;
 					properties.addItem(returnMessage);
 					returnMessage = new FeatureRuleProperty();
 					returnMessage.propertyKey = "return.message.plain";
-					returnMessage.propertyValue = rte.text;
+					returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(returnMessage);	
-					returnMessage = new FeatureRuleProperty();
-					returnMessage.propertyKey = "return.message.rte";
-					returnMessage.propertyValue = rte.htmlText;
-					properties.addItem(returnMessage);
 					
 				}
 
@@ -96,7 +98,7 @@
 			}
 			
 			public function getValidationError():String{
-				return rte.errorString;
+				return editor.errorString;
 			}
 			
 			public function fixedTo():Boolean{
@@ -162,11 +164,10 @@
 				width="100%"/>			
 		</s:HGroup>
 		<s:VGroup paddingLeft="24" width="100%">
-			<mx:RichTextEditor id="rte" 
-							   width="400"
-							   enabled="{returnRb.selected}"
-							   text="{resourceManager.getString('clamav','return.default.message')}">
-			</mx:RichTextEditor>		
+			<tlf:TLFTextEditor id="editor" width="470" height="240" 
+							   automaticallyExpand="false"
+							   textAreaBackgroundColor="#FFFFFF"
+							   color="#00000"/>		
 		</s:VGroup>
 	</s:VGroup>
 	

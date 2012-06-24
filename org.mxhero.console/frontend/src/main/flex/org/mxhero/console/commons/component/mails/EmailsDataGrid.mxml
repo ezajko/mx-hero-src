@@ -84,7 +84,8 @@
 					</fx:Component>
 			</s:itemRenderer>
 		</s:GridColumn>							
-					<s:GridColumn dataField="insertDate" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
+					<s:GridColumn dataField="insertDate" 
+								  headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
 									   labelFunction="dateLabelFunction"/>
 					<s:GridColumn dataField="from" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
 					<s:GridColumn dataField="recipient" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>

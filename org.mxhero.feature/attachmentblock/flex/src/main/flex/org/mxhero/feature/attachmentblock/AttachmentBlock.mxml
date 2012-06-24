@@ -3,7 +3,7 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*">
 	
 	<fx:Style>
 		@namespace s "library://ns.adobe.com/flex/spark";
@@ -26,6 +26,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.core.UIFTETextField;
@@ -62,6 +65,7 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				editor.textFlow  = TextConverter.importToFlow(resourceManager.getString('attachmentblock','action.return.textarea.text'),TextConverter.PLAIN_TEXT_FORMAT);
 				if(properties!=null){
 					loadData();
 				}
@@ -165,13 +169,13 @@
 					extensionsDg.errorString="";
 				}
 				if(returnRb.selected==true && 
-					(rte.text==null || StringUtil.trim(rte.text).length<0)){
+					StringUtil.trim(TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString()).length<1){
 					validationError=resourceManager.getString("attachmentblock","error.return.textarea.empty");
-					rte.errorString=resourceManager.getString("attachmentblock","error.return.textarea.empty");
+					editor.errorString=resourceManager.getString("attachmentblock","error.return.textarea.empty");
 					return false;
 				}else{
 					validationError=resourceManager.getString("attachmentblock","");
-					rte.errorString=resourceManager.getString("attachmentblock","");					
+					editor.errorString=resourceManager.getString("attachmentblock","");					
 				}
 				return true;
 			}
@@ -200,11 +204,10 @@
 				property = PropertyHelper.getProperty(this.properties,"return.action");
 				if(property!=null && property.propertyValue=="true"){
 					returnRb.selected=true;
-					if(PropertyHelper.getProperty(this.properties,"return.action.text.rte")!=null){
-						rte.htmlText=PropertyHelper.getProperty(this.properties,"return.action.text.rte").propertyValue;
+					if(PropertyHelper.getProperty(this.properties,"return.action.text")!=null){
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.properties,"return.action.text").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 					}else{
-						property = PropertyHelper.getProperty(this.properties,"return.action.text");
-						rte.text= property.propertyValue;
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.properties,"return.action.text.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 					}
 				} else {
 					property = PropertyHelper.getProperty(this.properties,"discard.action");
@@ -236,20 +239,18 @@
 					property.propertyKey = "return.action";
 					property.propertyValue = "true";
 					properties.addItem(property);
+					
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.action.text";
 					var t:RteHtmlParser = new RteHtmlParser();
-					t.ParseToHTML(rte.htmlText);
+					t.ignoreParagraphSpace=true;
+					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
 					var str:String = t.StringFormat;
 					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.action.text.plain";
-					property.propertyValue = rte.text;
-					properties.addItem(property);	
-					property = new FeatureRuleProperty();
-					property.propertyKey = "return.action.text.rte";
-					property.propertyValue = rte.htmlText;
+					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(property);	
 				} else if(discardRb.selected){
 					property = new FeatureRuleProperty();
@@ -268,8 +269,8 @@
 			protected function returnRb_changeHandler(event:Event):void
 			{
 				if(!returnRb.selected){
-					validationError=resourceManager.getString("attachmentblock","");
-					rte.errorString=resourceManager.getString("attachmentblock","");
+					validationError="";
+					editor.errorString="";
 				}
 			}
 
@@ -439,11 +440,10 @@
 						   selected="true"
 						   change="returnRb_changeHandler(event)"/>
 			<s:VGroup paddingLeft="18">
-				<mx:RichTextEditor id="rte" 
-								   width="400"
-								   title="{resourceManager.getString('attachmentblock','action.return.textarea.title')}"
-								   text="{resourceManager.getString('attachmentblock','action.return.textarea.text')}">
-				</mx:RichTextEditor>
+				<tlf:TLFTextEditor id="editor" width="470" height="240" 
+								   automaticallyExpand="false"
+								   textAreaBackgroundColor="#FFFFFF"
+								   color="#00000"/>	
 			</s:VGroup>
 		</s:VGroup>
 

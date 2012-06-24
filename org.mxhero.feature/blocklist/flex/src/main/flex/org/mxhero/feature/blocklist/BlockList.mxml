@@ -3,7 +3,7 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*" xmlns:tlf="net.asciiworks.tlf.*">
 	<fx:Script>
 		<![CDATA[
 			import org.mxhero.console.commons.utils.Regex;
@@ -18,6 +18,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
 			import mx.utils.ObjectUtil;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
 			import mx.collections.SortField;
@@ -46,6 +48,7 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				editor.textFlow  = TextConverter.importToFlow(resourceManager.getString(MODULE_NAME,'action.return.textarea.text'),TextConverter.PLAIN_TEXT_FORMAT);
 				loadData();
 			}
 
@@ -109,13 +112,13 @@
 				fdg.emailsDg.errorString = "";
 				
 				if(returnRb.selected){
-					if(StringUtil.trim(rte.text).length<1){
+					if(StringUtil.trim(TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString()).length<1){
 						validationError = resourceManager.getString(MODULE_NAME,'error.return.message');
-						rte.errorString = validationError;
+						editor.errorString = validationError;
 						return false;
 					}
 				}
-				rte.errorString="";
+				editor.errorString="";
 				
 				validationError="";
 				return true;
@@ -138,10 +141,10 @@
 						discardRb.selected=true;
 					} else if(actionSelected=='return'){
 						returnRb.selected=true;
-						if(PropertyHelper.getProperty(this.initialProperties,"return.text.rte")!=null){
-							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.text.rte").propertyValue;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.text")!=null){
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 						}else{
-							rte.text= PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue;
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.text.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 						}
 					}
 					if(PropertyHelper.getProperty(initialProperties,"two.way.flag")!=null
@@ -176,17 +179,14 @@
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.text";
 					var t:RteHtmlParser = new RteHtmlParser();
-					t.ParseToHTML(rte.htmlText);
+					t.ignoreParagraphSpace=true;
+					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
 					var str:String = t.StringFormat;
 					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.text.plain";
-					property.propertyValue = rte.text;
-					properties.addItem(property);	
-					property = new FeatureRuleProperty();
-					property.propertyKey = "return.text.rte";
-					property.propertyValue = rte.htmlText;
+					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(property);	
 				}
 				
@@ -292,12 +292,10 @@
 						   selected="true"/>
 			<mx:Spacer/>
 			<s:VGroup paddingLeft="18">
-				<mx:RichTextEditor id="rte" 
-								   width="400"
-								   enabled="{returnRb.selected}"
-								   title="{resourceManager.getString(MODULE_NAME,'action.return.textarea.title')}"
-								   text="{resourceManager.getString(MODULE_NAME,'action.return.textarea.text')}">
-				</mx:RichTextEditor>			
+				<tlf:TLFTextEditor id="editor" width="470" height="240" 
+								   automaticallyExpand="false"
+								   textAreaBackgroundColor="#FFFFFF"
+								   color="#00000"/>			
 			</s:VGroup>
 		</s:VGroup>
 		<s:RadioButton id="discardRb" 
