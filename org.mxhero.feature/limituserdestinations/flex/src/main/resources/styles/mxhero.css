@@ -9,6 +9,20 @@
 }
 
 @font-face {
+	src: url("/fonts/Ubuntu-R.ttf");
+	fontFamily: "Ubuntu2";
+	embedAsCFF: false;	
+}
+
+@font-face {
+	src: url("/fonts/Ubuntu-B.ttf");
+	fontFamily: "Ubuntu2";
+	fontWeight: "bold";
+	embedAsCFF: false;	
+}
+
+
+@font-face {
 	src: url("/fonts/Ubuntu-B.ttf");
 	fontFamily: "Ubuntu";
 	fontWeight: "bold";
@@ -17,10 +31,26 @@
 
 @font-face {
 	src: url("/fonts/Ubuntu-BI.ttf");
+	fontFamily: "Ubuntu2";
+	fontWeight: "bold";
+	fontStyle: "italic";
+	embedAsCFF: false;	
+}
+
+
+@font-face {
+	src: url("/fonts/Ubuntu-BI.ttf");
 	fontFamily: "Ubuntu";
 	fontWeight: "bold";
 	fontStyle: "italic";
 	embedAsCFF: true;	
+}
+
+@font-face {
+	src: url("/fonts/Ubuntu-I.ttf");
+	fontFamily: "Ubuntu2";
+	fontStyle: "italic";
+	embedAsCFF: false;	
 }
 
 @font-face {
@@ -46,6 +76,7 @@ s|RichEditableText
 mx|ToolTip
 {
 	color: #000000;
+	fontSize:12;
 }
 
 s|global
@@ -416,9 +447,6 @@ mx|Text.errorText{
 	padding-right:5;
 }
 
-mx|ToolTip{
-	font-size:12;
-}
 
 mx|TabNavigator{
 	border-color:#CCCCCC; 
@@ -436,4 +464,10 @@ mx|LegendItem{
 	font-weight:bold;
 	font-size:12;
 	color:#FFFFFF;
+	font-family:Ubuntu2;   
+	textFieldClass: ClassReference("mx.core.UITextField");
+}
+
+mx|DataTip{
+	backgroundColor:#000000;
 }
