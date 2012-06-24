@@ -80,6 +80,35 @@ package org.mxhero.console.commons.utils
 			out_xml = xml;
 		}
 		
+		public function FormatToHTML(string:String):void
+		{
+			var xml_doc:XMLDocument = new XMLDocument(string);
+			var nxml:XMLNode = (ignoreParagraphSpace) ? xml_doc.firstChild : manage_space(xml_doc.firstChild);
+			
+			var xml:XML = XML(nxml.toString());
+			var t1:XML;
+			
+			// Remove all TEXTFORMAT
+			for( t1 = xml..TEXTFORMAT[0]; t1 != null; t1 = xml..TEXTFORMAT[0] ) {
+				t1.parent().replace( t1.childIndex(), t1.children() );
+			}
+			
+			//add br tag
+			if (SET_BR)
+				xml = add_br_tag(xml);
+			
+			// add ul tag
+			xml = add_ul_tag(xml);
+			
+			// format css
+			xml = add_css(xml);
+			
+			// format new names
+			xml = set_new_name(xml);
+			
+			out_xml = xml;
+		}
+		
 		private function add_ul_tag(xml:XML):XML
 		{
 			var t1:XML;

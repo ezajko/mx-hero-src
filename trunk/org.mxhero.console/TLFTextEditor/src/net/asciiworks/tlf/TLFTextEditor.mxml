@@ -673,11 +673,11 @@
                   content="{Icons.getIcon(11)}" toolTip="Decrease indent"/>
         <!--- @private -->
         <s:ComboBox id="fontSize" width="50" cornerRadius="0" selectedItem="12"
-                    change="fontSize_changeHandler(event)" toolTip="Font size"
+                    change="fontSize_changeHandler(event)" toolTip="Font size" contentBackgroundColor="#FFFFFF"
                     dataProvider="{new ArrayCollection([6,7,8,9,10,11,12,13,14,15,16,18,20,22,24,26,28,32,36,40,44,48,54,60,66,72,80,88,96])}"/>
         <!--- @private -->
         <s:ComboBox id="fontFamily" width="100" cornerRadius="0" selectedIndex="0"
-                    change="fontFamily_changeHandler(event)" toolTip="Font family">
+                    change="fontFamily_changeHandler(event)" toolTip="Font family" contentBackgroundColor="#FFFFFF">
             <s:dataProvider>
                 <s:ArrayCollection>
                     <fx:Object>Arial</fx:Object>
@@ -715,7 +715,8 @@
         <supportClasses:ContentDropDownList width="23" height="23" cornerRadius="0"
                                             submit="image_submitHandler(event)"
                                             skinClass="net.asciiworks.tlf.supportClasses.ImageDropDownListSkin"
-                                            content="{Icons.getIcon(20)}" toolTip="Insert image"/>
+                                            content="{Icons.getIcon(20)}" toolTip="Insert image"
+											contentBackgroundColor="#FFFFFF"/>
     </s:Group>
 
     <!--- @private -->
