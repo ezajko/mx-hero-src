@@ -141,7 +141,9 @@
 						discardRb.selected=true;
 					} else if(actionSelected=='return'){
 						returnRb.selected=true;
-						if(PropertyHelper.getProperty(this.initialProperties,"return.text")!=null){
+						if(PropertyHelper.getProperty(this.initialProperties,"return.text.rte")!=null){
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.text.rte").propertyValue,TextConverter.TEXT_LAYOUT_FORMAT);
+						}else if(PropertyHelper.getProperty(this.initialProperties,"return.text")!=null){
 							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.text").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 						}else{
 							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.text.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
@@ -180,13 +182,17 @@
 					returnMessage.propertyKey = "return.text";
 					var t:RteHtmlParser = new RteHtmlParser();
 					t.ignoreParagraphSpace=true;
-					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
+					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString());
 					var str:String = t.StringFormat;
 					returnMessage.propertyValue = t.XMLFormat;
 					properties.addItem(returnMessage);
 					returnMessage = new FeatureRuleProperty();
 					returnMessage.propertyKey = "return.text.plain";
 					returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
+					properties.addItem(returnMessage);	
+					returnMessage = new FeatureRuleProperty();
+					returnMessage.propertyKey = "return.text.rte";
+					returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.TEXT_LAYOUT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(returnMessage);	
 				}
 				

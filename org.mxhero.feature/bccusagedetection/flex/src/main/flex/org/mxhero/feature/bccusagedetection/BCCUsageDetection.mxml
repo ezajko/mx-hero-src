@@ -88,7 +88,9 @@
 					}else{
 						listsCB.selected=false;
 					}
-					if(PropertyHelper.getProperty(this.initialProperties,"bcc.header")!=null){
+					if(PropertyHelper.getProperty(this.initialProperties,"bcc.header.rte")!=null){
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"bcc.header.rte").propertyValue,TextConverter.TEXT_LAYOUT_FORMAT);
+					}else if(PropertyHelper.getProperty(this.initialProperties,"bcc.header")!=null){
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"bcc.header").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 					}else{
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"bcc.header.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
@@ -109,13 +111,17 @@
 				returnMessage.propertyKey = "bcc.header";
 				var t:RteHtmlParser = new RteHtmlParser();
 				t.ignoreParagraphSpace=true;
-				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
+				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString());
 				var str:String = t.StringFormat;
 				returnMessage.propertyValue = t.XMLFormat;
 				properties.addItem(returnMessage);
 				returnMessage = new FeatureRuleProperty();
 				returnMessage.propertyKey = "bcc.header.plain";
 				returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
+				properties.addItem(returnMessage);	
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "bcc.header.rte";
+				returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.TEXT_LAYOUT_FORMAT,ConversionType.STRING_TYPE).toString();
 				properties.addItem(returnMessage);	
 				
 				property = new FeatureRuleProperty();
