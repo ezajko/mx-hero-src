@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+             xmlns:fb="http://ns.adobe.com/flashbuilder/2009" alpha.disabled=".5"
+             creationComplete="creationCompleteHandler(event)">
+
+    <fx:Declarations>
+        <fx:Object id="payload"/>
+    </fx:Declarations>
+
+    <fx:Metadata>
+        <![CDATA[ 
+        	[HostComponent("net.asciiworks.tlf.supportClasses.ContentDropDownList")]
+			[Event(name="submit",type="net.asciiworks.tlf.supportClasses.ContentDropDownListEvent")]
+    	]]>
+    </fx:Metadata>
+
+    <fx:Script>
+        <![CDATA[
+            import mx.collections.ArrayCollection;
+            import mx.controls.SWFLoader;
+
+            import spark.events.DropDownEvent;
+
+            //--------------------------------------------------------------------------
+            //
+            //  Styling
+            //
+            //--------------------------------------------------------------------------
+
+            /* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
+            static private const contentFill:Array = [ "bgFill" ];
+
+            /**
+             * @private
+             */
+            override public function get contentItems():Array {
+                return contentFill
+            }
+            ;
+
+            /**
+             * @private
+             */
+            override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void {
+                if (getStyle("borderVisible") == false) {
+                    if (border)
+                        border.visible = false;
+                    if (background) {
+                        background.left = background.top = background.right = background.bottom = 0;
+                    }
+                } else {
+                    if (border)
+                        border.visible = true;
+                    if (background) {
+                        background.left = background.top = background.right = background.bottom = 1;
+                    }
+                }
+
+                if (dropShadow)
+                    dropShadow.visible = getStyle("dropShadowVisible");
+
+                openButton.setStyle("cornerRadius", getStyle("cornerRadius"));
+
+                if (borderStroke) {
+                    borderStroke.color = getStyle("borderColor");
+                    borderStroke.alpha = getStyle("borderAlpha");
+                }
+                super.updateDisplayList(unscaledWidth, unscaledHeight);
+            }
+
+            //--------------------------------------------------------------------------
+            //
+            //  Variables
+            //
+            //--------------------------------------------------------------------------
+
+            private var pendingSubmitEvent:MouseEvent;
+
+            private var loader:SWFLoader;
+
+            private var imageWidth:Number;
+
+            private var imageHeight:Number;
+
+            //--------------------------------------------------------------------------
+            //
+            //  Methods
+            //
+            //--------------------------------------------------------------------------
+
+            private function updatePayload():void {
+                payload.url = url.text;
+                payload.width = imageWidth;
+                payload.height = imageHeight;
+            }
+
+            //--------------------------------------------------------------------------
+            //
+            //  Event handlers
+            //
+            //--------------------------------------------------------------------------
+
+            private function creationCompleteHandler(event:Event):void {
+                loader = new SWFLoader();
+                loader.addEventListener(Event.COMPLETE, loader_completeHandler);
+                loader.addEventListener(IOErrorEvent.IO_ERROR, loader_ioErrorHandler);
+            }
+
+            private function submitButton_clickHandler(event:MouseEvent):void {
+                pendingSubmitEvent = event.clone() as MouseEvent;
+                event.stopImmediatePropagation();
+                invalidMessage.visible = false;
+                widthInput.enabled = false;
+                heightInput.enabled = false;
+                url.enabled = false;
+                submitButton.enabled = false;
+                submitButton.label = "Loading...";
+                loader.load(url.text);
+            }
+
+            private function loader_completeHandler(event:Event):void {
+                hostComponent.closeDropDown(false);
+
+                if (!widthInput.text)
+                    imageWidth = loader.content.width;
+                if (!heightInput.text)
+                    imageHeight = loader.content.height;
+                updatePayload();
+
+                var e:ContentDropDownListEvent = new ContentDropDownListEvent(ContentDropDownListEvent.SUBMIT, payload);
+                hostComponent.dispatchEvent(e);
+            }
+
+            private function loader_ioErrorHandler(event:IOErrorEvent):void {
+                invalidMessage.visible = true;
+                widthInput.enabled = true;
+                heightInput.enabled = true;
+                url.enabled = true;
+                submitButton.enabled = true;
+                submitButton.label = "Submit";
+            }
+        ]]>
+    </fx:Script>
+
+    <s:states>
+        <s:State name="normal"/>
+        <s:State name="open"/>
+        <s:State name="disabled"/>
+    </s:states>
+
+    <s:PopUpAnchor id="popUp" displayPopUp.normal="false" displayPopUp.open="true" includeIn="open"
+                   left="0" right="0" top="0" bottom="0" itemDestructionPolicy="auto"
+                   popUpPosition="below">
+
+        <s:Group id="dropDown" width="200" height="100"
+                 creationComplete="hostComponent.setHitAreaInclusions([dropDown]);">
+
+            <s:RectangularDropShadow id="dropShadow" blurX="20" blurY="20" alpha="0.45" distance="7"
+                                     angle="90" color="#000000" left="0" top="0" right="0"
+                                     bottom="0"/>
+
+            <s:Rect id="border" left="0" right="0" top="0" bottom="0">
+                <s:stroke>
+                    <s:SolidColorStroke id="borderStroke" weight="1"/>
+                </s:stroke>
+            </s:Rect>
+
+            <s:Rect id="background" left="1" right="1" top="1" bottom="1">
+                <s:fill>
+                    <s:SolidColor id="bgFill" color="0xFFFFFF"/>
+                </s:fill>
+            </s:Rect>
+
+            <s:Label top="17" left="17" text="URL:"/>
+            <s:TextInput id="url" top="11" left="50" right="5" text="http://"
+                         change="submitButton.enabled = url.text != '' &amp;&amp; url.text != 'http://';updatePayload();"/>
+
+            <s:Label top="42" left="18" text="Width:"/>
+            <s:TextInput id="widthInput" top="36" left="58" width="40" restrict="0-9"
+                         change="imageWidth = Number(widthInput.text);updatePayload();"/>
+
+            <s:Label top="42" left="100" text="Height:"/>
+            <s:TextInput id="heightInput" top="36" left="143" width="40" restrict="0-9"
+                         change="imageHeight = Number(heightInput.text);updatePayload();"/>
+
+            <s:Button id="submitButton" top="75" right="5" label="Submit" cornerRadius="0"
+                      height="16" click="submitButton_clickHandler(event)"/>
+
+            <s:Label id="invalidMessage" top="80" left="15" text="URL not an image" color="0xFF0000"
+                     visible="false"/>
+
+        </s:Group>
+    </s:PopUpAnchor>
+
+    <s:Button id="openButton" left="0" right="0" top="0" bottom="0" focusEnabled="false"
+              skinClass="net.asciiworks.tlf.supportClasses.IconButtonSkin"
+              content="{hostComponent.content}"/>
+
+</s:SparkSkin>
