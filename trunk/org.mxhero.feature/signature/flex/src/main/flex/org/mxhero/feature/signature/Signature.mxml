@@ -3,13 +3,16 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*">
 	
 	<fx:Declarations>
 	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
@@ -32,11 +35,12 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				editor.textFlow  = TextConverter.importToFlow(resourceManager.getString('signature','action.return.textarea.text'),TextConverter.TEXT_FIELD_HTML_FORMAT);
 				loadData();
 			}
 			
 			public function isValid():Boolean{
-				if(StringUtil.trim(rte.text).length<1){
+				if(StringUtil.trim(TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString()).length<1){
 					validationError = resourceManager.getString('signature','error.return.message');
 					return false;
 				}
@@ -50,10 +54,10 @@
 			
 			private function loadData():void{
 				if(initialProperties!=null){
-					if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
-						rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
+					if(PropertyHelper.getProperty(this.initialProperties,"return.message")!=null){
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 					}else{
-						rte.text= PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue;
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 					}
 				}
 			}
@@ -62,20 +66,20 @@
 				var properties:ArrayCollection = new ArrayCollection();
 				var property:FeatureRuleProperty = new FeatureRuleProperty();
 
-				property.propertyKey = "return.message";
+				var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "return.message";
 				var t:RteHtmlParser = new RteHtmlParser();
-				t.ParseToHTML(rte.htmlText);
+				t.ignoreParagraphSpace=true;
+				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
 				var str:String = t.StringFormat;
-				property.propertyValue = t.XMLFormat;
-				properties.addItem(property);
-				property = new FeatureRuleProperty();
-				property.propertyKey = "return.message.plain";
-				property.propertyValue = rte.text;
-				properties.addItem(property);	
-				property = new FeatureRuleProperty();
-				property.propertyKey = "return.message.rte";
-				property.propertyValue = rte.htmlText;
-				properties.addItem(property);	
+				returnMessage.propertyValue = t.XMLFormat;
+				properties.addItem(returnMessage);
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "return.message.plain";
+				returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
+				properties.addItem(returnMessage);	
+
 				return properties;
 			}
 			
@@ -110,6 +114,7 @@
 	
 	<fx:Metadata>
 		[ResourceBundle("signature")]
+		[ResourceBundle("textLayout")]
 	</fx:Metadata>
 	<s:layout>
 		<s:VerticalLayout  gap="20"/>
@@ -119,11 +124,12 @@
 	<s:Label text="{resourceManager.getString('signature','first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup paddingLeft="20" gap="20" width="600">
-		<mx:Text htmlText="{resourceManager.getString('signature','description.text.html')}" width="100%"/>
-		<mx:RichTextEditor id="rte" 
-						   width="400"
-						   title="{resourceManager.getString('signature','action.return.textarea.title')}"
-						   htmlText="{resourceManager.getString('signature','action.return.textarea.text')}">
-		</mx:RichTextEditor>			
+		<s:RichText id="textDescription" 
+					width="100%"
+					creationComplete="{textDescription.textFlow=TextConverter.importToFlow(resourceManager.getString('signature','description.text.html'),TextConverter.TEXT_FIELD_HTML_FORMAT)}"/>
+		<tlf:TLFTextEditor id="editor" width="470" height="240" 
+						   automaticallyExpand="false"
+						   textAreaBackgroundColor="#FFFFFF"
+						   color="#00000"/>	
 	</s:VGroup>
 </s:Module>

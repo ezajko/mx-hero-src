@@ -4,7 +4,7 @@
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
-		   implements="org.mxhero.console.commons.feature.IFeature">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*">
 	
 	<fx:Declarations>
 		<mx:StringValidator id="requiredV" required="true" source="{emailTi}" property="text"/>
@@ -13,6 +13,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.utils.StringUtil;
@@ -30,6 +33,7 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				editor.textFlow  = TextConverter.importToFlow(resourceManager.getString('bccusagedetection','action.return.textarea.default'),TextConverter.PLAIN_TEXT_FORMAT);
 				loadData();
 			}
 			
@@ -62,12 +66,12 @@
 					return false;
 				}
 				emailTi.errorString="";
-				if(rte.text==null || StringUtil.trim(rte.text).length<1){
-					rte.errorString=resourceManager.getString('bccusagedetection','error.return.message');
+				if(StringUtil.trim(TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString()).length<1){
+					editor.errorString=resourceManager.getString('bccusagedetection','error.return.message');
 						errorMessage=resourceManager.getString('bccusagedetection','error.return.message');
 						return false;
 				}
-				rte.errorString="";
+				editor.errorString="";
 				errorMessage="";
 				return true;
 			}
@@ -84,10 +88,10 @@
 					}else{
 						listsCB.selected=false;
 					}
-					if(PropertyHelper.getProperty(this.initialProperties,"bcc.header.rte")!=null){
-						rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"bcc.header.rte").propertyValue;
+					if(PropertyHelper.getProperty(this.initialProperties,"bcc.header")!=null){
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"bcc.header").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 					}else{
-						rte.text= PropertyHelper.getProperty(this.initialProperties,"bcc.header").propertyValue;
+						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"bcc.header.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 					}
 				}
 			}
@@ -101,21 +105,18 @@
 				property.propertyValue=emailTi.text;
 				properties.addItem(property);
 				
-				property = new FeatureRuleProperty();
-				property.propertyKey = "bcc.header";
+				var returnMessage:FeatureRuleProperty = new FeatureRuleProperty();
+				returnMessage.propertyKey = "bcc.header";
 				var t:RteHtmlParser = new RteHtmlParser();
-				t.ParseToHTML(rte.htmlText);
+				t.ignoreParagraphSpace=true;
+				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
 				var str:String = t.StringFormat;
-				property.propertyValue = t.XMLFormat;
-				properties.addItem(property);
-				property = new FeatureRuleProperty();
-				property.propertyKey = "bcc.header.plain";
-				property.propertyValue = rte.text;
-				properties.addItem(property);	
-				property = new FeatureRuleProperty();
-				property.propertyKey = "bcc.header.rte";
-				property.propertyValue = rte.htmlText;
-				properties.addItem(property);	
+				returnMessage.propertyValue = t.XMLFormat;
+				properties.addItem(returnMessage);
+				returnMessage = new FeatureRuleProperty();
+				returnMessage.propertyKey = "bcc.header.plain";
+				returnMessage.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
+				properties.addItem(returnMessage);	
 				
 				property = new FeatureRuleProperty();
 				property.propertyKey = "lists.ignore";
@@ -176,11 +177,10 @@
 				<s:Label text="{resourceManager.getString('bccusagedetection','email.address.label')}"/>
 				<s:TextInput id="emailTi" width="300"/>
 			</s:HGroup>
-			<mx:RichTextEditor id="rte" 
-							   width="400"
-							   title="{resourceManager.getString('bccusagedetection','action.return.textarea.title')}"
-							   text="{resourceManager.getString('bccusagedetection','action.return.textarea.default')}">
-			</mx:RichTextEditor>		
+			<tlf:TLFTextEditor id="editor" width="470" height="240" 
+							   automaticallyExpand="false"
+							   textAreaBackgroundColor="#FFFFFF"
+							   color="#00000"/>		
 			<s:HGroup width="100%" verticalAlign="top">
 				<s:CheckBox id="listsCB" 
 							label=""

@@ -120,11 +120,13 @@
 	
 	<s:VGroup paddingLeft="20" gap="20" width="600">
 		<mx:Text htmlText="{resourceManager.getString('disclaimer','description.text.html')}" width="100%"/>
-		
-		<s:Label text="{resourceManager.getString('disclaimer','action.return.textarea.title')}"/>
-		<tlf:TLFTextEditor id="editor" width="470" height="240" 
-						   automaticallyExpand="false"
-						   textAreaBackgroundColor="#FFFFFF"
-						   color="#00000"/>		
+		<s:VGroup>
+			<s:Label text="{resourceManager.getString('disclaimer','action.return.textarea.title')}"/>
+			<tlf:TLFTextEditor id="editor" width="470" height="240" 
+							   automaticallyExpand="false"
+							   textAreaBackgroundColor="#FFFFFF"
+							   color="#00000"/>	
+		</s:VGroup>
+	
 	</s:VGroup>
 </s:Module>

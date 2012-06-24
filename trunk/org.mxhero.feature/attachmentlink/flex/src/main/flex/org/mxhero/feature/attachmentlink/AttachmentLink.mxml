@@ -3,7 +3,7 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature">
+		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*">
 	
 	<fx:Declarations>
 		<mx:NumberValidator id="sizeV" 
@@ -20,6 +20,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import flashx.textLayout.conversion.ConversionType;
+			import flashx.textLayout.conversion.TextConverter;
+			
 			import mx.collections.ArrayCollection;
 			import mx.events.DragEvent;
 			import mx.events.FlexEvent;
@@ -42,6 +45,7 @@
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
+				editor.textFlow  = TextConverter.importToFlow(resourceManager.getString('attachmentlink','action.return.textarea.text'),TextConverter.PLAIN_TEXT_FORMAT);
 				loadData();
 			}
 			
@@ -52,7 +56,7 @@
 					return false;
 				}
 				if(returnCb.selected){
-					if(StringUtil.trim(rte.text).length<1){
+					if(StringUtil.trim(TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString()).length<1){
 						validationError = resourceManager.getString('attachmentlink','error.return.message');
 						return false;
 					}
@@ -75,11 +79,10 @@
 					property=PropertyHelper.getProperty(initialProperties,'action.selection');
 					if(property!=null && property.propertyValue=='return'){
 						returnCb.selected=true;
-						if(PropertyHelper.getProperty(this.initialProperties,"return.message.rte")!=null){
-							rte.htmlText=PropertyHelper.getProperty(this.initialProperties,"return.message.rte").propertyValue;
+						if(PropertyHelper.getProperty(this.initialProperties,"return.message")!=null){
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message").propertyValue,TextConverter.TEXT_FIELD_HTML_FORMAT);
 						}else{
-							property = PropertyHelper.getProperty(this.initialProperties,"return.message");
-							rte.text= property.propertyValue;
+							editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.initialProperties,"return.message.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 						}
 					} else {
 						returnCb.selected=false;
@@ -107,17 +110,14 @@
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.message";
 					var t:RteHtmlParser = new RteHtmlParser();
-					t.ParseToHTML(rte.htmlText);
+					t.ignoreParagraphSpace=true;
+					t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.XML_TYPE).toString());
 					var str:String = t.StringFormat;
 					property.propertyValue = t.XMLFormat;
 					properties.addItem(property);
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.message.plain";
-					property.propertyValue = rte.text;
-					properties.addItem(property);	
-					property = new FeatureRuleProperty();
-					property.propertyKey = "return.message.rte";
-					property.propertyValue = rte.htmlText;
+					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.PLAIN_TEXT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(property);	
 				} 
 				
@@ -182,12 +182,10 @@
 						   label="{resourceManager.getString('attachmentlink','action.return.label')}"
 						   selected="true"/>
 			<s:VGroup paddingLeft="18">
-				<mx:RichTextEditor id="rte" 
-								   width="400"
-								   enabled="{returnCb.selected}"
-								   title="{resourceManager.getString('attachmentlink','action.return.textarea.title')}"
-								   text="{resourceManager.getString('attachmentlink','action.return.textarea.text')}">
-				</mx:RichTextEditor>		
+			<tlf:TLFTextEditor id="editor" width="470" height="240" 
+							   automaticallyExpand="false"
+							   textAreaBackgroundColor="#FFFFFF"
+							   color="#00000"/>	
 			</s:VGroup>
 		</s:VGroup>
 	</s:VGroup>
