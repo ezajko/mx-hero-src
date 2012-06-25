@@ -49,7 +49,18 @@
 				<s:ArrayList>
 				<s:GridColumn id="emailColumn" 
 								   sortable="true"
-								   headerText="{resourceManager.getString(RESOURCE,'email.column.label')}"/>
+								   headerText="{resourceManager.getString(RESOURCE,'email.column.label')}">
+					<s:itemRenderer>
+						<fx:Component>
+							<s:GridItemRenderer width="100%">
+								<s:layout>
+									<s:HorizontalLayout  horizontalAlign="left" verticalAlign="middle"/>
+								</s:layout>
+								<s:Label text="{data.toString()}"/>
+							</s:GridItemRenderer>
+						</fx:Component>
+					</s:itemRenderer>
+				</s:GridColumn>
 				<s:GridColumn width="48" 
 								   sortable="false">
 					<s:itemRenderer>

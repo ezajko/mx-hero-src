@@ -3,13 +3,9 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*" xmlns:tlf="net.asciiworks.tlf.*">
-	<fx:Script>
-		<![CDATA[
-			import org.mxhero.console.commons.utils.Regex;
-		]]>
-	</fx:Script>
-	
+		   implements="org.mxhero.console.commons.feature.IFeature" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*" xmlns:tlf="net.asciiworks.tlf.*">
+
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
 		<mx:EmailValidator id="emailV" required="true"/>
@@ -35,6 +31,7 @@
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
+			import org.mxhero.console.commons.utils.Regex;
 			
 			public var validationError:String;
 			
