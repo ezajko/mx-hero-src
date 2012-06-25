@@ -169,6 +169,8 @@ s|GridColumn{
 	font-size:14;
 	text-align:"center";
 	padding-left:5;
+	fontFamily:Ubuntu;
+	fontLookup: embeddedCFF;
 }
 
 s|DataGrid{
@@ -178,6 +180,9 @@ s|DataGrid{
 	drop-shadow-visible:true;
 	alternatingRowColors:#696969,#7c7b7b;
 	border-visible:true;
+	fontFamily:Ubuntu;
+	fontLookup: embeddedCFF;
+	
 }
 
 mx|DataGrid{
