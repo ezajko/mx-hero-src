@@ -72,6 +72,15 @@ s|RichEditableText
 	unfocusedTextSelectionColor: #333333;
 }
 
+s|GridItemRenderer{
+	fontFamily:Ubuntu;
+	fontLookup:embeddedCFF;
+}
+
+s|GridItemEditor{
+	fontFamily:Ubuntu;
+	fontLookup:embeddedCFF;
+}
 
 mx|ToolTip
 {
