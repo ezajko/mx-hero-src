@@ -86,16 +86,20 @@ public class Provider extends RulesByFeature{
 					&& ((ignoreList && !ignoreListCheck(mail) && !mail.getRecipient().hasAlias(allRecipients.toArray(new String[0])))
 					|| (!ignoreList && !mail.getRecipient().hasAlias(allRecipients.toArray(new String[0]))));
 			
+			boolean isForwarded = mail.getHeaders().hasHeader("X-Forwarded-To")
+					&& mail.getRecipient().hasAlias(mail.getHeaders().getHeaderValue("X-Forwarded-To"));
+			
 			if(log.isDebugEnabled()){
 				log.debug("ignoreList="+ignoreList);
 				log.debug("status="+mail.getStatus());
+				log.debug("isForwarded:"+isForwarded);
 				log.debug("replyproperty="+mail.getProperties().containsKey("org.mxhero.engine.plugin.basecommands.command.Reply"));
 				log.debug("ignoreListCheck="+ignoreListCheck(mail));
 				log.debug("recipientAliases="+Arrays.deepToString(mail.getRecipient().getAliases().toArray()));
 				log.debug("allEmailRecipients="+Arrays.deepToString(allRecipients.toArray(new String[0])));
 				log.debug("result="+result);
 			}
-			return result;
+			return result && !isForwarded;
 		}
 		
 		private boolean ignoreListCheck(Mail mail){
