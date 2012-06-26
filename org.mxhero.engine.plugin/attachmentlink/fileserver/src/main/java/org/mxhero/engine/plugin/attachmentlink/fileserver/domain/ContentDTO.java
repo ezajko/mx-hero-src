@@ -21,6 +21,7 @@ public class ContentDTO implements Serializable {
 	private String contentType;
 	private String fileName;
 	private Integer length;
+	private Long idMessageAttach;
 	private String senderMail;
 	private String recipientMail;
 	private String msgMail;
@@ -32,11 +33,18 @@ public class ContentDTO implements Serializable {
 	private InputStream in;
 
 
-
 	/**
 	 * 
 	 */
 	public ContentDTO() {
+	}
+	
+	public Long getIdMessageAttach() {
+		return idMessageAttach;
+	}
+
+	public void setIdMessageAttach(Long idMessageAttach) {
+		this.idMessageAttach = idMessageAttach;
 	}
 
 	public Integer getLength() {
