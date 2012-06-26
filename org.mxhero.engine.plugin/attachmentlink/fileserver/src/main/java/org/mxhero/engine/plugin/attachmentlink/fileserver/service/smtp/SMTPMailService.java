@@ -1,10 +1,13 @@
 package org.mxhero.engine.plugin.attachmentlink.fileserver.service.smtp;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.mxhero.engine.plugin.attachmentlink.fileserver.domain.ContentDTO;
 import org.mxhero.engine.plugin.attachmentlink.fileserver.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +21,13 @@ public class SMTPMailService implements MailService{
 	private static final String RECIPIENT_KEY = "mxrecipient";
 	private static final String ATTACHMENT_NAME_KEY = "file-name";
 	private static final String ACCESS_DATE_KEY = "attachmentlink-access-date";
+	private static final String UNSUBSCRIVE_LINK = "unsubscribe-link";
 	
 	@Autowired(required=true)
 	private SMTPSenderConfig config;
+	
+	@Autowired
+	private PBEStringEncryptor encryptor;
 	
 	@Override
 	public void sendMailToSender(ContentDTO contentDTO) {
@@ -46,8 +53,14 @@ public class SMTPMailService implements MailService{
 					  m2.appendReplacement(sb, contentDTO.getFileName());
 				  }else if(key.equalsIgnoreCase(ACCESS_DATE_KEY)){
 					  m2.appendReplacement(sb, Calendar.getInstance().getTime().toString());
+				  }else if(key.equalsIgnoreCase(UNSUBSCRIVE_LINK)){
+					  try {
+							String id = encryptor.encrypt(contentDTO.getIdMessage().toString());
+							m2.appendReplacement(sb, config.getExternalUrl()+"unsubscribe?id="+ URLEncoder.encode(id,"ASCII"));
+						} catch (UnsupportedEncodingException e) {
+							log.error("Error URL Link for HTML attach. MailId: "+contentDTO.getIdMessage()+" - "+e.getClass().getName()+" - "+e.getMessage());
+						}
 				  }
-	
 				}
 				sb.append(content.substring(lastIndex));
 				
@@ -62,13 +75,21 @@ public class SMTPMailService implements MailService{
 			log.error("error sending message to "+contentDTO.getSenderMail(),e);
 		}
 	}
-
+	
 	public SMTPSenderConfig getConfig() {
 		return config;
 	}
 
 	public void setConfig(SMTPSenderConfig config) {
 		this.config = config;
+	}
+
+	public PBEStringEncryptor getEncryptor() {
+		return encryptor;
+	}
+
+	public void setEncryptor(PBEStringEncryptor encryptor) {
+		this.encryptor = encryptor;
 	}
 
 }

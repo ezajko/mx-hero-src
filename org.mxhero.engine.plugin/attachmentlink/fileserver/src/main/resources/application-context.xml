@@ -21,6 +21,7 @@
 		<property name="user" value="${smtp.user}"/>
 		<property name="password" value="${smtp.password}"/>
 		<property name="signature" value="${smtp.signature}"/>
+		<property name="externalUrl" value="${server.external.url}"/>
 	</bean>
 
 	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"

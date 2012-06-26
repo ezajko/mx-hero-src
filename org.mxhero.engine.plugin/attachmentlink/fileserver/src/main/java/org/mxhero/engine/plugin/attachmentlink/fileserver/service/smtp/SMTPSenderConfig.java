@@ -10,6 +10,7 @@ public class SMTPSenderConfig {
 	private String user;
 	private String password;
 	private String signature;
+	private String externalUrl;
 	
 	public String getHost() {
 		return host;
@@ -73,6 +74,14 @@ public class SMTPSenderConfig {
 
 	public void setSignature(String signature) {
 		this.signature = signature;
+	}
+
+	public String getExternalUrl() {
+		return externalUrl;
+	}
+
+	public void setExternalUrl(String externalUrl) {
+		this.externalUrl = externalUrl;
 	}
 	
 }
