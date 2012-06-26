@@ -12,10 +12,10 @@
 	<div style="width: 100%; border-bottom-width: 2px; border-bottom-style: solid; padding-bottom: 10px;">
 	<img style="width: 200px; height: 50px; padding-bottom: 5px;" src="http://www.mxhero.com/wp-content/uploads/2011/09/logo3.png" width="200" height="50" border="0" /></div>
 	<span style="font-size: 2em; font-weight: bold;">
-		<%=bundle.getString("not.allowed.title") %>
+		<%=bundle.getString("unsubscribe.title") %>
 	</span>
 	<p style="color: red; font-weight: bold;">
-		<%=bundle.getString("not.allowed.message") %>
+		<%=bundle.getString("unsubscribe.message") %>
 	</p>
 
 </body>
