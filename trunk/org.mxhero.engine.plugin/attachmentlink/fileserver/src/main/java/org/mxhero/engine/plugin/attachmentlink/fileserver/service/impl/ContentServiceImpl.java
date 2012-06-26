@@ -1,5 +1,7 @@
 package org.mxhero.engine.plugin.attachmentlink.fileserver.service.impl;
 
+import java.util.List;
+
 import org.mxhero.engine.plugin.attachmentlink.fileserver.dbaccess.AttachmentRepository;
 import org.mxhero.engine.plugin.attachmentlink.fileserver.domain.ContentDTO;
 import org.mxhero.engine.plugin.attachmentlink.fileserver.exceptions.NotAllowedToSeeContentException;
@@ -47,6 +49,16 @@ public class ContentServiceImpl implements ContentService {
 	@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
 	public void successContent(Long idMessageAttach) {
 		repository.saveHistory(idMessageAttach,true);
+	}
+
+	@Override
+	public void unsubscribe(Long messageId) {
+		repository.unsubscribe(messageId);
+	}
+
+	@Override
+	public List<ContentDTO> getContentList(Long messageId) {
+		return repository.getContentList(messageId);
 	}
 
 }

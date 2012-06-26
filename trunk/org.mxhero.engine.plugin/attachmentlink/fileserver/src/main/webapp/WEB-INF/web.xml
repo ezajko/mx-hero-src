@@ -25,8 +25,13 @@
 	</servlet>
 	
 	<servlet>
-		<servlet-name>unsuscribeServlet</servlet-name>
-		<servlet-class>org.mxhero.engine.plugin.attachmentlink.fileserver.servlet.UnsuscribeServlet</servlet-class>
+		<servlet-name>unsubscribe</servlet-name>
+		<servlet-class>org.mxhero.engine.plugin.attachmentlink.fileserver.servlet.Unsubscribe</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>downloadAll</servlet-name>
+		<servlet-class>org.mxhero.engine.plugin.attachmentlink.fileserver.servlet.DownloadAll</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -35,7 +40,13 @@
 	</servlet-mapping>
 	
 	<servlet-mapping>
-		<servlet-name>unsuscribeServlet</servlet-name>
-		<url-pattern>/unsuscribe</url-pattern>
+		<servlet-name>unsubscribe</servlet-name>
+		<url-pattern>/unsubscribe</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>downloadAll</servlet-name>
+		<url-pattern>/downloadAll</url-pattern>
+	</servlet-mapping>
+	
 </web-app>
