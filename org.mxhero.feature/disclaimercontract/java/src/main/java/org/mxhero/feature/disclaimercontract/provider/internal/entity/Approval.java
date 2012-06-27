@@ -10,7 +10,6 @@ public class Approval {
 	private String senderDomain;
 	private Long ruleId;
 	private Calendar approvedDate;
-	private String type;
 	private String disclaimerPlain;
 	private String disclaimerHtml;
 	private String aditionalData;
@@ -64,15 +63,7 @@ public class Approval {
 	public void setApprovedDate(Calendar approvedDate) {
 		this.approvedDate = approvedDate;
 	}
-	
-	public String getType() {
-		return type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
-	
+
 	public String getDisclaimerPlain() {
 		return disclaimerPlain;
 	}
