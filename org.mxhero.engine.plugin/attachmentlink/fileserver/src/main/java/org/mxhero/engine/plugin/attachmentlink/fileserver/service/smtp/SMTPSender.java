@@ -2,11 +2,17 @@ package org.mxhero.engine.plugin.attachmentlink.fileserver.service.smtp;
 
 import java.util.Properties;
 
+import javax.mail.BodyPart;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 public abstract class SMTPSender {
 
@@ -15,7 +21,7 @@ public abstract class SMTPSender {
 	private static final String DEFAULT_SSL_PORT = "465";
 	
 	
-	public static void send(String subject, String body, String recipient, String messageId, SMTPSenderConfig configurationVO ){
+	public static void send(String subject, String body, String bodyHtml, String recipient, String messageId, SMTPSenderConfig configurationVO ){
 		 Properties props = new Properties();
 		 props.put("mail.smtp.host", configurationVO.getHost());
 		 
@@ -56,7 +62,31 @@ public abstract class SMTPSender {
         	MimeMessage message = new MimeMessage(session);
         	message.setSender(new InternetAddress(configurationVO.getAdminMail()));
         	message.setFrom(new InternetAddress(configurationVO.getAdminMail()));
-        	message.setContent(body, "text/html");
+			MimeMultipart mixed = new MimeMultipart();
+			MimeMultipart multipartText = new MimeMultipart("alternative");
+
+			if (body != null && !body.isEmpty()) {
+				BodyPart textBodyPart = new MimeBodyPart();
+				textBodyPart.setText(body
+						+ ((configurationVO.getSignaturePlain() != null) ? configurationVO.getSignaturePlain()
+								: ""));
+				multipartText.addBodyPart(textBodyPart);
+			}
+			if (bodyHtml != null && !bodyHtml.isEmpty()) {
+				BodyPart htmlBodyPart = new MimeBodyPart();
+				Document doc = Jsoup.parse(bodyHtml);
+				if ((configurationVO.getSignature() != null)
+						&& !configurationVO.getSignature().trim().isEmpty()) {
+					doc.body().append(configurationVO.getSignature());
+				}
+				htmlBodyPart.setContent(doc.outerHtml(), "text/html");
+				multipartText.addBodyPart(htmlBodyPart);
+			}
+			MimeBodyPart wrap = new MimeBodyPart();
+			wrap.setContent(multipartText);
+			mixed.addBodyPart(wrap);
+			message.setContent(mixed);
+			
         	if(subject!=null){
         		message.setSubject(subject);
         	}else{

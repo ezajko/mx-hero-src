@@ -57,8 +57,8 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
-	public List<ContentDTO> getContentList(Long messageId) {
-		return repository.getContentList(messageId);
+	public List<ContentDTO> getContentList(Long messageId, String recipient) {
+		return repository.getContentList(messageId,recipient);
 	}
 
 }

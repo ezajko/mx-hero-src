@@ -32,49 +32,50 @@ public class SMTPMailService implements MailService{
 	@Override
 	public void sendMailToSender(ContentDTO contentDTO) {
 		try{
-			String content = contentDTO.getMsgMail();
-			if(contentDTO.getMsgMail()!=null){
-				
-				String tagregex = "\\$\\{[^\\{]*\\}";
-				Pattern p2 = Pattern.compile(tagregex);
-				StringBuffer sb = new StringBuffer();
-				Matcher m2 = p2.matcher(content);
-				int lastIndex = 0;
-				
-				while (m2.find()) {
-				lastIndex=m2.end();
-				  String key =content.substring(m2.start()+2,m2.end()-1);
-				  
-				  if(key.equalsIgnoreCase(SENDER_KEY)){
-					  m2.appendReplacement(sb, contentDTO.getSenderMail());
-				  }else if(key.equalsIgnoreCase(RECIPIENT_KEY)){
-					  m2.appendReplacement(sb, contentDTO.getRecipientMail());
-				  }else if(key.equalsIgnoreCase(ATTACHMENT_NAME_KEY)){
-					  m2.appendReplacement(sb, contentDTO.getFileName());
-				  }else if(key.equalsIgnoreCase(ACCESS_DATE_KEY)){
-					  m2.appendReplacement(sb, Calendar.getInstance().getTime().toString());
-				  }else if(key.equalsIgnoreCase(UNSUBSCRIVE_LINK)){
-					  try {
-							String id = encryptor.encrypt(contentDTO.getIdMessage().toString());
-							m2.appendReplacement(sb, config.getExternalUrl()+"unsubscribe?id="+ URLEncoder.encode(id,"ASCII"));
-						} catch (UnsupportedEncodingException e) {
-							log.error("Error URL Link for HTML attach. MailId: "+contentDTO.getIdMessage()+" - "+e.getClass().getName()+" - "+e.getMessage());
-						}
-				  }
-				}
-				sb.append(content.substring(lastIndex));
-				
-				if(config.getSignature()!=null && !config.getSignature().trim().isEmpty()){
-					sb.append(config.getSignature());
-				}
-				content=sb.toString();
-			}
 			
-			SMTPSender.send(contentDTO.getSubject(), content, contentDTO.getSenderMail(), contentDTO.getMessageId(), config);
+			SMTPSender.send(contentDTO.getSubject(), getContent(contentDTO,contentDTO.getMsgMail()), getContent(contentDTO,contentDTO.getMsgMailHtml()), contentDTO.getSenderMail(), contentDTO.getMessageId(), config);
 		}catch(Exception e){
 			log.error("error sending message to "+contentDTO.getSenderMail(),e);
 		}
 	}
+	
+	private String getContent(ContentDTO contentDTO, String messageContent){
+		String content = messageContent;
+		if(content!=null){
+			
+			String tagregex = "\\$\\{[^\\{]*\\}";
+			Pattern p2 = Pattern.compile(tagregex);
+			StringBuffer sb = new StringBuffer();
+			Matcher m2 = p2.matcher(content);
+			int lastIndex = 0;
+			
+			while (m2.find()) {
+			lastIndex=m2.end();
+			  String key =content.substring(m2.start()+2,m2.end()-1);
+			  
+			  if(key.equalsIgnoreCase(SENDER_KEY)){
+				  m2.appendReplacement(sb, contentDTO.getSenderMail());
+			  }else if(key.equalsIgnoreCase(RECIPIENT_KEY)){
+				  m2.appendReplacement(sb, contentDTO.getRecipientMail());
+			  }else if(key.equalsIgnoreCase(ATTACHMENT_NAME_KEY)){
+				  m2.appendReplacement(sb, contentDTO.getFileName());
+			  }else if(key.equalsIgnoreCase(ACCESS_DATE_KEY)){
+				  m2.appendReplacement(sb, Calendar.getInstance().getTime().toString());
+			  }else if(key.equalsIgnoreCase(UNSUBSCRIVE_LINK)){
+				  try {
+						String id = encryptor.encrypt(contentDTO.getIdMessage().toString());
+						m2.appendReplacement(sb, config.getExternalUrl()+"/unsubscribe?id="+ URLEncoder.encode(id,"ASCII"));
+					} catch (UnsupportedEncodingException e) {
+						log.error("Error URL Link for HTML attach. MailId: "+contentDTO.getIdMessage()+" - "+e.getClass().getName()+" - "+e.getMessage());
+					}
+			  }
+			}
+			sb.append(content.substring(lastIndex));
+			content=sb.toString();
+		}
+		return content;
+	}
+	
 	
 	public SMTPSenderConfig getConfig() {
 		return config;

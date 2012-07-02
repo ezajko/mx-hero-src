@@ -5,7 +5,9 @@ import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -30,7 +32,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  */
 public class DownloadAll extends HttpServlet {
 
-	private static Logger log = Logger.getLogger(Unsubscribe.class);
+	private static Logger log = Logger.getLogger(DownloadAll.class);
 
 	
 	@Override
@@ -50,6 +52,7 @@ public class DownloadAll extends HttpServlet {
 		ContentService service = null;
 		Long idToSearch = null;
 		String id = request.getParameter("id");
+		String recipient = request.getParameter("recipient");
 		MDC.put("message", id);
 		List<ContentDTO> contents = null;
 		try {
@@ -63,7 +66,7 @@ public class DownloadAll extends HttpServlet {
 				idToSearch = Long.valueOf(decrypt);
 				log.debug("Trying dowload all files for messageId "+idToSearch);
 				service = context.getBean(ContentService.class);
-				contents =  service.getContentList(idToSearch);
+				contents =  service.getContentList(idToSearch,recipient);
 				if(contents==null || contents.size()<1){
 					throw new EmptyResultDataAccessException(1);
 				}
@@ -74,10 +77,21 @@ public class DownloadAll extends HttpServlet {
 		
 				ServletOutputStream out = response.getOutputStream();
 				ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(out));
-		
+				Set<String> addedFiles = new HashSet<String>();
+				
 				for (ContentDTO content : contents) {
-		
-					System.out.println("Adding file " + content.getFileName());
+					boolean alreadyThere = false;
+					for(String addedFile : addedFiles){
+						if(addedFile.equalsIgnoreCase(content.getFileName())){
+							alreadyThere=true;
+							break;
+						}
+					}
+					if(alreadyThere){
+						continue;
+					}
+					addedFiles.add(content.getFileName());
+					log.debug("Adding file " + content.getFileName());
 					zos.putNextEntry(new ZipEntry(content.getFileName()));
 		
 					// Get the file
