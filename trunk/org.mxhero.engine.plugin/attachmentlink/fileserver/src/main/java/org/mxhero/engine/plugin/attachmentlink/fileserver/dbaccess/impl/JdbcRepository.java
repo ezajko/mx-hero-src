@@ -36,7 +36,7 @@ public class JdbcRepository implements AttachmentRepository {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ContentDTO getContent(Long idMessageAttachment) {
-		String sql = "select m.message_id as idMessage, m.message_attach_id as idMessageAttach, msg.subject as subject, msg.message_platform_id as messageId, msg.process_ack_download as processMsg, msg.msg_ack_download as msgMail, msg.sender_email as senderMail, m.recipient_email as recipientMail, m.was_access_first_time as accessed, a.size as length, a.path as path, a.file_name as fileName, a.mime_type as contentType from message_attach m inner join attach a on m.attach_id = a.attach_id inner join message msg on msg.message_id = m.message_id where m.message_attach_id = :id";
+		String sql = "select m.message_id as idMessage, m.message_attach_id as idMessageAttach, msg.subject as subject, msg.message_platform_id as messageId, msg.process_ack_download as processMsg, msg.msg_ack_download as msgMail, msg.msg_ack_download_html as msgMailHtml, msg.sender_email as senderMail, m.recipient_email as recipientMail, m.was_access_first_time as accessed, a.size as length, a.path as path, a.file_name as fileName, a.mime_type as contentType from message_attach m inner join attach a on m.attach_id = a.attach_id inner join message msg on msg.message_id = m.message_id where m.message_attach_id = :id";
 		Map paramMap = new HashMap();
 		paramMap.put("id", idMessageAttachment);
 		return template.queryForObject(sql, paramMap, new BeanPropertyRowMapper<ContentDTO>(ContentDTO.class));
@@ -72,9 +72,10 @@ public class JdbcRepository implements AttachmentRepository {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ContentDTO> getContentList(Long messageId) {
-		String sql = "select m.message_id as idMessage, m.message_attach_id as idMessageAttach, msg.subject as subject, msg.message_platform_id as messageId, msg.process_ack_download as processMsg, msg.msg_ack_download as msgMail, msg.sender_email as senderMail, m.recipient_email as recipientMail, m.was_access_first_time as accessed, a.size as length, a.path as path, a.file_name as fileName, a.mime_type as contentType from message_attach m inner join attach a on m.attach_id = a.attach_id inner join message msg on msg.message_id = m.message_id where msg.message_id = :messageId and enable_to_download = 1";
+	public List<ContentDTO> getContentList(Long messageId, String recipient) {
+		String sql = "select m.message_id as idMessage, m.message_attach_id as idMessageAttach, msg.subject as subject, msg.message_platform_id as messageId, msg.process_ack_download as processMsg, msg.msg_ack_download as msgMail, msg.msg_ack_download_html as msgMailHtml, msg.sender_email as senderMail, m.recipient_email as recipientMail, m.was_access_first_time as accessed, a.size as length, a.path as path, a.file_name as fileName, a.mime_type as contentType from message_attach m inner join attach a on m.attach_id = a.attach_id inner join message msg on msg.message_id = m.message_id where msg.message_id = :messageId and m.recipient_email = :recipient and enable_to_download = 1";
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("messageId", messageId);
+		paramSource.addValue("recipient", recipient);
 		return template.query(sql, paramSource,new BeanPropertyRowMapper<ContentDTO>(ContentDTO.class));
 	}
 }

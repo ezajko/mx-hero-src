@@ -26,6 +26,7 @@ public class ContentDTO implements Serializable {
 	private String senderMail;
 	private String recipientMail;
 	private String msgMail;
+	private String msgMailHtml;
 	private boolean processMsg;
 	private boolean accessed;
 	private String messageId;
@@ -132,6 +133,14 @@ public class ContentDTO implements Serializable {
 
 	public String getMsgMail() {
 		return msgMail;
+	}
+
+	public String getMsgMailHtml() {
+		return msgMailHtml;
+	}
+
+	public void setMsgMailHtml(String msgMailHtml) {
+		this.msgMailHtml = msgMailHtml;
 	}
 
 	public void setProcessMsg(boolean processMsg) {

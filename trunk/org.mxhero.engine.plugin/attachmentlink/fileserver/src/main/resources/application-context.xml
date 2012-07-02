@@ -21,6 +21,7 @@
 		<property name="user" value="${smtp.user}"/>
 		<property name="password" value="${smtp.password}"/>
 		<property name="signature" value="${smtp.signature}"/>
+		<property name="signaturePlain" value="${smtp.signature.plain}"/>
 		<property name="externalUrl" value="${server.external.url}"/>
 	</bean>
 
