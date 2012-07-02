@@ -1,6 +1,8 @@
 package org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.html;
 
 import java.io.StringWriter;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -17,6 +19,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.EscapeTool;
+import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentGenerator;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.LinkManager;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
@@ -30,6 +33,8 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
 	
 	private static Logger log = Logger.getLogger(HtmlAttachmentGenerator.class);
 	
+	@Autowired
+	private PBEStringEncryptor encryptor;
 	@Autowired
 	private LinkManager linkManager;
 	
@@ -69,7 +74,10 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
 	        Set<MessageAttachRecipient> messageAttachRecipientForRecipient = mail.getMessageAttachRecipient();
 	        if(messageAttachRecipientForRecipient.isEmpty())throw new RuntimeException("ERRORRRRRRRRR!!!!!!!!!!!!!!!!!!");
 			context.put("files", messageAttachRecipientForRecipient);
-	        context.put("esc", new EscapeTool());
+			
+			context.put("recipientEmail",URLEncoder.encode(new ArrayList<MessageAttachRecipient>(messageAttachRecipientForRecipient).get(0).getRecipient(),"ASCII"));
+	        context.put("messageId", URLEncoder.encode(encryptor.encrypt(mail.getId().toString()),"ASCII"));
+			context.put("esc", new EscapeTool());
 	        StringWriter writer = new StringWriter();
 	        t.merge( context, writer );
         	part = new MimeBodyPart();
@@ -92,6 +100,14 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
 			String link = linkManager.createLink(msg);
 			msg.getAttach().setTempLink(link);
 		}
+	}
+
+	public PBEStringEncryptor getEncryptor() {
+		return encryptor;
+	}
+
+	public void setEncryptor(PBEStringEncryptor encryptor) {
+		this.encryptor = encryptor;
 	}
 
 }

@@ -49,6 +49,7 @@ public class Message {
 	private boolean msgToBeEvaluateAsAttach;
 	private Boolean processAckDownloadMail;
 	private String messageAckDownloadMail;
+	private String messageAckDownloadMailHtml;
 	private String sender;
 	private String subject;
 
@@ -69,6 +70,7 @@ public class Message {
 		this.locale =  new Locale(parameters.getLocale());
 		this.processAckDownloadMail = parameters.getNotify();
 		this.messageAckDownloadMail = parameters.getNotifyMessage();
+		this.messageAckDownloadMailHtml = parameters.getNotifyMessageHtml();
 		this.result.setParameters(parameters);
 		this.sender = mail.getSender();
 		this.messagePlatformId = mail.getMessageId();
@@ -429,6 +431,14 @@ public class Message {
 
 	public String getMessageAckDownloadMail() {
 		return messageAckDownloadMail;
+	}
+
+	public String getMessageAckDownloadMailHtml() {
+		return messageAckDownloadMailHtml;
+	}
+
+	public void setMessageAckDownloadMailHtml(String messageAckDownloadMailHtml) {
+		this.messageAckDownloadMailHtml = messageAckDownloadMailHtml;
 	}
 
 	public void setSender(String sender) {

@@ -23,6 +23,7 @@ CREATE TABLE message
 	process_ack_download BIT NOT NULL,
 	msg_ack_download text NULL,
 	subject varchar(255) null,
+	msg_ack_download_html text NULL,
 	PRIMARY KEY (message_id)
 )ENGINE=InnoDB;
 

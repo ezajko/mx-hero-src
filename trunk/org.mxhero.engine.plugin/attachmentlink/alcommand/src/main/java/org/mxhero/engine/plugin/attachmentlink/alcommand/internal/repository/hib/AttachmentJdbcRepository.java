@@ -109,12 +109,13 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void updateMessage(Message attach) {
-		String insertMsg = "update message set message_platform_id = :msgId,sender_email = :sender,process_ack_download = :prAck,msg_ack_download = :msgAck,subject = :sub where message_id = :id";
+		String insertMsg = "update message set message_platform_id = :msgId,sender_email = :sender,process_ack_download = :prAck,msg_ack_download = :msgAck,msg_ack_download_html = :msgAckHtml,subject = :sub where message_id = :id";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msgId", attach.getMessagePlatformId());
 		values.put("sender", attach.getSender());
 		values.put("prAck", attach.getProcessAckDownloadMail());
 		values.put("msgAck", attach.getMessageAckDownloadMail());
+		values.put("msgAckHtml", attach.getMessageAckDownloadMailHtml());
 		values.put("sub", attach.getSubject());
 		values.put("id", attach.getId());
 		SqlParameterSource params = new MapSqlParameterSource(values);
@@ -123,12 +124,13 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void saveNewMessage(Message attach) {
-		String insertMsg = "insert into message (message_platform_id,sender_email,process_ack_download,msg_ack_download,subject) values (:msgPlatId,:sendEmail,:pAck,:msgAck,:sub)";
+		String insertMsg = "insert into message (message_platform_id,sender_email,process_ack_download,msg_ack_download,msg_ack_download_html,subject) values (:msgPlatId,:sendEmail,:pAck,:msgAck,:msgAckHtml,:sub)";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msgPlatId", attach.getMessagePlatformId());
 		values.put("sendEmail", attach.getSender());
 		values.put("pAck", attach.getProcessAckDownloadMail());
 		values.put("msgAck", attach.getMessageAckDownloadMail());
+		values.put("msgAckHtml", attach.getMessageAckDownloadMailHtml());
 		values.put("sub", attach.getSubject());
 		SqlParameterSource params = new MapSqlParameterSource(values);
 		KeyHolder key = new GeneratedKeyHolder();

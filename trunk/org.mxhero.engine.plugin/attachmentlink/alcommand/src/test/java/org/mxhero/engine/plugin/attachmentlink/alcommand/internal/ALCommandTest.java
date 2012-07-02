@@ -412,6 +412,7 @@ public class ALCommandTest {
 			parameters.setLocale("es");
 			parameters.setNotify(true);
 			parameters.setNotifyMessage("some message");
+			parameters.setNotifyMessageHtml("some html message");
 			result = command.exec(mail, parameters);
 //			sendMail(mail.getMessage());
 			if (result.isConditionTrue()) {
