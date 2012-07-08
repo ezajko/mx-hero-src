@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
+import javax.mail.BodyPart;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 
+import org.jsoup.Jsoup;
 import org.mxhero.engine.commons.connector.InputService;
 import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
@@ -53,6 +57,7 @@ public class CreateImpl implements Create {
 		String subject = null;
 		String ouputService = null;
 		String text = null;
+		String textHtml = null;
 		CreateParameters createParameters = new CreateParameters(parameters);
 		if (createParameters.getSender()==null
 			|| createParameters.getRecipients()==null
@@ -81,6 +86,7 @@ public class CreateImpl implements Create {
 			ouputService = createParameters.getOutputService();
 			subject = createParameters.getSubject();
 			text = createParameters.getText();
+			textHtml = createParameters.getTextHtml();
 		} catch (Exception e) {
 			log.warn("wrong parameters");
 			result.setAnError(true);
@@ -106,7 +112,28 @@ public class CreateImpl implements Create {
 				newMessage.setReplyTo(new InternetAddress[] { sender });
 				newMessage.addRecipients(RecipientType.TO, recipientsArray);
 				newMessage.setSubject(subject);
-				newMessage.setText(text);
+				if(textHtml==null){
+					newMessage.setText(text);
+				}else{
+					MimeMultipart mixed = new MimeMultipart();
+					MimeMultipart multipartText = new MimeMultipart("alternative");
+
+					BodyPart textBodyPart = new MimeBodyPart();
+					textBodyPart.setText(text);
+					multipartText.addBodyPart(textBodyPart);
+
+					BodyPart htmlBodyPart = new MimeBodyPart();
+					htmlBodyPart.setContent(Jsoup.parse(textHtml).outerHtml(), "text/html");
+					multipartText.addBodyPart(htmlBodyPart);
+					MimeBodyPart wrap = new MimeBodyPart();
+					wrap.setContent(multipartText);
+					mixed.addBodyPart(wrap);
+					newMessage.setContent(mixed);
+				}
+				if(createParameters.getInReplyMessagId()!=null){
+					newMessage.setHeader("References", createParameters.getInReplyMessagId());
+					newMessage.setHeader("In-Reply-To", createParameters.getInReplyMessagId());
+				}
 				newMessage.setSentDate(Calendar.getInstance().getTime());
 				newMessage.saveChanges();
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -115,8 +142,12 @@ public class CreateImpl implements Create {
 						os.toByteArray());
 				newMail = new MimeMail(sender.toString(), recipient.toString(),
 						is, ouputService);
-				newMail.setPhase(Mail.Phase.send);
-
+				if(createParameters.getPhase()!=null){
+					mail.setPhase(createParameters.getPhase());
+				}else{
+					newMail.setPhase(Mail.Phase.send);
+				}
+				
 				if (service == null) {
 					log.warn("core input service is not online");
 					result.setAnError(true);

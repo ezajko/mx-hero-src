@@ -1,5 +1,6 @@
 package org.mxhero.engine.plugin.basecommands.command.create;
 
+import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 
 /**
@@ -12,6 +13,10 @@ public class CreateParameters extends NamedParameters{
 	public static final String RECIPIENTS = "recipients";
 	public static final String SUBJECT = "subject";
 	public static final String TEXT = "text";
+	public static final String TEXT_HTML = "textHtml";
+	public static final String IN_REPLY_MESSAGE_ID = "";
+	public static final String PHASE = "phase";
+	
 	public static final String OUTPUT_SERVICE = "outputService";
 
 	/**
@@ -101,6 +106,34 @@ public class CreateParameters extends NamedParameters{
 	/**
 	 * @return
 	 */
+	public String getTextHtml() {
+		return get(TEXT_HTML);
+	}
+
+	/**
+	 * @param textHtml
+	 */
+	public void setTextHtml(String textHtml) {
+		put(TEXT_HTML,textHtml);
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getInReplyMessagId() {
+		return get(IN_REPLY_MESSAGE_ID);
+	}
+
+	/**
+	 * @param inReplyMessagId
+	 */
+	public void setInReplyMessagId(String inReplyMessagId) {
+		put(IN_REPLY_MESSAGE_ID,inReplyMessagId);
+	}
+
+	/**
+	 * @return
+	 */
 	public String getOutputService() {
 		return get(OUTPUT_SERVICE);
 	}
@@ -111,5 +144,18 @@ public class CreateParameters extends NamedParameters{
 	public void setOutputService(String outputService) {
 		put(OUTPUT_SERVICE,outputService);
 	}
+	
+	/**
+	 * @return
+	 */
+	public Mail.Phase getPhase() {
+		return get(PHASE);
+	}
 
+	/**
+	 * @param outputService
+	 */
+	public void setPhase(Mail.Phase phase) {
+		put(PHASE,phase);
+	}
 }
