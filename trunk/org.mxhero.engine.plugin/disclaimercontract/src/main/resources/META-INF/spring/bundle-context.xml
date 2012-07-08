@@ -60,8 +60,13 @@
 	</osgi:service>
 
 	<bean id="disclaimerOldTemplate" 
-		class="org.mxhero.engine.plugin.disclaimercontract.internal.loader.DisclaimerContractTemplate"
+		class="org.mxhero.engine.plugin.disclaimercontract.internal.loader.OldTemplate"
 		init-method="refreshNotificationMap">
+	</bean>
+	
+		<bean id="disclaimerVoteTemplate" 
+		class="org.mxhero.engine.plugin.disclaimercontract.internal.loader.VoteTemplate"
+		init-method="refreshMap">
 	</bean>
 
 	<bean id="requestContractApprovalImpl"
