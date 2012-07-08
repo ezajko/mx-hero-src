@@ -1,18 +1,16 @@
 package org.mxhero.engine.plugin.disclaimercontract.service;
 
-import java.util.Calendar;
-import java.util.List;
-
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.plugin.disclaimercontract.entity.Contract;
+import org.mxhero.engine.plugin.disclaimercontract.entity.Request;
 
 
 public interface ContractService {
 
-	boolean isApproved(Long ruleId, String recipientId);
+	boolean isApproved(Long ruleId, String recipient);
 	
-	void requestApproval(Long ruleId, String disclaimerPlain, String disclaimerHtml, MimeMail mail);
-
-	List<Contract> findNotificantionPending(Calendar since);
+	Request request(Request request, MimeMail mail);
+	
+	Contract sign(Request request);
 	
 }

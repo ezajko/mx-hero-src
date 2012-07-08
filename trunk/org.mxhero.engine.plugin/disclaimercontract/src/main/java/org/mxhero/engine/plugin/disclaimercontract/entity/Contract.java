@@ -12,7 +12,6 @@ public class Contract {
 	private String disclaimerPlain;
 	private String disclaimerHtml;
 	private String aditionalData;
-	private Calendar vetoDate;
 	
 	public Long getId() {
 		return id;
@@ -78,12 +77,15 @@ public class Contract {
 		this.aditionalData = aditionalData;
 	}
 
-	public Calendar getVetoDate() {
-		return vetoDate;
-	}
-
-	public void setVetoDate(Calendar vetoDate) {
-		this.vetoDate = vetoDate;
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Contract [id=").append(id).append(", recipient=")
+				.append(recipient).append(", senderDomain=")
+				.append(senderDomain).append(", ruleId=").append(ruleId)
+				.append(", approvedDate=").append(approvedDate)
+				.append(", aditionalData=").append(aditionalData).append("]");
+		return builder.toString();
 	}
 
 }
