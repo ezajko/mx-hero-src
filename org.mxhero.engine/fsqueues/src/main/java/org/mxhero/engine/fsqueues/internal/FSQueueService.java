@@ -41,6 +41,7 @@ public class FSQueueService implements MimeMailQueueService {
 	public static final String SENDER_HEADER = "X-mxHero-Sender";
 	public static final String RECIPIENT_HEADER = "X-mxHero-Recipient";
 	public static final String OUTPUT_SERVICE_HEADER = "X-mxHero-Output-Service";
+	public static final String FORCED_PRIORITY_HEADER = "X-mxHero-Forced-Priority";
 	
 	private static Logger log = LoggerFactory.getLogger(FSQueueService.class);
 	
@@ -87,6 +88,7 @@ public class FSQueueService implements MimeMailQueueService {
 				String recipient = null;
 				String sender = null;
 				String outputService = null;
+				String forcedPriority = null;
 				FSMail fsmail = null;
 				MimeMail mail = null;
 				File tmpFile = null;
@@ -97,9 +99,11 @@ public class FSQueueService implements MimeMailQueueService {
 					sender=data.getHeader(SENDER_HEADER)[0];
 					recipient=data.getHeader(RECIPIENT_HEADER)[0];
 					outputService=data.getHeader(OUTPUT_SERVICE_HEADER)[0];
+					forcedPriority=data.getHeader(FORCED_PRIORITY_HEADER)[0];
 					data.removeHeader(SENDER_HEADER);
 					data.removeHeader(RECIPIENT_HEADER);
 					data.removeHeader(OUTPUT_SERVICE_HEADER);
+					data.removeHeader(FORCED_PRIORITY_HEADER);
 					data.saveChanges();
 					
 					//if tmp should be in memory
@@ -118,6 +122,9 @@ public class FSQueueService implements MimeMailQueueService {
 					}
 	
 					mail= new MimeMail(sender, recipient, is, outputService);
+					Long forcedPriorityLong = null;
+					try{forcedPriorityLong=Long.parseLong(forcedPriority);}catch(Exception e){}
+					mail.setForcedPhasePriority(forcedPriorityLong);
 					fsmail = new FSMail(new FSMailKey(mail.getSequence(), mail.getTime()));
 					fsmail.setFile(storeFile.getAbsolutePath());
 					if(tmpFile!=null){
