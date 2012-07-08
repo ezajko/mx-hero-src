@@ -42,6 +42,12 @@ public class CoreRule implements Comparable<CoreRule>{
 	public void process(Mail mail){
 		//rules should have at least one action
 		if(evals!=null && actions!=null && actions.size()>0){
+			if(mail.getForcedPhasePriority()!=null && this.priority>=mail.getForcedPhasePriority()){
+				if(log.isTraceEnabled()){
+					log.trace("skipped by priority");
+				}
+				return;
+			}
 			for(Evaluable eval : evals){
 				//if any evaluation is false, just return false and do not make any action
 				if(eval.eval(mail)==false){
@@ -136,6 +142,14 @@ public class CoreRule implements Comparable<CoreRule>{
 	 */
 	public Integer getId(){
 		return id;
+	}
+
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
 	}
 
 	@Override
