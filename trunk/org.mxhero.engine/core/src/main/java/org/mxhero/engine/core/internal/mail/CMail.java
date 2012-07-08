@@ -279,4 +279,9 @@ public class CMail implements Mail{
 		} catch (MessagingException e) {log.warn(e.getMessage());}
 		return Calendar.getInstance().getTime();
 	}
+
+	@Override
+	public Long getForcedPhasePriority() {
+		return mimeMail.getForcedPhasePriority();
+	}
 }
