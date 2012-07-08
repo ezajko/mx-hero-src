@@ -95,6 +95,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mxhero.engine</groupId>
+			<artifactId>fsqueues</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.osgi</groupId>
 			<artifactId>osgi_R4_compendium</artifactId>
 			<optional>true</optional>
@@ -104,7 +109,7 @@
 		<dependency>
 			<groupId>org.mxhero.engine</groupId>
 			<artifactId>commons</artifactId>
-			<version>1.6.0</version>
+			<version>1.7.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

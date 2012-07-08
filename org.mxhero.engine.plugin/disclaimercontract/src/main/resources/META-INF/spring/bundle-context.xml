@@ -19,7 +19,7 @@
 	<tx:annotation-driven transaction-manager="txManager" />
 
 	<osgix:cm-properties id="cmProps"
-		persistent-id="org.mxhero.engine.plugin.threadlight">
+		persistent-id="org.mxhero.engine.plugin.disclaimercontract">
 		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
 		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/contracts</prop>
 		<prop key="jdbcUserName">mxhero</prop>
@@ -31,50 +31,54 @@
 		<prop key="partitionCount">2</prop>
 		<prop key="acquireIncrement">2</prop>
 		<prop key="releaseHelperThreads">2</prop>
+		<prop key="directory">/tmp</prop>
+		<prop key="loadDirectory">/tmp</prop>
 	</osgix:cm-properties>
 	
 	<context:property-placeholder
 		properties-ref="cmProps" />
 
-	<osgi:service ref="jdbcthreadRowService">
+	<osgi:service ref="cachedContractService">
 		<osgi:interfaces>
-			<value>org.mxhero.engine.plugin.threadlight.service.ThreadRowService</value>
+			<value>org.mxhero.engine.plugin.disclaimercontract.service.ContractService</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
-				value="org.mxhero.engine.plugin.threadlight.internal.service.cachedThreadRowService" />
+				value="org.mxhero.engine.plugin.disclaimercontract.internal.service.CachedContractService" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<osgi:service ref="addThreadWatchCommand">
+	<osgi:service ref="requestContractApprovalImpl">
 		<osgi:interfaces>
 			<value>org.mxhero.engine.commons.mail.command.Command</value>
-			<value>org.mxhero.engine.plugin.threadlight.command.AddThreadWatch</value>
+			<value>org.mxhero.engine.plugin.disclaimercontract.command.RequestContractApproval</value>
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
-				value="org.mxhero.engine.plugin.threadlight.internal.command.AddThreadWatchImpl" />
+				value="org.mxhero.engine.plugin.disclaimercontract.internal.command.RequestContractApprovalImpl" />
 		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="addThreadWatchCommand"
-		class="org.mxhero.engine.plugin.threadlight.internal.command.AddThreadWatchImpl">
-		<property name="threadRowService" ref="cachedThreadRowService" />
+	<bean id="disclaimerOldTemplate" 
+		class="org.mxhero.engine.plugin.disclaimercontract.internal.loader.DisclaimerContractTemplate"
+		init-method="refreshNotificationMap">
 	</bean>
 
-	<bean id="cachedThreadRowService"
-		class="org.mxhero.engine.plugin.threadlight.internal.service.DefaultThreadRowService">
-		<property name="repository" ref="cachedRepository" />
-		<property name="config" ref="config"/>
-		<property name="finder" ref="jdbcFinder"/>
+	<bean id="requestContractApprovalImpl"
+		class="org.mxhero.engine.plugin.disclaimercontract.internal.command.RequestContractApprovalImpl">
+		<property name="service" ref="cachedContractService"/>
 	</bean>
 
-	<bean id="cachedRepository"
-		class="org.mxhero.engine.plugin.threadlight.internal.repository.cached.CachedJdbcThreadRowRepository"
-		init-method="start" destroy-method="stop">
-		<property name="repository" ref="jdbcRepository"/>
-		<property name="finder" ref="jdbcFinder"/>
-		<property name="config" ref="config"/>
+	<bean id="cachedContractService"
+		class="org.mxhero.engine.plugin.disclaimercontract.internal.service.CachedContractService">
+		<property name="directory" value="${directory}"/>
+	</bean>
+
+	<bean id="approvedLoader" 
+		class="org.mxhero.engine.plugin.disclaimercontract.internal.loader.ApprovedLoader"
+		init-method="start"
+		destroy-method="stop">
+		<property name="loadDirectory" value="${loadDirectory}"/>
 	</bean>
 
 	<bean id="txManager"
@@ -90,13 +94,13 @@
 		<property name="jdbcUrl" value="${jdbcUrl}" />
 		<property name="username" value="${jdbcUserName}" />
 		<property name="password" value="${jdbcPassord}" />
-		<property name="idleConnectionTestPeriodInMinutes" value="1" />
-		<property name="idleMaxAgeInMinutes" value="4" />
-		<property name="maxConnectionsPerPartition" value="10" />
-		<property name="minConnectionsPerPartition" value="5" />
-		<property name="partitionCount" value="2" />
-		<property name="acquireIncrement" value="2" />
-		<property name="releaseHelperThreads" value="2" />
+		<property name="idleConnectionTestPeriodInMinutes" value="${idleConnectionTestPeriodInMinutes}" />
+		<property name="idleMaxAgeInMinutes" value="${idleMaxAgeInMinutes}" />
+		<property name="maxConnectionsPerPartition" value="${maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${partitionCount}" />
+		<property name="acquireIncrement" value="${acquireIncrement}" />
+		<property name="releaseHelperThreads" value="${releaseHelperThreads}" />
 	</bean>
 
 </beans>
