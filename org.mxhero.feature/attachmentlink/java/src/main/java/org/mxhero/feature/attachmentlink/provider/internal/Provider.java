@@ -23,6 +23,7 @@ public class Provider extends RulesByFeature{
 	private static final String ACTION_SELECTION = "action.selection";
 	private static final String ACTION_RETURN = "return";
 	private static final String RETURN_MESSAGE = "return.message";	
+	private static final String RETURN_MESSAGE_PLAIN = "return.message.plain";
 	private static final String MAX_SIZE_PROPERTY = "max.size";
 	private static final String LOCALE = "locale";
 	private static final String DEFAULT_LOCALE = "en_US";
@@ -36,6 +37,7 @@ public class Provider extends RulesByFeature{
 		Integer effectiveMaxSize = null;
 		boolean notify = false;
 		String message = "";
+		String messagePlain = "";
 		String locale = DEFAULT_LOCALE;
 		
 		for(RuleProperty property : rule.getProperties()){
@@ -45,7 +47,9 @@ public class Provider extends RulesByFeature{
 				}
 			} else if(property.getKey().equalsIgnoreCase(RETURN_MESSAGE)){
 				message = property.getValue();
-			} else if(property.getKey().equalsIgnoreCase(LOCALE)){
+			}else if(property.getKey().equalsIgnoreCase(RETURN_MESSAGE_PLAIN)){
+				messagePlain = property.getValue();
+			}else if(property.getKey().equalsIgnoreCase(LOCALE)){
 				locale = property.getValue();
 			} else if(property.getKey().equals(MAX_SIZE_PROPERTY)){
 				try {
@@ -58,7 +62,7 @@ public class Provider extends RulesByFeature{
 		}
 		
 		coreRule.addEvaluation(new ALEvaluation(effectiveMaxSize));
-		coreRule.addAction(new ALAction(rule.getId(), notify, message, locale));
+		coreRule.addAction(new ALAction(rule.getId(), notify, message, messagePlain, locale));
 		
 		return coreRule;
 	}
@@ -87,21 +91,23 @@ public class Provider extends RulesByFeature{
 		private Integer ruleId;
 		private boolean notify = false;
 		private String  message = null;
+		private String  messagePlain = null;
 		private String locale = null;
 		
 		
-		public ALAction(Integer ruleId, boolean notify, String message, String locale) {
+		public ALAction(Integer ruleId, boolean notify, String message, String messagePlain, String locale) {
 			super();
 			this.notify = notify;
 			this.message = message;
 			this.locale = locale;
 			this.ruleId = ruleId;
+			this.messagePlain = messagePlain;
 		}
 
 		@Override
 		public void exec(Mail mail) {
 			String files = Arrays.deepToString(mail.getAttachments().getFileNames().toArray());
-			Result result = mail.cmd(AlCommand.class.getName(), new ALCommandParameters(locale, notify, message));
+			Result result = mail.cmd(AlCommand.class.getName(), new ALCommandParameters(locale, notify, messagePlain, message));
 			if(!mail.getStatus().equals(Mail.Status.requeue)){
 				mail.getHeaders().addHeader("X-mxHero-Attachmentlink","rule="+ruleId+";result="+result.isConditionTrue());
 				mail.getProperties().put("org.mxhero.feature.attachmentlink", ruleId.toString());
