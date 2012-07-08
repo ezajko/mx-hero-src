@@ -12,14 +12,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DisclaimerContractTemplate {
+public class OldTemplate {
 	
-	private static Logger log = LoggerFactory.getLogger(DisclaimerContractTemplate.class);
+	private static Logger log = LoggerFactory.getLogger(OldTemplate.class);
 	
 	private String defaultLocale = "en_US";
 	private String[] availableLocales = {};
-	private String notificationFileStartName = "/opt/mxhero/disclaimer/old/template_";
-	private String notificationFileEndName = ".htm";
+	private String fileStartName = "/opt/mxhero/disclaimer/old/template_";
+	private String fileEndName = ".htm";
 	private Map<String, String> errorMap;
 
 	public void init(){
@@ -31,7 +31,7 @@ public class DisclaimerContractTemplate {
 		errorMap = new HashMap<String, String>();
 		errorMap.put(defaultLocale,  getDefault("old/template_en_US.htm"));
 		for(String locale : availableLocales){
-			String file = notificationFileStartName+locale+notificationFileEndName;
+			String file = fileStartName+locale+fileEndName;
 			try {
 				errorMap.put(locale,  readFileAsString(file));
 			} catch (IOException e) {
@@ -56,20 +56,20 @@ public class DisclaimerContractTemplate {
 		this.availableLocales = availableLocales.split(";");
 	}
 
-	public String getNotificationFileStartName() {
-		return notificationFileStartName;
+	public String getFileStartName() {
+		return fileStartName;
 	}
 
-	public void setNotificationFileStartName(String notificationFileStartName) {
-		this.notificationFileStartName = notificationFileStartName;
+	public void setFileStartName(String notificationFileStartName) {
+		this.fileStartName = notificationFileStartName;
 	}
 
-	public String getNotificationFileEndName() {
-		return notificationFileEndName;
+	public String getFileEndName() {
+		return fileEndName;
 	}
 
-	public void setNotificationFileEndName(String notificationFileEndName) {
-		this.notificationFileEndName = notificationFileEndName;
+	public void setFileEndName(String notificationFileEndName) {
+		this.fileEndName = notificationFileEndName;
 	}
 
 	public String getTemplate(String locale){
@@ -94,7 +94,7 @@ public class DisclaimerContractTemplate {
 	}
 	
 	private static String getDefault(String resource){
-		InputStream in = DisclaimerContractTemplate.class.getClassLoader().getResourceAsStream(resource);
+		InputStream in = OldTemplate.class.getClassLoader().getResourceAsStream(resource);
 		StringBuffer out = new StringBuffer();
 		try {
 	    byte[] b = new byte[4096];

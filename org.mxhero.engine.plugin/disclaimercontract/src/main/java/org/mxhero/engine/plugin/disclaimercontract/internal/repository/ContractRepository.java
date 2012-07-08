@@ -13,6 +13,8 @@ public interface ContractRepository {
 	
 	Request addRequest(Request request);
 	
+	public List<Request> vetoRequests();
+	
 	List<Request> pending();
 	
 	List<Request> oldNotAccepted(Integer hours);

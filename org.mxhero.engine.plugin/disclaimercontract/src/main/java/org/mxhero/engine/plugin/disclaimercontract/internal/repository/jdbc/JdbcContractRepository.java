@@ -77,7 +77,10 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public List<Request> pending() {
-		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+"` WHERE `"+RequestMapper.PENDING+"` is TRUE ";
+		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+"` " +
+				" WHERE `"+RequestMapper.PENDING+"` is TRUE " +
+				" AND `"+RequestMapper.APPROVED_DATE+"` IS NOT NULL " +
+				" AND `"+RequestMapper.VETO_DATE+"` IS NULL";
 		List<Request> results = template.getJdbcOperations().query(sql, new RequestMapper());
 		return results;
 	}
@@ -128,11 +131,21 @@ public class JdbcContractRepository implements ContractRepository{
 	public List<Request> oldNotAccepted(Integer hours) {
 		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+
 				"` WHERE `"+RequestMapper.APPROVED_DATE+"` is NULL "+
+				" AND `"+RequestMapper.VETO_DATE+"` is NULL "+
 				" AND DATE_ADD(`"+RequestMapper.REQUEST_DATE+ "`, INTERVAL :hours HOUR) < NOW() ";
 		List<Request> results = template.query(sql, new MapSqlParameterSource("hours",hours), new RequestMapper());
 		return results;
 	}
 
+	@Override
+	public List<Request> vetoRequests() {
+		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+
+				"` WHERE `"+RequestMapper.VETO_DATE+"` is NOT NULL "+
+				" AND `"+RequestMapper.PENDING+"` IS TRUE";
+		List<Request> results = template.getJdbcOperations().query(sql, new RequestMapper());
+		return results;
+	}
+	
 	@Override
 	public void remove(Long requestId) {
 		template.update("DELETE FROM `"+RequestMapper.TABLE_NAME+"` WHERE `"+RequestMapper.ID+"` = :id ", new MapSqlParameterSource("id", requestId));

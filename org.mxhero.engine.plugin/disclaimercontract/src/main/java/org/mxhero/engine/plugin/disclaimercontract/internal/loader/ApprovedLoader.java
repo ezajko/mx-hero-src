@@ -40,7 +40,9 @@ public class ApprovedLoader implements Runnable{
 	@Autowired(required=true)
 	private ContractService service;
 	@Autowired(required=true)
-	private DisclaimerContractTemplate template;
+	private OldTemplate oldTemplate;
+	@Autowired(required=true)
+	private VoteTemplate voteTemplate;
 	
 	public void start(){
 		thread=new Thread(this);
@@ -84,11 +86,66 @@ public class ApprovedLoader implements Runnable{
 						log.error("error removing request "+request.getId(),e);
 					}
 				}
+				List<Request> vetoRequests = repository.vetoRequests();
+				log.debug("found to veto "+vetoRequests.size()+" request");
+				for(Request request : vetoRequests){
+					try{
+						remove(request);
+					}catch (Exception e){
+						log.error("error removing request "+request.getId(),e);
+					}
+				}
 				lastUpdate=System.currentTimeMillis();
 			}
 		}
 	}
-
+	@Transactional(readOnly=false)
+	private void remove(Request request){
+		File loadDirectoryFile = null;
+		File fromFile = null;
+		FileOutputStream noticeMailFile = null;
+		FileInputStream is = null;
+		try{
+			loadDirectoryFile = new File(loadDirectory,Mail.Phase.out.name());
+			fromFile = new File(request.getPath());
+			is = new FileInputStream(request.getPath());
+			MimeMessage message = new MimeMessage(Session.getDefaultInstance(new Properties()),is);
+			String from = message.getHeader(FSQueueService.SENDER_HEADER)[0];
+			String recipient = message.getHeader(FSQueueService.RECIPIENT_HEADER)[0];
+			String subject = message.getSubject();
+			String sentDate = message.getHeader("Date")[0];
+			String outputService = message.getHeader(FSQueueService.OUTPUT_SERVICE_HEADER)[0];
+			MimeMessage replyMessage = (MimeMessage)message.reply(false);
+			if(from.contains("@")){
+				String systemSender = "noreply@"+from.split("@")[1].trim();
+				replyMessage.setSender(new InternetAddress(systemSender,false));
+				replyMessage.setReplyTo(new Address[]{new InternetAddress(systemSender,false)});
+			}
+			String content = replaceTextVars(subject, recipient, voteTemplate.getTemplate(voteTemplate.getDefaultLocale()), sentDate);
+			replyMessage.setContent(content,"text/html");
+			replyMessage.setHeader(FSQueueService.SENDER_HEADER, from);
+			replyMessage.setHeader(FSQueueService.RECIPIENT_HEADER, from);
+			replyMessage.setHeader(FSQueueService.OUTPUT_SERVICE_HEADER, outputService);
+			replyMessage.saveChanges();
+			noticeMailFile = new FileOutputStream(new File(loadDirectoryFile,fromFile.getName()));
+			replyMessage.writeTo(noticeMailFile);
+			noticeMailFile.flush();
+		}catch (Exception e){
+			log.warn("error while trying to send message",e);
+		}finally{
+			if(is!=null){
+				try{is.close();}catch(Exception e){}
+			}
+			if(noticeMailFile!=null){
+				try{noticeMailFile.close();}catch(Exception e){}
+			}
+			if(fromFile!=null){
+				try{fromFile.delete();}catch(Exception e){}
+			}
+		}
+		repository.markDone(request.getId());
+	}
+	
 	@Transactional(readOnly=false)
 	private void loadFile(Request request){
 		File loadDirectoryFile = null;
@@ -142,7 +199,7 @@ public class ApprovedLoader implements Runnable{
 				replyMessage.setSender(new InternetAddress(systemSender,false));
 				replyMessage.setReplyTo(new Address[]{new InternetAddress(systemSender,false)});
 			}
-			String content = replaceTextVars(subject, recipient, template.getTemplate(template.getDefaultLocale()), sentDate);
+			String content = replaceTextVars(subject, recipient, oldTemplate.getTemplate(oldTemplate.getDefaultLocale()), sentDate);
 			replyMessage.setContent(content,"text/html");
 			replyMessage.setHeader(FSQueueService.SENDER_HEADER, from);
 			replyMessage.setHeader(FSQueueService.RECIPIENT_HEADER, from);
@@ -216,12 +273,20 @@ public class ApprovedLoader implements Runnable{
 		this.service = service;
 	}
 
-	public DisclaimerContractTemplate getTemplate() {
-		return template;
+	public OldTemplate getOldTemplate() {
+		return oldTemplate;
 	}
 
-	public void setTemplate(DisclaimerContractTemplate template) {
-		this.template = template;
+	public void setOldTemplate(OldTemplate oldTemplate) {
+		this.oldTemplate = oldTemplate;
 	}
-	
+
+	public VoteTemplate getVoteTemplate() {
+		return voteTemplate;
+	}
+
+	public void setVoteTemplate(VoteTemplate voteTemplate) {
+		this.voteTemplate = voteTemplate;
+	}
+
 }
