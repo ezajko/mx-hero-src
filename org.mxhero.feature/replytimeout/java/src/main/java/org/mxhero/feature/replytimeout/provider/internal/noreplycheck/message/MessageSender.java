@@ -56,7 +56,7 @@ public class MessageSender {
 							senderMail, false) });
 			replayMessage.setRecipient(RecipientType.TO, new InternetAddress(
 					row.getPk().getSenderMail(), false));
-			replayMessage.setSubject("[TIMEOUT] "+row.getSubject().replaceFirst(Provider.REGEX_REMOVE, ""));
+			replayMessage.setSubject(row.getSubject().replaceFirst(Provider.REGEX_REMOVE, ""));
 			replayMessage.setHeader("In-Reply-To", row.getPk().getMessageId());
 			replayMessage.setHeader("References", row.getPk().getMessageId());
 
