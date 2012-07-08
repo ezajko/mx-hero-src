@@ -16,26 +16,6 @@
 
 	<context:annotation-config />
 
-	<tx:annotation-driven transaction-manager="txManager" />
-
-	<osgix:cm-properties id="cmProps"
-		persistent-id="org.mxhero.engine.plugin.contract">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/contract</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
-		<prop key="idleConnectionTestPeriodInMinutes">1</prop>
-		<prop key="idleMaxAgeInMinutes">4</prop>
-		<prop key="maxConnectionsPerPartition">8</prop>
-		<prop key="minConnectionsPerPartition">4</prop>
-		<prop key="partitionCount">2</prop>
-		<prop key="acquireIncrement">2</prop>
-		<prop key="releaseHelperThreads">2</prop>
-	</osgix:cm-properties>
-
-	<context:property-placeholder
-		properties-ref="cmProps" />
-
 	<osgi:reference id="rulesFinderService" interface="org.mxhero.engine.commons.feature.RulesFinder"/>
 
 	<osgi:service ref="provider">
@@ -47,32 +27,17 @@
    		</osgi:service-properties>
 	</osgi:service>
 
+	<bean id="config" class="org.mxhero.feature.disclaimercontract.provider.internal.DisclaimerContractConfig"
+		init-method="init">
+		<osgix:managed-properties persistent-id="org.mxhero.feature.disclaimercontract.provider"
+			autowire-on-update="true" />
+	</bean>
+
 	<bean id="provider" class="org.mxhero.feature.disclaimercontract.provider.internal.Provider">
 		<property name="rulesFinder" ref="rulesFinderService"/>
 		<property name="component" value="org.mxhero.feature.disclaimercontract"/>
 		<property name="version" value="1"/>
-	</bean>
-
-	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-	<!-- BoneCP configuration -->
-	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
-		destroy-method="close">
-		<property name="poolName" value="org.mxhero.engine.plugin.threadlight.boneCP" />
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="jdbcUrl" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
-		<property name="idleConnectionTestPeriodInMinutes" value="1" />
-		<property name="idleMaxAgeInMinutes" value="4" />
-		<property name="maxConnectionsPerPartition" value="10" />
-		<property name="minConnectionsPerPartition" value="5" />
-		<property name="partitionCount" value="2" />
-		<property name="acquireIncrement" value="2" />
-		<property name="releaseHelperThreads" value="2" />
+		<property name="config" ref="config"/>
 	</bean>
 
 </beans>
