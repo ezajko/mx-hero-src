@@ -63,6 +63,8 @@ public final class MimeMail {
 	private String statusReason;
 	
 	private Mail bussinesObject;
+	
+	private Long forcedPhasePriority;
 
 	public static MimeMail createCustom(String from, String recipient, InputStream data,
 			String responseServiceId,Long sequence, Timestamp time) throws MessagingException{
@@ -184,6 +186,7 @@ public final class MimeMail {
 	 */
 	public void setPhase(Mail.Phase phase) {
 		this.phase = phase;
+		this.forcedPhasePriority = null;
 	}
 
 	/**
@@ -323,6 +326,14 @@ public final class MimeMail {
 
 	public void setFlow(Mail.Flow flow) {
 		this.flow = flow;
+	}
+
+	public Long getForcedPhasePriority() {
+		return forcedPhasePriority;
+	}
+
+	public void setForcedPhasePriority(Long forcedPhasePriority) {
+		this.forcedPhasePriority = forcedPhasePriority;
 	}
 
 	public String getMessageId() {

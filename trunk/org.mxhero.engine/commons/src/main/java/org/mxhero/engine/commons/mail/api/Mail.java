@@ -153,4 +153,6 @@ public interface Mail {
 	 */
 	public Attachments getAttachments();
 	
+	public Long getForcedPhasePriority();
+	
 }
