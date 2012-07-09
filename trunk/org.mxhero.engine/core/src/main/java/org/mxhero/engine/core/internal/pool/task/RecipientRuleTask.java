@@ -83,13 +83,15 @@ public final class RecipientRuleTask implements Runnable {
 			}
 			
 			if (mail.getStatus().equals(Mail.Status.requeue)){
-				mail.setStatus(Mail.Status.deliver);
+				mail.setStatus(Mail.Status.requeue);
 				queueService.delayAndPut(Mail.Phase.receive, mail, getProperties().getQueueDelayTime());
 				log.info("REQUEUED email "+mail);
 			} else if (mail.getStatus().equals(Mail.Status.drop) || mail.getStatus().equals(Mail.Status.redirect)) {
+				mail.setForcedPhasePriority(null);
 				queueService.put(Mail.Phase.out, mail);
 			} else {
 				mail.setStatus(Mail.Status.deliver);
+				mail.setForcedPhasePriority(null);
 				queueService.put(Mail.Phase.out, mail);
 			}
 		} catch (Exception e) {

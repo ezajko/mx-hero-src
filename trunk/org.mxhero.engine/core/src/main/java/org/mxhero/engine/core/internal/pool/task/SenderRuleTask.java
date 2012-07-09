@@ -92,11 +92,13 @@ public final class SenderRuleTask implements Runnable {
 				queueService.delayAndPut(Mail.Phase.send, mail, getProperties().getQueueDelayTime());
 				log.info("REQUEUED "+mail);
 			} else if (mail.getStatus().equals(Mail.Status.drop) || mail.getStatus().equals(Mail.Status.redirect)) {
+				mail.setForcedPhasePriority(null);
 				queueService.put(Mail.Phase.out, mail);
 			} else  {
 				mail.setStatus(Mail.Status.deliver);
 				mail.getMessage().saveChanges();
 				mail.setPhase(Mail.Phase.receive);
+				mail.setForcedPhasePriority(null);
 				queueService.put(Mail.Phase.receive, mail);
 			}
 		} catch (Exception e) {
