@@ -186,7 +186,6 @@ public final class MimeMail {
 	 */
 	public void setPhase(Mail.Phase phase) {
 		this.phase = phase;
-		this.forcedPhasePriority = null;
 	}
 
 	/**

@@ -42,11 +42,11 @@ public class CoreRule implements Comparable<CoreRule>{
 	public void process(Mail mail){
 		//rules should have at least one action
 		if(evals!=null && actions!=null && actions.size()>0){
-			if(mail.getForcedPhasePriority()!=null && this.priority>=mail.getForcedPhasePriority()){
-				if(log.isTraceEnabled()){
-					log.trace("skipped by priority");
-				}
+			if(mail.getForcedPhasePriority()!=null && this.priority<mail.getForcedPhasePriority()){
+				log.trace("skipped ruleId="+this.getId()+" priority="+priority+" forcedPhasePriority="+mail.getForcedPhasePriority());
 				return;
+			}else{
+				log.trace("NOT skipped ruleId="+this.getId()+" priority="+priority+" forcedPhasePriority="+mail.getForcedPhasePriority());
 			}
 			for(Evaluable eval : evals){
 				//if any evaluation is false, just return false and do not make any action
