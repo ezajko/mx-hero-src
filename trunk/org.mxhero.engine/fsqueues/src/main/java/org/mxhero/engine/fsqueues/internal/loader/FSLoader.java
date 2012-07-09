@@ -91,8 +91,9 @@ public class FSLoader {
 						recipient=data.getHeader(FSQueueService.RECIPIENT_HEADER)[0];
 						outputService=data.getHeader(FSQueueService.OUTPUT_SERVICE_HEADER)[0];
 						if(data.getHeader(FSQueueService.FORCED_PRIORITY_HEADER)!=null){
-							forcedPriority=data.getHeader(FSQueueService.FORCED_PRIORITY_HEADER)[0];
+							forcedPriority=data.getHeader(FSQueueService.FORCED_PRIORITY_HEADER)[0];	
 						}
+						log.trace("priority="+forcedPriority);
 						data.removeHeader(FSQueueService.SENDER_HEADER);
 						data.removeHeader(FSQueueService.RECIPIENT_HEADER);
 						data.removeHeader(FSQueueService.OUTPUT_SERVICE_HEADER);
@@ -101,9 +102,8 @@ public class FSLoader {
 						is = new SharedTmpFileInputStream(tmpFile);
 						mail= new MimeMail(sender, recipient, is, outputService);
 						mail.setPhase(phase);
-						Long forcedPriorityLong = null;
-						try{forcedPriorityLong=Long.parseLong(forcedPriority);}catch(Exception e){}
-						mail.setForcedPhasePriority(forcedPriorityLong);
+						try{mail.setForcedPhasePriority(Long.parseLong(forcedPriority));}catch(Exception e){}
+						log.trace("forcedPriority="+mail.getForcedPhasePriority());
 						queueService.store(phase, mail, 1000, TimeUnit.MILLISECONDS);
 						is.close();
 						mailFile.delete();
