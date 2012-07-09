@@ -143,7 +143,7 @@ public class CreateImpl implements Create {
 				newMail = new MimeMail(sender.toString(), recipient.toString(),
 						is, ouputService);
 				if(createParameters.getPhase()!=null){
-					mail.setPhase(createParameters.getPhase());
+					newMail.setPhase(createParameters.getPhase());
 				}else{
 					newMail.setPhase(Mail.Phase.send);
 				}
