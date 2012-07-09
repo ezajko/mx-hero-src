@@ -191,14 +191,15 @@ public class FSQueueService implements MimeMailQueueService {
 					tfos.flush();
 					fsmail.setTmpFile(tmpFile.getAbsolutePath());
 					is = new SharedTmpFileInputStream(tmpFile);
-					newMail = MimeMail.createCustom(mail.getSender()
-							, mail.getRecipient(), 
+					newMail = MimeMail.createCustom(mail.getSender(), 
+							mail.getRecipient(), 
 							is, 
 							mail.getResponseServiceId(), 
 							mail.getSequence(), 
 							mail.getTime());
 					newMail.setProperties(mail.getProperties());
 					newMail.setPhase(mail.getPhase());
+					newMail.setForcedPhasePriority(mail.getForcedPhasePriority());
 					mail=newMail;
 				}else{
 					ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -213,6 +214,7 @@ public class FSQueueService implements MimeMailQueueService {
 							mail.getTime());
 					newMail.setProperties(mail.getProperties());
 					newMail.setPhase(mail.getPhase());
+					newMail.setForcedPhasePriority(mail.getForcedPhasePriority());
 					mail=newMail;
 				}
 				synchronized (queues) {
