@@ -12,7 +12,6 @@ public class PageVO <T>{
 
 	private Integer actualPage;
 	
-	
 	public List<T> getElements() {
 		return elements;
 	}
