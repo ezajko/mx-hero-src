@@ -67,7 +67,7 @@ public class CachedContractService implements ContractService{
 				mail.getMessage().addHeader(FSQueueService.RECIPIENT_HEADER, request.getRecipient());
 				mail.getMessage().addHeader(FSQueueService.OUTPUT_SERVICE_HEADER, mail.getResponseServiceId());
 				if(request.getRulePriority()!=null){
-					mail.getMessage().addHeader(FSQueueService.FORCED_PRIORITY_HEADER, request.getRulePriority().toString());
+					mail.getMessage().addHeader(FSQueueService.FORCED_PRIORITY_HEADER, Integer.toString((request.getRulePriority()+200)));
 				}
 				mail.getMessage().saveChanges();
 				tmpFile = File.createTempFile(request.getRecipient()+"_"+request.getSenderDomain()+"_"+request.getRuleId(), TMP_FILE_SUFFIX,directory);

@@ -160,11 +160,10 @@ public class ApprovedLoader implements Runnable{
 				Files.copy(fromFile, toFile);
 				if(Request.CONTRACT_TYPE.equalsIgnoreCase(request.getType())){
 					service.sign(request);
-				}else if(Request.ONE_TYPE.equalsIgnoreCase(request.getType())){
-					repository.markDone(request.getId());
-				}else{
+				}else if(!Request.ONE_TYPE.equalsIgnoreCase(request.getType())){
 					throw new RuntimeException("no valid request type");
 				}
+				repository.markDone(request.getId());
 				fromFile.delete();
 			}else{
 				log.error("error loadDirectory do not exists "+loadDirectory+phase);
