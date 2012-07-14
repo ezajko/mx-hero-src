@@ -215,6 +215,28 @@ mx|LinkButton.titleexpanded_back
 	text-decoration:underline;
 }
 
+s|Label.license
+{
+	fontWeight:"bold";
+	fontSize:18;
+	color:#70B2EE;
+	textDecoration:underline;
+}
+
+
+mx|LinkButton.license
+{
+	fontWeight:"bold";
+	fontSize:14;
+	color:#FFFFFF;
+	padding-right:0;
+	padding-left:0;
+	text-selected-color:#FFFFFF;
+	text-roll-over-color:#FFFFFF;
+	text-decoration:underline;
+}
+
+
 s|Label.titleexpanded_title
 {
 	font-size:20;

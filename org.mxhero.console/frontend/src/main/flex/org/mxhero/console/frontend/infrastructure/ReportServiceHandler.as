@@ -1,5 +1,7 @@
 package org.mxhero.console.frontend.infrastructure
 {
+	import mx.messaging.ChannelSet;
+	
 	import org.mxhero.console.commons.feature.IReport;
 	import org.mxhero.console.commons.feature.IReportService;
 	import org.mxhero.console.frontend.application.event.ProcessQueryEvent;
@@ -31,5 +33,9 @@ package org.mxhero.console.frontend.infrastructure
 			event.report.setResult(event.queryId,result);
 		}
 		
+		public function get applicationChannelSet():ChannelSet{
+			return context.defaultChannelApplication;
+		}
+
 	}
 }

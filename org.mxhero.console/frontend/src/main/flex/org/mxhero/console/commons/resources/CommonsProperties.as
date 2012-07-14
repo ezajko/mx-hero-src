@@ -23,6 +23,24 @@ package org.mxhero.console.commons.resources
 		public static const DRAG_HERE:String="drag.here";
 		
 		public static const COPYRIGHT:String="copyright.text";
+		
+		public static const OPENSOURCE_LICENSE:String="opensource.license";
+			
+		public static const OPENSOURCE_LICENSE_URL:String="opensource.license.url";
+		
+		public static const COMMERCIAL_LICENSE:String="commercial.license";
+		
+		public static const VALIDATED_LICENSE:String="validated.license";
+
+		public static const VALIDATED_LICENSE_YES:String="validated.license.yes";
+		
+		public static const VALIDATED_LICENSE_NO:String="validated.license.no";
+		
+		public static const EXPIRED_LICENSE_NO:String="expired.license";
+		
+		public static const VALIDATED_NAME:String="validated.name";
+		
+		public static const VALIDATED_VALUE:String="validated.value";
 
 	}
 }

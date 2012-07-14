@@ -14,6 +14,8 @@ package org.mxhero.console.frontend.domain
 		public var logoPath:String;
 		public var newsFeedEnabled:String;
 		public var defaultLanguage:String;
+		public var documentationUrl:String;
+		public var license:String;
 
 		public function clone():Configuration{
 			var clonedConfiguration:Configuration=new Configuration();
@@ -27,7 +29,9 @@ package org.mxhero.console.frontend.domain
 			clonedConfiguration.adminMail=this.adminMail;
 			clonedConfiguration.logoPath=this.logoPath;
 			clonedConfiguration.newsFeedEnabled=this.newsFeedEnabled;
-				
+			clonedConfiguration.documentationUrl=this.documentationUrl;
+			clonedConfiguration.license=this.license;
+			
 			return clonedConfiguration;
 		}
 	

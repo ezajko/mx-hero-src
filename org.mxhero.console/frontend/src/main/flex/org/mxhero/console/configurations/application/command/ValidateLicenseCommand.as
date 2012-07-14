@@ -2,15 +2,13 @@ package org.mxhero.console.configurations.application.command
 {
 	import mx.rpc.AsyncToken;
 	import mx.rpc.Fault;
-	import mx.rpc.events.ResultEvent;
 	import mx.rpc.remoting.RemoteObject;
 	
-	import org.mxhero.console.configurations.application.event.LoadConfigurationEvent;
+	import org.mxhero.console.configurations.application.event.ValidateLicenseEvent;
 	import org.mxhero.console.frontend.application.message.ApplicationErrorMessage;
 	import org.mxhero.console.frontend.domain.ApplicationContext;
-	import org.mxhero.console.frontend.domain.Configuration;
 
-	public class LoadConfigurationCommand
+	public class ValidateLicenseCommand
 	{
 		[Inject(id="configurationService")]
 		public var service:RemoteObject;
@@ -21,17 +19,13 @@ package org.mxhero.console.configurations.application.command
 		[Inject]
 		public var context:ApplicationContext;
 		
-		public function execute(event:LoadConfigurationEvent):AsyncToken
+		public function execute(event:ValidateLicenseEvent):AsyncToken
 		{
-			return service.find();
+			return service.testLicense(event.license);
 		}
 		
 		public function error (fault:Fault) : void {
 			dispatcher(new ApplicationErrorMessage(fault.faultCode));
-		}
-		
-		public function result (result:ResultEvent) : void {
-			context.configuration=result.result as Configuration;
 		}
 	}
 }

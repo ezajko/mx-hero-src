@@ -3,6 +3,8 @@ package org.mxhero.console.frontend.domain
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
 	import mx.collections.SortField;
+	import mx.messaging.Channel;
+	import mx.messaging.ChannelSet;
 	
 	import org.mxhero.console.commons.feature.IApplicationContext;
 	import org.mxhero.console.frontend.application.event.GetAccountsEvent;
@@ -14,6 +16,9 @@ package org.mxhero.console.frontend.domain
 
 		[MessageDispatcher]
 		public var dispatcher:Function;
+		
+		[Inject]
+		public var defaultChannelApplication:ChannelSet;
 		
 		public var applicationUser:ApplicationUser;
 		
@@ -146,6 +151,6 @@ package org.mxhero.console.frontend.domain
 		public function refreshDomains(domain:String):void{
 			dispatcher(new GetDomainsEvent(domain));
 		}
-
+		
 	}
 }

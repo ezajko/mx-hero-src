@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   close="{PopUpManager.removePopUp(this);}">
+	<fx:Declarations>
+		<s:DateTimeFormatter id="dateFormatter" timeStyle="short" dateStyle="short"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			import mx.resources.IResourceManager;
+			import mx.resources.ResourceManager;
+			
+			[Bindable]
+			private var rm:IResourceManager=ResourceManager.getInstance();
+			[Bindable]
+			public var contract:Object;
+			
+		]]>
+	</fx:Script>
+	
+	<s:Form minHeight="400">
+		<s:layout>
+			<s:FormLayout gap="0"/>
+		</s:layout>
+		<s:FormItem label="{rm.getString('disclaimercontract_report','sender.label')+':'}" width="100%">
+			<s:TextInput text="{contract.senderDomain}" editable="false" width="100%"/>
+		</s:FormItem>
+		<s:FormItem label="{rm.getString('disclaimercontract_report','recipient.label')+':'}" width="100%">
+			<s:TextInput text="{contract.recipient}" editable="false" width="100%"/>
+		</s:FormItem>
+		<s:FormItem label="{rm.getString('disclaimercontract_report','approved.date.label')+':'}" width="100%">
+			<s:TextInput text="{dateFormatter.format(contract.approvedDate)}" editable="false" width="100%"/>
+		</s:FormItem>
+		<s:FormItem label="{rm.getString('disclaimercontract_report','contract.text.label')+':'}" >
+			<mx:TextArea text="{contract.disclaimerPlain}" editable="false" width="350" height="100" textAlign="left"/>
+		</s:FormItem>
+		<s:FormItem label="{rm.getString('disclaimercontract_report','aditional.data.label')+':'}" >
+			<mx:TextArea text="{contract.aditionalData}" editable="false" width="350" height="100" textAlign="left"/>
+		</s:FormItem>
+	</s:Form>
+	
+</s:TitleWindow>

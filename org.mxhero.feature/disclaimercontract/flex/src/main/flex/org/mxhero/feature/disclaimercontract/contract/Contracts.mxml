@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					  xmlns:s="library://ns.adobe.com/flex/spark" 
+					  xmlns:mx="library://ns.adobe.com/flex/mx" 
+					  width="100%" height="100%"
+					  xmlns:component="org.mxhero.console.commons.feature.component.*"
+					  creationComplete="enter()">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.messaging.ChannelSet;
+			import mx.resources.IResourceManager;
+			import mx.resources.ResourceManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.utils.ObjectProxy;
+			import mx.utils.StringUtil;
+			
+			import org.mxhero.console.commons.utils.StringUtils;
+			import org.mxhero.feature.disclaimercontract.ImageResources;
+			
+			[Bindable]
+			private var rm:IResourceManager=ResourceManager.getInstance();
+			
+			[Bindable]
+			public var applicationChannelSet:ChannelSet;
+			
+			[Bindable]
+			public var contracts:ArrayCollection;
+			
+			[Bindable]
+			public var page:ObjectProxy;
+			
+			[Bindable]
+			public var domain:String;
+			
+			
+			protected function removeContractResultHandler(event:ResultEvent):void
+			{
+				enter();
+			}
+			
+			public function hasPrev(page:ObjectProxy):Boolean{
+				return page.actualPage>1;
+			}
+			
+			public function hasNext(page:ObjectProxy):Boolean{
+				return page.actualPage < page.totalPages;
+			}
+			
+			protected function readContractsResultHandler(event:ResultEvent):void
+			{
+				if(event.result!=null && event.result.elements!=null){
+					page=new ObjectProxy(event.result);
+					if(event.result.elements is ArrayCollection){
+						contracts=event.result.elements as ArrayCollection;
+					}else if(event.result.elements is Array){
+						contracts=new ArrayCollection(event.result.elements);
+					}
+				}else{
+					contracts=new ArrayCollection();
+					page=new ObjectProxy();
+				}
+			}
+			
+			protected function contractService_faultHandler(event:FaultEvent):void
+			{
+			
+				
+			}
+			
+			public function removeContract(id:Number):void{
+				contractService.removeContract(id);
+			}
+			
+			public function enter():void{
+				recipientTi.text="";
+				contractService.readContracts(domain,null,10,0);
+			}
+			
+			protected function prevButton_clickHandler(event:MouseEvent):void
+			{
+				var recipient:String = null;
+				if(recipientTi.text!=null && StringUtils.trim(recipientTi.text).length>0){
+					recipient=StringUtils.trim(recipientTi.text);
+				}
+				contractService.readContracts(domain,recipient,10,page.actualPage-1);
+			}
+			
+			protected function nextButton_clickHandler(event:MouseEvent):void
+			{
+				var recipient:String = null;
+				if(recipientTi.text!=null && StringUtils.trim(recipientTi.text).length>0){
+					recipient=StringUtils.trim(recipientTi.text);
+				}
+				contractService.readContracts(domain,recipient,10,page.actualPage+1);
+			}
+			
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
+				return dateFormatter.format(item.approvedDate);
+			}
+			
+			protected function filter_clickHandler(event:MouseEvent):void
+			{
+				var recipient:String = null;
+				if(recipientTi.text!=null && StringUtils.trim(recipientTi.text).length>0){
+					recipient=StringUtils.trim(recipientTi.text);
+				}
+				contractService.readContracts(domain,recipient,10,0);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<s:DateTimeFormatter id="dateFormatter" timeStyle="short" dateStyle="short"/>
+		<s:RemoteObject id="contractService" 
+						destination="contractService" 
+						showBusyCursor="true" 
+						channelSet="{applicationChannelSet}"
+						fault="contractService_faultHandler(event)">
+			<s:method name="removeContract" result="removeContractResultHandler(event)"/>
+			<s:method name="readContracts" result="readContractsResultHandler(event)"/>
+		</s:RemoteObject>
+	</fx:Declarations>
+	<s:Panel width="100%" 
+			 height="100%"
+			 cornerRadius="0"
+			 skinClass="org.mxhero.console.commons.feature.component.TitleLessPanel">
+		<s:layout>
+			<s:VerticalLayout/>
+		</s:layout>
+		<s:HGroup verticalAlign="middle" paddingTop="5" paddingLeft="5" paddingRight="5">
+			<s:Label text="{rm.getString('disclaimercontract_report','recipient.label')}"/>
+			<s:TextInput id="recipientTi"/>
+			<s:Button id="filter" click="filter_clickHandler(event)" label="{rm.getString('disclaimercontract_report','filter.label')}"/>
+		</s:HGroup>
+		<mx:DataGrid width="100%" height="100%" dataProvider="{contracts}" sortableColumns="false">
+			<mx:columns>
+				<mx:DataGridColumn width="48" 
+								   sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<s:MXDataGridItemRenderer>
+								<s:layout>
+									<s:HorizontalLayout horizontalAlign="center"/>
+								</s:layout>
+								<fx:Script>
+									<![CDATA[
+										import org.mxhero.feature.disclaimercontract.ImageResources;
+										import mx.controls.Alert;
+										import mx.events.CloseEvent;
+										
+										import mx.resources.IResourceManager;
+										import mx.resources.ResourceManager;
+										
+										[Bindable]
+										private var rm:IResourceManager=ResourceManager.getInstance();
+										
+										protected function image1_clickHandler(event:MouseEvent):void
+										{
+											Alert.show(rm.getString('disclaimercontract_report','contract.remove.confirmation'),null,Alert.YES|Alert.NO,null,removeHandler);
+											
+										}
+										
+										public function removeHandler(event:CloseEvent):void{
+											if(event.detail==Alert.YES){
+												outerDocument.removeContract(data.id);
+											}
+										}
+
+									]]>
+								</fx:Script>
+								
+								<s:Image source="{ImageResources.DELETE_ICO}"
+										 buttonMode="true"
+										 click="image1_clickHandler(event)"/>
+							</s:MXDataGridItemRenderer>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{rm.getString('disclaimercontract_report','approved.date.label')}" dataField="approvedDate" labelFunction="{dateLabelFunction}"/>
+				<mx:DataGridColumn headerText="{rm.getString('disclaimercontract_report','sender.label')}" dataField="senderDomain"/>
+				<mx:DataGridColumn headerText="{rm.getString('disclaimercontract_report','recipient.label')}" dataField="recipient"/>
+				<mx:DataGridColumn resizable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<s:MXDataGridItemRenderer>
+								<fx:Declarations>
+									<mx:Glow id="glowOn"
+											 alphaFrom="{minAlpha}"
+											 alphaTo="{maxAlpha}"
+											 blurXFrom="{minGlow}"
+											 blurXTo="{maxGlow}"
+											 blurYFrom="{minGlow}"
+											 blurYTo="{maxGlow}"
+											 color="{glowColor}"
+											 duration="{duration}"/>
+									
+									<mx:Glow id="glowOff" 
+											 alphaFrom="{maxAlpha}"
+											 alphaTo="{minAlpha}"
+											 blurXFrom="{maxGlow}"
+											 blurXTo="{minGlow}"
+											 blurYFrom="{maxGlow}"
+											 blurYTo="{minGlow}"
+											 color="{glowColor}"
+											 duration="{duration}"/>
+								</fx:Declarations>
+								<fx:Script>
+									<![CDATA[
+										import mx.core.FlexGlobals;
+										import mx.managers.PopUpManager;
+										import mx.resources.IResourceManager;
+										import mx.resources.ResourceManager;
+										
+										[Bindable]
+										private var rm:IResourceManager=ResourceManager.getInstance();
+										
+										[Bindable]
+										public var glowColor:Number=0xFFFFFF;
+										
+										[Bindable]
+										public var minGlow:Number=1.0;
+										
+										[Bindable]
+										public var maxGlow:Number=10.0;
+										
+										[Bindable]
+										public var minAlpha:Number=0.0;
+										
+										[Bindable]
+										public var maxAlpha:Number=0.5;
+										
+										[Bindable]
+										public var duration:Number=300;
+										
+										private var lastColor:*;
+										
+										private function showEmail():void{
+											var contractWindow:ContractView = new ContractView();
+											contractWindow.contract=data;
+											PopUpManager.addPopUp(contractWindow,outerDocument.parentDocument as DisplayObject,true);
+											PopUpManager.centerPopUp(contractWindow);
+										}
+										
+										private function onRollOverHandler():void{
+											lastColor=childLabel.getStyle("color");
+											childLabel.setStyle("color",glowColor);
+										}
+										
+										private function onRollOutHandler():void{
+											childLabel.setStyle("color",lastColor);
+										}
+										
+									]]>
+								</fx:Script>
+								
+								<s:Label id="childLabel"
+										 text="{rm.getString('disclaimercontract_report','details.label')}"
+										 rollOver="{onRollOverHandler();}"
+										 rollOut="{onRollOutHandler();}"
+										 buttonMode="true"
+										 mouseEnabled="true"
+										 click="{showEmail()}"
+										 rollOverEffect="{glowOn}"
+										 rollOutEffect="{glowOff}"
+										 fontSize="14"
+										 fontWeight="bold"
+										 textAlign="left"
+										 textDecoration="underline"
+										 paddingBottom="4"
+										 paddingLeft="4"
+										 paddingRight="4"
+										 paddingTop="4"
+										 />
+								
+							</s:MXDataGridItemRenderer>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
+		<s:controlBarContent>
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Spacer width="100%"/>
+				<component:GlowButton id="prevButton"
+									  maxGlow="10.0" 
+									  source="{ImageResources.LEFT_ICO}"
+									  enabled="{hasPrev(page)}"
+									  click="prevButton_clickHandler(event)"
+									  />
+				<s:Label text="{(page.totalElements==0)?0:(page.actualPage)}"/>
+				<s:Label text="{'/'}"/>
+				<s:Label text="{(page.totalElements==0)?0:(page.totalPages)}"/>
+				<component:GlowButton id="nextButton"
+									  maxGlow="10.0" 
+									  source="{ImageResources.RIGHT_ICO}"
+									  enabled="{hasNext(page)}"
+									  click="nextButton_clickHandler(event)"/>
+			</s:HGroup>	
+		</s:controlBarContent>
+	</s:Panel>
+
+</s:Group>

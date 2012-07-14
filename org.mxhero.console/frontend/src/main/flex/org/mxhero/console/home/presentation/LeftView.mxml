@@ -111,7 +111,7 @@
 			</s:Form>
 			<s:Form width="100%">
 				<s:layout>
-					<s:FormLayout gap="-12" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="-20" />
+					<s:FormLayout gap="-12" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop.admin="-20" />
 				</s:layout>
 				<s:FormItem label="{resourceManager.getString(HomeProperties.NAME,HomeProperties.LEFT_REGISTERED_DOMAINS_LABEL)}" 
 							includeIn="admin" width="100%">

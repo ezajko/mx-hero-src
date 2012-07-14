@@ -5,7 +5,7 @@ package org.mxhero.console.commons.utils
 	
 	public class RteHtmlParser
 	{
-		public var SET_P:String = 'DIV';
+		public var SET_P:String = 'P';
 		public var SET_LI:String = 'LI';
 		public var SET_FONT:String = 'SPAN';
 		

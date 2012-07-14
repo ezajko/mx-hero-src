@@ -3,8 +3,11 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*">
-	
+		   implements="org.mxhero.console.commons.feature.IFeature" 
+		   xmlns:tlf="net.asciiworks.tlf.*" 
+		   xmlns:component="org.mxhero.console.commons.feature.component.*" 
+		   xmlns:fdg="org.mxhero.console.mails.fdg.*">
+
 	<fx:Declarations>
 		<mx:EmailValidator id="emailV" required="true"/>
 		<mx:RegExpValidator id="domainV" required="true" expression="{Regex.domainRegex}"/>
@@ -22,11 +25,14 @@
 			import mx.managers.DragManager;
 			import mx.messaging.messages.ErrorMessage;
 			import mx.resources.ResourceManager;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			import mx.utils.StringUtil;
 			import mx.validators.NumberValidatorDomainType;
 			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
+			import org.mxhero.console.commons.feature.IApplicationContext;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.Regex;
@@ -37,8 +43,11 @@
 			private var initialProperties:ArrayCollection;
 			
 			[Bindable]
-			public var emails:ArrayCollection=new ArrayCollection();
+			private var _ap:IApplicationContext;
 			
+			[Bindable]
+			public var emails:ArrayCollection=new ArrayCollection();
+
 			protected function creationCompleteHandler(event:FlexEvent):void
 			{
 				styleManager.loadStyleDeclarations("styles/mxhero.swf",true,false,ApplicationDomain.currentDomain);
@@ -141,7 +150,6 @@
 				returnMessage = new FeatureRuleProperty();
 				returnMessage.propertyKey = "return.message";
 				var t:RteHtmlParser = new RteHtmlParser();
-				t.ignoreParagraphSpace=true;
 				t.FormatToHTML(TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString());
 				var str:String = t.StringFormat;
 				returnMessage.propertyValue = t.XMLFormat;
@@ -178,11 +186,14 @@
 			}
 			
 			public function set applicationContext(ap:Object):void{
+				this._ap=ap as IApplicationContext;
 			}
 			
+			[Bindable]
 			public function get applicationContext():Object{
-				return null;
+				return _ap;
 			}
+			
 		]]>
 	</fx:Script>
 	
