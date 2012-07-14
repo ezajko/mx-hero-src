@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:LinkBar xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Button;
+			override protected function hiliteSelectedNavItem(index:int):void
+			{
+				var obj: Object = super;
+				var child:Button;
+				
+				// Un-hilite the current selection.
+				if (selectedIndex != -1 && selectedIndex < numChildren)
+				{
+					child = Button(getChildAt(selectedIndex));
+					child.enabled = true;
+				}
+				
+				// Set new index.
+				obj.selectedIndex = index;
+				
+				// Hilite the new selection.
+				//Uncoment following if you looking for assigning -1 to selectedIndex to manage buttons.
+				/*if (index != -1 && index < numChildren)
+				{
+				child = Button(getChildAt(index));
+				child.enabled = false;
+				}*/
+			}
+		]]>
+	</fx:Script>
+	
+</mx:LinkBar >

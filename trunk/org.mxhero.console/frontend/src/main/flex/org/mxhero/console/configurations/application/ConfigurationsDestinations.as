@@ -9,5 +9,7 @@ package org.mxhero.console.configurations.application
 		public static const USER:String="main.dashboard.configurations.user";
 		public static const QUARANTINE:String="main.dashboard.configurations.quarantine";
 		public static const SYSTEM:String="main.dashboard.configurations.system";
+		public static const LICENSE:String="main.dashboard.configurations.license";
+		public static const DOCUMENTATION:String="main.dashboard.configurations.documentation";
 	}
 }

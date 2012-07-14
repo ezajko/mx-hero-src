@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   width="500" 
+			   height="380"
+			   currentState="{stateIs((model==null || model.contex==null)?null:model.contex.configuration)}"
+			   close="{PopUpManager.removePopUp(this);}"
+			   creationComplete="{init();}">
+	<fx:Script>
+		<![CDATA[
+			import mx.formatters.DateFormatter;
+			import mx.managers.PopUpManager;
+			import mx.rpc.events.ResultEvent;
+			
+			import org.mxhero.console.commons.resources.CommonsProperties;
+			import org.mxhero.console.configurations.presentation.ConfigurationsListPM;
+			import org.mxhero.console.frontend.domain.Configuration;
+			
+			import spark.formatters.DateTimeFormatter;
+			
+			private var fileLoader:FileReference=new FileReference();
+			
+			[Bindable]
+			public var model:ConfigurationsListPM;
+			
+			[Bindable]
+			public var fileLoading:Boolean=false;
+			
+			[Bindable]
+			public var opensource:String;
+			
+			public function stateIs(configuration:Configuration):String{
+				if(configuration==null || configuration.license==null){
+					return "opensource";
+				}else{
+					return "license";
+				}
+			}
+			
+			private function init():void{
+				fileLoader.addEventListener(Event.SELECT,selectHandler);
+				fileLoader.addEventListener(Event.COMPLETE,completeHandle);
+				textService.headers["Pragma"] = "no-cache";
+				textService.headers["Cache-Control"] = "no-cache";
+				textService.send();
+			}
+			
+			private function selectHandler(event:Event):void{
+				fileName.text=fileLoader.name;
+				fileLoader.load();
+				fileLoading=true;
+			}
+			
+			private function completeHandle(event:Event):void{
+				var licenseContent:String = fileLoader.data.readUTFBytes(fileLoader.data.length);
+				model.contex.configuration.license=licenseContent;
+				model.saveConfig();
+				fileLoading=false;
+			}
+			
+			protected function textService_resultHandler(event:ResultEvent):void
+			{
+				opensource=event.result as String;
+			}
+			
+			public function validLabel(isValid:Boolean):String{
+				if(isValid){
+					var formatter : DateFormatter;
+					formatter = new DateFormatter();
+					formatter.formatString = "YYYYMMDDHHNNSS";
+					var today:Number = new Number(formatter.format(new Date()));
+					var validUntil:String = new XML(model.contex.configuration.license).item.(@name == 'ValidUntil').@value;
+					validUntil=validUntil.substring(0,validUntil.length-1);
+					var validFrom:String = new XML(model.contex.configuration.license).item.(@name == 'ValidFrom').@value;
+					validFrom=validFrom.substring(0,validFrom.length-1);
+					if(today>new Number(validFrom) && today<new Number(validUntil)){
+						return resourceManager.getString(CommonsProperties.NAME,CommonsProperties.VALIDATED_LICENSE_YES);
+					}else{
+						return resourceManager.getString(CommonsProperties.NAME,CommonsProperties.VALIDATED_LICENSE_NO)+resourceManager.getString(CommonsProperties.NAME,CommonsProperties.EXPIRED_LICENSE_NO);	
+					}
+				}
+				return resourceManager.getString(CommonsProperties.NAME,CommonsProperties.VALIDATED_LICENSE_NO);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:HTTPService id="textService" 
+					   resultFormat="text"
+					   url="gpl.txt"
+					   result="textService_resultHandler(event)"/>
+	</fx:Declarations>
+	<s:states>
+		<s:State name="opensource"/>    
+		<s:State name="license"/>
+	</s:states>
+	<s:layout>
+		<s:VerticalLayout gap="20" paddingTop="10" paddingLeft="10" paddingRight="10" paddingBottom="5"/>
+	</s:layout>
+	<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COPYRIGHT)}"/>
+	<s:VGroup width="100%" excludeFrom="license">
+		<s:VGroup width="100%" horizontalAlign="center">
+			<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.OPENSOURCE_LICENSE)}" styleName="license"/>
+			<mx:LinkButton label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.OPENSOURCE_LICENSE_URL)}" 
+						   styleName="license"
+						   click="{navigateToURL(new URLRequest(resourceManager.getString(CommonsProperties.NAME,CommonsProperties.OPENSOURCE_LICENSE_URL)),'License');}"/>
+		</s:VGroup>
+		<s:TextArea id="licenseTa" text="{opensource}" width="100%" height="100%" textAlign="left"/>
+	</s:VGroup>
+	<s:VGroup width="100%" excludeFrom="opensource" height="100%" gap="16">
+		<s:VGroup width="100%" horizontalAlign="center" gap="10">
+			<s:Label text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COMMERCIAL_LICENSE)}" styleName="license"/>
+			<s:HGroup>
+					<s:Label styleName="license" fontSize="14" 
+							 text="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.VALIDATED_LICENSE)}"/>
+					<s:Label text="{validLabel(model.isValid)}"/>
+			</s:HGroup>
+		</s:VGroup>
+		<mx:DataGrid width="100%" 
+					 height="100%" 
+					 dataProvider="{new XML(model.contex.configuration.license).item}">
+			<mx:columns>
+				<mx:DataGridColumn dataField="@name" headerText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.VALIDATED_NAME)}"/>
+				<mx:DataGridColumn dataField="@value" headerText="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.VALIDATED_VALUE)}"/>
+			</mx:columns>
+		</mx:DataGrid>
+	</s:VGroup>
+	<s:HGroup width="100%" verticalAlign="middle">
+		<s:TextInput id="fileName" editable="false"/>
+		<s:Button id="loadLicense" label="Load License" click="{fileLoader.browse()}"/>
+		<mx:ProgressBar width="100%" labelPlacement="center" indeterminate="true" visible="{fileLoading}"/>
+	</s:HGroup>
+</s:TitleWindow>

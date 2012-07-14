@@ -1,42 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		   xmlns:s="library://ns.adobe.com/flex/spark" 
-		   xmlns:mx="library://ns.adobe.com/flex/mx" 
-		   creationComplete="creationCompleteHandler(event)"
-		   width="100%"
-		   height="100%" 
-		   xmlns:component="org.mxhero.console.commons.feature.component.*"
-		   implements="org.mxhero.console.commons.feature.IReport" xmlns:mails="org.mxhero.console.mails.*">
+<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009"
+		  xmlns:s="library://ns.adobe.com/flex/spark"
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  xmlns:component="org.mxhero.console.commons.feature.component.*"
+		  xmlns:mails="org.mxhero.console.mails.*"
+		  width="100%" height="100%" 
+		  creationComplete="creationCompleteHandler(event)"
+		  implements="org.mxhero.console.commons.feature.IReport" 
+		  xmlns:disclaimercontract="org.mxhero.feature.disclaimercontract.*" 
+		  xmlns:contract="org.mxhero.feature.disclaimercontract.contract.*" xmlns:history="org.mxhero.feature.disclaimercontract.history.*" xmlns:request="org.mxhero.feature.disclaimercontract.request.*">
 	
 	<fx:Declarations>
+	
+		
+		<s:Fade id="fadeout" alphaFrom="1" alphaTo="0" duration="100"/>
+		<s:Fade id="fadein" alphaFrom="0" alphaTo="1"/>
 		
 		<mx:DateFormatter id="dateFormatter" formatString="YYYY-MM-DD"/>
 		
-		<mx:SeriesSlide id="slideIn" 
-						duration="800" 
-						direction="up"/>
+		<mx:SeriesSlide id="slideIn" direction="up" duration="800"/>
 		
-		<mx:SeriesSlide id="slideOut" 
-						duration="800" 
-						direction="down"/>
+		<mx:SeriesSlide id="slideOut" direction="down" duration="800"/>
 		
 		<fx:Array id="bge">
-			<mx:GridLines 
-				horizontalChangeCount="1" 
-				verticalChangeCount="1"
-				gridDirection="both"
-				>
+			<mx:GridLines gridDirection="both" horizontalChangeCount="1" verticalChangeCount="1">
 				<mx:horizontalStroke>
-					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+					<mx:SolidColorStroke color="#FFFFFF" weight="1"/>
 				</mx:horizontalStroke>
 				<mx:verticalStroke>
-					<mx:SolidColorStroke weight="1" color="#FFFFFF"/>
+					<mx:SolidColorStroke color="#FFFFFF" weight="1"/>
 				</mx:verticalStroke>
 				<mx:filters>
-					<s:DropShadowFilter
-						distance="4"
-						color="0x666666"
-						alpha=".9"/>
+					<s:DropShadowFilter alpha=".9" color="0x666666" distance="4"/>
 				</mx:filters>
 			</mx:GridLines>
 		</fx:Array>
@@ -75,7 +70,11 @@
 		<![CDATA[
 			import mx.charts.events.ChartItemEvent;
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
 			
 			import org.mxhero.console.commons.feature.IReportService;
 			import org.mxhero.console.commons.feature.TimeUtils;
@@ -83,6 +82,7 @@
 			private static const DATA_QUERY:String = "data.query";
 			private static const EMAIL_QUERY:String = "email.query";
 			
+			[Bindable]
 			private var _reportService:IReportService;
 			
 			[Bindable]
@@ -208,6 +208,23 @@
 			{
 				queryForEmails(event.hitData.item.Date);
 			}
+			
+			protected function vs_changeHandler(event:IndexChangedEvent):void
+			{
+				if(event.newIndex==1){
+					if(contracts!=null){
+						contracts.enter();
+					}
+				}else if(event.newIndex==2){
+					if(histories!=null){
+						histories.enter();
+					}
+				}else if(event.newIndex==3){
+					
+				}	
+			}
+
+
 		]]>
 	</fx:Script>
 	
@@ -215,112 +232,108 @@
 		[ResourceBundle("disclaimercontract_report")]
 	</fx:Metadata>
 	<s:layout>
-		<s:VerticalLayout />
+		<s:VerticalLayout gap="0"/>
 	</s:layout>
-		<s:HGroup horizontalAlign="right" 
-				  width="100%"
-				  paddingRight="5"
-				  paddingBottom="5"
-				  paddingTop="40">
-			<s:Label text="{resourceManager.getString('disclaimercontract_report','title')}" 
-					 fontWeight="bold" fontSize="16"
-					 color="#FFFFFF"
-					 textDecoration="underline"/>
-			<mx:Spacer width="100%"/>
-		</s:HGroup>
-		
-	<s:VGroup id="chartContainer" width="100%" height="100%" creationComplete="vgroup1_creationCompleteHandler(event)">
-			<mx:ColumnChart id="linechart" color="0x323232" 
-							height="240" width="100%"
-							showDataTips="true" 
-							styleName="myChart"
-							dataProvider="{_data}"
-							axisTitleStyleName="axisTitles"
-							backgroundElements="{bge}"
-							selectionMode="single"
-							itemClick="linechart_itemClickHandler(event)"
-							>
-				
-				<mx:filters>
-					<s:DropShadowFilter
-						distance="4"
-						color="0x666666"
-						alpha=".9"/>
-				</mx:filters>
-				
-				<mx:horizontalAxis>
-					<mx:DateTimeAxis id="dateAxis" 
-									 dataUnits="days"
-									 labelUnits="days"
-									 disabledDays="{[]}"
-									 autoAdjust="true"
-									 dataInterval="1"
-									 title="{resourceManager.getString('disclaimercontract_report','date.axis')}"
-									 maximum="{new Date()}"
-									 minimum="{sinceDate}"
-									 displayName="{resourceManager.getString('disclaimercontract_report','date.axis')}"
-									 />
-				</mx:horizontalAxis>
-				
-				<mx:verticalAxis>
-					<mx:LinearAxis id="qtyAxis"  
-								   title="{resourceManager.getString('disclaimercontract_report','emails.axis')}" 
-								   displayName="{resourceManager.getString('disclaimercontract_report','emails.axis')}"/>
-				</mx:verticalAxis>
-				
-				<mx:verticalAxisRenderers>
-					<mx:AxisRenderer labelRotation="45" 
-									 axis="{qtyAxis}" 
-									 color="#FFFFFF" 
-									 fontSize="14"
-									 />	   
-				</mx:verticalAxisRenderers>
-				
-				<mx:horizontalAxisRenderers>
-					<mx:AxisRenderer labelRotation="45" 
-									 axis="{dateAxis}" 
-									 color="#FFFFFF" 
-									 fontSize="14"
-									 />
-				</mx:horizontalAxisRenderers>
-				
-				
-				
-				<mx:fill>
-					<mx:SolidColor color="0x66CCFF" alpha="0.0"/>
-				</mx:fill>
-				
-				<mx:series>
-					<mx:ColumnSeries xField="Date" yField="Qty" 
-									 showDataEffect="{slideIn}" 
-									 hideDataEffect="{slideOut}"
-									 id="cserie"
-									 selectable="true"
-									 buttonMode="true"
-									 displayName="{resourceManager.getString('disclaimercontract_report','hits.axis')}">
-						<mx:stroke>
-							<s:SolidColorStroke color="red" caps="round" />
-						</mx:stroke>
-						<mx:fill>
-							<mx:SolidColor color="red" alpha="0.6"/>
-						</mx:fill>
-						<mx:filters>
-							<s:DropShadowFilter
-								distance="8"
-								color="0x666666"
-								alpha=".8"/>
-						</mx:filters>
-					</mx:ColumnSeries>
-				</mx:series>
-				
-			</mx:ColumnChart>
-			<s:Label text="{resourceManager.getString('disclaimercontract_report','emails.title')+' ('+selectedDateLabel+')'}" 
-					 fontWeight="bold" fontSize="16"
-					 paddingLeft="50"/>
-			<s:HGroup width="100%" paddingLeft="50" height="100%">
-				<mails:EmailsDataGrid  dataProvider="{_emails}" height="100%" width="100%"/>
-			</s:HGroup>
+	
+	<component:NoDisableLinkBar dataProvider="{vs}" styleName="Reports"/>
 
-		</s:VGroup>
+	<mx:ViewStack id="vs" width="100%" height="100%" change="vs_changeHandler(event)">
+		<s:NavigatorContent width="100%" height="100%" 
+							label="{resourceManager.getString('disclaimercontract_report','usage.title')}"
+							showEffect="{fadein}" hideEffect="{fadeout}">
+			<s:layout>
+				<s:VerticalLayout/>
+			</s:layout>
+			<s:HGroup width="100%" horizontalAlign="right" paddingBottom="5" paddingRight="5" paddingTop="40">
+				<s:Label color="#FFFFFF" fontSize="16" fontWeight="bold"
+						 text="{resourceManager.getString('disclaimercontract_report','title')}"
+						 textDecoration="underline"/>
+				<mx:Spacer width="100%"/>
+			</s:HGroup>
+			
+			<s:VGroup id="chartContainer" width="100%" height="100%"
+					  creationComplete="vgroup1_creationCompleteHandler(event)">
+				<mx:ColumnChart id="linechart" width="100%" height="240" axisTitleStyleName="axisTitles"
+								backgroundElements="{bge}" color="0x323232" dataProvider="{_data}"
+								itemClick="linechart_itemClickHandler(event)" selectionMode="single"
+								showDataTips="true" styleName="myChart">
+					
+					<mx:filters>
+						<s:DropShadowFilter alpha=".9" color="0x666666" distance="4"/>
+					</mx:filters>
+					
+					<mx:horizontalAxis>
+						<mx:DateTimeAxis id="dateAxis" autoAdjust="true" dataInterval="1"
+										 dataUnits="days" disabledDays="{[]}"
+										 displayName="{resourceManager.getString('disclaimercontract_report','date.axis')}"
+										 labelUnits="days" maximum="{new Date()}" minimum="{sinceDate}"
+										 title="{resourceManager.getString('disclaimercontract_report','date.axis')}"/>
+					</mx:horizontalAxis>
+					
+					<mx:verticalAxis>
+						<mx:LinearAxis id="qtyAxis"
+									   displayName="{resourceManager.getString('disclaimercontract_report','emails.axis')}"
+									   title="{resourceManager.getString('disclaimercontract_report','emails.axis')}"/>
+					</mx:verticalAxis>
+					
+					<mx:verticalAxisRenderers>
+						<mx:AxisRenderer axis="{qtyAxis}" color="#FFFFFF" fontSize="14"
+										 labelRotation="45"/>	   
+					</mx:verticalAxisRenderers>
+					
+					<mx:horizontalAxisRenderers>
+						<mx:AxisRenderer axis="{dateAxis}" color="#FFFFFF" fontSize="14"
+										 labelRotation="45"/>
+					</mx:horizontalAxisRenderers>
+					
+					<mx:fill>
+						<mx:SolidColor alpha="0.0" color="0x66CCFF"/>
+					</mx:fill>
+					
+					<mx:series>
+						<mx:ColumnSeries id="cserie" buttonMode="true"
+										 displayName="{resourceManager.getString('disclaimercontract_report','hits.axis')}"
+										 hideDataEffect="{slideOut}" selectable="true"
+										 showDataEffect="{slideIn}" xField="Date" yField="Qty">
+							<mx:stroke>
+								<s:SolidColorStroke caps="round" color="red"/>
+							</mx:stroke>
+							<mx:fill>
+								<mx:SolidColor alpha="0.6" color="red"/>
+							</mx:fill>
+							<mx:filters>
+								<s:DropShadowFilter alpha=".8" color="0x666666" distance="8"/>
+							</mx:filters>
+						</mx:ColumnSeries>
+					</mx:series>
+				</mx:ColumnChart>
+				<s:Label fontSize="16" fontWeight="bold" paddingLeft="50"
+						 text="{resourceManager.getString('disclaimercontract_report','emails.title')+' ('+selectedDateLabel+')'}"/>
+				<s:HGroup width="100%" height="100%" paddingLeft="50">
+					<mails:EmailsDataGrid width="100%" height="100%" dataProvider="{_emails}"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" 
+							label="{resourceManager.getString('disclaimercontract_report','contract.title')}"
+							showEffect="{fadein}" hideEffect="{fadeout}">
+			<contract:Contracts id="contracts" width="100%" height="100%"
+				applicationChannelSet="{this._reportService.applicationChannelSet}"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" 
+							label="{resourceManager.getString('disclaimercontract_report','history.title')}"
+							showEffect="{fadein}" hideEffect="{fadeout}">
+			<history:Histories id="histories" width="100%" height="100%"
+								applicationChannelSet="{this._reportService.applicationChannelSet}"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%" 
+							label="{resourceManager.getString('disclaimercontract_report','request.title')}"
+							showEffect="{fadein}" hideEffect="{fadeout}">
+			<request:Requests id="request" width="100%" height="100%"
+							   applicationChannelSet="{this._reportService.applicationChannelSet}"/>
+		</s:NavigatorContent>
+	</mx:ViewStack>
+	
+
 
 </s:Module>

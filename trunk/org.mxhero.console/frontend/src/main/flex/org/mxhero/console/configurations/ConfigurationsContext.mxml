@@ -38,10 +38,12 @@
 			import org.mxhero.console.configurations.application.command.RemoveEmailAccountCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupCommand;
 			import org.mxhero.console.configurations.application.command.RemoveGroupMemberCommand;
+			import org.mxhero.console.configurations.application.command.SaveLicenseCommand;
 			import org.mxhero.console.configurations.application.command.SaveQuarantineCommand;
 			import org.mxhero.console.configurations.application.command.TestAdldapCommand;
 			import org.mxhero.console.configurations.application.command.TestEmailCommand;
 			import org.mxhero.console.configurations.application.command.UploadAccountsCommand;
+			import org.mxhero.console.configurations.application.command.ValidateLicenseCommand;
 
 		]]>
 	</fx:Script>
@@ -83,6 +85,9 @@
 		
 		<parsley:DynamicCommand type="{SaveQuarantineCommand}"/>
 		<parsley:DynamicCommand type="{LoadQuarantineCommand}"/>
+		
+		<parsley:DynamicCommand type="{SaveLicenseCommand}"/>
+		<parsley:DynamicCommand type="{ValidateLicenseCommand}"/>
 		
 		<presentation:ConfigurationsViewPM/>
 		<presentation:ConfigurationsListPM/>
@@ -145,6 +150,26 @@
 										navigateTo="{ConfigurationsDestinations.SYSTEM}"
 										resource="configurations_list"
 										adminExclusive="true"/> 
+					</s:ArrayCollection>
+				</domain:childs>
+			</domain:LCCategory>
+			<domain:LCCategory key="category.about" 
+							   requiredAuthority="ROLE_DOMAIN_ADMIN" 
+							   resource="configurations_list" 
+							   iconsrc="images/configurations/about.png">
+				<domain:childs>
+					<s:ArrayCollection>
+						<domain:LCChild key="category.about.license" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.about.license.description" 
+										resource="configurations_list"
+										navigateTo="{ConfigurationsDestinations.LICENSE}"
+										adminExclusive="true"/>
+						<domain:LCChild key="category.about.documentation" 
+										requiredAuthority="ROLE_DOMAIN_ADMIN" 
+										keyDescription="category.about.documentation.description" 
+										resource="configurations_list"
+										navigateTo="{ConfigurationsDestinations.DOCUMENTATION}"/>						
 					</s:ArrayCollection>
 				</domain:childs>
 			</domain:LCCategory>
