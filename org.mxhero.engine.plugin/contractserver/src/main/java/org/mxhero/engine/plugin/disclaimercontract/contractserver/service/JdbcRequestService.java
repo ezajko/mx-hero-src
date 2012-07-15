@@ -20,7 +20,7 @@ public class JdbcRequestService implements RequestService{
 	
 	@Override
 	@Transactional(readOnly=false)
-	public void approve(Long id, String type) {
+	public void approve(Long id, String type, String aditionalData) {
 		if(!type.equalsIgnoreCase(RequestVO.CONTRACT_TYPE) && !type.equalsIgnoreCase(RequestVO.ONE_TYPE)){
 			throw new IllegalArgumentException("wrong.type");
 		}
@@ -37,11 +37,12 @@ public class JdbcRequestService implements RequestService{
 		request.setApprovedDate(Calendar.getInstance());
 		request.setType(type);
 		request.setPending(true);
+		request.setAdditionalData(aditionalData);
 		requestRepository.updateRequest(request);
 	}
 
 	@Override
-	public void veto(Long id) {
+	public void veto(Long id, String aditionalData) {
 		RequestVO request = requestRepository.readRequest(id);
 		if(request==null){
 			throw new RequestNotAvailableException();
@@ -54,6 +55,7 @@ public class JdbcRequestService implements RequestService{
 		}
 		request.setVetoDate(Calendar.getInstance());
 		request.setPending(true);
+		request.setAdditionalData(aditionalData);
 		requestRepository.updateRequest(request);
 	}
 

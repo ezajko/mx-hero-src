@@ -1,6 +1,9 @@
 package org.mxhero.engine.plugin.disclaimercontract.contractserver.servlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.mxhero.engine.plugin.disclaimercontract.contractserver.service.AlreadyApprovedException;
 import org.mxhero.engine.plugin.disclaimercontract.contractserver.service.AlreadyRejectedException;
@@ -21,7 +25,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 public class VoteServlet  extends HttpServlet{
 	
 	private static Logger log = Logger.getLogger(VoteServlet.class);
-
+	private ObjectMapper mapper = new ObjectMapper();
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -49,7 +53,27 @@ public class VoteServlet  extends HttpServlet{
 				RequestService service = context.getBean(RequestService.class);
 				String decrypt = encryptor.decrypt(id);
 				idToSearch = Long.valueOf(decrypt);
-				service.veto(idToSearch);
+				
+				Enumeration<String> headerNames = req.getHeaderNames();
+				Map<String, Object> headerMap = new HashMap<String, Object>();
+				while (headerNames.hasMoreElements()) {
+					String headerName = headerNames.nextElement();
+					Enumeration<String> headers = req.getHeaders(headerName);
+					while (headers.hasMoreElements()) {
+						String headerValue = headers.nextElement();
+						headerMap.put(headerName,headerValue);
+					}
+				}
+				headerMap.put("locale", req.getLocale().toString());
+				headerMap.put("method", req.getMethod());
+				headerMap.put("queryString", req.getQueryString());
+				headerMap.put("remoteAddr", req.getRemoteAddr());
+				headerMap.put("remoteHost", req.getRemoteHost());
+				headerMap.put("remotePort", req.getRemotePort());
+				headerMap.put("requestURL", req.getRequestURL());
+				headerMap.put("requestedSessionId", req.getRequestedSessionId());
+				
+				service.veto(idToSearch,mapper.writeValueAsString(headerMap));
 				req.getRequestDispatcher("/reject.jsp").forward(req, resp);
 			}
 		}catch(RequestNotAvailableException e){
