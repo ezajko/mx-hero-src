@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="20" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
 		   implements="org.mxhero.console.commons.feature.IFeature">
 	
@@ -252,9 +255,7 @@
 	<fx:Metadata>
 		[ResourceBundle("wiretapcontent")]
 	</fx:Metadata>
-	<s:layout>
-		<s:VerticalLayout  gap="20"/>
-	</s:layout>
+	
 	<s:Label text="{resourceManager.getString('wiretapcontent','first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup paddingLeft="20">
@@ -287,45 +288,40 @@
 							  click="addWordBtt_clickHandler(event)"/>
 				</s:HGroup>				
 			</mx:Form>
-			<s:DataGrid id="wordsDg"
+			<mx:DataGrid id="wordsDg"
 						 dataProvider="{words}" 
 						 width="100%"
 						 height="250">
-				<s:columns>
-					<s:ArrayList>
-						<s:GridColumn dataField="data" headerText="{resourceManager.getString('wiretapcontent','word.label.text')}"/>
-						<s:GridColumn width="48" sortable="false" >
-							<s:itemRenderer>
-								<fx:Component>
-									<s:GridItemRenderer width="100%">
-										<s:layout>
-											<s:HorizontalLayout horizontalAlign="center"/>
-										</s:layout>
-										<fx:Script>
-											<![CDATA[
-												import flash.events.MouseEvent;
-												
-												[Bindable]
-												[Embed(source="/org/mxhero/feature/wiretapcontent/delete.png")]
-												public static var DELETE:Class;
-												
-												protected function remove_clickHandler(event:MouseEvent):void
-												{
-													outerDocument.words.removeItemAt(outerDocument.words.getItemIndex(outerDocument.wordsDg.selectedItem));
-												}
-											]]>
-										</fx:Script>
-										<s:Image source="{DELETE}"
-												 buttonMode="true"
-												 toolTip="{resourceManager.getString('wiretapcontent','remove.tooltip')}"
-												 click="remove_clickHandler(event)"/>	
-									</s:GridItemRenderer>
-								</fx:Component>
-							</s:itemRenderer>
-						</s:GridColumn>						
-					</s:ArrayList>
-				</s:columns>
-			</s:DataGrid>		
+				<mx:columns>
+					<mx:DataGridColumn dataField="data" headerText="{resourceManager.getString('wiretapcontent','word.label.text')}"/>
+					<mx:DataGridColumn width="48" sortable="false" >
+						<mx:itemRenderer>
+							<fx:Component>
+								<mx:HBox width="100%" horizontalAlign="center">
+									<fx:Script>
+										<![CDATA[
+											import flash.events.MouseEvent;
+											
+											[Bindable]
+											[Embed(source="/org/mxhero/feature/wiretapcontent/delete.png")]
+											public static var DELETE:Class;
+											
+											protected function remove_clickHandler(event:MouseEvent):void
+											{
+												outerDocument.words.removeItemAt(outerDocument.words.getItemIndex(outerDocument.wordsDg.selectedItem));
+											}
+										]]>
+									</fx:Script>
+									<mx:Image source="{DELETE}"
+											  buttonMode="true"
+											  toolTip="{resourceManager.getString('wiretapcontent','remove.tooltip')}"
+											  click="remove_clickHandler(event)"/>
+								</mx:HBox>		  
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>		
 		</s:VGroup>
 	</s:VGroup>
 	
@@ -361,4 +357,4 @@
 	
 	
 	
-</s:Module>
+</mx:Module>

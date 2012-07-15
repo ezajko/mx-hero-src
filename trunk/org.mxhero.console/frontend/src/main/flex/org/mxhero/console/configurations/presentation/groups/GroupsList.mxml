@@ -27,12 +27,12 @@
 			[Bindable]
 			public var model:GroupsViewPM;
 			
-			protected function updatedDateLabelFunction(item:Object,column:GridColumn):String{
+			protected function updatedDateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.updatedDate);
 			}
 			
 			
-			protected function dateLabelFunction(item:Object,column:GridColumn):String{
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.createdDate);
 			}
 			
@@ -55,7 +55,7 @@
 			}
 
 
-			protected function datagrid2_itemDoubleClickHandler(event:*):void
+			protected function datagrid2_itemDoubleClickHandler(event:ListEvent):void
 			{
 				model.editGroup(this);
 			}
@@ -102,11 +102,8 @@
 			</s:BorderContainer>
 		</s:HGroup>
 
-		<s:Form defaultButton="{filterBtt}">
-			<s:layout>
-				<s:FormLayout gap="10" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="0" />
-			</s:layout>
-			<s:FormHeading label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_TITLE)}"/>
+		<mx:Form defaultButton="{filterBtt}" paddingTop="0">
+			<mx:FormHeading label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_TITLE)}"/>
 			<s:Label 
 				fontWeight="bold"
 				text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_NAME_LABEL)}"/>
@@ -115,14 +112,14 @@
 				fontWeight="bold"
 				text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_DESCRIPTION_LABEL)}"/>
 			<s:TextInput id="descriptionTI" width="100%"/>
-			<s:Spacer height="5"/>
+			<mx:Spacer height="5"/>
 			<s:HGroup horizontalAlign="right" width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
 						  click="clearBtt_clickHandler(event)"/>	
 				<s:Button id="filterBtt" label="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.FILTER_BUTTON_LABEL)}" 
 						  click="filterBtt_clickHandler(event)"/>
 			</s:HGroup>			
-		</s:Form>		
+		</mx:Form>		
 	</s:BorderContainer>
 	
 	<s:Panel width="100%" 
@@ -133,60 +130,55 @@
 		<s:layout>
 			<s:VerticalLayout/>
 		</s:layout>		
-	<s:DataGrid dataProvider="{model.context.groups}" 
+	<mx:DataGrid dataProvider="{model.context.groups}" 
 				 width="100%" 
 				 height="100%"
 				 selectedItem="@{model.selectGroup}"
-				 doubleClick="datagrid2_itemDoubleClickHandler(event)"
+				 itemDoubleClick="datagrid2_itemDoubleClickHandler(event)"
 				 doubleClickEnabled="true"
 				 mouseChildren="true">
-		<s:columns>
-			<s:ArrayList>
-				<s:GridColumn dataField="name" 
-								   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_NAME_LABEL)}" 
-								   minWidth="100"/>
-				<s:GridColumn dataField="description" 
-								   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_DESCRIPTION_LABEL)}" 
-								   minWidth="100"/>
-				<s:GridColumn dataField="updatedDate" 
-								   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_UPDATED_LABEL)}" 
-								   labelFunction="updatedDateLabelFunction"
-								   width="130" resizable="false"/>
-				<s:GridColumn dataField="createdDate" 
-								   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_LABEL)}"
-								   labelFunction="dateLabelFunction"
-								   width="130" resizable="false"/>
-				<s:GridColumn  width="72" sortable="false" resizable="false">
-					<s:itemRenderer>
-						<fx:Component>
-							<s:GridItemRenderer width="100%">
-								<s:layout>
-									<s:HorizontalLayout horizontalAlign="left" verticalAlign="middle" />
-								</s:layout>
-								<fx:Script>
-									<![CDATA[
-										import org.mxhero.console.commons.resources.ImageResources;
-										import org.mxhero.console.configurations.application.resources.GroupsProperties;
-										
-									]]>
-								</fx:Script>
-								<component1:GlowButton maxGlow="10.0" 
-													  click="{outerDocument.model.editGroup(outerDocument)}"
-													  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
-								<component1:GlowButton maxGlow="10.0" 
-													  click="{outerDocument.model.removeGroup()}"
-													  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
-							</s:GridItemRenderer>
-						</fx:Component>
-					</s:itemRenderer>
-				</s:GridColumn>
-			</s:ArrayList>
-		</s:columns>
-	</s:DataGrid>
+		<mx:columns>
+			<mx:DataGridColumn dataField="name" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_NAME_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="description" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_DESCRIPTION_LABEL)}" 
+							   minWidth="100"/>
+			<mx:DataGridColumn dataField="updatedDate" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_UPDATED_LABEL)}" 
+							   labelFunction="updatedDateLabelFunction"
+							   width="130" resizable="false"/>
+			<mx:DataGridColumn dataField="createdDate" 
+							   headerText="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_LABEL)}"
+							   labelFunction="dateLabelFunction"
+							   width="130" resizable="false"/>
+			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+							<fx:Script>
+								<![CDATA[
+									import org.mxhero.console.commons.resources.ImageResources;
+									import org.mxhero.console.configurations.application.resources.GroupsProperties;
+									
+								]]>
+							</fx:Script>
+							<component1:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.editGroup(outerDocument)}"
+												  source="{ImageResources.EDIT_ICO}" toolTip="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_EDIT_LABEL)}"/>
+							<component1:GlowButton maxGlow="10.0" 
+												  click="{outerDocument.model.removeGroup()}"
+												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
 		<s:controlBarContent>
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Label text="{resourceManager.getString(GroupsProperties.NAME,GroupsProperties.GROUPS_TOTAL)+' '+model.groups.totalElements}"/>
-				<s:Spacer width="100%"/>
+				<mx:Spacer width="100%"/>
 				<component1:GlowButton id="prevButton"
 									   maxGlow="10.0" 
 									   source="{ImageResources.LEFT_ICO}"

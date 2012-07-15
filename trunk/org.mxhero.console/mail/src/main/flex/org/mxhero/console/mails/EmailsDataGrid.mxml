@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:DataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:DataGrid xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			 xmlns:s="library://ns.adobe.com/flex/spark" 
 			 xmlns:mx="library://ns.adobe.com/flex/mx"
 			 width="100%" 
@@ -22,7 +22,7 @@
 				}
 			}
 			
-			protected function dateLabelFunction(item:Object,column:GridColumn):String{
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.insertDate)+" "+creationHourFormatter.format(item.insertDate);
 			}
 			
@@ -59,12 +59,11 @@
 		[ResourceBundle("emails_datagrid")]
 	</fx:Metadata>
 	
-	<s:columns>						
-		<s:ArrayList>
-		<s:GridColumn  width="36" sortable="false" resizable="false" >
-			<s:itemRenderer>
+	<mx:columns>						
+		<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
+			<mx:itemRenderer>
 				<fx:Component>
-					<s:GridItemRenderer width="100%">
+					<s:MXDataGridItemRenderer width="100%">
 						<s:layout>
 							<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 						</s:layout>
@@ -85,33 +84,33 @@
 							<s:layout>
 								<s:BasicLayout/>
 							</s:layout>
-							<s:Image 	visible="{data.state=='deliver'}"
+							<mx:Image 	visible="{data.state=='deliver'}"
 										source="{CommonsImages.DELIVERED}" 
 										buttonMode="false"
 										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DELIVERED_TOOLTIP)}"/>
-							<s:Image 	visible="{data.state=='redirect'}"
+							<mx:Image 	visible="{data.state=='redirect'}"
 											source="{CommonsImages.REDIRECT}" 
 											buttonMode="false"
 											toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.REDIRECTED_TOOLTIP)}"/>
-							<s:Image 	visible="{data.state=='drop'}"
+							<mx:Image 	visible="{data.state=='drop'}"
 										source="{CommonsImages.DROPPED}"
 										buttonMode="false"
 										toolTip="{rm.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.DROPPED_TOOLTIP_START)}"/>						
 							
 						</s:Group>
-					</s:GridItemRenderer>
+					</s:MXDataGridItemRenderer>
 				</fx:Component>
-			</s:itemRenderer>
-		</s:GridColumn>							
-		<s:GridColumn dataField="insertDate" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
+			</mx:itemRenderer>
+		</mx:DataGridColumn>							
+		<mx:DataGridColumn dataField="insertDate" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
 						   labelFunction="dateLabelFunction"/>
-		<s:GridColumn dataField="from" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
-		<s:GridColumn dataField="recipient" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
-		<s:GridColumn dataField="subject" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
-		<s:GridColumn width="70" sortable="false" resizable="false">
-			<s:itemRenderer>
+		<mx:DataGridColumn dataField="from" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
+		<mx:DataGridColumn dataField="recipient" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
+		<mx:DataGridColumn dataField="subject" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
+		<mx:DataGridColumn width="70" sortable="false" resizable="false">
+			<mx:itemRenderer>
 				<fx:Component>
-					<s:GridItemRenderer minHeight="0" minWidth="0">	
+					<mx:HBox minHeight="0" minWidth="0" width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
 						<fx:Declarations>
 							<mx:Glow id="glowOn"
 									 alphaFrom="{minAlpha}"
@@ -171,7 +170,7 @@
 									emailWindow.email=data;
 									outerDocument.selectedEmailWindow=emailWindow;
 									outerDocument.customReportService.getStats(data.insertDate.time,data.sequence);
-									PopUpManager.addPopUp(emailWindow,outerDocument.parentDocument as DisplayObject,true);
+									PopUpManager.addPopUp(emailWindow,FlexGlobals.topLevelApplication as DisplayObject,true);
 									PopUpManager.centerPopUp(emailWindow);
 								}
 								
@@ -207,10 +206,9 @@
 								 paddingTop="4"
 								 />
 						
-					</s:GridItemRenderer>
+					</mx:HBox>
 				</fx:Component>
-			</s:itemRenderer>
-		</s:GridColumn>
-		</s:ArrayList>
-	</s:columns>
-</s:DataGrid>
+			</mx:itemRenderer>
+		</mx:DataGridColumn>
+	</mx:columns>
+</mx:DataGrid>

@@ -52,8 +52,6 @@ package org.mxhero.console.features.presentation.feature
 		
 		public static var unloadReport:Function;
 		
-		public static var reloadReport:Function;
-		
 		[MessageDispatcher]
 		public var dispatcher:Function;
 		
@@ -97,9 +95,6 @@ package org.mxhero.console.features.presentation.feature
 		[Enter(time="every")]
 		public function every():void{
 			loadFeatures();
-			if(reloadReport!=null){
-				reloadReport();
-			}
 		}
 		
 		private function loadFeatures():void{

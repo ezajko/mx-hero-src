@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
 		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30"
 		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:tlf="net.asciiworks.tlf.*">
 	
 	<fx:Declarations>
@@ -168,10 +171,6 @@
 		[ResourceBundle("attachmentlink")]
 	</fx:Metadata>
 	
-	<s:layout>
-		<s:VerticalLayout  gap="20"/>
-	</s:layout>
-	
 	<s:Label text="{resourceManager.getString('attachmentlink','first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:HGroup verticalAlign="middle" paddingLeft="24">
@@ -195,4 +194,4 @@
 			</s:VGroup>
 		</s:VGroup>
 	</s:VGroup>
-</s:Module>
+</mx:Module>

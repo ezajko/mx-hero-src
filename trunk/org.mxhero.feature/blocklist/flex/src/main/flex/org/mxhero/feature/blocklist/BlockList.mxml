@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
-		   implements="org.mxhero.console.commons.feature.IFeature" 
+			verticalGap="20"
+		   paddingTop="30"		   
+			implements="org.mxhero.console.commons.feature.IFeature" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*" xmlns:tlf="net.asciiworks.tlf.*">
 
 	<fx:Declarations>
@@ -241,9 +243,7 @@
 	<fx:Metadata>
 		[ResourceBundle("blocklist")]
 	</fx:Metadata>
-	<s:layout>
-		<s:VerticalLayout  gap="20"/>
-	</s:layout>
+	
 	<s:Label text="{resourceManager.getString(MODULE_NAME,'first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
@@ -305,4 +305,4 @@
 					   groupName="blockType"
 					   label="{resourceManager.getString(MODULE_NAME,'action.discard.label')}"/>
 	</s:VGroup>
-</s:Module>
+</mx:Module>

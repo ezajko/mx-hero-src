@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   creationComplete="creationCompleteHandler(event)"
 		   implements="org.mxhero.console.commons.feature.IFeature" 
+		   layout="vertical"
+		   verticalGap="20"
 		   xmlns:tlf="net.asciiworks.tlf.*" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*" 
 		   xmlns:fdg="org.mxhero.console.mails.fdg.*">
@@ -200,9 +202,6 @@
 	<fx:Metadata>
 		[ResourceBundle("disclaimercontract")]
 	</fx:Metadata>
-	<s:layout>
-		<s:VerticalLayout  gap="20"/>
-	</s:layout>
 	
 	<s:Label text="{resourceManager.getString('disclaimercontract','first.title')}" fontSize="16" fontWeight="bold"/>
 	
@@ -250,4 +249,4 @@
 			</s:HGroup>
 		</s:VGroup>
 	</s:VGroup>
-</s:Module>
+</mx:Module>

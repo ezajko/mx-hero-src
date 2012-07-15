@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
+		   layout="vertical"
+		   verticalGap="30"
+		   paddingTop="40" 
 		   creationComplete="creationCompleteHandler(event)" 
 		   xmlns:component="org.mxhero.console.commons.feature.component.*"
 		   implements="org.mxhero.console.commons.feature.IFeature">
@@ -115,9 +118,7 @@
 	<fx:Metadata>
 		[ResourceBundle("backupcopy")]
 	</fx:Metadata>
-	<s:layout>
-		<s:VerticalLayout  gap="20"/>
-	</s:layout>
+	
 	<s:Label text="{resourceManager.getString('backupcopy','first.title')}" fontSize="16" fontWeight="bold"/>
 
 	<s:VGroup width="100%" gap="10" paddingLeft="24">
@@ -140,4 +141,4 @@
 
 	</s:VGroup>
 		
-</s:Module>
+</mx:Module>
