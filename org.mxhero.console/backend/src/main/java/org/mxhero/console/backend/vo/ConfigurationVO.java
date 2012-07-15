@@ -21,6 +21,10 @@ public class ConfigurationVO {
 	private String logoPath;
 	
 	private String newsFeedEnabled;
+	
+	private String documentationUrl;
+	
+	private String license;
 
 	public String getHost() {
 		return host;
@@ -100,6 +104,22 @@ public class ConfigurationVO {
 
 	public void setNewsFeedEnabled(String newsFeedEnabled) {
 		this.newsFeedEnabled = newsFeedEnabled;
+	}
+
+	public String getDocumentationUrl() {
+		return documentationUrl;
+	}
+
+	public void setDocumentationUrl(String documentationUrl) {
+		this.documentationUrl = documentationUrl;
+	}
+
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 
 }

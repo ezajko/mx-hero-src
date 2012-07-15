@@ -36,4 +36,9 @@ public class FlexConfigurationService implements ConfigurationService{
 		this.service.testMail(configurationVO);
 	}
 
+	@Override
+	public boolean testLicense(String license) {
+		return service.testLicense(license);
+	}
+
 }

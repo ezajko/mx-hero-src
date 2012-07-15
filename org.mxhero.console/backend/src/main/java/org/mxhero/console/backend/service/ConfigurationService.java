@@ -9,4 +9,6 @@ public interface ConfigurationService {
 	void edit(ConfigurationVO configurationVO);
 	
 	void testMail(ConfigurationVO configurationVO);
+	
+	boolean testLicense(String license);
 }

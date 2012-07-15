@@ -1,7 +1,5 @@
 package org.mxhero.console.backend.service.flex;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
