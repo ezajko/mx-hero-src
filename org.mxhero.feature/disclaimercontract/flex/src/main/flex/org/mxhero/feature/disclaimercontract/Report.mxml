@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009"
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009"
 		  xmlns:s="library://ns.adobe.com/flex/spark"
 		  xmlns:mx="library://ns.adobe.com/flex/mx"
 		  xmlns:component="org.mxhero.console.commons.feature.component.*"
 		  xmlns:mails="org.mxhero.console.mails.*"
 		  width="100%" height="100%" 
+		  verticalGap="0"
 		  creationComplete="creationCompleteHandler(event)"
 		  implements="org.mxhero.console.commons.feature.IReport" 
 		  xmlns:disclaimercontract="org.mxhero.feature.disclaimercontract.*" 
@@ -231,9 +232,6 @@
 	<fx:Metadata>
 		[ResourceBundle("disclaimercontract_report")]
 	</fx:Metadata>
-	<s:layout>
-		<s:VerticalLayout gap="0"/>
-	</s:layout>
 	
 	<component:NoDisableLinkBar dataProvider="{vs}" styleName="Reports"/>
 
@@ -336,4 +334,4 @@
 	
 
 
-</s:Module>
+</mx:Module>

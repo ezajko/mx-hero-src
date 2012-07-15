@@ -37,11 +37,11 @@
 			[Bindable]
 			public var model:AccountsViewPM;
 
-			protected function updatedDateLabelFunction(item:Object,column:GridColumn):String{
+			protected function updatedDateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.updatedDate);
 			}
 			
-			public function dataSourceLabelFunction(item:Object,column:GridColumn):String{
+			public function dataSourceLabelFunction(item:Object,column:DataGridColumn):String{
 				var label:String="";
 				if(item!=null){
 					var ea:EmailAccount = item as EmailAccount;
@@ -67,7 +67,7 @@
 				return label;
 			}
 			
-			protected function dateLabelFunction(item:Object,column:GridColumn):String{
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.createdDate);
 			}
 			
@@ -100,7 +100,7 @@
 				model.uploadAccount(this);
 			}
 			
-			protected function grouplabelFunction(item:Object, column:GridColumn):String{
+			protected function grouplabelFunction(item:Object, column:DataGridColumn):String{
 				if(item.group!=null){
 					for each (var group:Object in model.context.groups){
 						if(group.name==item.group){
@@ -111,7 +111,7 @@
 				return "";
 			}
 
-			protected function aliaseslabelFunction(item:Object, column:GridColumn):String{
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
 				var label:String="";
 				if(item.aliases!=null){
 					for each (var alias:Object in item.aliases){
@@ -123,7 +123,7 @@
 				return label;
 			}
 
-			protected function datagrid1_itemDoubleClickHandler(event:*):void
+			protected function datagrid1_itemDoubleClickHandler(event:ListEvent):void
 			{
 				model.editEmailAccount(this);
 			}
@@ -228,11 +228,8 @@
 							   width="100%"/>
 			</s:BorderContainer>			
 		</s:VGroup>
-		<s:Form defaultButton="{filterBtt}" width="100%">
-			<s:layout>
-				<s:FormLayout gap="10" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="0" />
-			</s:layout>
-			<s:FormHeading
+		<mx:Form defaultButton="{filterBtt}" paddingTop="0" width="100%">
+			<mx:FormHeading
 				label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_TITLE)}"/>
 			<s:Label 
 				fontWeight="bold"
@@ -242,7 +239,7 @@
 				fontWeight="bold"
 				text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FORM_GROUP_LABEL)}"/>
 			<s:ComboBox id="groupDdl" dataProvider="{model.context.groups}" labelField="name" width="100%"/>
-			<s:Spacer height="5"/>
+			<mx:Spacer height="5"/>
 			<s:HGroup horizontalAlign="right" width="100%">
 				<s:Button id="clearBtt" 
 						  label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
@@ -254,7 +251,7 @@
 						  click="filterBtt_clickHandler(event)"
 						  buttonMode="true"/>
 			</s:HGroup>			
-		</s:Form>		
+		</mx:Form>		
 	</s:BorderContainer>
 	
 	<s:VGroup width="100%" 
@@ -266,11 +263,11 @@
 				click="refreshBtt_clickHandler(event)"/>
 			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_SCHEDULED_LABEL)}" fontWeight="bold"/>
 			<s:Label text="{creationDateFormatter.format(model.context.selectedDomain.adLdap.nextUpdate)}"/>
-			<s:Spacer width="5"/>
+			<mx:Spacer width="5"/>
 			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ADLDAP_LAST_LABEL)}" fontWeight="bold"/>
 			<s:Label text="{creationDateFormatter.format(model.context.selectedDomain.adLdap.lastUpdate)}"/>
-			<s:Spacer width="5"/>
-			<s:Image source="{ImageResources.ALERT_ICON}" 
+			<mx:Spacer width="5"/>
+			<mx:Image source="{ImageResources.ALERT_ICON}" 
 					  visible="{model.context.selectedDomain.adLdap.error!=null}"
 					  toolTip="{model.context.selectedDomain.adLdap.error}"/>
 		</s:HGroup>
@@ -282,47 +279,45 @@
 			<s:layout>
 				<s:VerticalLayout/>
 			</s:layout>
-			<s:DataGrid dataProvider="{model.accounts.elements}" 
+			<mx:DataGrid dataProvider="{model.accounts.elements}" 
 						 width="100%" 
 						 height="100%"
+						 borderStyle="none"
 						 variableRowHeight="true"
+						 dropShadowVisible="false"
 						 selectedItem="@{model.selectedEmailAccount}"
-						 doubleClick="datagrid1_itemDoubleClickHandler(event)"
+						 itemDoubleClick="datagrid1_itemDoubleClickHandler(event)"
 						 doubleClickEnabled="true"
 						 mouseChildren="true">
-				<s:columns>
-					<s:ArrayList>
-					<s:GridColumn dataField="account" 
+				<mx:columns>
+					<mx:DataGridColumn dataField="account" 
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
 									   minWidth="100"/>
-					<s:GridColumn dataField="group"
+					<mx:DataGridColumn dataField="group"
 									   labelFunction="{grouplabelFunction}"
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_GROUP_LABEL)}" 
 									   minWidth="100"/>
-					<s:GridColumn dataField="dataSource"
+					<mx:DataGridColumn dataField="dataSource"
 									   labelFunction="{dataSourceLabelFunction}"
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_DATASOURCE_LABEL)}" 
 									   minWidth="100"/>
-					<s:GridColumn dataField="aliases"
+					<mx:DataGridColumn dataField="aliases"
 									   labelFunction="{aliaseslabelFunction}"
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
 									   minWidth="100"
 									   sortable="false"/>
-					<s:GridColumn dataField="updatedDate" 
+					<mx:DataGridColumn dataField="updatedDate" 
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_UPDATED_LABEL)}" 
 									   labelFunction="updatedDateLabelFunction"
 									   width="130" resizable="false"/>
-					<s:GridColumn dataField="createdDate" 
+					<mx:DataGridColumn dataField="createdDate" 
 									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_CREATED_LABEL)}"
 									   labelFunction="dateLabelFunction"
 									   width="130" resizable="false"/>
-					<s:GridColumn  width="72" sortable="false" resizable="false">
-						<s:itemRenderer>
+					<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+						<mx:itemRenderer>
 							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-									</s:layout>
+								<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
 									<fx:Script>
 										<![CDATA[
 											import org.mxhero.console.commons.resources.ImageResources;
@@ -348,17 +343,16 @@
 														   source="{ImageResources.DELETE_ICO}" 
 														   enabled="{data.dataSource==EmailAccount.MANUAL}"
 														   toolTip="{getTooltipText(deleteAccountBtt.enabled)}"/>						
-								</s:GridItemRenderer>
+								</mx:HBox>
 							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-					</s:ArrayList>
-				</s:columns>
-			</s:DataGrid>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>
 			<s:controlBarContent>
 				<s:HGroup width="100%" verticalAlign="middle">
 					<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.ACCOUNTS_TOTAL)+' '+model.accounts.totalElements}"/>
-					<s:Spacer width="100%"/>
+					<mx:Spacer width="100%"/>
 					<component1:GlowButton id="prevButton"
 										   maxGlow="10.0" 
 										   source="{ImageResources.LEFT_ICO}"

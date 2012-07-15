@@ -108,7 +108,7 @@
 				model.uploadAllAccounts(uploadedAccounts,failOnError.selected);
 			}
 			
-			protected function aliaseslabelFunction(item:Object, column:GridColumn):String{
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
 				var label:String="";
 				if(item.aliases!=null){
 					for each (var alias:Object in item.aliases){
@@ -143,51 +143,48 @@
 			<mx:ProgressBar width="100%" labelPlacement="center" indeterminate="true" visible="{(model.isLoading || fileLoading)}"/>
 		</s:HGroup>
 		
-		<s:DataGrid width="100%" 
+		<mx:DataGrid width="100%" 
 					 height="100%"
 					 maxHeight="300"
+					 borderStyle="solid"
+					 dropShadowVisible="false"
 					 id="dg"
 					 dataProvider="{uploadedAccounts}"
 					 editable="true"
 					 styleName="editable">
-			<s:columns>
-				<s:ArrayList>
-					<s:GridColumn 	dataField="account"
-										headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
-										minWidth="100"
-										editable="true"/>
-					<s:GridColumn dataField="aliases"
-									   labelFunction="{aliaseslabelFunction}"
-									   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
-									   minWidth="100"
-									   sortable="false"/>
-					<s:GridColumn  width="42" sortable="false" resizable="false" editable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-									</s:layout>
-									<fx:Script>
-										<![CDATA[
-											import org.mxhero.console.commons.resources.ImageResources;
-											
-										]]>
-									</fx:Script>
-									<component1:GlowButton maxGlow="10.0" 
-														  click="{outerDocument.uploadedAccounts.removeItemAt(outerDocument.uploadedAccounts.getItemIndex(outerDocument.dg.selectedItem))}"
-														  source="{ImageResources.DELETE_ICO}"/>						
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-				</s:ArrayList>
-			</s:columns>
-		</s:DataGrid>
+			<mx:columns>
+				<mx:DataGridColumn 	dataField="account"
+									headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ACCOUNT_LABEL)}" 
+									minWidth="100"
+									editable="true"/>
+				<mx:DataGridColumn dataField="aliases"
+								   labelFunction="{aliaseslabelFunction}"
+								   headerText="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.COLUMN_ALIASES_LABEL)}" 
+								   minWidth="100"
+								   sortable="false"/>
+				<mx:DataGridColumn  width="42" sortable="false" resizable="false" editable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
+								<fx:Script>
+									<![CDATA[
+										import org.mxhero.console.commons.resources.ImageResources;
+										
+									]]>
+								</fx:Script>
+								<component1:GlowButton maxGlow="10.0" 
+													  click="{outerDocument.uploadedAccounts.removeItemAt(outerDocument.uploadedAccounts.getItemIndex(outerDocument.dg.selectedItem))}"
+													  source="{ImageResources.DELETE_ICO}"/>						
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
 		<s:CheckBox id="failOnError" label="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_CHECK_FAIL_ON_ERROR)}" selected="true"/>
 		<s:HGroup  width="100%">
 			<s:Label text="{resourceManager.getString(AccountsProperties.NAME,AccountsProperties.UPLOAD_TOTAL_ACCOUNTS)+uploadedAccounts.length}"/>
-			<s:Spacer width="100%"/>
+			<mx:Spacer width="100%"/>
 			<s:Button id="saveBtt" label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.SAVE_LABEL)}" 
 					  click="saveBtt_clickHandler(event)"
 					  enabled="{!(model.isLoading || fileLoading)}"/>

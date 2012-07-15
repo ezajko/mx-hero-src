@@ -31,15 +31,15 @@
 			[Bindable]
 			public var model:FeatureViewPM;
 
-			protected function createdLabelFunction(item:Object,column:GridColumn):String{
+			protected function createdLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.created);
 			}
 	
-			protected function updateLabelFunction(item:Object,column:GridColumn):String{
+			protected function updateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.updated);
 			}
 			
-			protected function directionLabelFunction(item:Object,column:GridColumn):String
+			protected function directionLabelFunction(item:Object,column:DataGridColumn):String
 			{
 				if(column.dataField=="fromDirection.freeValue"){
 					if(item.fromDirection.freeValue == FeatureRuleDirection.ANYONE ||
@@ -74,7 +74,7 @@
 			}
 
 
-			protected function datagrid2_itemDoubleClickHandler(event:*):void
+			protected function datagrid2_itemDoubleClickHandler(event:ListEvent):void
 			{
 				model.editRule();
 			}
@@ -108,22 +108,21 @@
 					   styleName="action"
 					   click="newRuleLink_clickHandler(event)"/>
 		
-		<s:DataGrid dataProvider="{model.selectedFeature.rules}" 
+		<mx:DataGrid dataProvider="{model.selectedFeature.rules}" 
 					 width="100%" 
 					 height="100%"
 					 minWidth="600"
 					 selectedItem="@{model.selectedRule}"
-					 doubleClick="datagrid2_itemDoubleClickHandler(event)"
+					 itemDoubleClick="datagrid2_itemDoubleClickHandler(event)"
 					 doubleClickEnabled="true"
 					 mouseChildren="true">
-			<s:columns>
-				<s:ArrayList>
-				<s:GridColumn  width="36" sortable="false" resizable="false" >
-					<s:itemRenderer>
+			<mx:columns>
+				<mx:DataGridColumn  width="36" sortable="false" resizable="false" >
+					<mx:itemRenderer>
 						<fx:Component>
-							<s:GridItemRenderer width="100%">
+							<s:MXDataGridItemRenderer width="100%">
 								<s:layout>
-									<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
+									<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 								</s:layout>
 								<fx:Script>
 									<![CDATA[
@@ -146,34 +145,31 @@
 														  source="{FeaturesImages.ENABLED}" toolTip="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_DISABLE_TOOLTIP)}"/>						
 								
 								</s:Group>
-							</s:GridItemRenderer>
+							</s:MXDataGridItemRenderer>
 						</fx:Component>
-					</s:itemRenderer>
-				</s:GridColumn>
-				<s:GridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_FROM_LABEL)}" 
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_FROM_LABEL)}" 
 								   width="160"
 								   minWidth="50"
 								   dataField="fromDirection.freeValue"
 								   labelFunction="directionLabelFunction"/>
-				<s:GridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_TO_LABEL)}" 
+				<mx:DataGridColumn headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_TO_LABEL)}" 
 								   width="160"
 								   minWidth="50"
 								   dataField="toDirection.freeValue"
 								   labelFunction="directionLabelFunction"/>
-				<s:GridColumn dataField="name" 
+				<mx:DataGridColumn dataField="name" 
 								   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_NAME_LABEL)}" 
 								   minWidth="50"/>
-				<s:GridColumn dataField="updated" 
+				<mx:DataGridColumn dataField="updated" 
 								   headerText="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.COLUMN_RULE_UPDATED_LABEL)}" 
 								   labelFunction="updateLabelFunction"
 								   minWidth="120"/>
-				<s:GridColumn  width="92" minWidth="92" sortable="false" resizable="false">
-					<s:itemRenderer>
+				<mx:DataGridColumn  width="92" minWidth="92" sortable="false" resizable="false">
+					<mx:itemRenderer>
 						<fx:Component>
-							<s:GridItemRenderer width="100%">
-								<s:layout>
-									<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-								</s:layout>
+							<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
 								<fx:Script>
 									<![CDATA[
 										import org.mxhero.console.commons.resources.ImageResources;
@@ -188,13 +184,12 @@
 								<component1:GlowButton maxGlow="10.0" 
 													  click="{outerDocument.model.removeRule()}"
 													  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(FeatureViewProperties.NAME,FeatureViewProperties.REMOVE_RULE_TOOLTIP)}"/>						
-							</s:GridItemRenderer>
+							</mx:HBox>
 						</fx:Component>
-					</s:itemRenderer>
-				</s:GridColumn>
-				</s:ArrayList>
-			</s:columns>
-		</s:DataGrid>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
 			
 	</s:VGroup>
 		<loader:ReportLoader

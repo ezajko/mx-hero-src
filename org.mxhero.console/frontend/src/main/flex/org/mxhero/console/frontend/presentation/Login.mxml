@@ -100,19 +100,16 @@
 			<s:layout> 
 				<s:VerticalLayout horizontalAlign="center" verticalAlign="middle"/>
 			</s:layout>
-			<s:Form id="loginForm" defaultButton="{submit}"> 
-				<s:layout>
-					<s:FormLayout gap="0" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" />
-				</s:layout>
-				<s:FormItem id="mailFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_EMAIL_LABEL)}" includeIn="forgot"> 
+			<mx:Form id="loginForm" defaultButton="{submit}" > 
+				<mx:FormItem id="mailFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_EMAIL_LABEL)}" includeIn="forgot"> 
 					<s:TextInput id="mailTi" text="@{model.mail}" width="180" /> 
-				</s:FormItem>
-				<s:FormItem id="useridFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_USERNAME_LABEL)}" includeIn="default"> 
+				</mx:FormItem>
+				<mx:FormItem id="useridFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_USERNAME_LABEL)}" includeIn="default"> 
 					<s:TextInput id="useridTi" text="@{model.username}" width="180"/> 
-				</s:FormItem> 
-				<s:FormItem id="passwordFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_PASSWORD_LABEL)}" includeIn="default" > 
+				</mx:FormItem> 
+				<mx:FormItem id="passwordFi" label="{resourceManager.getString(LoginProperties.NAME,LoginProperties.DEFAULT_PASSWORD_LABEL)}" includeIn="default" > 
 					<s:TextInput id="passwordTi" text="@{model.password}" displayAsPassword="true"  width="180" /> 
-				</s:FormItem>
+				</mx:FormItem>
 				<s:Group width="100%"> 
 					<s:layout>
 						<s:HorizontalLayout/>
@@ -130,7 +127,7 @@
 								   color="#FFFFFF"
 								   textRollOverColor="#FFFFFF"
 								   click="currentState='forgot'"/>
-					<s:Spacer width="100%"/>
+					<mx:Spacer width="100%"/>
 					
 					<s:Button id="submit" 
 							  click.default="signInClick(event)" 
@@ -139,7 +136,7 @@
 							  label.forgot="{resourceManager.getString(LoginProperties.NAME,LoginProperties.FORGOT_BUTTON_LABEL)}"
 							  buttonMode="true"/> 
 				</s:Group>
-			</s:Form>
+			</mx:Form>
 		</s:Panel>
 	<component1:ReflectionManager id="reflectionManager" target="{loginPanel}" falloff="0.65" blurAmount="0.15"/>
 

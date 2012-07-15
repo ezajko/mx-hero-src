@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 		  
 		   creationComplete="creationCompleteHandler(event)"
+		   verticalGap="20"
+		   paddingTop="30"
 		   initialize="{loadXMLFile()}"
 		   implements="org.mxhero.console.commons.feature.IFeature" xmlns:component="org.mxhero.console.commons.feature.component.*" xmlns:fdg="org.mxhero.console.mails.fdg.*" xmlns:tlf="net.asciiworks.tlf.*">
 	
@@ -283,7 +285,7 @@
 				return null;
 			}
 			
-			private function hourLabelFunction(item:Object, column:GridColumn):String 
+			private function hourLabelFunction(item:Object, column:DataGridColumn):String 
 			{
 				var time:Date = new Date();
 				if(item.hour!='0'){
@@ -301,9 +303,7 @@
 	<fx:Metadata>
 		[ResourceBundle("usagehours")]
 	</fx:Metadata>
-	<s:layout>
-		<s:VerticalLayout  gap="20"/>
-	</s:layout>
+
 	<s:Label text="{resourceManager.getString(MODULE_NAME,'first.title')}" fontSize="16" fontWeight="bold"/>
 	
 	<s:HGroup verticalAlign="middle" paddingLeft="20" width="400">
@@ -314,97 +314,74 @@
 	
 	<s:VGroup height="100%" width="400" verticalAlign="bottom" paddingLeft="20">
 		<s:Label text="{resourceManager.getString(MODULE_NAME,'check.hours.label')}"/>
-		<s:DataGrid id="dataGrid" editable="true" dataProvider="{hours}" width="100%">
-			<s:columns>
-				<s:ArrayList>
-					<s:GridColumn dataField="hour" width="60" headerText="{resourceManager.getString(MODULE_NAME,'day.hours')}" editable="false" sortable="false" labelFunction="hourLabelFunction" resizable="false"/>				
-					<s:GridColumn dataField="sunday" headerText="{resourceManager.getString(MODULE_NAME,'day.sunday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.sunday == true)?true:false}" click="{data.sunday = (data.sunday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-					<s:GridColumn dataField="monday" headerText="{resourceManager.getString(MODULE_NAME,'day.monday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.monday == true)?true:false}" click="{data.monday = (data.monday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-					<s:GridColumn dataField="@tuesday" headerText="{resourceManager.getString(MODULE_NAME,'day.tuesday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.tuesday == true)?true:false}" click="{data.tuesday = (data.tuesday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-					<s:GridColumn dataField="wednesday" headerText="{resourceManager.getString(MODULE_NAME,'day.wednesday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.wednesday == true)?true:false}" click="{data.wednesday = (data.wednesday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>				
-					<s:GridColumn dataField="thursday" headerText="{resourceManager.getString(MODULE_NAME,'day.thursday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.thursday == true)?true:false}" click="{data.thursday = (data.thursday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-					<s:GridColumn dataField="friday" headerText="{resourceManager.getString(MODULE_NAME,'day.friday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.friday == true)?true:false}" click="{data.friday = (data.friday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-					<s:GridColumn dataField="saturday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.saturday')}" editable="false" sortable="false" resizable="false">
-						<s:itemRenderer>
-							<fx:Component>
-								<s:GridItemRenderer width="100%">
-									<s:layout>
-										<s:HorizontalLayout horizontalAlign="center"/>
-									</s:layout>
-									<s:CheckBox selected="{(data.saturday == true)?true:false}" click="{data.@saturday = (data.saturday != true) ? true : false;}"/>
-								</s:GridItemRenderer>
-							</fx:Component>
-						</s:itemRenderer>
-					</s:GridColumn>
-				</s:ArrayList>
-			</s:columns>
-		</s:DataGrid>
+		<mx:DataGrid id="dataGrid" editable="true" dataProvider="{hours}" width="100%">
+			<mx:columns>
+				<mx:DataGridColumn dataField="hour" width="60" headerText="{resourceManager.getString(MODULE_NAME,'day.hours')}" editable="false" sortable="false" labelFunction="hourLabelFunction"/>				
+				<mx:DataGridColumn dataField="sunday" headerText="{resourceManager.getString(MODULE_NAME,'day.sunday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.sunday == true)?true:false}" click="{data.sunday = (data.sunday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="monday" headerText="{resourceManager.getString(MODULE_NAME,'day.monday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.monday == true)?true:false}" click="{data.monday = (data.monday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="@tuesday" headerText="{resourceManager.getString(MODULE_NAME,'day.tuesday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.tuesday == true)?true:false}" click="{data.tuesday = (data.tuesday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="wednesday" headerText="{resourceManager.getString(MODULE_NAME,'day.wednesday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.wednesday == true)?true:false}" click="{data.wednesday = (data.wednesday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>				
+				<mx:DataGridColumn dataField="thursday" headerText="{resourceManager.getString(MODULE_NAME,'day.thursday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.thursday == true)?true:false}" click="{data.thursday = (data.thursday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="friday" headerText="{resourceManager.getString(MODULE_NAME,'day.friday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.friday == true)?true:false}" click="{data.friday = (data.friday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+				<mx:DataGridColumn dataField="saturday" width="40" headerText="{resourceManager.getString(MODULE_NAME,'day.saturday')}" editable="false" sortable="false">
+					<mx:itemRenderer>
+						<fx:Component>
+							<mx:HBox width="100%" horizontalAlign="center">
+								<mx:CheckBox selected="{(data.saturday == true)?true:false}" click="{data.@saturday = (data.saturday != true) ? true : false;}"/>
+							</mx:HBox>
+						</fx:Component>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
 	</s:VGroup>
 	
 	<s:Label text="{resourceManager.getString(MODULE_NAME,'second.title')}" fontSize="16" fontWeight="bold"/>
@@ -438,4 +415,4 @@
 			</s:HGroup>
 		</s:VGroup>
 	</s:VGroup>
-</s:Module>
+</mx:Module>

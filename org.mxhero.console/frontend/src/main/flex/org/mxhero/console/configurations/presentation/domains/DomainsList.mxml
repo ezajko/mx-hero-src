@@ -26,11 +26,11 @@
 			[Bindable]
 			public var model:DomainsViewPM;
 			
-			protected function dateLabelFunction(item:Object,column:GridColumn):String{
+			protected function dateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.creationDate);
 			}
 
-			protected function updatedDateLabelFunction(item:Object,column:GridColumn):String{
+			protected function updatedDateLabelFunction(item:Object,column:DataGridColumn):String{
 				return creationDateFormatter.format(item.updatedDate);
 			}
 			
@@ -70,7 +70,7 @@
 				model.editDomain(this);
 			}
 			
-			protected function aliaseslabelFunction(item:Object, column:GridColumn):String{
+			protected function aliaseslabelFunction(item:Object, column:DataGridColumn):String{
 				var label:String="";
 				if(item.aliases!=null){
 					for each (var alias:Object in item.aliases){
@@ -122,26 +122,23 @@
 			</s:BorderContainer>
 		</s:HGroup>
 	
-		<s:Form defaultButton="{filterBtt}">
-			<s:layout>
-				<s:FormLayout gap="10" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="0" />
-			</s:layout>
-			<s:FormHeading label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_TITLE)}"/>
+		<mx:Form defaultButton="{filterBtt}" paddingTop="0">
+			<mx:FormHeading label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_TITLE)}"/>
 			<s:Label 
 				fontWeight="bold"
 				text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_DOMAIN_LABEL)}"/>
 			<s:TextInput id="domainTI" width="100%"/>
-			<s:Spacer height="5"/>
+			<mx:Spacer height="5"/>
 			<s:HGroup width="100%">
 				<s:Button id="clearBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_CLEAR_LABEL)}" 
 						  click="clearBtt_clickHandler(event)"
 						  buttonMode="true"/>	
-				<s:Spacer width="100%"/>
+				<mx:Spacer width="100%"/>
 				<s:Button id="filterBtt" label="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.FILTER_BUTTON_LABEL)}" 
 						  click="filterBtt_clickHandler(event)"
 						  buttonMode="true"/>
 			</s:HGroup>			
-		</s:Form>		
+		</mx:Form>		
 	</s:BorderContainer>
 
 
@@ -151,22 +148,20 @@
 			 skinClass="org.mxhero.console.commons.skin.TitleLessPanel"
 			 cornerRadius="0">
 
-	<s:DataGrid dataProvider="{model.domains.elements}" 
+	<mx:DataGrid dataProvider="{model.domains.elements}" 
 				 width="100%" 
 				 height="100%"
 				 selectedItem="@{model.selectDomain}"
 				 variableRowHeight="true"
 				 mouseChildren="true">
-		<s:columns>
-			<s:ArrayList>
-			<s:GridColumn headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_DOMAIN_LABEL)}" 
+		<mx:columns>
+			<mx:DataGridColumn headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_DOMAIN_LABEL)}" 
 							   minWidth="140">
-				<s:itemRenderer>
+				<mx:itemRenderer>
 					<fx:Component>
-						<s:GridItemRenderer width="100%">
-							<s:layout>
-								<s:HorizontalLayout horizontalAlign="left" verticalAlign="middle" />
-							</s:layout>
+						<mx:HBox minHeight="0" minWidth="0" 
+								 horizontalScrollPolicy="off"
+								 width="100%">
 							<fx:Declarations>
 								<mx:Glow id="glowOn"
 										 alphaFrom="{minAlpha}"
@@ -236,36 +231,33 @@
 									 toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_ENTER_LABEL)}"
 									 rollOutEffect="{glowOff}"/>
 
-						</s:GridItemRenderer>
+						</mx:HBox>
 					</fx:Component>
-				</s:itemRenderer>
-			</s:GridColumn>
-			<s:GridColumn dataField="owner.email" 
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+			<mx:DataGridColumn dataField="owner.email" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_OWNER_LABEL)}" 
 							   minWidth="100"
 							   sortCompareFunction="{nullLastCompareFunction}"/>
-			<s:GridColumn dataField="server" 
+			<mx:DataGridColumn dataField="server" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_SERVER_LABEL)}" 
 							   minWidth="100"/>
-			<s:GridColumn dataField="aliases" 
+			<mx:DataGridColumn dataField="aliases" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_ALIASES_LABEL)}" 
 							   labelFunction="{aliaseslabelFunction}"
 							   minWidth="100"/>
-			<s:GridColumn dataField="updatedDate" 
+			<mx:DataGridColumn dataField="updatedDate" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_UPDATED_LABEL)}" 
 							   labelFunction="updatedDateLabelFunction"
 							   width="130" resizable="false"/>
-			<s:GridColumn dataField="creationDate" 
+			<mx:DataGridColumn dataField="creationDate" 
 							   headerText="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_LABEL)}"
 							   labelFunction="dateLabelFunction"
 							   width="130" resizable="false"/>
-			<s:GridColumn  width="72" sortable="false" resizable="false">
-				<s:itemRenderer>
+			<mx:DataGridColumn  width="72" sortable="false" resizable="false">
+				<mx:itemRenderer>
 					<fx:Component>
-						<s:GridItemRenderer width="100%">
-							<s:layout>
-								<s:HorizontalLayout horizontalAlign="center" verticalAlign="middle"/>
-							</s:layout>
+						<mx:HBox width="100%" horizontalAlign="center" verticalAlign="middle">
 							<fx:Script>
 								<![CDATA[
 									import org.mxhero.console.commons.resources.ImageResources;
@@ -279,18 +271,17 @@
 							<component1:GlowButton maxGlow="10.0" 
 												  click="{outerDocument.model.removeDomain()}"
 												  source="{ImageResources.DELETE_ICO}" toolTip="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.COLUMN_CREATED_REMOVE_LABEL)}"/>						
-						</s:GridItemRenderer>
+						</mx:HBox>
 					</fx:Component>
-				</s:itemRenderer>
-			</s:GridColumn>
-			</s:ArrayList>
-		</s:columns>
-	</s:DataGrid>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
 		<s:controlBarContent>
 			
 			<s:HGroup width="100%" verticalAlign="middle">
 				<s:Label text="{resourceManager.getString(DomainsShowProperties.NAME,DomainsShowProperties.DOMAINS_TOTAL)+' '+model.domains.totalElements}"/>
-				<s:Spacer width="100%"/>
+				<mx:Spacer width="100%"/>
 				<component1:GlowButton id="prevButton"
 										maxGlow="10.0" 
 									   source="{ImageResources.LEFT_ICO}"
