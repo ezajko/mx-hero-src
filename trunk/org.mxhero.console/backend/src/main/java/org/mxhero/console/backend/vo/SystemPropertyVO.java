@@ -12,6 +12,8 @@ public class SystemPropertyVO {
 	public final static String DEFAULT_USER_LANGUAGE="default.user.language";
 	public final static String EXTERNAL_LOGO_PATH="external.logo.path";
 	public final static String NEWS_FEED_ENABLED="news.feed.enabled";
+	public final static String DOCUMENTATION_URL="documentation.url";
+	public final static String LICENSE="license.data";
 	
 	private String propertyKey;
 	
