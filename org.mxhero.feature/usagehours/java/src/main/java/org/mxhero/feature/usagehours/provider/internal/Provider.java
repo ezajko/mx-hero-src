@@ -100,7 +100,9 @@ public class Provider extends RulesByFeature{
 			}
 			log.debug("timezone:"+timeZone.getID());
 			Calendar sentCalendar = Calendar.getInstance();
-			sentCalendar.setTime(mail.getSentDate());
+			try{
+				sentCalendar.setTime(mail.getSentDate());
+			}catch(Exception e){}
 			sentCalendar.setTimeZone(timeZone);
 			log.debug("sentDate:"+sentCalendar.toString());
 			log.debug("hours:"+hours.toString());
