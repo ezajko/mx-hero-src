@@ -1,96 +1,60 @@
 package org.mxhero.engine.plugin.attachmentlink.fileserver.service.smtp;
 
-public class SMTPSenderConfig {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 
-	private String host;
-	private Integer port;
-	private String adminMail;
-	private Boolean auth;
-	private Boolean ssl;
-	private String user;
-	private String password;
-	private String signature;
-	private String signaturePlain;
-	private String externalUrl;
+public class SMTPSenderConfig {
 	
-	public String getHost() {
-		return host;
+	@Autowired
+	private MessageSource source;
+	
+	@Autowired(required=true)
+	public SMTPSenderConfig(MessageSource source) {
+		this.source = source;
 	}
-	
-	public void setHost(String host) {
-		this.host = host;
+
+	public String getHost() {
+		return source.getMessage("smtp.host", null, null);
 	}
 	
 	public Integer getPort() {
-		return port;
-	}
-	
-	public void setPort(Integer port) {
-		this.port = port;
+		String port = source.getMessage("smtp.port", null, null);
+		try{return Integer.parseInt(port);}
+		catch(Exception e){
+			return null;
+		}
 	}
 	
 	public String getAdminMail() {
-		return adminMail;
+		return source.getMessage("smtp.adminMail", null, null);
 	}
-	
-	public void setAdminMail(String adminMail) {
-		this.adminMail = adminMail;
-	}
-	
+		
 	public Boolean getAuth() {
-		return auth;
-	}
-	
-	public void setAuth(Boolean auth) {
-		this.auth = auth;
+		return Boolean.parseBoolean(source.getMessage("smtp.auth", null, null));
 	}
 
 	public Boolean getSsl() {
-		return ssl;
-	}
-
-	public void setSsl(Boolean ssl) {
-		this.ssl = ssl;
+		return Boolean.parseBoolean(source.getMessage("smtp.ssl", null, null));
 	}
 
 	public String getUser() {
-		return user;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
+		return source.getMessage("smtp.user", null, null);
 	}
 
 	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+		return source.getMessage("smtp.password", null, null);
 	}
 
 	public String getSignature() {
-		return signature;
-	}
-
-	public void setSignature(String signature) {
-		this.signature = signature;
+		return source.getMessage("smtp.signature", null, null);
 	}
 
 	public String getExternalUrl() {
-		return externalUrl;
-	}
-
-	public void setExternalUrl(String externalUrl) {
-		this.externalUrl = externalUrl;
+		return source.getMessage("smtp.signature.plain", null, null);
 	}
 
 	public String getSignaturePlain() {
-		return signaturePlain;
-	}
-
-	public void setSignaturePlain(String signaturePlain) {
-		this.signaturePlain = signaturePlain;
+		return source.getMessage("server.external.url", null, null);
 	}
 
 }
