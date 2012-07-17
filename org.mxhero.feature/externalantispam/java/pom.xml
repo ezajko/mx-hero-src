@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.feature.externalantispam</groupId>
 	<artifactId>provider</artifactId>
-	<version>1.6.0</version>
+	<version>1.7.0</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -22,7 +22,7 @@
 			<type>pom</type>
 			<groupId>org.mxhero.engine.build</groupId>
 			<artifactId>provision</artifactId>
-			<version>1.2.1</version>
+			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
