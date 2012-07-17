@@ -13,17 +13,12 @@
 	</bean>
 
 	<bean id="smtpConfig" class="org.mxhero.engine.plugin.attachmentlink.fileserver.service.smtp.SMTPSenderConfig">
-		<property name="host" value="${smtp.host}"/>
-		<property name="port" value="${smtp.port}"/>
-		<property name="adminMail" value="${smtp.adminMail}"/>
-		<property name="auth" value="${smtp.auth}"/>
-		<property name="ssl" value="${smtp.ssl}"/>
-		<property name="user" value="${smtp.user}"/>
-		<property name="password" value="${smtp.password}"/>
-		<property name="signature" value="${smtp.signature}"/>
-		<property name="signaturePlain" value="${smtp.signature.plain}"/>
-		<property name="externalUrl" value="${server.external.url}"/>
 	</bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">  
+	        <property name="basename" value="classpath:reloadable"></property>  
+	        <property name="cacheSeconds" value="60"></property>  
+	</bean> 
 
 	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
@@ -40,6 +35,7 @@
 		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
 		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
 	</bean>	
+	
 	<!--
 	====================================================================================================================
 	@Configurable/@Autowired Support
