@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin</groupId>
 	<artifactId>gsync</artifactId>
-	<version>1.6.0</version>
+	<version>1.7.0</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -170,7 +170,7 @@
 			<artifactId>gdata-contacts-meta</artifactId>
 			<version>3.0</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>com.google.collections</groupId>
 			<artifactId>google-collections</artifactId>
