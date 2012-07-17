@@ -28,6 +28,7 @@ public class DisclaimerContractConfig {
 	private String externalRejectServiceBaseUrl="http://localhost:8080/disclaimer/reject";
 	private String password="disclaimer";
 	private PBEStringEncryptor encryptor;
+	
 	public void init(){
 		log.debug("init");
 		StandardPBEStringEncryptor newencryptor= new StandardPBEStringEncryptor();
@@ -72,6 +73,7 @@ public class DisclaimerContractConfig {
 	
 	public void setErrorFileStartName(String errorFileStartName) {
 		this.errorFileStartName = errorFileStartName;
+		refreshErrorMap();
 	}
 	
 	public String getErrorFileEndName() {
@@ -80,6 +82,7 @@ public class DisclaimerContractConfig {
 	
 	public void setErrorFileEndName(String errorFileEndName) {
 		this.errorFileEndName = errorFileEndName;
+		refreshErrorMap();
 	}
 
 	public String getExternalServiceBaseUrl() {
