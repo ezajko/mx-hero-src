@@ -19,10 +19,10 @@ public class ReplyTimeoutConfig {
 	
 	private String defaultLocale = "en_US";
 	private String[] availableLocales = {};
-	private String errorFileStartName = "/opt/mxhero/replytimout/error/template_";
+	private String errorFileStartName = "/opt/mxhero/replytimeout/error/template_";
 	private String errorFileEndName = ".htm";
 	private String noreplyFileEndName = ".htm";
-	private String noreplyFileStartName = "/opt/mxhero/replytimout/noreply/template_";
+	private String noreplyFileStartName = "/opt/mxhero/replytimeout/noreply/template_";
 	private Integer checkTimeInMinutes = 5;
 	private Map<String, String> errorMap;
 	private Map<String, String> noreplyMap;
