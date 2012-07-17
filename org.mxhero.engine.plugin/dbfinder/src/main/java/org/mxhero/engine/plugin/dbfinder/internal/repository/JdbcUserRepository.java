@@ -93,6 +93,7 @@ public class JdbcUserRepository implements UserRepository{
 							user.setDomain(domain);
 							user.setMail(accountAlias.get("account").toString().toLowerCase()+"@"+accountAlias.get("domain_id").toString().toLowerCase());
 							user.setGroup((accountAlias.get("group_name")==null)?null:accountAlias.get("group_name").toString().toLowerCase());
+							user.setProperties(new HashMap<String, String>());
 							usersMap.put(accountAlias.get("account").toString(), user);
 						}
 						user.getAliases().add(accountAlias.get("account_alias").toString().toLowerCase()+"@"+accountAlias.get("domain_alias").toString().toLowerCase());
