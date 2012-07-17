@@ -58,7 +58,25 @@ public class ReplyTimeoutConfig {
 			}
 		}
 	}
-	
+
+	public String getNoreplyFileEndName() {
+		return noreplyFileEndName;
+	}
+
+	public void setNoreplyFileEndName(String noreplyFileEndName) {
+		this.noreplyFileEndName = noreplyFileEndName;
+		refreshNoReplyMap();
+	}
+
+	public String getNoreplyFileStartName() {
+		return noreplyFileStartName;
+	}
+
+	public void setNoreplyFileStartName(String noreplyFileStartName) {
+		this.noreplyFileStartName = noreplyFileStartName;
+		refreshNoReplyMap();
+	}
+
 	public String getDefaultLocale() {
 		return defaultLocale;
 	}
@@ -81,6 +99,7 @@ public class ReplyTimeoutConfig {
 	
 	public void setErrorFileStartName(String errorFileStartName) {
 		this.errorFileStartName = errorFileStartName;
+		refreshErrorMap();
 	}
 	
 	public String getErrorFileEndName() {
@@ -89,6 +108,7 @@ public class ReplyTimeoutConfig {
 	
 	public void setErrorFileEndName(String errorFileEndName) {
 		this.errorFileEndName = errorFileEndName;
+		refreshErrorMap();
 	}
 	
 	public Integer getCheckTimeInMinutes() {
