@@ -12,13 +12,13 @@
     <bundle.symbolicName>org.mxhero.javax.mail</bundle.symbolicName>
     <wrapped.groupId>javax.mail</wrapped.groupId>
     <wrapped.artifactId>mail</wrapped.artifactId>
-    <wrapped.version>1.4.4</wrapped.version>
+    <wrapped.version>1.4.5</wrapped.version>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>javax.mail</groupId>
   <artifactId>org.mxhero.javax.mail</artifactId>
-  <version>1.4.4</version>
+  <version>1.4.5</version>
 
   <name>${bundle.symbolicName}${wrapped.version}</name>
 
@@ -67,7 +67,7 @@
     <dependency>
 		<groupId>javax.mail</groupId>
 		<artifactId>mail</artifactId>
-		<version>1.4.4</version>
+		<version>1.4.5</version>
       <optional>true</optional>
       <exclusions>
       	<exclusion>
