@@ -93,13 +93,8 @@ public abstract class SMTPSender {
         		message.setSubject("ATTACHMENT LINK");
         	}
         	if(messageId!=null){
-        		message.removeHeader("In-Reply-To");
-        		message.addHeader("In-Reply-To", messageId);
-        		String newSubject = ""+message.getSubject();
-        		if(!newSubject.startsWith("Re:")){
-        			newSubject="Re:"+newSubject;
-        		}
-        		message.setSubject(newSubject);
+        		message.addHeader("In-Reply-To", messageId);     
+        		message.addHeader("References", messageId);     
         	}
         	message.addRecipient(RecipientType.TO, new InternetAddress(recipient));
         	message.saveChanges();

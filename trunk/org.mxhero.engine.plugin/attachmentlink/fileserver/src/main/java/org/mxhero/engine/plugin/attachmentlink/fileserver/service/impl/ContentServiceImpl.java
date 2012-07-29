@@ -58,7 +58,27 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	public List<ContentDTO> getContentList(Long messageId, String recipient) {
-		return repository.getContentList(messageId,recipient);
+		List<ContentDTO> contents = repository.getContentList(messageId,recipient);
+		boolean notifyAll = false;
+		ContentDTO lastContent = null;
+		if(contents!=null){
+			for(ContentDTO content : contents){
+				if(!content.wasAccessed()){
+					repository.accessFirstTime(content.getIdMessageAttach());
+					if(content.isProcessMsg()){
+						notifyAll=true;
+						lastContent = content;
+					}
+				}
+			}
+		}
+		if(notifyAll){
+			String lastContentFileName = lastContent.getFileName();
+			lastContent.setFileName("allFiles.zip");
+			mailer.sendMailToSender(lastContent);
+			lastContent.setFileName(lastContentFileName);
+		}
+		return contents;
 	}
 
 }
