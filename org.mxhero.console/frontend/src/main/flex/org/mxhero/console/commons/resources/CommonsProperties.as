@@ -41,6 +41,10 @@ package org.mxhero.console.commons.resources
 		public static const VALIDATED_NAME:String="validated.name";
 		
 		public static const VALIDATED_VALUE:String="validated.value";
+		
+		public static const COMERCIAL_INFORMATION_URL:String="commercial.info.url";
+		
+		public static const COMERCIAL_INFORMATION:String="commercial.info";
 
 	}
 }
