@@ -31,7 +31,7 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 	
 	public void saveRecord(final Collection<Record> records) {
-		final String sql = "INSERT INTO mail_records (`insert_date`,`record_sequence`,`server_name`,`bcc_recipients`" +
+		final String sql = "INSERT INTO statistics.mail_records (`insert_date`,`record_sequence`,`server_name`,`bcc_recipients`" +
 				",`bytes_size`,`cc_recipients`,`from_recipients`,`message_id`,`ng_recipients`" +
 				",`phase`,`recipient`,`recipient_domain_id`,`recipient_id`,`sender`" +
 				",`sender_domain_id`,`sender_id`,`state`,`state_reason`,`subject`,`to_recipients`,`flow`,`sender_group`,`recipient_group`) " +
@@ -63,7 +63,7 @@ public class JdbcRecordRepository implements RecordRepository{
 	}
 
 	public void saveStat(final Collection<Stat> stats) {
-		final String sql = "INSERT INTO mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`server_name`,`phase`) " +
+		final String sql = "INSERT INTO statistics.mail_stats (`stat_key`,`stat_value`,`insert_date`,`record_sequence`,`server_name`,`phase`) " +
 				" VALUES(:stat_key,:stat_value,:insert_date,:record_sequence,:server_name,:phase) " +
 				" ON DUPLICATE KEY UPDATE `stat_value`=VALUES(stat_value);";
 		if(stats!=null && stats.size()>0){

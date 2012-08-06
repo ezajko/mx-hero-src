@@ -16,13 +16,10 @@
 
 	<context:annotation-config />
 
+	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
+
 	<osgix:cm-properties id="cmProps"
 		persistent-id="org.mxhero.engine.plugin.statistics">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/statistics</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
-		<prop key="updateTime">5000</prop>
 		<prop key="serverName">MXHERO</prop>
 	</osgix:cm-properties>
 
@@ -96,15 +93,7 @@
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="url" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
+		<property name="dataSource" ref="dbpool" />
 	</bean>
 
 </beans>

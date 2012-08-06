@@ -12,16 +12,7 @@
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
 		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd">
 
-	<osgix:cm-properties id="jdbcCmProps"
-		persistent-id="org.mxhero.engine.plugin.emailquarantine">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/mxhero</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
-	</osgix:cm-properties>
-
-	<context:property-placeholder
-		properties-ref="jdbcCmProps" />
+	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
 
 	<context:component-scan base-package="org.mxhero.engine.plugin.emailquarantine" />
 	
@@ -50,15 +41,8 @@
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dbpool" />
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="url" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
-	</bean>
 
 </beans>

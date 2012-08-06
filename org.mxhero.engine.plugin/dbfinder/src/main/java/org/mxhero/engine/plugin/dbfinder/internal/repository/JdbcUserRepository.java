@@ -41,7 +41,7 @@ public class JdbcUserRepository implements UserRepository{
 	 */
 	@Transactional(readOnly=true)
 	public Map<String, Domain> getDomains(){
-		String domainSql = "SELECT domain, alias FROM domains_aliases";
+		String domainSql = "SELECT domain, alias FROM mxhero.domains_aliases";
 		Map<String, Domain> domainMap = new HashMap<String, Domain>();
 		List<Map<String, Object>> domainsResult = template.getJdbcOperations().queryForList(domainSql);
 		if(domainsResult!=null && domainsResult.size()>0){
@@ -73,7 +73,7 @@ public class JdbcUserRepository implements UserRepository{
 		Map<String, User> aliasesMap = new HashMap<String, User>();	
 		if(domainMap.size()>0){
 			String accountsQuery = "SELECT aa.account, aa.domain_id, aa.account_alias, aa.domain_alias, ea.group_name " +
-					" FROM email_accounts ea INNER JOIN account_aliases aa " +
+					" FROM mxhero.email_accounts ea INNER JOIN mxhero.account_aliases aa " +
 					" ON aa.domain_id = ea.domain_id AND aa.account = ea.account" +
 					" WHERE aa.domain_id = :domainId";
 			for(String domainKey : domainMap.keySet()){
@@ -106,7 +106,7 @@ public class JdbcUserRepository implements UserRepository{
 					}
 				}
 				//load user properties for the domain
-				String accountProperties = "SELECT concat(account,'@',domain_id) as email, property_name, property_value FROM email_accounts_properties WHERE domain_id = :domainId";
+				String accountProperties = "SELECT concat(account,'@',domain_id) as email, property_name, property_value FROM mxhero.email_accounts_properties WHERE domain_id = :domainId";
 				List<Map<String, Object>> accountsPropertiesResult = template.queryForList(accountProperties, new MapSqlParameterSource("domainId", domainKey));
 				log.debug("found X properties:"+accountsPropertiesResult.size()+" for domain:"+domainKey);
 				if(accountsPropertiesResult!=null && accountsPropertiesResult.size()>0){

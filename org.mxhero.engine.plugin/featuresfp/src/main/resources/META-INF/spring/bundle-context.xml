@@ -18,16 +18,7 @@
 	
 	<tx:annotation-driven transaction-manager="txManager" />
 
-	<osgix:cm-properties id="cmProps"
-		persistent-id="org.mxhero.engine.plugin.featuresfp">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/mxhero</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
-	</osgix:cm-properties>
-
-	<context:property-placeholder
-		properties-ref="cmProps" />
+	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
 
 	<osgi:service ref="jdbcRulesFinder">
 		<osgi:interfaces>
@@ -43,15 +34,8 @@
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dbpool" />
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="url" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
-	</bean>
 
 </beans>

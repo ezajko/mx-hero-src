@@ -16,22 +16,12 @@
 
 	<context:component-scan base-package="org.mxhero.engine.plugin.attachmentlink" />
 	
+	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
+	
 	<tx:annotation-driven transaction-manager="txManager" />
 
 	<osgix:cm-properties id="jdbcCmProps"
 		persistent-id="org.mxhero.engine.plugin.attachmentlink">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://localhost:3306/attachments?sessionVariables=FOREIGN_KEY_CHECKS=0&amp;useUnicode=true&amp;characterEncoding=UTF-8</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
-		<prop key="idleConnectionTestPeriod">1</prop>
-		<prop key="idleMaxAge">5</prop>
-		<prop key="maxConnectionsPerPartition">15</prop>
-		<prop key="minConnectionsPerPartition">15</prop>
-		<prop key="partitionCount">2</prop>
-		<prop key="acquireIncrement">2</prop>
-		<prop key="releaseHelperThreads">2</prop>
-
 		<prop key="evaluate.message.as.attachment">false</prop>
 		<prop key="http.file.server.attach">http://localhost:8080/fileServer/download</prop>
 		<prop key="base.store.filesystem.path">C:/temp/attachments</prop>
@@ -85,23 +75,7 @@
 	</bean>
 
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-	  <property name="dataSource" ref="dataSource"/>
-	</bean>
-
-	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
-		destroy-method="close">
-		<property name="poolName" value="mxhero-attachmentlink" />
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="jdbcUrl" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
-		<property name="idleConnectionTestPeriodInMinutes" value="${idleConnectionTestPeriod}" />
-		<property name="idleMaxAgeInMinutes" value="${idleMaxAge}" />
-		<property name="maxConnectionsPerPartition" value="${maxConnectionsPerPartition}" />
-		<property name="minConnectionsPerPartition" value="${minConnectionsPerPartition}" />
-		<property name="partitionCount" value="${partitionCount}" />
-		<property name="acquireIncrement" value="${acquireIncrement}" />
-		<property name="releaseHelperThreads" value="${releaseHelperThreads}" />
+	  <property name="dataSource" ref="dbpool"/>
 	</bean>
 
 </beans>

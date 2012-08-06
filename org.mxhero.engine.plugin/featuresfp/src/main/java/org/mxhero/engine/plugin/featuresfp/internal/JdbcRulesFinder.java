@@ -50,7 +50,7 @@ public class JdbcRulesFinder implements RulesFinder{
 	public Feature find(String componet, Integer version) {
 		FeatureEntity feature = null;
 		String featureSql = "SELECT id, base_priority, component, version " +
-				" FROM features WHERE component = :component AND version = :version AND  enabled = true;";
+				" FROM mxhero.features WHERE component = :component AND version = :version AND  enabled = true;";
 		MapSqlParameterSource featureParams = new MapSqlParameterSource();
 		featureParams.addValue("component", componet);
 		featureParams.addValue("version", version);
@@ -80,7 +80,7 @@ public class JdbcRulesFinder implements RulesFinder{
 	 */
 	private Collection<RuleEntity> getRules(Integer ruleId){
 		String rulesSql = "SELECT id, admin_order, domain_id, enabled, two_ways, from_direction_id, to_direction_id " +
-				" FROM features_rules WHERE feature_id = :featureId";
+				" FROM mxhero.features_rules WHERE feature_id = :featureId";
 		Collection<RuleEntity> rules = template.query(rulesSql, new MapSqlParameterSource("featureId",ruleId) , new RowMapper<RuleEntity>() {
 			@Override
 			public RuleEntity mapRow(ResultSet rs, int rowNum)
@@ -118,7 +118,7 @@ public class JdbcRulesFinder implements RulesFinder{
 	private Collection<RulePropertyEntity> getProperties(Integer ruleId){
 		Collection<RulePropertyEntity> properties;
 		String sqlProperties = "SELECT property_key, property_value " +
-				" FROM features_rules_properties " +
+				" FROM mxhero.features_rules_properties " +
 				" WHERE rule_id = :ruleId";
 		properties=template.query(sqlProperties, new MapSqlParameterSource("ruleId",ruleId), new RowMapper<RulePropertyEntity>() {
 			@Override
@@ -141,7 +141,7 @@ public class JdbcRulesFinder implements RulesFinder{
 	 */
 	private RuleDirectionEntity getDirection(Integer directionId){
 		String sqlDirection = "SELECT id, account, directiom_type, domain, free_value, group_name " +
-				" FROM features_rules_directions WHERE id = :directionId";
+				" FROM mxhero.features_rules_directions WHERE id = :directionId";
 		List<RuleDirectionEntity> directions = template.query(sqlDirection, new MapSqlParameterSource("directionId",directionId), new RowMapper<RuleDirectionEntity>() {
 			@Override
 			public RuleDirectionEntity mapRow(ResultSet rs, int rowNum)

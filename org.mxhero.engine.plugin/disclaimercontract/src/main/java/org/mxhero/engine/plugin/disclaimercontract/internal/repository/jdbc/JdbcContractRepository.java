@@ -26,7 +26,7 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public List<Contract> findByRule(Long ruleId) {
-		String sql = "SELECT * FROM "+ContractMapper.TABLE_NAME
+		String sql = "SELECT * FROM "+ContractMapper.DATABASE+"."+ContractMapper.TABLE_NAME
 				+" WHERE "+ContractMapper.RULE_ID+"= :ruleId";
 		MapSqlParameterSource source = new MapSqlParameterSource("ruleId",ruleId);
 		return template.query(sql, source, new ContractMapper());
@@ -34,7 +34,7 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public Contract findByRuleAndRecipient(Long ruleId, String recipient) {
-		String sql = "SELECT * FROM "+ContractMapper.TABLE_NAME
+		String sql = "SELECT * FROM "+ContractMapper.DATABASE+"."+ContractMapper.TABLE_NAME
 				+" WHERE "+ContractMapper.RULE_ID+"= :ruleId AND "+ContractMapper.RECIPIENT+" = :recipient";
 		MapSqlParameterSource source = new MapSqlParameterSource("ruleId",ruleId);
 		source.addValue("recipient", recipient);
@@ -47,7 +47,7 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public Request addRequest(Request request) {
-		String sql = "INSERT INTO `"+RequestMapper.TABLE_NAME+"` " 
+		String sql = "INSERT INTO "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+" " 
 				+" (`"+RequestMapper.DISCLAIMER_HTML+"`,`"+RequestMapper.DISCLAIMER_PLAIN+"`," +
 				"`"+RequestMapper.MESSAGE_ID+"`,`"+RequestMapper.PENDING+"`," +
 				"`"+RequestMapper.RECIPIENT+"`,`"+RequestMapper.REQUEST_DATE+"`," +
@@ -77,7 +77,7 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public List<Request> pending() {
-		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+"` " +
+		String sql = "SELECT * FROM "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+" " +
 				" WHERE `"+RequestMapper.PENDING+"` is TRUE " +
 				" AND `"+RequestMapper.APPROVED_DATE+"` IS NOT NULL " +
 				" AND `"+RequestMapper.VETO_DATE+"` IS NULL";
@@ -87,7 +87,7 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public Contract create(Contract contract) {
-		String sql = "INSERT INTO `"+ContractMapper.TABLE_NAME+"`" 
+		String sql = "INSERT INTO "+ContractMapper.DATABASE+"."+ContractMapper.TABLE_NAME+" " 
 				+" (`"+ContractMapper.RECIPIENT+"`,`"+ContractMapper.SENDER_DOMAIN+"`,"
 				+" `"+ContractMapper.RULE_ID+"`,`"+ContractMapper.APPROVED_DATE+"`,"
 				+" `"+ContractMapper.DISCLAIMER_PLAIN+"`,`"+ContractMapper.DISCLAIMER_HTML+"`,"
@@ -111,14 +111,14 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public void markDone(Long requestId) {
-		String sql = "UPDATE `"+RequestMapper.TABLE_NAME+"` " +
+		String sql = "UPDATE "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+" " +
 				" SET `"+RequestMapper.PENDING+"` = false " +
 				" WHERE `"+RequestMapper.ID+"` = :requestId ";
 		template.update(sql, new MapSqlParameterSource("requestId",requestId));
 	}
 
 	private Request findRequestById(Long id){
-		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+"` WHERE `"+RequestMapper.ID+"` = :id ";
+		String sql = "SELECT * FROM "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+" WHERE `"+RequestMapper.ID+"` = :id ";
 		Request request = null;
 		List<Request> results = template.query(sql, new MapSqlParameterSource("id",id), new RequestMapper());
 		if(results!=null && results.size()>0){
@@ -129,8 +129,8 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public List<Request> oldNotAccepted(Integer hours) {
-		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+
-				"` WHERE `"+RequestMapper.APPROVED_DATE+"` is NULL "+
+		String sql = "SELECT * FROM "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+
+				" WHERE `"+RequestMapper.APPROVED_DATE+"` is NULL "+
 				" AND `"+RequestMapper.VETO_DATE+"` is NULL "+
 				" AND DATE_ADD(`"+RequestMapper.REQUEST_DATE+ "`, INTERVAL :hours HOUR) < NOW() ";
 		List<Request> results = template.query(sql, new MapSqlParameterSource("hours",hours), new RequestMapper());
@@ -139,8 +139,8 @@ public class JdbcContractRepository implements ContractRepository{
 
 	@Override
 	public List<Request> vetoRequests() {
-		String sql = "SELECT * FROM `"+RequestMapper.TABLE_NAME+
-				"` WHERE `"+RequestMapper.VETO_DATE+"` is NOT NULL "+
+		String sql = "SELECT * FROM "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+
+				" WHERE `"+RequestMapper.VETO_DATE+"` is NOT NULL "+
 				" AND `"+RequestMapper.PENDING+"` IS TRUE";
 		List<Request> results = template.getJdbcOperations().query(sql, new RequestMapper());
 		return results;
@@ -148,6 +148,6 @@ public class JdbcContractRepository implements ContractRepository{
 	
 	@Override
 	public void remove(Long requestId) {
-		template.update("DELETE FROM `"+RequestMapper.TABLE_NAME+"` WHERE `"+RequestMapper.ID+"` = :id ", new MapSqlParameterSource("id", requestId));
+		template.update("DELETE FROM "+ContractMapper.DATABASE+"."+RequestMapper.TABLE_NAME+" WHERE `"+RequestMapper.ID+"` = :id ", new MapSqlParameterSource("id", requestId));
 	}
 }

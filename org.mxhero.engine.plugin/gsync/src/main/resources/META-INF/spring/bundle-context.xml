@@ -14,15 +14,13 @@
 
 	<osgix:cm-properties id="jdbcCmProps"
 		persistent-id="org.mxhero.engine.plugin.gsync">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/mxhero</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
 		<prop key="senderMail">adsync@mxhero.com</prop>
 		<prop key="outputService">org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService</prop>
 		<prop key="useAliases">true</prop>
 		<prop key="recipientMail">gmail-support@mxhero.com</prop>
 	</osgix:cm-properties>
+
+	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
 
 	<context:property-placeholder
 		properties-ref="jdbcCmProps" />
@@ -52,15 +50,7 @@
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="url" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
+		<property name="dataSource" ref="dbpool" />
 	</bean>
 
 </beans>
