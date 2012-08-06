@@ -29,11 +29,11 @@ public class DaysPeriodCleaner {
 
 	private NamedParameterJdbcTemplate template;
 	
-	private String checkString = " SELECT `message`.`message_id` " +
-			" FROM `message`INNER JOIN `message_attach` " +
-			" ON `message_attach`.`message_id` = `message`.`message_id` " +
-			" GROUP BY `message`.`message_id` " +
-			" HAVING MAX(`message_attach`.`creation_date`) < ? ";
+	private String checkString = " SELECT m.`message_id` " +
+			" FROM attachments.`message` m INNER JOIN attachments.`message_attach` ma " +
+			" ON ma.`message_id` = m.`message_id` " +
+			" GROUP BY m.`message_id` " +
+			" HAVING MAX(ma.`creation_date`) < ? ";
 	
 	@Autowired
 	public DaysPeriodCleaner(DataSource ds){
@@ -67,30 +67,30 @@ public class DaysPeriodCleaner {
 		if(oldMessages!=null){
 			log.debug("found X messages:"+oldMessages.size());
 			for(Long messageId : oldMessages){
-				List<Long> messageAttachs = template.getJdbcOperations().queryForList("SELECT `message_attach_id` FROM `message_attach` WHERE `message_id` = ?",Long.class, messageId);
+				List<Long> messageAttachs = template.getJdbcOperations().queryForList("SELECT `message_attach_id` FROM attachments.`message_attach` WHERE `message_id` = ?",Long.class, messageId);
 				if(messageAttachs!=null){
 					log.debug("found message attachs:"+messageAttachs.size());
 					for(Long messageAttahcId : messageAttachs){
-						int deletedHistory = template.getJdbcOperations().update("DELETE FROM `history_access_attach` WHERE `message_attach_id` = ?", messageAttahcId);
+						int deletedHistory = template.getJdbcOperations().update("DELETE FROM attachments.`history_access_attach` WHERE `message_attach_id` = ?", messageAttahcId);
 						log.debug("deleted histories:"+deletedHistory);
-						int deletedMessageAttach = template.getJdbcOperations().update("DELETE FROM `message_attach` WHERE `message_attach_id` = ?", messageAttahcId);
+						int deletedMessageAttach = template.getJdbcOperations().update("DELETE FROM attachments.`message_attach` WHERE `message_attach_id` = ?", messageAttahcId);
 						log.debug("deleted histories:"+deletedMessageAttach);
 					}
 				}
-				template.getJdbcOperations().update("DELETE FROM `message` WHERE `message_id` = ?", messageId);
+				template.getJdbcOperations().update("DELETE FROM attachments.`message` WHERE `message_id` = ?", messageId);
 				log.debug("deleted message:"+messageId);
 			}		
 		}
-		String findAttachs =" SELECT `attach`.`attach_id`, `attach`.`path` " +
-				" FROM `attach` " +
+		String findAttachs =" SELECT a.`attach_id`, a.`path` " +
+				" FROM attachments.`attach` a " +
 				" WHERE NOT EXISTS (SELECT 1 " +
-									" FROM `message_attach` " +
-									" WHERE `message_attach`.`attach_id` = `attach`.`attach_id`)";
+									" FROM attachments.`message_attach` ma" +
+									" WHERE ma.`attach_id` = a.`attach_id`)";
 		List<Map<String, Object>> unlinkedAttachs = template.getJdbcOperations().queryForList(findAttachs);
 		if(unlinkedAttachs!=null){
 			log.debug("found X unlinked attachs:"+unlinkedAttachs.size());
 			for(Map<String, Object> attach : unlinkedAttachs){
-				int deletedAttach = template.getJdbcOperations().update("DELETE FROM `attach` WHERE `attach_id` = ?", attach.get("attach_id"));
+				int deletedAttach = template.getJdbcOperations().update("DELETE FROM attachments.`attach` WHERE `attach_id` = ?", attach.get("attach_id"));
 				log.debug("attach record deleted:"+deletedAttach);
 				try{
 					File attachFile = new File(attach.get("path").toString());

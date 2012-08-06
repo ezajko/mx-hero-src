@@ -17,11 +17,10 @@
 
 	<osgix:cm-properties id="cmProps"
 		persistent-id="org.mxhero.engine.plugin.dbpool">		
-		<prop key="poolName">org.mxhero.engine.plugin.dbpool</prop>
-		<prop key="driverClass">com.mysql.jdbc.Driver</prop>
+		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
 		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/mxhero</prop>
-		<prop key="username">mxhero</prop>
-		<prop key="password">mxhero</prop>
+		<prop key="jdbcUserName">mxhero</prop>
+		<prop key="jdbcPassord">mxhero</prop>
 		<prop key="idleConnectionTestPeriodInMinutes">1</prop>
 		<prop key="idleMaxAgeInMinutes">4</prop>
 		<prop key="maxConnectionsPerPartition">16</prop>
@@ -47,14 +46,14 @@
 		</osgi:interfaces>
 		<osgi:service-properties>
 			<entry key="service.pid"
-				value="org.mxhero.engine.plugin.threadlight.internal.service.cachedThreadRowService" />
+				value="org.mxhero.engine.plugin.dbpool.DataSource" />
 		</osgi:service-properties>
 	</osgi:service>
 
 	<!-- BoneCP configuration -->
 	<bean id="dataSource" class="org.mxhero.engine.plugin.dbpool.internal.BCPDataSource"
 		destroy-method="close">
-		<property name="poolName" value="org.mxhero.engine.plugin.threadlight.boneCP" />
+		<property name="poolName" value="org.mxhero.engine.plugin.dbpool.boneCP" />
 		<property name="driverClass" value="${jdbcDriverClassName}" />
 		<property name="jdbcUrl" value="${jdbcUrl}" />
 		<property name="username" value="${jdbcUserName}" />

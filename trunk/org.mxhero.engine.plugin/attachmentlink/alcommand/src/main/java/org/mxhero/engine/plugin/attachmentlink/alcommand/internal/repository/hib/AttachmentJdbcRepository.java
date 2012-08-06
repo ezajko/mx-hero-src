@@ -54,7 +54,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 	 */
 	@Override
 	public Attach getAttachForChecksum(Attach attach) {
-		String sql = "select a.attach_id as id, a.md5_checksum as md5Checksum, a.file_name as file_name,a.size as size,a.mime_type as mimeType, a.path as path from attach a where a.md5_checksum = :checksum";
+		String sql = "select a.attach_id as id, a.md5_checksum as md5Checksum, a.file_name as file_name,a.size as size,a.mime_type as mimeType, a.path as path from attachments.attach a where a.md5_checksum = :checksum";
 		List<Attach> queryForList = template.query(sql, new MapSqlParameterSource("checksum", attach.getMd5Checksum()), new BeanPropertyRowMapper<Attach>(Attach.class));
 		if(queryForList.isEmpty()){
 			return null;
@@ -68,7 +68,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 	 */
 	@Override
 	public List<Attach> getAttachmentsForEmail(Message mail) {
-		String sql = "select a.attach_id as id, a.md5_checksum as md5Checksum, a.file_name as file_name,a.size as size,a.mime_type as mimeType, a.path as path from attach a inner join message_attach ma on a.attach_id = ma.attach_id inner join message m on m.message_id = ma.message_id where m.message_platform_id = :id";
+		String sql = "select a.attach_id as id, a.md5_checksum as md5Checksum, a.file_name as file_name,a.size as size,a.mime_type as mimeType, a.path as path from attachments.attach a inner join message_attach ma on a.attach_id = ma.attach_id inner join message m on m.message_id = ma.message_id where m.message_platform_id = :id";
 		return template.query(sql, new MapSqlParameterSource("id", mail.getMessagePlatformId()), new BeanPropertyRowMapper<Attach>(Attach.class));
 	}
 
@@ -77,7 +77,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 	 */
 	@Override
 	public boolean hasBeenProcessed(Message mail) {
-		String sql = "select processed from message where message_platform_id = :id";
+		String sql = "select processed from attachments.message where message_platform_id = :id";
 		List<Boolean> queryForList = template.queryForList(sql, new MapSqlParameterSource("id", mail.getMessagePlatformId()), Boolean.class);
 		if(queryForList.isEmpty())return false;
 		return queryForList.get(0);
@@ -109,7 +109,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void updateMessage(Message attach) {
-		String insertMsg = "update message set message_platform_id = :msgId,sender_email = :sender,process_ack_download = :prAck,msg_ack_download = :msgAck,msg_ack_download_html = :msgAckHtml,subject = :sub where message_id = :id";
+		String insertMsg = "update attachments.message set message_platform_id = :msgId,sender_email = :sender,process_ack_download = :prAck,msg_ack_download = :msgAck,msg_ack_download_html = :msgAckHtml,subject = :sub where message_id = :id";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msgId", attach.getMessagePlatformId());
 		values.put("sender", attach.getSender());
@@ -124,7 +124,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void saveNewMessage(Message attach) {
-		String insertMsg = "insert into message (message_platform_id,sender_email,process_ack_download,msg_ack_download,msg_ack_download_html,subject) values (:msgPlatId,:sendEmail,:pAck,:msgAck,:msgAckHtml,:sub)";
+		String insertMsg = "insert into attachments.message (message_platform_id,sender_email,process_ack_download,msg_ack_download,msg_ack_download_html,subject) values (:msgPlatId,:sendEmail,:pAck,:msgAck,:msgAckHtml,:sub)";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msgPlatId", attach.getMessagePlatformId());
 		values.put("sendEmail", attach.getSender());
@@ -160,7 +160,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void saveMessageAttach(MessageAttachRecipient attach) {
-		String sql = "insert into message_attach (message_id,attach_id,recipient_email) values(:msg,:att,:recip)";
+		String sql = "insert into attachments.message_attach (message_id,attach_id,recipient_email) values(:msg,:att,:recip)";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msg", attach.getMessage().getId());
 		values.put("att", attach.getAttach().getId());
@@ -173,7 +173,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private Long msgAttachExist(MessageAttachRecipient attach) {
-		String sql = "select message_attach_id from message_attach where message_id = :msg and attach_id = :att and recipient_email = :rec";
+		String sql = "select message_attach_id from attachments.message_attach where message_id = :msg and attach_id = :att and recipient_email = :rec";
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("msg", attach.getMessage().getId());
 		map.put("att", attach.getAttach().getId());
@@ -197,7 +197,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void saveAttach(Attach attach) {
-		String sql = "insert into attach (md5_checksum,file_name,size,mime_type,path) values(:md5,:file,:size,:mime,:path)";
+		String sql = "insert into attachments.attach (md5_checksum,file_name,size,mime_type,path) values(:md5,:file,:size,:mime,:path)";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("md5", attach.getMd5Checksum());
 		values.put("file", attach.getFileName());
@@ -212,7 +212,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void updateAttach(Attach attach) {
-		String sql = "update attach set md5_checksum = :md5, file_name = :file,size = :size ,mime_type = :mime,path = :path where attach_id = :id";
+		String sql = "update attachments.attach set md5_checksum = :md5, file_name = :file,size = :size ,mime_type = :mime,path = :path where attach_id = :id";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("md5", attach.getMd5Checksum());
 		values.put("file", attach.getFileName());
@@ -226,7 +226,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private Long attachExist(Attach attach) {
-		String sql = "select attach_id from attach where md5_checksum = :checksum";
+		String sql = "select attach_id from attachments.attach where md5_checksum = :checksum";
 		List<Long> queryForList = template.queryForList(sql, new MapSqlParameterSource("checksum", attach.getMd5Checksum()),Long.class);
 		if(queryForList.isEmpty()){
 			return null;
@@ -237,7 +237,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private Long isToSave(Message attach) {
-		String sql = "select message_id from message where message_platform_id = :id";
+		String sql = "select message_id from attachments.message where message_platform_id = :id";
 		List<Long> queryForInt = template.queryForList(sql, new MapSqlParameterSource("id", attach.getMessagePlatformId()),Long.class);
 		if(queryForInt.isEmpty()){
 			return null;

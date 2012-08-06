@@ -41,7 +41,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		String sql = " SELECT da.domain, da.address, da.base, da.directory_type, " +
 				" da.last_error, da.filter, da.last_update, da.next_update, da.override_flag, " +
 				" da.password, da.port, da.ssl_flag, da.user, da.dn_authenticate, au.notify_email " +
-				" FROM domain_adldap da LEFT OUTER JOIN app_users au ON da.domain = au.domain " +
+				" FROM mxhero.domain_adldap da LEFT OUTER JOIN mxhero.app_users au ON da.domain = au.domain " +
 				" WHERE da.domain = :domainId ";
 		List<DomainAdLdap> domainsAdLdap = template.query(sql, new MapSqlParameterSource("domainId", domainId), new RowMapper<DomainAdLdap>() {
 			
@@ -72,20 +72,20 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	}
 	
 	public List<String> findDomainAliases(String domainId){
-		String sql = " SELECT alias FROM domains_aliases WHERE domain = :domainId";
+		String sql = " SELECT alias FROM mxhero.domains_aliases WHERE domain = :domainId";
 		return template.queryForList(sql, new MapSqlParameterSource("domainId", domainId),String.class);
 	}
 	
 	public List<String> findDomainsToSync(){
 		String sql = " SELECT domain " +
-				" FROM domain_adldap " +
+				" FROM mxhero.domain_adldap " +
 				" WHERE next_update < now() " +
 				" AND directory_type = '"+SYNC_TYPE+"'";
 		return template.getJdbcOperations().queryForList(sql, String.class);
 	}
 
 	public void updateNextAdLdapCheck(String domainId){
-		String sql = " UPDATE domain_adldap " +
+		String sql = " UPDATE mxhero.domain_adldap " +
 				" SET last_update = now() , last_error = null, " +
 				" next_update = DATE_ADD(now(), interval 1 hour) " +
 				" WHERE domain = :domainId ";
@@ -94,7 +94,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW)
 	public void updateErrorAdLdapCheck(String domainId, String lastError){
-		String sql = " UPDATE domain_adldap " +
+		String sql = " UPDATE mxhero.domain_adldap " +
 				" SET last_update = now() , last_error = null, " +
 				" next_update = DATE_ADD(now(), interval 1 hour), " +
 				" last_error = :lastError " +
@@ -107,9 +107,9 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 
 	public void deleteAccount(String account, String domainId){
 
-		String rulesSql = " SELECT id FROM  features_rules " +
+		String rulesSql = " SELECT id FROM  mxhero.features_rules " +
 				" WHERE EXISTS (SELECT rule_id " +
-							" FROM features_rules_directions b " +
+							" FROM mxhero.features_rules_directions b " +
 							" WHERE b.rule_id = features_rules.id " +
 							" AND b.domain = :domainId " +
 							" AND b.account = :account ) ";
@@ -119,16 +119,16 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		List<Long> rulesId = template.queryForList(rulesSql, rulesParams,Long.class);
 		if(rulesId!=null){
 			for(Long ruleId : rulesId){
-				template.getJdbcOperations().update("DELETE FROM features_rules_properties WHERE rule_id = ?"
+				template.getJdbcOperations().update("DELETE FROM mxhero.features_rules_properties WHERE rule_id = ?"
 						,new Object[]{ruleId});
-				template.getJdbcOperations().update("DELETE FROM features_rules_directions WHERE rule_id = ?"
+				template.getJdbcOperations().update("DELETE FROM mxhero.features_rules_directions WHERE rule_id = ?"
 						,new Object[]{ruleId});
-				template.getJdbcOperations().update("DELETE FROM features_rules WHERE id = ?"
+				template.getJdbcOperations().update("DELETE FROM mxhero.features_rules WHERE id = ?"
 						,new Object[]{ruleId});
 			}
 		}
 
-		String aliasesSql = " DELETE FROM account_aliases " +
+		String aliasesSql = " DELETE FROM mxhero.account_aliases " +
 				" WHERE domain_id = :domainId " +
 				" AND account = :account ";
 		Map<String, Object> aliasesParams = new HashMap<String, Object>();
@@ -136,7 +136,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		aliasesParams.put("account", account);
 		template.update(aliasesSql, aliasesParams);
 		
-		String accountSql = " DELETE FROM email_accounts " +
+		String accountSql = " DELETE FROM mxhero.email_accounts " +
 				" WHERE domain_id = :domainId " +
 				" AND account = :account ";
 		Map<String, Object> accountParams = new HashMap<String, Object>();
@@ -149,7 +149,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	@Transactional(readOnly=true)
 	public List<String> getManagedAccounts(String domainId){
 		String sql = " SELECT account " +
-				" FROM email_accounts " +
+				" FROM mxhero.email_accounts " +
 				" WHERE domain_id = :domainId " +
 				" AND data_source = '"+SYNC_TYPE+"' ";
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -159,7 +159,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	
 	public List<String> getNotManagedAccounts(String domainId){
 		String sql = " SELECT account " +
-				" FROM email_accounts " +
+				" FROM mxhero.email_accounts " +
 				" WHERE domain_id = :domainId " +
 				" AND data_source <> '"+SYNC_TYPE+"' ";
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -168,14 +168,14 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	}
 	
 	public void updateAliasesAccount(String account, String domainId, List<String> aliases){
-		String sql = " DELETE FROM account_aliases " +
+		String sql = " DELETE FROM mxhero.account_aliases " +
 				" WHERE account = :account " +
 				" AND domain_id = :domainId ";
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("domainId", domainId);
 		paramMap.put("account", account);
 		template.update(sql, paramMap);
-		String aliasSql = " INSERT INTO account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
+		String aliasSql = " INSERT INTO mxhero.account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
 						" VALUES (?,?,NOW(),?,?,?) " +
 						" ON DUPLICATE KEY UPDATE " +
 						" created=VALUES(created), data_source=VALUES(data_source), account=VALUES(account), domain_id=VALUES(domain_id)";
@@ -185,7 +185,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 			template.getJdbcOperations().update(aliasSql, new Object[]{accountName,domainName,SYNC_TYPE,account,domainId});
 		}
 		
-		String updateAccount = " UPDATE email_accounts " +
+		String updateAccount = " UPDATE mxhero.email_accounts " +
 							" SET updated = NOW()," +
 							" data_source = '"+SYNC_TYPE+"' " +
 							" WHERE account = :account " +
@@ -197,7 +197,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 	}
 	
 	public void insertAccount(String account, String domainId, List<String> aliases){
-		String sql = " INSERT INTO email_accounts (account, domain_id, created, data_source, updated, group_name) " +
+		String sql = " INSERT INTO mxhero.email_accounts (account, domain_id, created, data_source, updated, group_name) " +
 				" VALUES (?,?,NOW(),?,NOW(),null) ";
 		
 		try{
@@ -206,7 +206,7 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 			log.warn("duplicate account:"+account+" domain:"+domainId);
 		}
 		
-		String aliasSql = " INSERT INTO account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
+		String aliasSql = " INSERT INTO mxhero.account_aliases (account_alias,domain_alias,created,data_source,account,domain_id) " +
 				" VALUES (?,?,NOW(),?,?,?) " +
 				" ON DUPLICATE KEY UPDATE " +
 				" created=VALUES(created), data_source=VALUES(data_source), account=VALUES(account), domain_id=VALUES(domain_id)";

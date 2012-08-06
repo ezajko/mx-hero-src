@@ -7,6 +7,7 @@ com.mysql.jdbc, \
 org.springframework.orm*;resolution:=optional, \
 org.aopalliance.aop, \
 org.springframework.aop, \
+org.mxhero.engine.plugin.dbpool, \
 org.springframework.aop.framework, *
 
 Embed-Dependency: \

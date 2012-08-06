@@ -108,8 +108,9 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 			try{
 				send(mail,msg,props);
 			}catch(Exception e){
-				log.warn("DSN error:",e.getMessage());
 				if(hasDsn){
+					log.warn("DSN error for ret="+props.get("mail.smtp.dsn.ret")
+							+" notify="+props.get("mail.smtp.dsn.notify"));
 					props.remove("mail.smtp.dsn.ret");
 					props.remove("mail.smtp.dsn.notify");
 					log.debug("send without DSN");
@@ -121,10 +122,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 		    }
 
 		} catch (Exception e) {
-	    	if(props.contains("mail.smtp.dsn.notify") || props.contains("mail.smtp.dsn.ret")){
-	    		log.error("mail.smtp.dsn.ret="+props.get("mail.smtp.dsn.ret"));
-	    		log.error("mail.smtp.dsn.notify="+props.get("mail.smtp.dsn.notify"));
-	    	}
 			log.error("Couldnt send the mail:"+mail,e);
 			throw new RuntimeException(e);
 		}	

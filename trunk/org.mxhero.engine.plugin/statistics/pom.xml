@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin</groupId>
 	<artifactId>statistics</artifactId>
-	<version>1.5.0</version>
+	<version>1.8.0</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -110,6 +110,12 @@
 			<groupId>org.mxhero.engine</groupId>
 			<artifactId>commons</artifactId>
 			<version>1.6.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mxhero.engine.plugin</groupId>
+			<artifactId>dbpool</artifactId>
+			<version>1.7.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

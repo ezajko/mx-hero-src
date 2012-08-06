@@ -82,6 +82,7 @@ public class CustomDeliveryHandler extends AbstractDeliveryHandler {
 	 */
 	public void resetMessageState() {
 		this.deliveries.clear();
+		this.notify=null;
 	}
 
 	/**

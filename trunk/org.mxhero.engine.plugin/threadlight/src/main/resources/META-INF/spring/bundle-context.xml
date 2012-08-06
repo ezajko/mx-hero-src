@@ -16,22 +16,9 @@
 
 	<context:annotation-config />
 
-	<tx:annotation-driven transaction-manager="txManager" />
+	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
 
-	<osgix:cm-properties id="cmProps"
-		persistent-id="org.mxhero.engine.plugin.threadlight">
-		<prop key="jdbcDriverClassName">com.mysql.jdbc.Driver</prop>
-		<prop key="jdbcUrl">jdbc:mysql://127.0.0.1/threadlight</prop>
-		<prop key="jdbcUserName">mxhero</prop>
-		<prop key="jdbcPassord">mxhero</prop>
-		<prop key="idleConnectionTestPeriodInMinutes">1</prop>
-		<prop key="idleMaxAgeInMinutes">4</prop>
-		<prop key="maxConnectionsPerPartition">10</prop>
-		<prop key="minConnectionsPerPartition">5</prop>
-		<prop key="partitionCount">2</prop>
-		<prop key="acquireIncrement">2</prop>
-		<prop key="releaseHelperThreads">2</prop>
-	</osgix:cm-properties>
+	<tx:annotation-driven transaction-manager="txManager" />
 	
 	<osgix:cm-properties id="cmPropsConfig"
 		persistent-id="org.mxhero.engine.plugin.threadlight.config">
@@ -41,7 +28,7 @@
 	</osgix:cm-properties>
 
 	<context:property-placeholder
-		properties-ref="cmProps" />
+		properties-ref="cmPropsConfig" />
 
 	<osgi:service ref="jdbcthreadRowService">
 		<osgi:interfaces>
@@ -113,24 +100,7 @@
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-
-	<!-- BoneCP configuration -->
-	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource"
-		destroy-method="close">
-		<property name="poolName" value="org.mxhero.engine.plugin.threadlight.boneCP" />
-		<property name="driverClass" value="${jdbcDriverClassName}" />
-		<property name="jdbcUrl" value="${jdbcUrl}" />
-		<property name="username" value="${jdbcUserName}" />
-		<property name="password" value="${jdbcPassord}" />
-		<property name="idleConnectionTestPeriodInMinutes" value="1" />
-		<property name="idleMaxAgeInMinutes" value="4" />
-		<property name="maxConnectionsPerPartition" value="10" />
-		<property name="minConnectionsPerPartition" value="5" />
-		<property name="partitionCount" value="2" />
-		<property name="acquireIncrement" value="2" />
-		<property name="releaseHelperThreads" value="2" />
+		<property name="dataSource" ref="dbpool" />
 	</bean>
 
 </beans>

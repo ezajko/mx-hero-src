@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin</groupId>
 	<artifactId>disclaimercontract</artifactId>
-	<version>1.7.0</version>
+	<version>1.8.0</version>
 
 	<name>${bundle.symbolicName}</name>
 
@@ -113,28 +113,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.jolbox</groupId>
-			<artifactId>bonecp</artifactId>
-			<version>0.7.1.RELEASE</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>guava</artifactId>
-					<groupId>com.google.guava</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>r08</version>
-			<scope>compile</scope>
-			<optional>true</optional>
+			<groupId>org.mxhero.engine.plugin</groupId>
+			<artifactId>dbpool</artifactId>
+			<version>1.7.0</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
