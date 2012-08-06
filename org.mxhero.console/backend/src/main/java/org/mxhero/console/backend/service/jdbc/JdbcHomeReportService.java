@@ -164,7 +164,7 @@ public class JdbcHomeReportService implements HomeReportService{
 			data.setBlocked(statisticsTemplate.getJdbcOperations().queryForList(dayHitsNoValueSql.concat(groupBy),new Object[]{new Timestamp(since),"email.blocked"}));
 		}else{
 			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(incommingQuery.concat(recipientDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
-			data.setIncomming(statisticsTemplate.getJdbcOperations().queryForList(outgoingQuery.concat(senderDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
+			data.setOutgoing(statisticsTemplate.getJdbcOperations().queryForList(outgoingQuery.concat(senderDomain).concat(groupBy),new Object[]{new Timestamp(since),domainId}));
 			data.setVirus(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"virus.detected",domainId,domainId}));
 			data.setSpam(statisticsTemplate.getJdbcOperations().queryForList(dayHitsSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"spam.detected",domainId,domainId}));
 			data.setBlocked(statisticsTemplate.getJdbcOperations().queryForList(dayHitsNoValueSql.concat(anyDomain).concat(groupBy),new Object[]{new Timestamp(since),"email.blocked",domainId,domainId}));
