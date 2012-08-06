@@ -124,7 +124,7 @@
 
 	<s:Label text="{resourceManager.getString('disclaimer','first.title')}" fontSize="16" fontWeight="bold"/>
 	
-	<s:VGroup paddingLeft="20" gap="20" width="600">
+	<s:VGroup paddingLeft="20" gap="20" width="750">
 		<mx:Text htmlText="{resourceManager.getString('disclaimer','description.text.html')}" width="100%"/>
 		<s:VGroup>
 			<s:Label text="{resourceManager.getString('disclaimer','action.return.textarea.title')}"/>
