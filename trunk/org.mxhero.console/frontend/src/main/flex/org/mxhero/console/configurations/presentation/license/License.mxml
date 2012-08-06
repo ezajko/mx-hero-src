@@ -131,4 +131,9 @@
 		<s:Button id="loadLicense" label="Load License" click="{fileLoader.browse()}"/>
 		<mx:ProgressBar width="100%" labelPlacement="center" indeterminate="true" visible="{fileLoading}"/>
 	</s:HGroup>
+	<s:HGroup width="100%" verticalAlign="middle" horizontalAlign="center" >
+		<mx:LinkButton label="{resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COMERCIAL_INFORMATION)}" 
+					   styleName="license"
+					   click="{navigateToURL(new URLRequest(resourceManager.getString(CommonsProperties.NAME,CommonsProperties.COMERCIAL_INFORMATION_URL)),'Commercial Information');}"/>
+	</s:HGroup>
 </s:TitleWindow>
