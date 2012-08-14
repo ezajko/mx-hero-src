@@ -47,8 +47,6 @@
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
 			
-			import spark.components.gridClasses.GridColumn;
-			
 			[Bindable]
 			private var _ap:IApplicationContext;
 			
@@ -115,7 +113,7 @@
 				}
 			}
 
-			public function typeLabelFunction(item:Object, column:GridColumn):String{
+			public function typeLabelFunction(item:Object, column:DataGridColumn):String{
 				if(item.type=="name"){
 					return resourceManager.getString("attachmentblock","name.type.label");
 				} else if(item.type=="type"){
