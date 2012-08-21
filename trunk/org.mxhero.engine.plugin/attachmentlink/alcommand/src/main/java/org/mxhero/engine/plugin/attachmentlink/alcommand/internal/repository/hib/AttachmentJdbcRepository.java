@@ -101,7 +101,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 			saveOrUpdateAttachments(attach,attach.getMessageAttachRecipient());
 			toReturn = attach;
 		} catch (DataIntegrityViolationException e) {
-			log.debug("Two or more threads became at the same time together. Requeueing....");
+			log.warn("Two or more threads became at the same time together. Requeueing....",e);
 			attach.requeueMessage();
 		}
 		return toReturn;
