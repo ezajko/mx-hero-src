@@ -2,11 +2,13 @@ package org.mxhero.console.backend.service.jdbc;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.mxhero.console.backend.infrastructure.BusinessException;
 import org.mxhero.console.backend.repository.EmailAccountRepository;
 import org.mxhero.console.backend.repository.FeatureRuleRepository;
 import org.mxhero.console.backend.service.EmailAccountService;
+import org.mxhero.console.backend.vo.AccountPropertyVO;
 import org.mxhero.console.backend.vo.EmailAccountAliasVO;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.PageVO;
@@ -107,6 +109,16 @@ public class JdbcEmailAccountService implements EmailAccountService{
 		aliasVO.setDomain(domainAlias);
 		aliasVO.setName(accountAlias);
 		accountRepository.deleteAlias(aliasVO);
+	}
+	
+	@Override
+	public void updateProperties(String domain, String account, List<AccountPropertyVO> properties) {
+		accountRepository.refreshProperties(account, domain, properties);
+	}
+
+	@Override
+	public List<AccountPropertyVO> readProperties(String domain, String account) {
+		return accountRepository.readProperties(account, domain);
 	}
 
 }
