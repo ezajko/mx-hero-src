@@ -46,10 +46,21 @@
 			</ws:service>
 		</wss:service>		
 	</wss:binding>
+	
+	<wss:binding url="/api/account">
+		<wss:service>
+			<ws:service bean="#accountWs">
+				<ws:handlers>
+					<ref bean="securityHandler"/>
+				</ws:handlers>
+			</ws:service>
+		</wss:service>		
+	</wss:binding>
 
 	<!-- Web service methods -->
 	<bean id="domainWs" class="org.mxhero.console.backend.ws.DomainEndPoint" />
 	<bean id="ruleWs" class="org.mxhero.console.backend.ws.RuleEndPoint" />
 	<bean id="userWs" class="org.mxhero.console.backend.ws.UserEndPoint" />
+	<bean id="accountWs" class="org.mxhero.console.backend.ws.AccountEndPoint" />
 
 </beans>

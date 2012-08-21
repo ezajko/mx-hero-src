@@ -1,8 +1,10 @@
 package org.mxhero.console.backend.service.flex;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.mxhero.console.backend.service.EmailAccountService;
+import org.mxhero.console.backend.vo.AccountPropertyVO;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.mxhero.console.backend.vo.PageVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,17 @@ public class FlexEmailAccountService implements EmailAccountService{
 			Collection<EmailAccountVO> emailAccountVOs, String domainId,
 			Boolean failOnError) {
 		return service.upload(emailAccountVOs, domainId, failOnError);
+	}
+
+	@Override
+	public void updateProperties(String domain, String account,
+			List<AccountPropertyVO> properties) {
+		service.updateProperties(domain, account, properties);
+	}
+
+	@Override
+	public List<AccountPropertyVO> readProperties(String domain, String account) {
+		return service.readProperties(domain, account);
 	}
 
 }

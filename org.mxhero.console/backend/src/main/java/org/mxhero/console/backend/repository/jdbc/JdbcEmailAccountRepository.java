@@ -12,8 +12,10 @@ import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
 import org.mxhero.console.backend.infrastructure.pagination.jdbc.BaseJdbcDao;
 import org.mxhero.console.backend.infrastructure.pagination.jdbc.JdbcPageInfo;
 import org.mxhero.console.backend.repository.EmailAccountRepository;
+import org.mxhero.console.backend.repository.jdbc.mapper.AccountPropertyMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountAliasMapper;
 import org.mxhero.console.backend.repository.jdbc.mapper.EmailAccountMapper;
+import org.mxhero.console.backend.vo.AccountPropertyVO;
 import org.mxhero.console.backend.vo.EmailAccountAliasVO;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -315,5 +317,38 @@ public class JdbcEmailAccountRepository extends BaseJdbcDao<EmailAccountVO> impl
 			}
 		}
 		return result;
+	}
+	
+	public void refreshProperties(String account, String domainId,
+			List<AccountPropertyVO> properties) {
+		String deleteSql = " DELETE FROM email_accounts_properties WHERE account=:account AND domain_id = :domainId ";
+		MapSqlParameterSource deleteSource = new MapSqlParameterSource("account",account);
+		deleteSource.addValue("domainId", domainId);
+		template.update(deleteSql, deleteSource);
+		String refreshSql = " INSERT INTO email_accounts_properties (account,domain_id,property_name,property_value) " +
+				" VALUES (:account,:domainId,:propertyName,:propertyValue) ";
+		if(properties!=null && properties.size()>0){
+			for(AccountPropertyVO property : properties){
+				MapSqlParameterSource insertSource = new MapSqlParameterSource("account",account);
+				insertSource.addValue("domainId", domainId);
+				insertSource.addValue("propertyName", property.getName().toLowerCase());
+				insertSource.addValue("propertyValue", property.getValue());
+				template.update(refreshSql, insertSource);
+			}
+		}
+	}
+	
+	public List<AccountPropertyVO> readProperties(String account, String domainId) {
+			String sql = " SELECT * FROM email_accounts_properties WHERE account=:account AND domain_id = :domainId ";
+			MapSqlParameterSource source = new MapSqlParameterSource("account",account);
+			source.addValue("domainId", domainId);
+			return template.query(sql, source, new AccountPropertyMapper());
+	}
+
+	public void deleteProperties(String account, String domainId) {
+			String deleteSql = " DELETE FROM email_accounts_properties WHERE account=:account AND domain_id = :domainId ";
+			MapSqlParameterSource deleteSource = new MapSqlParameterSource("account",account);
+			deleteSource.addValue("domainId", domainId);
+			template.update(deleteSql, deleteSource);
 	}
 }

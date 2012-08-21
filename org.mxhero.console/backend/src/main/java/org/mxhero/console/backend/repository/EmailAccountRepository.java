@@ -1,6 +1,9 @@
 package org.mxhero.console.backend.repository;
 
+import java.util.List;
+
 import org.mxhero.console.backend.infrastructure.pagination.common.PageResult;
+import org.mxhero.console.backend.vo.AccountPropertyVO;
 import org.mxhero.console.backend.vo.EmailAccountAliasVO;
 import org.mxhero.console.backend.vo.EmailAccountVO;
 
@@ -25,4 +28,10 @@ public interface EmailAccountRepository {
 	PageResult<EmailAccountVO> findMembersByDomainIdWithoutGroup(String domainId, int pageNo, int pageSize);
 
 	PageResult<EmailAccountVO> findAll(String domainId, String account, String group, int pageNo, int pageSize);
+	
+	List<AccountPropertyVO> readProperties(String account, String domainId);
+	
+	void refreshProperties(String account, String domainId, List<AccountPropertyVO> properties);
+	
+	void deleteProperties(String account, String domainId);
 }
