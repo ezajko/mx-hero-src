@@ -20,6 +20,7 @@ public class CloneParameters extends NamedParameters{
 	 * 
 	 */
 	public CloneParameters(){	
+		super();
 	}
 	
 	/**
@@ -27,6 +28,7 @@ public class CloneParameters extends NamedParameters{
 	 * @param recipient
 	 */
 	public CloneParameters(String sender, String recipient){	
+		super();
 		this.setSender(sender);
 		this.setRecipient(recipient);
 	}
