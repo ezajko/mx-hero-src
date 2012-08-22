@@ -103,14 +103,20 @@
 							showEffect="{fadein}" 
 							hideEffect="{fadeout}">
 			<mx:DataGrid
-				variableRowHeight="false"
 				dropShadowVisible="false"
 				mouseChildren="true"
 				dataProvider="{stats}"
-				width="100%" height="100%" >
+				width="100%" height="100%" 
+				variableRowHeight="true">
 				<mx:columns>
-					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_KEY_LABEL)}" dataField="key"/>
-					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_VALUE_LABEL)}" dataField="value"/>
+					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_KEY_LABEL)}" 
+									   dataField="key"
+									   dataTipField="key"
+									   showDataTips="true"/>
+					<mx:DataGridColumn headerText="{resourceManager.getString(ShowEmailProperties.NAME,ShowEmailProperties.STATS_VALUE_LABEL)}" 
+									   dataField="value"
+									   dataTipField="value"
+									   showDataTips="true"/>
 				</mx:columns>
 			</mx:DataGrid>
 		</s:NavigatorContent>
