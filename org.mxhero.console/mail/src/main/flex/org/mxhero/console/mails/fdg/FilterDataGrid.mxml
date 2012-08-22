@@ -41,34 +41,20 @@
 	</fx:Metadata>
 	
 	<s:Panel skinClass="org.mxhero.console.mails.skins.TitleLessPanel" width="100%">
-		<s:DataGrid id="emailsDg"
+		<mx:DataGrid id="emailsDg"
 					 dataProvider="{dataProvider}" 
 					 width="100%"
-					 height="300">
-			<s:columns>
-				<s:ArrayList>
-				<s:GridColumn id="emailColumn" 
+					 height="300"
+					 paddingBottom="5">
+			<mx:columns>
+				<mx:DataGridColumn id="emailColumn" 
 								   sortable="true"
-								   headerText="{resourceManager.getString(RESOURCE,'email.column.label')}">
-					<s:itemRenderer>
-						<fx:Component>
-							<s:GridItemRenderer width="100%">
-								<s:layout>
-									<s:HorizontalLayout  horizontalAlign="left" verticalAlign="middle"/>
-								</s:layout>
-								<s:Label text="{data.toString()}"/>
-							</s:GridItemRenderer>
-						</fx:Component>
-					</s:itemRenderer>
-				</s:GridColumn>
-				<s:GridColumn width="48" 
+								   headerText="{resourceManager.getString(RESOURCE,'email.column.label')}"/>
+				<mx:DataGridColumn width="48" 
 								   sortable="false">
-					<s:itemRenderer>
+					<mx:itemRenderer>
 						<fx:Component>
-							<s:GridItemRenderer width="100%">
-								<s:layout>
-									<s:HorizontalLayout  horizontalAlign="center"/>
-								</s:layout>
+							<mx:HBox width="100%" horizontalAlign="center">
 								<fx:Script>
 									<![CDATA[
 										import flash.events.MouseEvent;
@@ -83,17 +69,16 @@
 										}
 									]]>
 								</fx:Script>
-								<s:Image source="{DELETE}"
+								<mx:Image source="{DELETE}"
 										  buttonMode="true"
 										  toolTip="{resourceManager.getString(FilterDataGrid.RESOURCE,'remove.tooltip')}"
 										  click="remove_clickHandler(event)"/>
-							</s:GridItemRenderer>		  
+							</mx:HBox>		  
 						</fx:Component>
-					</s:itemRenderer>
-				</s:GridColumn>
-				</s:ArrayList>
-			</s:columns>
-		</s:DataGrid>
+					</mx:itemRenderer>
+				</mx:DataGridColumn>
+			</mx:columns>
+		</mx:DataGrid>
 		<s:controlBarLayout>
 			<s:HorizontalLayout verticalAlign="middle" 
 								paddingBottom="5"
