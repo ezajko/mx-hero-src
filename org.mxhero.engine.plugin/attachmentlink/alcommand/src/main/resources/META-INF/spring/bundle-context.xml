@@ -18,6 +18,9 @@
 	
 	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
 	
+	<osgi:reference id="inputService"
+		interface="org.mxhero.engine.commons.connector.InputService" />
+	
 	<tx:annotation-driven transaction-manager="txManager" />
 
 	<osgix:cm-properties id="jdbcCmProps"
@@ -46,7 +49,9 @@
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="alcommand" class="org.mxhero.engine.plugin.attachmentlink.alcommand.internal.AlCommandImpl"/>
+	<bean id="alcommand" class="org.mxhero.engine.plugin.attachmentlink.alcommand.internal.AlCommandImpl">
+		<property name="service" ref="inputService"/>
+	</bean>
 
 	<bean id="fileAttachNames" class="org.springframework.beans.factory.config.MapFactoryBean">
 		<property name="targetMapClass">
