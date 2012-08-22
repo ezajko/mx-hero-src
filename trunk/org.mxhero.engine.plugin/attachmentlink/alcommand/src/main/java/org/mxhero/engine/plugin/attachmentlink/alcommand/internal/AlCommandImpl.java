@@ -1,10 +1,6 @@
 package org.mxhero.engine.plugin.attachmentlink.alcommand.internal;
 
-
-import javax.mail.internet.MimeMessage;
-
 import org.mxhero.engine.commons.connector.InputService;
-import org.mxhero.engine.commons.connector.QueueFullException;
 import org.mxhero.engine.commons.mail.MimeMail;
 import org.mxhero.engine.commons.mail.command.NamedParameters;
 import org.mxhero.engine.commons.mail.command.Result;
@@ -14,7 +10,6 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommandResult;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentProcessor;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
-import org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +42,9 @@ public class AlCommandImpl implements AlCommand{
 			message.setMsgToBeEvaluateAsAttach(messageToBeEvaluateAsAttach);
 			processor.processMessage(message);
 			result = message.getResult();
-			MimeMessage messagerep = (MimeMessage)mail.getMessage().reply(false);
 			
 			//TODO
+			/*			MimeMessage messagerep = (MimeMessage)mail.getMessage().reply(false);
 			messagerep.setText("BODY con URL");
 			MimeMail replyMail = new MimeMail("from","to",messagerep.getInputStream(),PostFixConnectorOutputService.class.getName());
 			
@@ -66,9 +61,7 @@ public class AlCommandImpl implements AlCommand{
 				result.setAnError(true);
 				result.setMessage("queue is full");
 				return result;
-			}
-			
-			
+			}*/	
 		} catch (RequeueingException e) {
 			result = message.getResult();
 		} catch (Exception e) {
