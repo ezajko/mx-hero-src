@@ -125,7 +125,7 @@ public class Provider extends RulesByFeature{
 						returnMessage=replaceTextVars(mail,returnMessage, Body.AddTextPartType.html,true,(Long)(result.getParameters().get(RequestContractApprovalParameters.REQUEST_ID)));
 						returnMessagePlain=replaceTextVars(mail,returnMessagePlain, Body.AddTextPartType.plain,true,(Long)(result.getParameters().get(RequestContractApprovalParameters.REQUEST_ID)));
 						mail.getHeaders().addHeader("x-mxHero-DisclaimerContract", "ruleId="+ruleId+"; group="+group+"; status=pending");
-						CreateParameters createParameters = new CreateParameters(noreplyMail,mail.getRecipient().getMail(), mail.getSubject(), returnMessagePlain, PostFixConnectorOutputService.class.getName());
+						CreateParameters createParameters = new CreateParameters(mail.getSender().getMail(),mail.getRecipient().getMail(), mail.getSubject(), returnMessagePlain, PostFixConnectorOutputService.class.getName());
 						createParameters.setTextHtml(returnMessage);
 						createParameters.setInReplyMessagId(mail.getId());
 						createParameters.setPhase(Mail.Phase.out);
