@@ -99,7 +99,9 @@ public class FSQueueService implements MimeMailQueueService {
 					sender=data.getHeader(SENDER_HEADER)[0];
 					recipient=data.getHeader(RECIPIENT_HEADER)[0];
 					outputService=data.getHeader(OUTPUT_SERVICE_HEADER)[0];
-					forcedPriority=data.getHeader(FORCED_PRIORITY_HEADER)[0];
+					if(data.getHeader(FORCED_PRIORITY_HEADER)!=null){
+						forcedPriority=data.getHeader(FORCED_PRIORITY_HEADER)[0];
+					}
 					data.removeHeader(SENDER_HEADER);
 					data.removeHeader(RECIPIENT_HEADER);
 					data.removeHeader(OUTPUT_SERVICE_HEADER);
