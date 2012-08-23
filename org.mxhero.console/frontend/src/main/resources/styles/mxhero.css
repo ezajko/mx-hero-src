@@ -497,4 +497,6 @@ mx|LegendItem{
 
 mx|DataTip{
 	backgroundColor:#000000;
+	font-family:Ubuntu2;   
+	textFieldClass:ClassReference("mx.core.UITextField");
 }

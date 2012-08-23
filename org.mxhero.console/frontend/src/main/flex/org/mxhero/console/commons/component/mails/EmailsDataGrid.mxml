@@ -85,10 +85,23 @@
 			</mx:itemRenderer>
 		</mx:DataGridColumn>							
 		<mx:DataGridColumn dataField="insertDate" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_DATE_LABEL)}" 
-						   labelFunction="dateLabelFunction"/>
-		<mx:DataGridColumn dataField="from" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
-		<mx:DataGridColumn dataField="recipient" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
-		<mx:DataGridColumn dataField="subject" draggable="false" headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
+						   labelFunction="dateLabelFunction"
+						   />
+		<mx:DataGridColumn dataField="from" 
+						   dataTipField="from"
+						   showDataTips="true"
+						   draggable="false" 
+						   headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_FROM_LABEL)}"/>
+		<mx:DataGridColumn dataField="recipient" 
+						   dataTipField="recipient"
+						   showDataTips="true"
+						   draggable="false" 
+						   headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_TO_LABEL)}"/>
+		<mx:DataGridColumn dataField="subject" 
+						   dataTipField="subject"
+						   showDataTips="true"
+						   draggable="false" 
+						   headerText="{resourceManager.getString(EmailsDataGridProperties.NAME,EmailsDataGridProperties.EMAIL_SUBJECT_LABEL)}"/>
 		<mx:DataGridColumn width="70" sortable="false" resizable="false" draggable="false">
 			<mx:itemRenderer>
 				<fx:Component>
