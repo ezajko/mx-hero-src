@@ -195,7 +195,11 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		for(String mail : aliases){
 			String accountName = mail.split("@")[0].trim();
 			String domainName = mail.split("@")[1].trim();
-			template.getJdbcOperations().update(aliasSql, new Object[]{accountName,domainName,SYNC_TYPE,account,domainId});
+			try{
+				template.getJdbcOperations().update(aliasSql, new Object[]{accountName,domainName,SYNC_TYPE,account,domainId});
+			}catch(Exception e){
+				log.warn("error alias for accountName:"+accountName+" domainName:"+domainName+" account:"+account+" domainId: "+domainId);
+			}
 		}
 		
 		String updateAccount = " UPDATE mxhero.email_accounts " +

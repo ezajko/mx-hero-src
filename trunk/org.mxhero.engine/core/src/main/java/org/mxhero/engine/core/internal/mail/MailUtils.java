@@ -154,8 +154,7 @@ public abstract class MailUtils {
 	 * @throws MessagingException
 	 * @throws IOException
 	 */
-	private static void getText(Part p, String type, StringBuilder text,
-			boolean messages) throws MessagingException, IOException {
+	private static void getText(Part p, String type, StringBuilder text, boolean messages) throws MessagingException, IOException {
 		if (p.isMimeType(TEXT_TYPE)) {
 			if (p.isMimeType(type)
 					&& (p.getFileName() == null || p.getFileName().isEmpty())) {
@@ -316,10 +315,16 @@ public abstract class MailUtils {
 
 	}
 	
-	
+	/**
+	 * @param p
+	 * @param text
+	 * @param position
+	 * @param type
+	 * @throws MessagingException
+	 * @throws IOException
+	 */
 	public static void addText(Part p, String text, Body.AddTextPosition position, Body.AddTextPartType type)
 			throws MessagingException, IOException {
-		log.debug("addText=[contentType="+p.getContentType()+", positio="+position.toString()+", type="+type.toString()+"]");
 		if (p.isMimeType(TEXT_TYPE)
 				&& (p.getDisposition() == null || (!p.getDisposition().equals(Part.INLINE))
 				&& !p.getDisposition().equals(Part.ATTACHMENT))) {
@@ -328,7 +333,6 @@ public abstract class MailUtils {
 					String contentType =  p.getContentType();
 					p.setContent(text + ((String) p.getContent()),contentType);
 					p.setHeader("Content-Type", contentType);
-					log.debug("setContent=[contentType="+p.getContentType()+", text="+text + ((String) p.getContent())+"]");
 				}  
 				if ((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.html)) && p.isMimeType(TEXT_HTML_TYPE)){
 					String contentType =  p.getContentType();
@@ -336,25 +340,19 @@ public abstract class MailUtils {
 					doc.body().prepend(text);
 					p.setContent(doc.outerHtml(), p.getContentType());
 					p.setHeader("Content-Type", contentType);
-					log.debug("setContent=[contentType="+p.getContentType()+", text="+doc.outerHtml()+"]");
 				}
 			} else if (position.equals(Body.AddTextPosition.botton)) {
-				log.debug("setContent=[contentType="+p.getContentType()+"]");
 				if((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.plain)) && p.isMimeType(TEXT_PLAIN_TYPE)){
 					String contentType =  p.getContentType();
-					log.debug("setContent=[beforeContentType="+p.getContentType()+"]");
 					p.setContent(((String) p.getContent()) + text, p.getContentType());
 					p.setHeader("Content-Type", contentType);
-					log.debug("setContent=[contentType="+p.getContentType()+", text="+text + ((String) p.getContent())+"]");
 				}
 				if ((type.equals(Body.AddTextPartType.both) || type.equals(Body.AddTextPartType.html)) && p.isMimeType(TEXT_HTML_TYPE)){
 					String contentType =  p.getContentType();
 					Document doc = Jsoup.parse((String) p.getContent());
 					doc.body().append(text);
-					log.debug("setContent=[beforeContentType="+p.getContentType()+"]");
 					p.setContent(doc.outerHtml(), p.getContentType());
 					p.setHeader("Content-Type", contentType);
-					log.debug("setContent=[contentType="+p.getContentType()+", text="+doc.outerHtml()+"]");
 				}
 			}
 		} else if (p.isMimeType(MULTIPART_TYPE)) {

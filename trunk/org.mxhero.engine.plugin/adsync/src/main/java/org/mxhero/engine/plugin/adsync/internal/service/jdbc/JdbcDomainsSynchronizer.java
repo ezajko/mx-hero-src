@@ -106,19 +106,22 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 					if(!account.getMails().contains(account.getUid()+"@"+domain)){
 						account.getMails().add(account.getUid()+"@"+domain);
 					}
-
-					if(managedSet.contains(account.getUid())){
-						repository.updateAliasesAccount(account.getUid(), domain, new ArrayList<String>(account.getMails()));
-						repository.refreshProperties(account.getUid(), domain, account.getProperties());
-						managedSet.remove(account.getUid());
-					}else if(notManagedSet.contains(account.getUid())){
-						if(domainAd.getOverrideFlag()){
+					try{
+						if(managedSet.contains(account.getUid())){
 							repository.updateAliasesAccount(account.getUid(), domain, new ArrayList<String>(account.getMails()));
 							repository.refreshProperties(account.getUid(), domain, account.getProperties());
+							managedSet.remove(account.getUid());
+						}else if(notManagedSet.contains(account.getUid())){
+							if(domainAd.getOverrideFlag()){
+								repository.updateAliasesAccount(account.getUid(), domain, new ArrayList<String>(account.getMails()));
+								repository.refreshProperties(account.getUid(), domain, account.getProperties());
+							}
+						}else{
+							repository.insertAccount(account.getUid(), domain, new ArrayList<String>(account.getMails()));
+							repository.refreshProperties(account.getUid(), domain, account.getProperties());
 						}
-					}else{
-						repository.insertAccount(account.getUid(), domain, new ArrayList<String>(account.getMails()));
-						repository.refreshProperties(account.getUid(), domain, account.getProperties());
+					}catch(Exception e){
+						log.warn("Error sync account "+account.toString(),e);
 					}
 				}
 			}
