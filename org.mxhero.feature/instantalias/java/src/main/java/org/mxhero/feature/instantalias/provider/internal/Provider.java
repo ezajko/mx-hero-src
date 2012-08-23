@@ -12,11 +12,14 @@ import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
 import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Provider extends RulesByFeatureWithFixed {
 
 	private static final String SEPARATION_CHARACTER = "separation.charater";
-
+	private static Logger log = LoggerFactory.getLogger(Provider.class);
+	
 	protected CoreRule createRule(Rule rule) {
 		CoreRule coreRule = this.getDefault(rule);
 		String separationCharacter = null;
@@ -58,12 +61,23 @@ public class Provider extends RulesByFeatureWithFixed {
 
 		@Override
 		public void exec(Mail mail) {
-			int separatorInit=mail.getRecipient().getMail().indexOf(separationCharacter.trim());
-			int aliasEnd = mail.getRecipient().getMail().indexOf("@");
-			String account = mail.getRecipient().getMail().substring(0, separatorInit).toString();
-			String domain = mail.getRecipient().getMail().substring(aliasEnd+1).toString();
-			String alias = mail.getRecipient().getMail().substring(separatorInit+1, aliasEnd).toString();
-			String realEmail= account+"@"+domain;
+			String realEmail=null;
+			String account=null;
+			String domain=null;
+			String alias=null;
+
+			try{
+				int separatorInit=mail.getRecipient().getMail().indexOf(separationCharacter.trim());
+				int aliasEnd = mail.getRecipient().getMail().indexOf("@");
+				account = mail.getRecipient().getMail().substring(0, separatorInit).toString();
+				domain = mail.getRecipient().getMail().substring(aliasEnd+1).toString();
+				alias = mail.getRecipient().getMail().substring(separatorInit+1, aliasEnd).toString();
+				realEmail= account+"@"+domain;
+			}catch(RuntimeException e){
+				log.warn("error while dealing with alias="+mail.getRecipient().getMail());
+				throw(e);
+			}
+			
 			String replyTo=null;
 			try{replyTo = mail.getHeaders().getHeaderValue("Reply-To");
 				replyTo = new InternetAddress(replyTo,false).getAddress();
