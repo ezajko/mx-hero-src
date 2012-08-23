@@ -80,9 +80,9 @@ public class Provider extends RulesByFeature  {
 		@Override
 		public boolean eval(Mail mail) {
 			Collection<String> values = mail.getHeaders().getHeaderValues(HEADER);
-			boolean conditions =  	mail.getStatus().equals(Mail.Status.deliver)
-					&& mail.getHeaders()!=null
-					&& (mail.getSubject().matches(REGEX) ||
+			boolean conditions =  mail.getStatus().equals(Mail.Status.deliver)
+					&& ((mail.getSubject()!=null && mail.getSubject().matches(REGEX)) 
+							||
 						(values!=null && values.size()>0 && HeaderUtils.getParametersList(values.toArray(new String[0]), ACTION_VALUE)!=null));
 			boolean isInTO = false;
 			Collection<String> toRecipients = mail.getRecipients().getRecipients(RecipientType.to);
