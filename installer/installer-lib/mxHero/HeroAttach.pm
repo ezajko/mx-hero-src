@@ -96,6 +96,9 @@ sub install
 		exit;
 	}
 
+	# Change templates
+	`/usr/bin/perl -i -pe 's|\%FILE_SERVER\%|http://$reply:8080|g' $myConfig{MXHERO_PATH}/attachments/templates/attach_*.vm`;
+
 	return 1;
 }
 

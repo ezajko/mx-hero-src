@@ -190,7 +190,31 @@ END
 	if ( ! $backup ) {
 		return 0;
 	}
-	
+
+	if ($file =~ /zimbra/)
+	{
+		my $zimbraPort465 = <<END;
+465    inet  n       -       n       -       -       smtpd
+	-o smtpd_proxy_filter=127.0.0.1:5555
+	-o smtpd_tls_wrappermode=yes
+	-o smtpd_sasl_auth_enable=yes
+END
+
+		my $zimbraPort587 = <<END;
+submission inet n      -       n       -       -       smtpd
+	-o smtpd_proxy_filter=127.0.0.1:5555
+	-o smtpd_etrn_restrictions=reject
+	-o smtpd_sasl_auth_enable=yes
+	-o smtpd_client_restrictions=permit_sasl_authenticated,reject
+	-o smtpd_tls_security_level=may
+END
+
+		if (!&_alterPostfixCf( $file, '^465\s+inet\s+', $zimbraPort465 ) || !&_alterPostfixCf( $file, '^submission\s+inet\s+', $zimbraPort587 ))
+		{
+			return 0;
+		}
+	}
+
 	return &_alterPostfixCf( $file, '^smtp\s+inet\s+', $mxHero );
 }
 
