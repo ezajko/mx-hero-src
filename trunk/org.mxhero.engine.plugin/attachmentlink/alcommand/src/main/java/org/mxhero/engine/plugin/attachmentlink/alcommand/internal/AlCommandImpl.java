@@ -44,7 +44,7 @@ public class AlCommandImpl implements AlCommand{
 			message = new Message(mail,alParameters);
 			if(message.getMessagePlatformId()==null)throw new Exception("Message has not unique ID");
 			message.setMsgToBeEvaluateAsAttach(messageToBeEvaluateAsAttach);
-			Map<UserResulType, UserResult> process = cloudStorage.process(alParameters);
+			Map<UserResulType, UserResult> process = cloudStorage.process(alParameters.getNameToInstance());
 			message.setResultCloudStorage(process);
 			processor.processMessage(message);
 			result = message.getResult();
