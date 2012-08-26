@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * The Class SharedLink.
