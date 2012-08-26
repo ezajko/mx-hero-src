@@ -28,6 +28,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mxhero.engine.plugin.attachmentlink</groupId>
+			<artifactId>alcommand-api</artifactId>
+			<version>${version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<type>pom</type>
 			<groupId>org.mxhero.engine.build</groupId>
 			<artifactId>provision</artifactId>

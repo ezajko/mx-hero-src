@@ -11,6 +11,7 @@
 	<packaging>pom</packaging>
 	<name>attachmentlink</name>
 	<modules>
+		<module>alcommand-api</module>
 		<module>fileserver</module>
 		<module>alcommand</module>
 	</modules>
