@@ -169,6 +169,16 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 		KeyHolder key = new GeneratedKeyHolder();
 		template.update(sql, params, key);
 		attach.setId(key.getKey().longValue());
+		saveMessageAttachStorage(attach);
+	}
+
+
+	private void saveMessageAttachStorage(MessageAttachRecipient attach) {
+		String sql = "insert into attachments.message_attach_ex_storage (message_attach_id) values(:msg)";
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("msg", attach.getId());
+		SqlParameterSource params = new MapSqlParameterSource(values);
+		template.update(sql, params);
 	}
 
 

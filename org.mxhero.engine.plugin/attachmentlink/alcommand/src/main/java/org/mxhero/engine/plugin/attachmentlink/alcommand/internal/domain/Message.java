@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.mail.BodyPart;
@@ -19,7 +20,6 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.mxhero.engine.commons.mail.MimeMail;
@@ -27,6 +27,8 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommandResult;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
+import org.mxhero.engine.plugin.attachmentlink.cloudstorage.external.UserResulType;
+import org.mxhero.engine.plugin.attachmentlink.cloudstorage.external.UserResult;
 
 
 /**
@@ -52,6 +54,8 @@ public class Message {
 	private String messageAckDownloadMailHtml;
 	private String sender;
 	private String subject;
+
+	private Map<UserResulType, UserResult> resultCloudStorage;
 
 	
 	private static final String MULTIPART_TYPE = "multipart/*";
@@ -470,5 +474,29 @@ public class Message {
 	}
 
 	
+	public void setResultCloudStorage(Map<UserResulType, UserResult> process) {
+		this.resultCloudStorage = process;
+	}
+
+	public Map<UserResulType, UserResult> getResultCloudStorage() {
+		return resultCloudStorage;
+	}
+
+	public boolean hasToProcessSender() {
+		UserResult userResult = getResultCloudStorage().get(UserResulType.SENDER);
+		return userResult != null && userResult.isAlreadyExist();
+	}
+
+	public boolean hasToProcessRecipient() {
+		UserResult userResult = getResultCloudStorage().get(UserResulType.RECIPIENT);
+		return userResult != null && userResult.isAlreadyExist();
+	}
+
+	public UserResult getResultCloudStorageSender() {
+		return getResultCloudStorage().get(UserResulType.SENDER);
+	}
 	
+	public UserResult getResultCloudStorageRecipient() {
+		return getResultCloudStorage().get(UserResulType.RECIPIENT);
+	}
 }
