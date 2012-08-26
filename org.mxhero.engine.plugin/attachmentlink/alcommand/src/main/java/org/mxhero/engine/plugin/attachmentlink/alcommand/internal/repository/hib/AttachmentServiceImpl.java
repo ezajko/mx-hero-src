@@ -46,12 +46,13 @@ public class AttachmentServiceImpl implements AttachmentService {
 		logger.debug("Getting {} attachment to synchronize", limit);
 		String query = "SELECT " +
 				"ex.message_attach_ex_storage_id as idMessageAttach, " +
-				"ex.email_to_synchro as email " +
+				"ex.email_to_synchro as email, " +
 				"a.path as filePath " +
 				"from attachments.message_attach_ex_storage ex " +
 				"inner join attachments.message_attach m on m.message_attach_id = ex.message_attach_id " +
 				"inner join attachments.attach a on a.attach_id = m.attach_id " + 
 				"where ex.was_proccessed = false " +
+				"order by m.creation_date asc " +
 				"limit :limit";
 		List<TransactionAttachment> result = jdbc.query(query, new MapSqlParameterSource("limit", limit), new BeanPropertyRowMapper<TransactionAttachment>(TransactionAttachment.class));
 		logger.debug("Returning {} attachments to synchronize", result.size());
