@@ -1,4 +1,4 @@
-package org.mxhero.engine.plugin.attachmentlink.alcommand.external;
+package org.mxhero.engine.plugin.attachmentlink.alcommand.service;
 
 import java.util.List;
 

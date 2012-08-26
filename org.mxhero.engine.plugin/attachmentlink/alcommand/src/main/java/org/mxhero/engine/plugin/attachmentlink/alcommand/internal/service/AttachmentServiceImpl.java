@@ -1,11 +1,11 @@
-package org.mxhero.engine.plugin.attachmentlink.alcommand.internal.repository.hib;
+package org.mxhero.engine.plugin.attachmentlink.alcommand.internal.service;
 
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.mxhero.engine.plugin.attachmentlink.alcommand.external.AttachmentService;
-import org.mxhero.engine.plugin.attachmentlink.alcommand.external.TransactionAttachment;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.mxhero.engine.plugin.attachmentlink.alcommand.external.AttachmentService#getTransactionToProcess(java.lang.Integer)
+	 * @see org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService#getTransactionToProcess(java.lang.Integer)
 	 */
 	@Override
 	public List<TransactionAttachment> getTransactionToProcess(Integer limit) {
@@ -62,7 +62,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.mxhero.engine.plugin.attachmentlink.alcommand.external.AttachmentService#sendMessage(org.mxhero.engine.plugin.attachmentlink.alcommand.external.TransactionAttachment, boolean)
+	 * @see org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService#sendMessage(org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment, boolean)
 	 */
 	@Override
 	public void sendMessage(TransactionAttachment tx, boolean result) {

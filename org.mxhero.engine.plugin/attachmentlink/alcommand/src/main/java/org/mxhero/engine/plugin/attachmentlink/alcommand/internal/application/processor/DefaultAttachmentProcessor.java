@@ -14,8 +14,8 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.At
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentTransformer;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.MailSessionSate;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
 import org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService;
+import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
