@@ -57,6 +57,7 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.mail.command.Result;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -69,9 +70,10 @@ public class ALCommandTest {
 	private AlCommandImpl command;
 
 	@Autowired
+	@Qualifier(value = "dataSource")
 	private javax.sql.DataSource datasource;
 
-	@Before
+//	@Before
 	public void setUp() throws Exception {
 		DatabaseOperation.DELETE_ALL.execute(getConnection(), new XmlDataSet(
 				this.getClass().getResourceAsStream("/dataset.xml")));
@@ -413,6 +415,9 @@ public class ALCommandTest {
 			parameters.setNotify(true);
 			parameters.setNotifyMessage("some message");
 			parameters.setNotifyMessageHtml("some html message");
+			parameters.put("EMAILS_TO_PROCCESS", "juanpablo.royo@gmail.com,mxhero12test@mxhero.com");
+			parameters.put("juanpablo.royo@gmail.com", "true");
+			parameters.put("mxhero12test@mxhero.com", "false");
 			result = command.exec(mail, parameters);
 //			sendMail(mail.getMessage());
 			if (result.isConditionTrue()) {

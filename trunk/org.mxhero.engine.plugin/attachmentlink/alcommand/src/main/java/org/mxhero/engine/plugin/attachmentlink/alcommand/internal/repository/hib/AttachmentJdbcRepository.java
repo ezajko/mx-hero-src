@@ -15,8 +15,9 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Attach;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.MessageAttachRecipient;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.repository.AttachmentRepository;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.external.UserResult;
+import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -38,7 +39,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
-	public AttachmentJdbcRepository(DataSource ds){
+	public AttachmentJdbcRepository(@Qualifier(value = "dataSource")DataSource ds){
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 
@@ -187,7 +188,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void saveMessageAttachStorage(MessageAttachRecipient attach, String email) {
-		String sql = "insert into attachments.message_attach_ex_storage (message_attach_id, email) values(:msg,:email)";
+		String sql = "insert into attachments.message_attach_ex_storage (message_attach_id, email_to_synchro) values(:msg,:email)";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msg", attach.getId());
 		values.put("email", email);
