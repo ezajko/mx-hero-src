@@ -17,6 +17,7 @@ public class DefaultMailSessionState implements MailSessionSate {
 
 	private Map<String, Boolean> session;
 	private ReentrantLock lock;
+	
 
 	@Autowired
 	@Qualifier(value = "jdbcRepository")

@@ -35,6 +35,7 @@
 		<prop key="attach.html.file.name.pt_br">anexos.html</prop>
 		<prop key="cleaner.check.time.in.hours">12</prop>
 		<prop key="cleaner.days.period">60</prop>
+		<prop key="body.sender.cloud.storage">To Sinchronize your account go here </prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder properties-ref="jdbcCmProps" />
@@ -49,9 +50,7 @@
    		</osgi:service-properties>
 	</osgi:service>
 
-	<bean id="alcommand" class="org.mxhero.engine.plugin.attachmentlink.alcommand.internal.AlCommandImpl">
-<!-- 		<property name="service" ref="inputService"/> -->
-	</bean>
+	<bean id="alcommand" class="org.mxhero.engine.plugin.attachmentlink.alcommand.internal.AlCommandImpl"/>
 
 	<bean id="fileAttachNames" class="org.springframework.beans.factory.config.MapFactoryBean">
 		<property name="targetMapClass">
