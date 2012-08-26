@@ -15,7 +15,7 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Attach;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.MessageAttachRecipient;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.repository.AttachmentRepository;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
+import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;

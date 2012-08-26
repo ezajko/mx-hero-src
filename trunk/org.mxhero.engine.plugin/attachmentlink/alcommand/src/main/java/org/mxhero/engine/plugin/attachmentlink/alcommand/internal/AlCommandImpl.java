@@ -11,9 +11,9 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommandResult;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentProcessor;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.CloudStorage;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResulType;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
+import org.mxhero.engine.plugin.storageapi.CloudStorageExecutor;
+import org.mxhero.engine.plugin.storageapi.UserResulType;
+import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class AlCommandImpl implements AlCommand{
 	private boolean messageToBeEvaluateAsAttach;
 	
 	@Autowired
-	private CloudStorage cloudStorage;
+	private CloudStorageExecutor cloudStorageExecutor;
 
 	public Result exec(MimeMail mail, NamedParameters parameters) {
 		AlCommandResult result = new AlCommandResult();
@@ -44,7 +44,7 @@ public class AlCommandImpl implements AlCommand{
 			message = new Message(mail,alParameters);
 			if(message.getMessagePlatformId()==null)throw new Exception("Message has not unique ID");
 			message.setMsgToBeEvaluateAsAttach(messageToBeEvaluateAsAttach);
-			Map<UserResulType, UserResult> process = cloudStorage.process(alParameters.getNameToInstance());
+			Map<UserResulType, UserResult> process = cloudStorageExecutor.execute(alParameters.getNameToInstance(), alParameters.getStorageId());
 			message.setResultCloudStorage(process);
 			processor.processMessage(message);
 			result = message.getResult();

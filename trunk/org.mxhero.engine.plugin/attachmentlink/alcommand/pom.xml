@@ -6,6 +6,8 @@
 	<properties>
 		<bundle.symbolicName>org.mxhero.engine.plugin.attachmentlink.alcommand</bundle.symbolicName>
 		<bundle.namespace>org.mxhero.engine.plugin.attachmentlink.alcommand</bundle.namespace>
+		<jdbc.user>mxhero</jdbc.user>
+		<jdbc.pass>mxhero</jdbc.pass>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -28,15 +30,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.mxhero.engine.plugin.connectors</groupId>
-			<artifactId>cloudstorage-client-api</artifactId>
-			<version>1.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mxhero.engine.plugin.attachmentlink</groupId>
-			<artifactId>alcommand-api</artifactId>
-			<version>${version}</version>
+			<groupId>org.mxhero.engine.plugin</groupId>
+			<artifactId>storageapi</artifactId>
+			<version>1.8.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -189,8 +185,8 @@
 				<configuration>
 					<driver>com.mysql.jdbc.Driver</driver>
 					<url>jdbc:mysql://localhost:3306/attachments</url>
-					<username>mxhero</username>
-					<password>mxhero</password>
+					<username>${jdbc.user}</username>
+					<password>${jdbc.pass}</password>
 					<skip>${maven.test.skip}</skip>
 				</configuration>
 				<executions>
@@ -204,6 +200,7 @@
 							<autocommit>true</autocommit>
 							<srcFiles>
 								<srcFile>src/main/resources/scripts/database.SQL</srcFile>
+								<srcFile>src/main/resources/scripts/update_database_1.8.0.SQL</srcFile>
 							</srcFiles>
 						</configuration>
 					</execution>

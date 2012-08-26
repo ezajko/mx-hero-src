@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.LinkManager;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.MessageAttachRecipient;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
+import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
