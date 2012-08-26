@@ -253,6 +253,23 @@
 		</dependency>
 		<!-- SPRING FRAMEWORK DEPENDENCIES -->
 
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.8.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.codehaus.jackson</groupId>
+					<artifactId>jackson-core-asl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.8.2</version>
+		</dependency>
+
 		<!-- ECLIPSE GEMINI DEPENDENCIES -->
 		<dependency>
 			<groupId>org.eclipse.gemini.blueprint</groupId>
