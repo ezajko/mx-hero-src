@@ -20,7 +20,7 @@ import org.springframework.stereotype.Repository;
 /**
  * The Class AttachmentServiceImpl.
  */
-@Repository(value = "attachmentService")
+@Repository(value = "attachmentLinkExternalService")
 public class AttachmentServiceImpl implements AttachmentService {
 	
 	/** The logger. */
