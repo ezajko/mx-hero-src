@@ -27,8 +27,8 @@ import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.ALCommandParameters;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.AlCommandResult;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.exception.RequeueingException;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.external.UserResulType;
-import org.mxhero.engine.plugin.attachmentlink.cloudstorage.external.UserResult;
+import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResulType;
+import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
 
 
 /**

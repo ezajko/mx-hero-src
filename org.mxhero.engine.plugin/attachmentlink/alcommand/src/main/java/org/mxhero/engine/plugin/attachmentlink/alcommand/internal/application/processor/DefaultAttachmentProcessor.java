@@ -14,6 +14,7 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.At
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.AttachmentTransformer;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.application.MailSessionSate;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
+import org.mxhero.engine.plugin.attachmentlink.cloudstorage.client.external.UserResult;
 import org.mxhero.engine.plugin.postfixconnector.service.PostFixConnectorOutputService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,7 +40,7 @@ public class DefaultAttachmentProcessor implements AttachmentProcessor {
 	@Qualifier(value = "firstAttach")
 	private AttachmentTransformer transformer;
 
-	@Autowired
+//	@Autowired
 	private InputService service;
 	
 	@Value("${body.sender.cloud.storage}")
@@ -89,9 +90,10 @@ public class DefaultAttachmentProcessor implements AttachmentProcessor {
 				StringBuilder messageText = new StringBuilder();
 				messageText.append(bodySenderCloudStorage);
 				messageText.append(" ");
-				messageText.append(message.getResultCloudStorageSender().getBody());
+				UserResult sender = message.getResultCloudStorageSender();
+				messageText.append(sender.getBody());
 				messagerep.setText(messageText.toString());
-				MimeMail replyMail = new MimeMail("from","to",messagerep.getInputStream(),PostFixConnectorOutputService.class.getName());
+				MimeMail replyMail = new MimeMail(message.getSender(),sender.getEmail(),messagerep.getInputStream(),PostFixConnectorOutputService.class.getName());
 				if (service == null) {
 					logger.warn("core input service is not online");
 					message.getResult().setAnError(true);

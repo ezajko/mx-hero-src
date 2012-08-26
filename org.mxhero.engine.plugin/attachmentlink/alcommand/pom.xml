@@ -28,6 +28,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.mxhero.engine.plugin.connectors</groupId>
+			<artifactId>cloudstorage-client-api</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.mxhero.engine.plugin.attachmentlink</groupId>
 			<artifactId>alcommand-api</artifactId>
 			<version>${version}</version>
@@ -116,7 +122,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mxhero.engine.plugin.connectors</groupId>
-			<artifactId>box-cloudstorage-api</artifactId>
+			<artifactId>box-client-domain</artifactId>
 			<version>1.0.0</version>
 			<type>jar</type>
 			<scope>test</scope>
