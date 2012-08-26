@@ -8,10 +8,16 @@ DROP TABLE IF EXISTS message_attach_ex_storage;
 
 CREATE TABLE message_attach_ex_storage
 (
+	message_attach_ex_storage_id BIGINT NOT NULL auto_increment,
 	message_attach_id BIGINT NOT NULL,
+	email_to_synchro VARCHAR(255) NOT NULL,
+	attach_cloud_url VARCHAR(255) NULL,
 	was_proccessed TINYINT NOT NULL DEFAULT false,
-	PRIMARY KEY (message_attach_id)
-	KEY (was_proccessed)
+	PRIMARY KEY (message_attach_ex_storage_id),
+	CONSTRAINT FOREIGN KEY(message_attach_id) REFERENCES message_attach(message_attach_id),
+	UNIQUE (message_attach_id,email_to_synchro),
+	KEY (was_proccessed),
+	KEY (attach_cloud_url)
 )ENGINE=InnoDB;
 
 
