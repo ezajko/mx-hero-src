@@ -12,7 +12,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin.attachmentlink</groupId>
-	<artifactId>alommand</artifactId>
+	<artifactId>alcommand</artifactId>
 	<version>1.8.0</version>
 
 	<name>${bundle.symbolicName}</name>
