@@ -56,6 +56,7 @@ public class FileService extends HttpServlet {
 		Long idToSearch = null;
 		String id = req.getParameter("id");
 		String type = req.getParameter("type");
+		String email = req.getParameter("email");
 		MDC.put("message", id);
 		try {
 			if(StringUtils.isEmpty(id) || StringUtils.isEmpty(type)){
@@ -68,29 +69,34 @@ public class FileService extends HttpServlet {
 				idToSearch = Long.valueOf(decrypt);
 				log.debug("Trying download to id "+idToSearch);
 				service = context.getBean(ContentService.class);
-				ContentDTO content = service.getContent(idToSearch);
+				ContentDTO content = service.getContent(idToSearch, email);
 				
-				ServletOutputStream outputStream = resp.getOutputStream();
-				resp.setContentLength(content.getLength());
-				resp.setContentType(content.getContentType(type));
-				if(!content.hasToBeOpen(type)){
-					resp.setHeader("Content-Type", "application/octet-stream");
-					resp.addHeader("Content-Disposition", "attachment; filename=\"" + content.getFileName() + "\"");
+				if(content.hasPublicUrl()){
+					service.successContent(idToSearch);
+					resp.sendRedirect(content.getPublicUrl());
 				}else{
-					resp.addHeader("Content-Disposition", "filename=\"" + content.getFileName() + "\"");
+					ServletOutputStream outputStream = resp.getOutputStream();
+					resp.setContentLength(content.getLength());
+					resp.setContentType(content.getContentType(type));
+					if(!content.hasToBeOpen(type)){
+						resp.setHeader("Content-Type", "application/octet-stream");
+						resp.addHeader("Content-Disposition", "attachment; filename=\"" + content.getFileName() + "\"");
+					}else{
+						resp.addHeader("Content-Disposition", "filename=\"" + content.getFileName() + "\"");
+					}
+					resp.addHeader("Cache-Control", "no-cache");
+					
+			        in = content.getInputStream();
+			        int BUFF_SIZE = 2048;
+			        byte[] buffer = new byte[BUFF_SIZE];
+			        int byteCount = 0;
+					while ((in != null) && (byteCount = in.read(buffer))!=-1){
+				        outputStream.write(buffer, 0, byteCount);
+				    } 
+					outputStream.flush();
+					log.debug("Download completed successfuly");
+					service.successContent(idToSearch);
 				}
-				resp.addHeader("Cache-Control", "no-cache");
-				
-		        in = content.getInputStream();
-		        int BUFF_SIZE = 2048;
-		        byte[] buffer = new byte[BUFF_SIZE];
-		        int byteCount = 0;
-				while ((in != null) && (byteCount = in.read(buffer))!=-1){
-			        outputStream.write(buffer, 0, byteCount);
-			    } 
-				outputStream.flush();
-				log.debug("Download completed successfuly");
-				service.successContent(idToSearch);
 			}
 			
 		} catch (NotAllowedToSeeContentException e) {

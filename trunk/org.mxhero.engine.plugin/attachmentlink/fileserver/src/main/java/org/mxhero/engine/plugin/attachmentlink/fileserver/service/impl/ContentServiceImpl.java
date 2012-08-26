@@ -30,7 +30,7 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	@Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
-	public ContentDTO getContent(Long idMessageAttach)
+	public ContentDTO getContent(Long idMessageAttach, String email)
 			throws NotAllowedToSeeContentException {
 		if(!repository.isAllowed(idMessageAttach)){
 			throw new NotAllowedToSeeContentException();
@@ -42,6 +42,8 @@ public class ContentServiceImpl implements ContentService {
 				mailer.sendMailToSender(content);
 			}
 		}
+		String url = repository.getPulicUrl(idMessageAttach, email);
+		content.setPublicUrl(url);
 		return content;
 	}
 

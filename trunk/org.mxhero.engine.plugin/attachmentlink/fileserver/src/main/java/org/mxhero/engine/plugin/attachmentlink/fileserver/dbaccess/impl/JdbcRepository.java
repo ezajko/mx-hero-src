@@ -10,6 +10,7 @@ import org.mxhero.engine.plugin.attachmentlink.fileserver.dbaccess.AttachmentRep
 import org.mxhero.engine.plugin.attachmentlink.fileserver.domain.ContentDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -77,5 +78,18 @@ public class JdbcRepository implements AttachmentRepository {
 		MapSqlParameterSource paramSource = new MapSqlParameterSource("messageId", messageId);
 		paramSource.addValue("recipient", recipient);
 		return template.query(sql, paramSource,new BeanPropertyRowMapper<ContentDTO>(ContentDTO.class));
+	}
+	
+	@Override
+	public String getPulicUrl(Long idMessageAttach, String email) {
+		String sql = "select m.attach_cloud_url as url" +
+				"from message_attach_ex_storage " +
+				"where email_to_synchro = :email and message_attach_id = :idMessage";
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("idMessage", idMessageAttach);
+		params.addValue("email", email);
+		List<String> query = template.query(sql, params, new SingleColumnRowMapper<String>(String.class));
+		if(query.isEmpty())return null;
+		return query.get(0);
 	}
 }
