@@ -175,6 +175,7 @@
 	<bean id="applicationBox" class="org.mxhero.engine.plugin.boxserver.service.ApplicationBox">
 		<property name="persistence" ref="boxStoragePersistence"/>
 		<property name="encryptor" ref="encryptor"/>
+		<property name="apiBoxKey" value="${api.key}"/>
 	</bean>
 	
 	<!-- ####################################################################################### -->

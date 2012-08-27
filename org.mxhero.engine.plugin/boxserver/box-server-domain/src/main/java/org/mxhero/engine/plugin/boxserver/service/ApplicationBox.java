@@ -14,6 +14,9 @@ public class ApplicationBox {
 	
 	/** The encryptor. */
 	private StandardPBEStringEncryptor encryptor;
+	
+	/** The api key. */
+	private String apiBoxKey;
 
 	/**
 	 * Authenticate.
@@ -76,6 +79,23 @@ public class ApplicationBox {
 		}
 		return encryptor.encrypt(name);
 	}
+
+	/**
+	 * Gets the api box key.
+	 *
+	 * @return the api box key
+	 */
+	public String getApiBoxKey() {
+		return apiBoxKey;
+	}
 	
+	/**
+	 * Sets the api box key.
+	 *
+	 * @param apiBoxKey the new api box key
+	 */
+	public void setApiBoxKey(String apiBoxKey) {
+		this.apiBoxKey = apiBoxKey;
+	}
 	
 }
