@@ -40,17 +40,17 @@ public class UserBoxClient{
 	/** The persistence. */
 	private ClientStoragePersistence persistence;
 
-	/** The application id. */
-	private String applicationId;
-
 	/** The request. */
 	private UserRequest request;
 
-	/** The body url. */
-	private String bodyUrl;
-
 	/** The file stored. */
 	private FileUploadResponse fileStored;
+	
+	/** The url to retrieve token. */
+	private String urlToRetrieveToken;
+	
+	/** The host mxhero server. */
+	private String hostMxheroServer;
 	
 	/**
 	 * Instantiates a new user box.
@@ -305,24 +305,6 @@ public class UserBoxClient{
 	}
 
 	/**
-	 * Gets the application id.
-	 *
-	 * @return the application id
-	 */
-	public String getApplicationId() {
-		return applicationId;
-	}
-
-	/**
-	 * Sets the application id.
-	 *
-	 * @param applicationId the new application id
-	 */
-	public void setApplicationId(String applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	/**
 	 * Process.
 	 *
 	 * @return the result
@@ -336,8 +318,7 @@ public class UserBoxClient{
 		if(hasPreviousAccount()){
 			logger.debug("User has preivous account created in box. Proccessing to send it notification to external authentication in box");
 			processAlreadyAccount(result);
-			String bodyUrlNew = String.format(bodyUrl, ApplicationKey.getKey());
-			result.setBody(bodyUrlNew);
+			result.setBody(getUrlBody());
 		}else{
 			logger.debug("Store token to be use in synchronizer");
 			storeToken();
@@ -346,15 +327,20 @@ public class UserBoxClient{
 	}
 
 	/**
+	 * Gets the url body.
+	 *
+	 * @return the url body
+	 */
+	private String getUrlBody() {
+		String bodyUrl = "%s/api/init/auth?resp_url=%s&amp;auth_key=%s";
+		return String.format(bodyUrl, getHostMxheroServer(), getUrlToRetrieveToken(), ApplicationKey.getKey());
+	}
+
+	/**
 	 * Creates the account if not exsist.
 	 */
 	private void createAccountIfNotExsist() {
-		String appKey = ApplicationKey.getKey();
-		if(StringUtils.isEmpty(appKey)){
-			appKey = connector.getAppKey(getApplicationId());
-			ApplicationKey.setKey(appKey);
-		}
-		CreateTokenResponse createAccount = connector.createAccount(getEmail(), appKey);
+		CreateTokenResponse createAccount = connector.createAccount(getEmail());
 		setAccount(createAccount);
 	}
 
@@ -377,24 +363,6 @@ public class UserBoxClient{
 	}
 	
 	/**
-	 * Gets the body url.
-	 *
-	 * @return the body url
-	 */
-	public String getBodyUrl() {
-		return bodyUrl;
-	}
-	
-	/**
-	 * Sets the body url.
-	 *
-	 * @param bodyUrl the new body url
-	 */
-	public void setBodyUrl(String bodyUrl) {
-		this.bodyUrl = bodyUrl;
-	}
-
-	/**
 	 * Register token.
 	 *
 	 * @param token the token
@@ -406,5 +374,41 @@ public class UserBoxClient{
 		setAccount(tokenAccount);
 		persistence.storeToken(this);
 		
+	}
+
+	/**
+	 * Gets the url to retrieve token.
+	 *
+	 * @return the url to retrieve token
+	 */
+	public String getUrlToRetrieveToken() {
+		return urlToRetrieveToken;
+	}
+
+	/**
+	 * Sets the url to retrieve token.
+	 *
+	 * @param urlToRetrieveToken the new url to retrieve token
+	 */
+	public void setUrlToRetrieveToken(String urlToRetrieveToken) {
+		this.urlToRetrieveToken = urlToRetrieveToken;
+	}
+
+	/**
+	 * Gets the host mxhero server.
+	 *
+	 * @return the host mxhero server
+	 */
+	public String getHostMxheroServer() {
+		return hostMxheroServer;
+	}
+
+	/**
+	 * Sets the host mxhero server.
+	 *
+	 * @param hostMxheroServer the new host mxhero server
+	 */
+	public void setHostMxheroServer(String hostMxheroServer) {
+		this.hostMxheroServer = hostMxheroServer;
 	}
 }

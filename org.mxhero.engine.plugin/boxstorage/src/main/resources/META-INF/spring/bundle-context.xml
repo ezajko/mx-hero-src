@@ -21,10 +21,8 @@
 	<osgix:cm-properties id="jdbcCmProps"
 		persistent-id="org.mxhero.engine.plugin.boxstorage">
 		<prop key="app.instance.id">attachmentlinks_instance_1</prop>
-		<prop key="body.url.to.retrieve">http://localhost:8080/box-server-rest/api/init/auth?resp_url=http://localhost:8080/box-client-rest/register/token&amp;auth_key=%s</prop>
-		<prop key="api.key">1yrzbn5elu76nbq4rgvpkjzj7lz2cq14</prop>
-		<prop key="create.token.url">http://localhost:8080/box-server-rest/api/secure/attach/token/create</prop>
-		<prop key="application.key.url">http://localhost:8080/box-server-rest/api/attach/application/key/create</prop>
+		<prop key="url.to.retrieve.token">http://localhost:8080/boxstoragerest/register/token</prop>
+		<prop key="host.mxhero.server">http://localhost:8080/box-server-rest</prop>
 		<prop key="upload.files.url">https://api.box.com/2.0/files/data</prop>
 		<prop key="shared.files.url">https://api.box.com/2.0/files</prop>
 		<prop key="folders.url">https://api.box.com/2.0/folders/0</prop>
@@ -50,8 +48,8 @@
 		factory-method="createUser" scope="prototype">
 		<property name="connector" ref="connector" />
 		<property name="persistence" ref="boxStoragePersistence" />
-		<property name="applicationId" value="${app.instance.id}" />
-		<property name="bodyUrl" value="${body.url.to.retrieve}" />
+		<property name="urlToRetrieveToken" value="${url.to.retrieve.token}"/>
+		<property name="hostMxheroServer" value="${host.mxhero.server}" />
 	</bean>
 
 	<bean id="boxStoragePersistence"
@@ -65,12 +63,10 @@
 	<bean id="connector"
 		class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.BoxApiImpl">
 		<property name="template" ref="restTemplate" />
-		<property name="createTokenUrl" value="${create.token.url}" />
 		<property name="uploadFilesUrl" value="${upload.files.url}" />
 		<property name="foldersUrl" value="${folders.url}" />
-		<property name="apiKey" value="${api.key}" />
-		<property name="applicationKeyUrl" value="${application.key.url}" />
 		<property name="sharedFileUrl" value="${shared.files.url}" />
+		<property name="hostMxheroBoxServer" value="${host.mxhero.server}" />
 		<property name="handler">
 			<map>
 				<entry key="createAccount">
@@ -86,7 +82,12 @@
 	</bean>
 
 	<bean id="boxStorage"
-		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" />
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" init-method="init"/>
+		
+	<bean id="applicationService" class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
+		<property name="connector" ref="connector"/>
+		<property name="applicationId" value="${app.instance.id}" />
+	</bean>
 
 	<bean id="httpClientParams" class="org.apache.commons.httpclient.params.HttpClientParams">
 		<property name="connectionManagerClass"

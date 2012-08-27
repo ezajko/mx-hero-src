@@ -16,7 +16,7 @@
 	<!-- ####################################################################################### -->
 	<context:annotation-config />
 
-	<context:component-scan base-package="org.mxhero.engine.plugin.attachmentlink" />
+	<context:component-scan base-package="org.mxhero.engine.plugin.boxstorage" />
 	<!-- ####################################################################################### -->
 
 
@@ -32,13 +32,21 @@
 		</property>
 	</bean>
 
-	<bean id="dbpool" class="org.apache.commons.dbcp.BasicDataSource"
+	<bean id="dbpool" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
+		<property name="poolName" value="mxhero-attachmentlink" />
+		<property name="driverClass" value="${jdbc.driver.class}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
-	</bean>
+		<property name="idleConnectionTestPeriod" value="${initial.idleConnectionTestPeriod}" />
+		<property name="idleMaxAge" value="${initial.idleMaxAge}" />
+		<property name="maxConnectionsPerPartition" value="${initial.maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${initial.minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${initial.partitionCount}" />
+		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
+		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
+	</bean>	
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -50,47 +58,51 @@
 	<!-- UserBox Service configuration with their dependencies -->
 	<!-- ####################################################################################### -->
 	<bean id="userBox"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.service.UserBoxClient"
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient"
 		factory-method="createUser" scope="prototype">
 		<property name="connector" ref="connector" />
 		<property name="persistence" ref="boxStoragePersistence" />
-		<property name="applicationId" value="${app.instance.id}" />
-		<property name="bodyUrl" value="${body.url.to.retrieve}" />
+		<property name="urlToRetrieveToken" value="${url.to.retrieve.token}"/>
+		<property name="hostMxheroServer" value="${host.mxhero.server}" />
 	</bean>
 
 	<bean id="boxStoragePersistence"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.dataaccess.persistence.impl.ClientBoxPersistence">
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.persistence.impl.ClientBoxPersistence">
 		<constructor-arg ref="dbpool" />
 	</bean>
 
 	<bean id="responseErrorHandler"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.dataaccess.rest.connector.response.CustomRestTemplateErrorHandler" />
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CustomRestTemplateErrorHandler" />
 
 	<bean id="connector"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.dataaccess.rest.connector.BoxApiImpl">
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.BoxApiImpl">
 		<property name="template" ref="restTemplate" />
-		<property name="createTokenUrl" value="${create.token.url}" />
 		<property name="uploadFilesUrl" value="${upload.files.url}" />
 		<property name="foldersUrl" value="${folders.url}" />
-		<property name="apiKey" value="${api.key}" />
-		<property name="applicationKeyUrl" value="${application.key.url}" />
 		<property name="sharedFileUrl" value="${shared.files.url}" />
+		<property name="hostMxheroBoxServer" value="${host.mxhero.server}" />
 		<property name="handler">
 			<map>
 				<entry key="createAccount">
 					<bean
-						class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.dataaccess.rest.connector.response.CreateAccountResponseHandler" />
+						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateAccountResponseHandler" />
 				</entry>
 				<entry key="store">
 					<bean
-						class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.dataaccess.rest.connector.response.FileUploadResponseHandler" />
+						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.FileUploadResponseHandler" />
 				</entry>
 			</map>
 		</property>
 	</bean>
 
 	<bean id="storage"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.BoxCloudStorageClient" />
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" init-method="init"/>
+		
+	<bean id="applicationService" class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
+		<property name="connector" ref="connector"/>
+		<property name="applicationId" value="${app.instance.id}" />
+	</bean>
+		
 
 	<bean id="httpClientParams" class="org.apache.commons.httpclient.params.HttpClientParams">
 		<property name="connectionManagerClass"
@@ -118,7 +130,7 @@
 	</bean>
 
 	<bean
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.client.dataaccess.rest.jackson.configuration.JsonObjectMapperConfiguration" />
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.jackson.configuration.JsonObjectMapperConfiguration" />
 
 	<bean id="mappingJacksonHttpMessageConverter"
 		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
@@ -128,18 +140,16 @@
 	<!-- Synchronizer -->
 	<!-- ####################################################################################### -->
 
-	<import resource="classpath:alcommand-context.xml"></import>
-
 	<bean id="consumer"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.sinchro.ConsumerQueue"
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
 		scope="prototype" />
 
 	<bean id="producer"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.sinchro.ProducerQueue"
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
 		scope="prototype" />
 
 	<bean id="synchronizer"
-		class="org.mxhero.engine.plugin.attachmentlink.cloudstorage.internal.sinchro.Synchronizer">
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
 		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"></property>
 	</bean>
 

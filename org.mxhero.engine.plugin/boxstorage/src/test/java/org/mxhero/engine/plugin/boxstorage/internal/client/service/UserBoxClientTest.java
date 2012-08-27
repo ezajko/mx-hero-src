@@ -26,8 +26,6 @@ import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.conne
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateTokenResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ErrorResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.domain.UserRequest;
-import org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationKey;
-import org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient;
 import org.mxhero.engine.plugin.storageapi.StorageResult;
 import org.mxhero.engine.plugin.storageapi.UserResult;
 
@@ -224,17 +222,16 @@ public class UserBoxClientTest {
 	public void testProcess() {
 		target.setEmail("pepe@pepe.com");
 		target.setRequest(new UserRequest("pepe@pepe.com",true));
-		target.setBodyUrl("fdsjfdsfsf  %s");
-		when(connector.getAppKey(anyString())).thenReturn("app_key");
+		target.setUrlToRetrieveToken("http://localhost");
+		target.setHostMxheroServer("https://mxhero.com");
 		CreateTokenResponse value = new CreateTokenResponse();
 		value.setPreviousAccount(true);
 		value.setError(new ErrorResponse(CodeResponse.USER_ALREADY_EXIST.getMessage()));
-		when(connector.createAccount(anyString(), anyString())).thenReturn(value);
+		when(connector.createAccount(anyString())).thenReturn(value);
 		UserResult process = target.process();
 		assertNotNull(process);
 		assertTrue(process.isSender());
-		verify(connector,times(1)).getAppKey(anyString());
-		verify(connector,times(1)).createAccount(anyString(), anyString());
+		verify(connector,times(1)).createAccount(anyString());
 		verify(persistence, never()).storeToken(any(UserBoxClient.class));
 	}
 
@@ -242,15 +239,16 @@ public class UserBoxClientTest {
 	public void testProcess_app_key_exists() {
 		target.setEmail("pepe@pepe.com");
 		target.setRequest(new UserRequest("pepe@pepe.com",true));
+		target.setUrlToRetrieveToken("http://localhost");
+		target.setHostMxheroServer("https://mxhero.com");
 		ApplicationKey.setKey("sasfdsfadsf");
 		CreateTokenResponse value = new CreateTokenResponse();
 		value.setPreviousAccount(true);
-		when(connector.createAccount(anyString(), anyString())).thenReturn(value);
+		when(connector.createAccount(anyString())).thenReturn(value);
 		UserResult process = target.process();
 		assertNotNull(process);
 		assertTrue(process.isSender());
-		verify(connector,never()).getAppKey(anyString());
-		verify(connector,times(1)).createAccount(anyString(), anyString());
+		verify(connector,times(1)).createAccount(anyString());
 		verify(persistence, times(1)).storeToken(any(UserBoxClient.class));
 	}
 }

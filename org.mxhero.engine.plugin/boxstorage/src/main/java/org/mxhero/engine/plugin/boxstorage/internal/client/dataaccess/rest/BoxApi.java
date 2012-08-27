@@ -16,10 +16,9 @@ public interface BoxApi {
 	 * Creates the account.
 	 *
 	 * @param email the email
-	 * @param appKey 
 	 * @return the creates the user response
 	 */
-	public CreateTokenResponse createAccount(String email, String appKey);
+	public CreateTokenResponse createAccount(String email);
 	
 	/**
 	 * Store.
@@ -60,5 +59,12 @@ public interface BoxApi {
 	 * @param userBoxClient the user box client
 	 */
 	public void shareFile(UserBoxClient userBoxClient);
+
+	/**
+	 * Gets the box api key.
+	 *
+	 * @return the box api key
+	 */
+	public String getBoxApiKey();
 
 }

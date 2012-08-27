@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.mxhero.engine.plugin.boxstorage.BoxCloudStorage;
 import org.mxhero.engine.plugin.boxstorage.internal.client.domain.UserRequest;
+import org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient;
 import org.mxhero.engine.plugin.storageapi.CloudStorage;
 import org.mxhero.engine.plugin.storageapi.StorageResult;
@@ -32,6 +33,28 @@ public class BoxCloudStorageClient implements BeanFactoryAware, CloudStorage, Bo
 	/** The logger. */
 	private static Logger logger = LoggerFactory.getLogger(BoxCloudStorageClient.class);
 	
+	/**
+	 * Inits the.
+	 */
+	public void init(){
+		initAppKey();
+		initApiBoxKey();
+	}
+	
+	/**
+	 * Inits the api box key.
+	 */
+	private void initApiBoxKey() {
+		getApplicationService().initApiBoxKey();
+	}
+
+	/**
+	 * Inits the app key.
+	 */
+	private void initAppKey() {
+		getApplicationService().initAppKey();
+	}
+
 	/**
 	 * Store.
 	 *
@@ -122,4 +145,13 @@ public class BoxCloudStorageClient implements BeanFactoryAware, CloudStorage, Bo
 		userBoxInstance.registerToken(token);
 	}
 
+
+	/**
+	 * Gets the application service.
+	 *
+	 * @return the application service
+	 */
+	private ApplicationService getApplicationService(){
+		return this.beanFactory.getBean(ApplicationService.class);
+	}
 }
