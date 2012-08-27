@@ -4,6 +4,7 @@ import org.mxhero.engine.plugin.boxserver.BoxCloudStorage;
 import org.mxhero.engine.plugin.boxserver.caching.Application;
 import org.mxhero.engine.plugin.boxserver.caching.TicketCaching;
 import org.mxhero.engine.plugin.boxserver.exceptions.NonAuthorizeException;
+import org.mxhero.engine.plugin.boxserver.response.ApiBoxKeyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
@@ -88,6 +90,25 @@ public class AuthenticationController {
 		String redirectUrl = urlInitTicket + ticket;
 		logger.debug("Redirect to Box to authenticate {}", redirectUrl);
 		return new RedirectView(redirectUrl);
+	}
+
+	/**
+	 * Inits the authorization.
+	 * 
+	 * @param email
+	 *            the email
+	 * @return the view
+	 */
+	@RequestMapping(value = "/secure/apikey", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	public ApiBoxKeyResponse getApiBoxKey() {
+		logger.debug("Request for ApiKey");
+		String apiKey = storage.getApiBoxKey();
+		ApiBoxKeyResponse resp = new ApiBoxKeyResponse();
+		resp.setApiKey(apiKey);
+		logger.debug("Returning apiBox key to client");
+		return resp;
 	}
 
 	@ExceptionHandler(Exception.class)

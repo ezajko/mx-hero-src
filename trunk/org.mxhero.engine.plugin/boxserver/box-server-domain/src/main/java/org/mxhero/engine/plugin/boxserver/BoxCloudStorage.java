@@ -125,4 +125,14 @@ public class BoxCloudStorage implements BeanFactoryAware{
 		return getAppBox().getAppKey(name);
 	}
 
+
+	/**
+	 * Gets the api box key.
+	 *
+	 * @return the api box key
+	 */
+	public String getApiBoxKey() {
+		return getAppBox().getApiBoxKey();
+	}
+
 }
