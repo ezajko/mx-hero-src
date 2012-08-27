@@ -39,7 +39,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 	private NamedParameterJdbcTemplate template;
 	
 	@Autowired
-	public AttachmentJdbcRepository(@Qualifier(value = "dataSource")DataSource ds){
+	public AttachmentJdbcRepository(DataSource ds){
 		this.template = new NamedParameterJdbcTemplate(ds);
 	}
 
