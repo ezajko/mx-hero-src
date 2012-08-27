@@ -11,9 +11,11 @@ import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.conne
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.Item;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.ItemResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.request.SharedLinkRequest;
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ApiBoxKeyResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateKeyResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateTokenResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ResponseHandler;
+import org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationKey;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,20 +32,20 @@ import org.springframework.web.client.RestTemplate;
  */
 public class BoxApiImpl implements BoxApi{
 	
+	/** The logger. */
+	private static Logger logger = LoggerFactory.getLogger(BoxApiImpl.class);
+	
+	/** The handler. */
+	private Map<String, ResponseHandler<? extends AbstractResponse>> handler;
+	
 	/** The template. */
 	private RestTemplate template;
 	
-	/** The create token url. */
-	private String createTokenUrl;
+	/** The host mxhero box server. */
+	private String hostMxheroBoxServer;
 	
 	/** The upload files url. */
 	private String uploadFilesUrl;
-	
-	/** The application key url. */
-	private String applicationKeyUrl;
-	
-	/** The api key. */
-	private String apiKey;
 	
 	/** The search folders url. */
 	private String foldersUrl;
@@ -51,12 +53,10 @@ public class BoxApiImpl implements BoxApi{
 	/** The shared file url. */
 	private String sharedFileUrl;
 	
-	/** The handler. */
-	private Map<String, ResponseHandler<? extends AbstractResponse>> handler;
-	
-	/** The logger. */
-	private static Logger logger = LoggerFactory.getLogger(BoxApiImpl.class);
 
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#getAppKey(java.lang.String)
+	 */
 	@Override
 	public String getAppKey(String applicationId) {
 		logger.debug("Get AppKey for app instance {}", applicationId);
@@ -67,18 +67,42 @@ public class BoxApiImpl implements BoxApi{
 		return userResponse.getAppKey();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#getBoxApiKey()
+	 */
+	@Override
+	public String getBoxApiKey() {
+		logger.debug("Get Box Api key for app");
+		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
+		requestHeaders.add("Authorization", getAuthorizationMxheroHeader());
+		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(requestHeaders);
+		ResponseEntity<ApiBoxKeyResponse> userResponse = getTemplate().exchange(getBoxApiKeyUrl(), HttpMethod.GET, requestEntity, ApiBoxKeyResponse.class);
+		logger.debug("Response Box Api from Box mxHero Service");
+		return userResponse.getBody().getApiKey();
+	}
+	
+	/**
+	 * Gets the box api key url.
+	 *
+	 * @return the box api key url
+	 */
+	private String getBoxApiKeyUrl() {
+		return getHostMxheroBoxServer()+"/api/secure/apikey";
+	}
+
 	/**
 	 * Creates the account.
 	 *
 	 * @param user the user
 	 * @return the creates the user response
 	 */
-	public CreateTokenResponse createAccount(String user, String appKey){
+	public CreateTokenResponse createAccount(String user){
 		logger.debug("Create account for user {}", user);
 		Map<String , String> postParameters = new HashMap<String, String>();
 		postParameters.put("email", user);
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		requestHeaders.add("Authorization", "mxHeroApi app_key="+appKey);
+		getAuthorizationMxheroHeader();
+		requestHeaders.add("Authorization", getAuthorizationMxheroHeader());
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(postParameters, requestHeaders);
 		CreateTokenResponse userResponse = getTemplate().postForObject(getCreateTokenUrl(), requestEntity, CreateTokenResponse.class);
 		logger.debug("Response createAccount from Box {}", userResponse);
@@ -86,10 +110,19 @@ public class BoxApiImpl implements BoxApi{
 	}
 
 	/**
+	 * Gets the authorization mxhero header.
+	 *
+	 * @return the authorization mxhero header
+	 */
+	private String getAuthorizationMxheroHeader() {
+		return String.format("mxHeroApi app_key=%s",ApplicationKey.getKey());
+	}
+
+	/**
 	 * Store.
 	 *
 	 * @param userBox the user box
-	 * @param filesPath the files path
+	 * @param filePath the file path
 	 * @return the storage result
 	 */
 	public FileUploadResponse store(UserBoxClient userBox, String filePath) {
@@ -98,21 +131,36 @@ public class BoxApiImpl implements BoxApi{
 		postParameters.add("filename1", new FileSystemResource(filePath));
 		postParameters.add("folder_id", userBox.getAccount().getItem().getId());
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		requestHeaders.add("Authorization", "BoxAuth api_key="+getApiKey()+"&auth_token="+userBox.getAccount().getToken());
+		String authKey = getAuthorizationHeaderBox(userBox);
+		requestHeaders.add("Authorization", authKey);
 		HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<MultiValueMap<String, Object>>(postParameters, requestHeaders);
 		ResponseEntity<FileUploadResponse> userResponse = getTemplate().postForEntity(getUploadFilesUrl(), requestEntity, FileUploadResponse.class);
 		FileUploadResponse response = (FileUploadResponse) handler.get("store").handleReponse(userResponse);
 		logger.debug("Response uploadFiles from Box {}", response);
 		return response;
 	}
+
+	/**
+	 * Gets the authorization header box.
+	 *
+	 * @param userBox the user box
+	 * @return the authorization header box
+	 */
+	private String getAuthorizationHeaderBox(UserBoxClient userBox) {
+		String authKey = String.format("BoxAuth api_key=%s&auth_token=%s",ApplicationKey.getBoxApiKey(),userBox.getAccount().getToken());
+		return authKey;
+	}
 	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#shareFile(org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient)
+	 */
 	@Override
 	public void shareFile(UserBoxClient userBoxClient) {
 		logger.debug("Shared file for user {}", userBoxClient);
 		Map<String , Object> postParameters = new HashMap<String, Object>();
 		postParameters.put("shared_link", new SharedLinkRequest());
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		requestHeaders.add("Authorization", "BoxAuth api_key="+getApiKey()+"&auth_token="+userBoxClient.getAccount().getToken());
+		requestHeaders.add("Authorization", getAuthorizationHeaderBox(userBoxClient));
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(postParameters, requestHeaders);
 		String url = getSharedFileUrl()+"/"+userBoxClient.getFileStored().getEntries().get(0).getId();
 		ResponseEntity<Entry> userResponse = getTemplate().exchange(url, HttpMethod.PUT, requestEntity, Entry.class);
@@ -133,7 +181,7 @@ public class BoxApiImpl implements BoxApi{
 	public ItemResponse getFolderMxHero(UserBoxClient userBox) {
 		logger.debug("Getting folder item mxhero account for user {}", userBox);
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		requestHeaders.add("Authorization", "BoxAuth api_key="+getApiKey()+"&auth_token="+userBox.getAccount().getToken());
+		requestHeaders.add("Authorization", getAuthorizationHeaderBox(userBox));
 		HttpEntity requestEntity = new HttpEntity(requestHeaders);
 		ResponseEntity<ItemResponse> itemResposne = getTemplate().exchange(getFoldersUrl(), HttpMethod.GET, requestEntity, ItemResponse.class);
 		ItemResponse response = (ItemResponse) handler.get("createAccount").handleReponse(itemResposne);
@@ -150,7 +198,7 @@ public class BoxApiImpl implements BoxApi{
 		Map<String , String> postParameters = new HashMap<String, String>();
 		postParameters.put("name", "mxHero");
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		requestHeaders.add("Authorization", "BoxAuth api_key="+getApiKey()+"&auth_token="+userBox.getAccount().getToken());
+		requestHeaders.add("Authorization", getAuthorizationHeaderBox(userBox));
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(postParameters, requestHeaders);
 		ResponseEntity<Item> userResponse = getTemplate().postForEntity(getFoldersUrl(), requestEntity, Item.class);
 		logger.debug("Folder mxHero created from Box account {}", userBox);
@@ -183,37 +231,7 @@ public class BoxApiImpl implements BoxApi{
 	 * @return the creates the token url
 	 */
 	public String getCreateTokenUrl() {
-		return createTokenUrl;
-	}
-
-
-	/**
-	 * Sets the creates the token url.
-	 *
-	 * @param createTokenUrl the new creates the token url
-	 */
-	public void setCreateTokenUrl(String createTokenUrl) {
-		this.createTokenUrl = createTokenUrl;
-	}
-
-
-	/**
-	 * Gets the api key.
-	 *
-	 * @return the api key
-	 */
-	public String getApiKey() {
-		return apiKey;
-	}
-
-
-	/**
-	 * Sets the api key.
-	 *
-	 * @param apiKey the new api key
-	 */
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
+		return getHostMxheroBoxServer()+"/api/secure/attach/token/create";
 	}
 
 	/**
@@ -271,20 +289,49 @@ public class BoxApiImpl implements BoxApi{
 		this.foldersUrl = foldersUrl;
 	}
 
+	/**
+	 * Gets the application key url.
+	 *
+	 * @return the application key url
+	 */
 	public String getApplicationKeyUrl() {
-		return applicationKeyUrl;
+		return getHostMxheroBoxServer()+"/api/attach/application/key/create";
 	}
 
-	public void setApplicationKeyUrl(String applicationKeyUrl) {
-		this.applicationKeyUrl = applicationKeyUrl;
-	}
-
+	/**
+	 * Gets the shared file url.
+	 *
+	 * @return the shared file url
+	 */
 	public String getSharedFileUrl() {
 		return sharedFileUrl;
 	}
 
+	/**
+	 * Sets the shared file url.
+	 *
+	 * @param sharedFileUrl the new shared file url
+	 */
 	public void setSharedFileUrl(String sharedFileUrl) {
 		this.sharedFileUrl = sharedFileUrl;
+	}
+
+	/**
+	 * Gets the host mxhero box server.
+	 *
+	 * @return the host mxhero box server
+	 */
+	public String getHostMxheroBoxServer() {
+		return hostMxheroBoxServer;
+	}
+
+	/**
+	 * Sets the host mxhero box server.
+	 *
+	 * @param hostMxheroBoxServer the new host mxhero box server
+	 */
+	public void setHostMxheroBoxServer(String hostMxheroBoxServer) {
+		this.hostMxheroBoxServer = hostMxheroBoxServer;
 	}
 
 }

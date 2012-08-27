@@ -8,6 +8,9 @@ public class ApplicationKey {
 	/** The app key. */
 	private String appKey;
 	
+	/** The box key. */
+	private String boxKey;
+	
 	/** The instance. */
 	private static ApplicationKey instance;
 	
@@ -35,6 +38,24 @@ public class ApplicationKey {
 	}
 
 	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
+	public static String getBoxApiKey(){
+		return getInstance().getBoxKey();
+	}
+
+	/**
+	 * Sets the box api key.
+	 *
+	 * @param key the new box api key
+	 */
+	public static void setBoxApiKey(String key){
+		getInstance().setBoxKey(key);
+	}
+	
+	/**
 	 * Gets the single instance of ApplicationKey.
 	 *
 	 * @return single instance of ApplicationKey
@@ -60,6 +81,24 @@ public class ApplicationKey {
 	 */
 	public void setAppKey(String appKey) {
 		this.appKey = appKey;
+	}
+
+	/**
+	 * Gets the box key.
+	 *
+	 * @return the box key
+	 */
+	public String getBoxKey() {
+		return boxKey;
+	}
+
+	/**
+	 * Sets the box key.
+	 *
+	 * @param boxKey the new box key
+	 */
+	public void setBoxKey(String boxKey) {
+		this.boxKey = boxKey;
 	}
 
 

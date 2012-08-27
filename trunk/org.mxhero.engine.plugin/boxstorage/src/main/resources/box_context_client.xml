@@ -32,13 +32,21 @@
 		</property>
 	</bean>
 
-	<bean id="dbpool" class="org.apache.commons.dbcp.BasicDataSource"
+	<bean id="dbpool" class="com.jolbox.bonecp.BoneCPDataSource"
 		destroy-method="close">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
+		<property name="poolName" value="mxhero-attachmentlink" />
+		<property name="driverClass" value="${jdbc.driver.class}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
-	</bean>
+		<property name="idleConnectionTestPeriod" value="${initial.idleConnectionTestPeriod}" />
+		<property name="idleMaxAge" value="${initial.idleMaxAge}" />
+		<property name="maxConnectionsPerPartition" value="${initial.maxConnectionsPerPartition}" />
+		<property name="minConnectionsPerPartition" value="${initial.minConnectionsPerPartition}" />
+		<property name="partitionCount" value="${initial.partitionCount}" />
+		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
+		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
+	</bean>	
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -54,8 +62,8 @@
 		factory-method="createUser" scope="prototype">
 		<property name="connector" ref="connector" />
 		<property name="persistence" ref="boxStoragePersistence" />
-		<property name="applicationId" value="${app.instance.id}" />
-		<property name="bodyUrl" value="${body.url.to.retrieve}" />
+		<property name="urlToRetrieveToken" value="${url.to.retrieve.token}"/>
+		<property name="hostMxheroServer" value="${host.mxhero.server}" />
 	</bean>
 
 	<bean id="boxStoragePersistence"
@@ -69,12 +77,10 @@
 	<bean id="connector"
 		class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.BoxApiImpl">
 		<property name="template" ref="restTemplate" />
-		<property name="createTokenUrl" value="${create.token.url}" />
 		<property name="uploadFilesUrl" value="${upload.files.url}" />
 		<property name="foldersUrl" value="${folders.url}" />
-		<property name="apiKey" value="${api.key}" />
-		<property name="applicationKeyUrl" value="${application.key.url}" />
 		<property name="sharedFileUrl" value="${shared.files.url}" />
+		<property name="hostMxheroBoxServer" value="${host.mxhero.server}" />
 		<property name="handler">
 			<map>
 				<entry key="createAccount">
@@ -89,8 +95,12 @@
 		</property>
 	</bean>
 
-	<bean id="storage"
-		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" />
+	<bean id="storage" class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" init-method="init"/>
+	
+	<bean id="applicationService" class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
+		<property name="connector" ref="connector"/>
+		<property name="applicationId" value="${app.instance.id}" />
+	</bean>
 
 	<bean id="httpClientParams" class="org.apache.commons.httpclient.params.HttpClientParams">
 		<property name="connectionManagerClass"

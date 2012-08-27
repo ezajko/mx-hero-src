@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.common.collect.Maps;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:box_context_client.xml")
+@ContextConfiguration(locations = "classpath:box_context_client_test.xml")
 public class IntegrationTest {
 	
 	@Autowired
