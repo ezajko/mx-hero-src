@@ -16,6 +16,8 @@
 
 	<context:component-scan base-package="org.mxhero.engine.plugin.boxstorage" />
 	
+	<osgi:reference id="attachmentService" interface="org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService" cardinality="1..1"/>
+	
 	<osgi:reference id="dbpool" interface="org.mxhero.engine.plugin.dbpool.DataSource" cardinality="1..1"/>
 	
 	<osgix:cm-properties id="jdbcCmProps"
@@ -27,6 +29,8 @@
 		<prop key="shared.files.url">https://api.box.com/2.0/files</prop>
 		<prop key="folders.url">https://api.box.com/2.0/folders/0</prop>
 		<prop key="encryptor.seed">clo#d$tore8ox</prop>
+		<prop key="queue.max.capacity">100</prop>
+		<prop key="synchronizer.threads.amount">10</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder properties-ref="jdbcCmProps" />
@@ -124,34 +128,24 @@
 	<!-- ####################################################################################### -->
 	<!-- Synchronizer -->
 	<!-- ####################################################################################### -->
-	
-	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="sinchronizerJob" />
-		<property name="cronExpression" value="5 * * * * *" />
-	</bean>
-
-	<bean id="sinchronizerJob"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="synchronizer" />
-		<property name="targetMethod" value="synchronize" />
-	</bean>
-
 	<bean id="consumer"
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
-		scope="prototype" />
+		scope="prototype" >
+		<property name="service" ref="applicationService"/>
+		<property name="storage" ref="boxStorage"/>
+	</bean>		
 
 	<bean id="producer"
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
-		scope="prototype" />
-
-	<bean id="synchronizer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
-		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"></property>
+		scope="prototype">
+		<property name="transactionsToRetrieve" value="${queue.max.capacity}"/>
+		<property name="service" ref="applicationService"/>
 	</bean>
 
-	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dbpool" />
+	<bean id="synchronizer"
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer" init-method="start" destroy-method="stop">
+		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"/>
+		<property name="queueCapacity" value="${queue.max.capacity}"/>
 	</bean>
 
 </beans>

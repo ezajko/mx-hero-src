@@ -134,32 +134,4 @@
 		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
 	<!-- ####################################################################################### -->
 
-	<!-- ####################################################################################### -->
-	<!-- Synchronizer -->
-	<!-- ####################################################################################### -->
-	
-	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="sinchronizerJob" />
-		<property name="cronExpression" value="5 * * * * *" />
-	</bean>
-
-	<bean id="sinchronizerJob"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="synchronizer" />
-		<property name="targetMethod" value="synchronize" />
-	</bean>
-
-	<bean id="consumer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
-		scope="prototype" />
-
-	<bean id="producer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
-		scope="prototype" />
-
-	<bean id="synchronizer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
-		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"></property>
-	</bean>
-
 </beans>

@@ -11,17 +11,7 @@
 		</layout>
 	</appender>
 
-	<appender name="FILE" class="org.apache.log4j.DailyRollingFileAppender">
-		<param name="File" value="./target/test.log" />
-		<param name="Append" value="true" />
-		<param name="DatePattern" value="'.'yyyy-MM-dd" />
-		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern"
-				value="%X{message}-ThreadId: %t-[ATTACHLINKS-BOX-STORAGE]|[%d{HH:mm:ss,SSS}]|[%p]|[%c{1}.%M(%L)]|[MESSAGE: %m]%n" />
-		</layout>
-	</appender>
-
-	<category name="org.mxhero.engine.plugin.attachmentlink">
+	<category name="org.mxhero.engine.plugin.boxstorage">
 		<level value="DEBUG" />
 		<appender-ref ref="CONSOLE" />
 	</category>
