@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Semaphore;
 
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.slf4j.Logger;
@@ -25,51 +25,70 @@ public class Synchronizer implements BeanFactoryAware {
 	/** The amount consumer threads. */
 	private Integer amountConsumerThreads;
 
+	/** The queue capacity. */
+	private Integer queueCapacity;
+	
 	/** The beans. */
 	private BeanFactory beans;
-	
+
+	/** The consumer threads. */
+	private ExecutorService consumerThreads;
+
+	/** The producer threads. */
+	private ExecutorService producerThreads;
+
 	/**
 	 * Synchronize.
 	 */
-	public void synchronize(){
-		logger.debug("Start new synchronization running....");
-		BlockingQueue<TransactionAttachment> queue = new LinkedBlockingDeque<TransactionAttachment>(100);
-		ExecutorService producerThreads = Executors.newSingleThreadExecutor();
-		producerThreads.execute(getProducer(queue));
-		producerThreads.shutdown();
-		try {
-			producerThreads.awaitTermination(3, TimeUnit.MINUTES);
-			logger.debug("Producer finishing filling the queue");
-			ExecutorService consumerThreads = Executors.newFixedThreadPool(getAmountConsumerThreads());
-			consumerThreads.execute(getConsumer(queue));
-			consumerThreads.shutdown();
-			consumerThreads.awaitTermination(30, TimeUnit.MINUTES);
-			logger.debug("Synchronization finishing successfully");
-		} catch (InterruptedException e) {
-			logger.error("Error in synchronization with box");
-			logger.error("Error message {}", e.getMessage());
-			logger.error("Error class {}", e.getClass().getSimpleName());
-		}
+	public void start(){
+		Thread thread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				logger.debug("Start new synchronization running....");
+				Semaphore semaphore = new Semaphore(getAmountConsumerThreads());
+				BlockingQueue<TransactionAttachment> queue = new LinkedBlockingDeque<TransactionAttachment>(getQueueCapacity());
+				producerThreads = Executors.newSingleThreadExecutor();
+				producerThreads.execute(getProducer(queue,semaphore));
+				logger.debug("Producer finishing filling the queue");
+				consumerThreads = Executors.newFixedThreadPool(getAmountConsumerThreads());
+				for (int i = 0; i < getAmountConsumerThreads()*2; i++) {
+					Runnable consumer = getConsumer(queue, semaphore);
+					consumerThreads.execute(consumer);
+				}
+			}
+		});
+		thread.start();
+	}
+	
+	/**
+	 * Stop.
+	 */
+	public void stop(){
+		producerThreads.shutdownNow();
+		consumerThreads.shutdownNow();
+		logger.warn("SHUTING DOWN SYNCHRONIZER. YOU MUST RESTART THE APPLICATION IN ORDER TO RE RUN SYNCHRONIZATION");
 	}
 
 	/**
 	 * Gets the consumer.
 	 *
 	 * @param queue the queue
+	 * @param semaphore the semaphore
 	 * @return the consumer
 	 */
-	private Runnable getConsumer(BlockingQueue<TransactionAttachment> queue) {
-		return (Runnable) this.beans.getBean("consumer", queue);
+	private Runnable getConsumer(BlockingQueue<TransactionAttachment> queue, Semaphore semaphore) {
+		return (Runnable) this.beans.getBean("consumer", queue, semaphore);
 	}
 
 	/**
 	 * Gets the producer.
 	 *
 	 * @param queue the queue
+	 * @param semaphore the semaphore
 	 * @return the producer
 	 */
-	private Runnable getProducer(BlockingQueue<TransactionAttachment> queue) {
-		return (Runnable) this.beans.getBean("producer", queue);
+	private Runnable getProducer(BlockingQueue<TransactionAttachment> queue, Semaphore semaphore) {
+		return (Runnable) this.beans.getBean("producer", queue, semaphore);
 	}
 
 	/**
@@ -96,5 +115,13 @@ public class Synchronizer implements BeanFactoryAware {
 	@Override
 	public void setBeanFactory(BeanFactory beans) throws BeansException {
 		this.beans = beans;
+	}
+
+	public Integer getQueueCapacity() {
+		return queueCapacity;
+	}
+
+	public void setQueueCapacity(Integer queueCapacity) {
+		this.queueCapacity = queueCapacity;
 	}
 }

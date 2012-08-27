@@ -96,7 +96,7 @@
 	</bean>
 
 	<bean id="storage"
-		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" init-method="init"/>
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient"/>
 		
 	<bean id="applicationService" class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
 		<property name="connector" ref="connector"/>
@@ -142,15 +142,28 @@
 
 	<bean id="consumer"
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
-		scope="prototype" />
+		scope="prototype" >
+		<property name="service">
+			<bean class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.AttachmentServiceMock"/>
+		</property>
+		<property name="storage">
+			<bean class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.CloudStorageMock"/>
+		</property>
+	</bean>		
 
 	<bean id="producer"
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
-		scope="prototype" />
+		scope="prototype">
+		<property name="transactionsToRetrieve" value="${queue.max.capacity}"/>
+		<property name="service">
+			<bean class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.AttachmentServiceMock"/>
+		</property>
+	</bean>
 
 	<bean id="synchronizer"
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
-		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"></property>
+		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"/>
+		<property name="queueCapacity" value="${queue.max.capacity}"/>
 	</bean>
 
 </beans>
