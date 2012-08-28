@@ -71,6 +71,7 @@ public class ConsumerQueue implements Runnable {
 					}
 				}
 				getSemaphore().release();
+				Thread.sleep(5000);
 			}
 		} catch (InterruptedException e) {
 			logger.info("Shuting down consumer thread {}", Thread.currentThread().getName());
