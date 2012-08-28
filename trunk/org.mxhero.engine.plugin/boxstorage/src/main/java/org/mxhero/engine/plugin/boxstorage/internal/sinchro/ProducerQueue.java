@@ -64,6 +64,8 @@ public class ProducerQueue implements Runnable {
 					this.getQueue().addAll(transactions);
 					logger.debug("Notify consumer to start process transactions");
 					getSemaphore().release(availablePermits);
+				}else{
+					Thread.sleep(5000);
 				}
 			}
 		} catch (InterruptedException e) {
