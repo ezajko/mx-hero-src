@@ -8,4 +8,15 @@ org.springframework.orm*;resolution:=optional, \
 org.aopalliance.aop, \
 org.springframework.aop, \
 org.mxhero.engine.plugin.dbpool, \
+org.apache.commons.httpclient, \
+org.apache.commons.httpclient.params, \
+org.springframework.http, \
+org.springframework.http.client, \
+org.springframework.http.client.support, \
+org.springframework.http.converter, \
+org.springframework.http.converter.json, \
+org.springframework.http.converter.xml, \
+org.springframework.http.converter.feed, \
+org.springframework.http.server, \
+org.springframework.http.web, \
 org.springframework.aop.framework, *
