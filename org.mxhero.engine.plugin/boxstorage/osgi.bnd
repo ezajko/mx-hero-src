@@ -18,5 +18,6 @@ org.springframework.http.converter.json, \
 org.springframework.http.converter.xml, \
 org.springframework.http.converter.feed, \
 org.springframework.http.server, \
-org.springframework.http.web, \
+org.springframework.web, \
+org.mxhero.engine.plugin.storageapi, \
 org.springframework.aop.framework, *
