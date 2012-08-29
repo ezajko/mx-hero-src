@@ -131,7 +131,7 @@
 	<bean id="consumer"
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
 		scope="prototype" >
-		<property name="service" ref="applicationService"/>
+		<property name="service" ref="attachmentService"/>
 		<property name="storage" ref="boxStorage"/>
 	</bean>		
 
@@ -139,7 +139,7 @@
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
 		scope="prototype">
 		<property name="transactionsToRetrieve" value="${queue.max.capacity}"/>
-		<property name="service" ref="applicationService"/>
+		<property name="service" ref="attachmentService"/>
 	</bean>
 
 	<bean id="synchronizer"
