@@ -93,6 +93,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>box-client-rest</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
