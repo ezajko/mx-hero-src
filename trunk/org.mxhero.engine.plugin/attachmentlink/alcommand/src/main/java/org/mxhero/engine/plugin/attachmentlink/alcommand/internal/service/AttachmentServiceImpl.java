@@ -9,7 +9,6 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAtta
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -35,7 +34,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 	 * @param ds the ds
 	 */
 	@Autowired
-	public AttachmentServiceImpl(@Qualifier(value = "dataSource")DataSource ds){
+	public AttachmentServiceImpl(DataSource ds){
 		this.jdbc = new NamedParameterJdbcTemplate(ds);
 	}
 

@@ -17,7 +17,6 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.repository.AttachmentRepository;
 import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
