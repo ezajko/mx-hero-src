@@ -113,7 +113,7 @@
 		<dependency>
 			<groupId>javax.mail</groupId>
 			<artifactId>org.mxhero.javax.mail</artifactId>
-			<version>1.4.4</version>
+			<version>1.4.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.mina</groupId>
@@ -147,14 +147,19 @@
 			<version>5.1.17</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.codec</artifactId>
-			<version>1.4.0</version>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jasypt</groupId>
 			<artifactId>com.springsource.org.jasypt.encryption</artifactId>
 			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>com.springsource.org.apache.commons.httpclient</artifactId>
+		    <version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
