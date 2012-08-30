@@ -2,7 +2,6 @@ package org.mxhero.engine.plugin.boxstorage.internal.sinchro;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
 
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
@@ -20,10 +19,6 @@ public class ProducerQueue implements Runnable {
 	/** The logger. */
 	private static Logger logger = LoggerFactory.getLogger(ConsumerQueue.class);
 
-
-	/** The semaphore. */
-	private Semaphore semaphore;
-	
 	/** The service. */
 	private AttachmentService service;
 	
@@ -42,10 +37,8 @@ public class ProducerQueue implements Runnable {
 	 * @param semaphore the semaphore
 	 * @return the producer queue
 	 */
-	public ProducerQueue(BlockingQueue<TransactionAttachment> queue, Semaphore semaphore){
+	public ProducerQueue(BlockingQueue<TransactionAttachment> queue){
 		this.setQueue(queue);
-		this.setSemaphore(semaphore);
-
 	}
 
 
@@ -57,22 +50,22 @@ public class ProducerQueue implements Runnable {
 		try {
 			while(true){
 				if(getQueue().isEmpty()){
-					int availablePermits = getSemaphore().availablePermits();
-					getSemaphore().acquire(availablePermits);
-					logger.debug("Refilling queue");
-					List<TransactionAttachment> transactions = getService().getTransactionToProcess(getTransactionsToRetrieve());
-					this.getQueue().addAll(transactions);
-					logger.debug("Notify consumer to start process transactions");
-					getSemaphore().release(availablePermits);
+					try {
+						logger.debug("Refilling queue");
+						List<TransactionAttachment> transactions = getService().getTransactionToProcess(getTransactionsToRetrieve());
+						this.getQueue().addAll(transactions);
+						logger.debug("Notify consumer to start process transactions");
+					} catch (Exception e) {
+						logger.error("Error message {}", e.getMessage());
+						logger.error("Error class {}", e.getClass().getName());
+					}
 				}else{
 					Thread.sleep(5000);
 				}
 			}
 		} catch (InterruptedException e) {
 			logger.info("Shuting down producer thread {}", Thread.currentThread().getName());
-			logger.error("Semphore in Producer was interrupted by another thread");
-			logger.error("Error message {}", e.getMessage());
-			logger.error("Error class {}", e.getClass().getName());
+			logger.info("Semphore in Producer was interrupted by another thread");
 		}
 	}
 
@@ -112,24 +105,6 @@ public class ProducerQueue implements Runnable {
 		this.queue = queue;
 	}
 
-	/**
-	 * Gets the semaphore.
-	 *
-	 * @return the semaphore
-	 */
-	public Semaphore getSemaphore() {
-		return semaphore;
-	}
-
-	/**
-	 * Sets the semaphore.
-	 *
-	 * @param semaphore the new semaphore
-	 */
-	public void setSemaphore(Semaphore semaphore) {
-		this.semaphore = semaphore;
-	}
-	
 	/**
 	 * Gets the transactions to retrieve.
 	 *
