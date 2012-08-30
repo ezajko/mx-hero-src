@@ -4,7 +4,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.Semaphore;
 
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.slf4j.Logger;
@@ -45,14 +44,13 @@ public class Synchronizer implements BeanFactoryAware {
 			@Override
 			public void run() {
 				logger.debug("Start new synchronization running....");
-				Semaphore semaphore = new Semaphore(getAmountConsumerThreads());
 				BlockingQueue<TransactionAttachment> queue = new LinkedBlockingDeque<TransactionAttachment>(getQueueCapacity());
 				producerThreads = Executors.newSingleThreadExecutor();
-				producerThreads.execute(getProducer(queue,semaphore));
+				producerThreads.execute(getProducer(queue));
 				logger.debug("Producer finishing filling the queue");
 				consumerThreads = Executors.newFixedThreadPool(getAmountConsumerThreads());
-				for (int i = 0; i < getAmountConsumerThreads()*2; i++) {
-					Runnable consumer = getConsumer(queue, semaphore);
+				for (int i = 0; i < getAmountConsumerThreads(); i++) {
+					Runnable consumer = getConsumer(queue);
 					consumerThreads.execute(consumer);
 				}
 			}
@@ -73,22 +71,20 @@ public class Synchronizer implements BeanFactoryAware {
 	 * Gets the consumer.
 	 *
 	 * @param queue the queue
-	 * @param semaphore the semaphore
 	 * @return the consumer
 	 */
-	private Runnable getConsumer(BlockingQueue<TransactionAttachment> queue, Semaphore semaphore) {
-		return (Runnable) this.beans.getBean("consumer", queue, semaphore);
+	private Runnable getConsumer(BlockingQueue<TransactionAttachment> queue) {
+		return (Runnable) this.beans.getBean("consumer", queue);
 	}
 
 	/**
 	 * Gets the producer.
 	 *
 	 * @param queue the queue
-	 * @param semaphore the semaphore
 	 * @return the producer
 	 */
-	private Runnable getProducer(BlockingQueue<TransactionAttachment> queue, Semaphore semaphore) {
-		return (Runnable) this.beans.getBean("producer", queue, semaphore);
+	private Runnable getProducer(BlockingQueue<TransactionAttachment> queue) {
+		return (Runnable) this.beans.getBean("producer", queue);
 	}
 
 	/**

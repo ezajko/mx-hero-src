@@ -1,7 +1,6 @@
 package org.mxhero.engine.plugin.boxstorage.internal.sinchro;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService;
@@ -22,9 +21,6 @@ public class ConsumerQueue implements Runnable {
 	/** The logger. */
 	private static Logger logger = LoggerFactory.getLogger(ConsumerQueue.class);
 
-	/** The semaphore. */
-	private Semaphore semaphore;
-
 	/** The storage. */
 	private CloudStorage storage;
 
@@ -40,9 +36,8 @@ public class ConsumerQueue implements Runnable {
 	 * @param semaphore the semaphore
 	 * @return the consumer queue
 	 */
-	public ConsumerQueue(BlockingQueue<TransactionAttachment> queue, Semaphore semaphore){
+	public ConsumerQueue(BlockingQueue<TransactionAttachment> queue){
 		this.setQueue(queue);
-		this.setSemaphore(semaphore);
 	}
 
 	/* (non-Javadoc)
@@ -54,30 +49,32 @@ public class ConsumerQueue implements Runnable {
 			while(true){
 				logger.debug("Thread {} executing", Thread.currentThread().getName());
 				logger.debug("Wait for Producer to put new transactions..");
-				getSemaphore().acquire();
-				while(!this.getQueue().isEmpty()){
+				if(!this.getQueue().isEmpty()){
 					logger.debug("Getting Tx from queue");
 					TransactionAttachment tx = this.getQueue().poll(1, TimeUnit.SECONDS);
 					if(tx != null){
-						logger.debug("Uploading transaction {}", tx);
-						StorageResult store = getStorage().store(tx.getEmail(), tx.getFilePath());
-						if(store.isSuccess()){
-							logger.debug("Tx uploaded success. Notify attachmentlinks");
-							if(store.getFileStored()!=null){
-								tx.setPublicUrl(store.getFileStored().getUrl());
+						try {
+							logger.debug("Uploading transaction {}", tx);
+							StorageResult store = getStorage().store(tx.getEmail(), tx.getFilePath());
+							if(store.isSuccess()){
+								logger.debug("Tx uploaded success. Notify attachmentlinks");
+								if(store.getFileStored()!=null){
+									tx.setPublicUrl(store.getFileStored().getUrl());
+								}
+								getService().sendMessage(tx, true);
 							}
-							getService().sendMessage(tx, true);
+						} catch (Exception e) {
+							logger.error("Error message {}", e.getMessage());
+							logger.error("Error class {}", e.getClass().getName());
 						}
 					}
+				}else{
+					Thread.sleep(5000);
 				}
-				getSemaphore().release();
-				Thread.sleep(5000);
 			}
 		} catch (InterruptedException e) {
 			logger.info("Shuting down consumer thread {}", Thread.currentThread().getName());
-			logger.error("Thread {} was interrupted", Thread.currentThread().getName());
-			logger.error("Exception class {}", e.getClass().getName());
-			logger.error("Exception message {}", e.getMessage());
+			logger.info("Thread {} was interrupted", Thread.currentThread().getName());
 		}
 	}
 
@@ -115,24 +112,6 @@ public class ConsumerQueue implements Runnable {
 	 */
 	public void setService(AttachmentService service) {
 		this.service = service;
-	}
-
-	/**
-	 * Gets the semaphore.
-	 *
-	 * @return the semaphore
-	 */
-	public Semaphore getSemaphore() {
-		return semaphore;
-	}
-
-	/**
-	 * Sets the semaphore.
-	 *
-	 * @param semaphore the new semaphore
-	 */
-	public void setSemaphore(Semaphore semaphore) {
-		this.semaphore = semaphore;
 	}
 
 	/**
