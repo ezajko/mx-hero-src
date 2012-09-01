@@ -1,8 +1,11 @@
 package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.AbstractResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.CodeResponse;
@@ -52,42 +55,76 @@ public class BoxApiImpl implements BoxApi{
 	
 	/** The shared file url. */
 	private String sharedFileUrl;
+
+	/** The encryptor jar. */
+	private StandardPBEStringEncryptor encryptorJar;
+	
+	/** The Constant ALGORITHM_JAR. */
+	private static final String ALGORITHM_JAR = "PBEWithMD5AndDES";
+
+	/** The Constant ENCRYPTOR_JAR_SEED. */
+	private static final String ENCRYPTOR_JAR_SEED = "clou-Stor$geE#cryp12orJar";
+
+	/** The Constant HEXADECIMAL. */
+	private static final String HEXADECIMAL = "hexadecimal";
+
+	
+	public BoxApiImpl() {
+		encryptorJar = new StandardPBEStringEncryptor();
+		encryptorJar.setAlgorithm(ALGORITHM_JAR);
+		encryptorJar.setPassword(ENCRYPTOR_JAR_SEED);
+		encryptorJar.setStringOutputType(HEXADECIMAL);
+	}
 	
 
 	/* (non-Javadoc)
 	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#getAppKey(java.lang.String)
 	 */
 	@Override
-	public String getAppKey(String applicationId) {
+	public CreateKeyResponse getAppKey(String applicationId) {
 		logger.debug("Get AppKey for app instance {}", applicationId);
 		Map<String , String> postParameters = new HashMap<String, String>();
 		postParameters.put("name", applicationId);
-		CreateKeyResponse userResponse = getTemplate().postForObject(getApplicationKeyUrl(), postParameters, CreateKeyResponse.class);
+		ResponseEntity<CreateKeyResponse> userResponse = getTemplate().postForEntity(getApplicationKeyUrl(), postParameters, CreateKeyResponse.class);
+		CreateKeyResponse response = (CreateKeyResponse) handler.get("keys").handleReponse(userResponse);
 		logger.debug("Response AppKey from Box mxHero Service {}", userResponse);
-		return userResponse.getAppKey();
+		return response;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#getBoxApiKey()
 	 */
 	@Override
-	public String getBoxApiKey() {
+	public ApiBoxKeyResponse getBoxApiKey() {
 		logger.debug("Get Box Api key for app");
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		requestHeaders.add("Authorization", getAuthorizationMxheroHeader());
+		requestHeaders.add("Authorization", getApiBoxAuthHeader());
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(requestHeaders);
 		ResponseEntity<ApiBoxKeyResponse> userResponse = getTemplate().exchange(getBoxApiKeyUrl(), HttpMethod.GET, requestEntity, ApiBoxKeyResponse.class);
+		ApiBoxKeyResponse response = (ApiBoxKeyResponse) handler.get("keys").handleReponse(userResponse);
 		logger.debug("Response Box Api from Box mxHero Service");
-		return userResponse.getBody().getApiKey();
+		return response;
 	}
 	
+	/**
+	 * Gets the api box auth header.
+	 *
+	 * @return the api box auth header
+	 */
+	private String getApiBoxAuthHeader() {
+    	String fileName = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+    	File file  = new File(fileName);
+		String key = encryptorJar.encrypt(file.getName());
+		return String.format("%s&amp;module_key=%s",getAuthorizationMxheroHeader(), key);
+	}
+
 	/**
 	 * Gets the box api key url.
 	 *
 	 * @return the box api key url
 	 */
 	private String getBoxApiKeyUrl() {
-		return getHostMxheroBoxServer()+"/api/secure/apikey";
+		return getHostMxheroBoxServer()+"/api/securekey";
 	}
 
 	/**
@@ -101,12 +138,12 @@ public class BoxApiImpl implements BoxApi{
 		Map<String , String> postParameters = new HashMap<String, String>();
 		postParameters.put("email", user);
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
-		getAuthorizationMxheroHeader();
 		requestHeaders.add("Authorization", getAuthorizationMxheroHeader());
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(postParameters, requestHeaders);
-		CreateTokenResponse userResponse = getTemplate().postForObject(getCreateTokenUrl(), requestEntity, CreateTokenResponse.class);
+		ResponseEntity<CreateTokenResponse> userResponse = getTemplate().postForEntity(getCreateTokenUrl(), requestEntity, CreateTokenResponse.class);
 		logger.debug("Response createAccount from Box {}", userResponse);
-		return userResponse;
+		CreateTokenResponse response = (CreateTokenResponse) handler.get("keys").handleReponse(userResponse);
+		return response;
 	}
 
 	/**
@@ -147,9 +184,29 @@ public class BoxApiImpl implements BoxApi{
 	 * @return the authorization header box
 	 */
 	private String getAuthorizationHeaderBox(UserBoxClient userBox) {
-		String authKey = String.format("BoxAuth api_key=%s&auth_token=%s",ApplicationKey.getBoxApiKey(),userBox.getAccount().getToken());
+		String authKey = String.format("BoxAuth api_key=%s&auth_token=%s",getApiKey(),userBox.getAccount().getToken());
 		return authKey;
 	}
+	
+	/**
+	 * Inits the api box key.
+	 * @return 
+	 */
+	public String getApiKey() {
+		logger.debug("Getting box api key to interact with box");
+		String apiKey = ApplicationKey.getBoxApiKey();
+		if(StringUtils.isEmpty(apiKey)){
+			logger.debug("Box api key is not cached. Requesting api key to server");
+			ApiBoxKeyResponse boxApiKey = getBoxApiKey();
+			if(!boxApiKey.wasResponseOk()){
+				throw new RuntimeException("Server mxhero Box could not retrieve Box API.");
+			}
+			apiKey = boxApiKey.getApiKey();
+			ApplicationKey.setBoxApiKey(apiKey);
+		}
+		return ApplicationKey.getBoxApiKey();
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#shareFile(org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient)

@@ -1,11 +1,11 @@
 package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response;
 
-import java.io.Serializable;
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.AbstractResponse;
 
 /**
  * The Class ApiBoxKeyResponse.
  */
-public class ApiBoxKeyResponse implements Serializable{
+public class ApiBoxKeyResponse extends AbstractResponse{
 	
 	/** The api key. */
 	private String apiKey;

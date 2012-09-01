@@ -3,6 +3,8 @@ package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.FileUploadResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.Item;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.ItemResponse;
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ApiBoxKeyResponse;
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateKeyResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateTokenResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient;
 
@@ -51,7 +53,7 @@ public interface BoxApi {
 	 * @param applicationId the application id
 	 * @return the app key
 	 */
-	public String getAppKey(String applicationId);
+	public CreateKeyResponse getAppKey(String applicationId);
 
 	/**
 	 * Share file.
@@ -65,6 +67,13 @@ public interface BoxApi {
 	 *
 	 * @return the box api key
 	 */
-	public String getBoxApiKey();
+	public ApiBoxKeyResponse getBoxApiKey();
+
+	/**
+	 * Gets the api key.
+	 *
+	 * @return the api key
+	 */
+	String getApiKey();
 
 }

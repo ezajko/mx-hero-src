@@ -91,12 +91,16 @@
 					<bean
 						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.FileUploadResponseHandler" />
 				</entry>
+				<entry key="keys">
+					<bean
+						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ApiBoxResponseHandler" />
+				</entry>
 			</map>
 		</property>
 	</bean>
 
 	<bean id="storage"
-		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient"/>
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" init-method="init"/>
 		
 	<bean id="applicationService" class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
 		<property name="connector" ref="connector"/>

@@ -37,8 +37,16 @@ public class BoxCloudStorageClient implements BeanFactoryAware, CloudStorage, Bo
 	 * Inits the.
 	 */
 	public void init(){
-		initAppKey();
-		initApiBoxKey();
+		try {
+			initAppKey();
+			initApiBoxKey();
+		} catch (Exception e) {
+			String errorMsg = "Could not init module. Error authenticating with mxhero Box Server";
+			logger.error(errorMsg);
+			logger.error("Error message {}", e.getMessage());
+			logger.error("Error class {}", e.getClass().getName());
+			throw new RuntimeException(errorMsg);
+		}
 	}
 	
 	/**

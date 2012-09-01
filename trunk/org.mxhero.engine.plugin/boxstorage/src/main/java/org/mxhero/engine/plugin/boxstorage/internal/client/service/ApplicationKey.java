@@ -1,23 +1,33 @@
 package org.mxhero.engine.plugin.boxstorage.internal.client.service;
 
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+
+import com.google.common.cache.CacheBuilder;
+
 /**
  * The Class ApplicationKey.
  */
 public class ApplicationKey {
 	
+	/** The Constant API_BOX_KEY. */
+	private static final String API_BOX_KEY = "API_BOX_KEY";
+
 	/** The app key. */
 	private String appKey;
 	
-	/** The box key. */
-	private String boxKey;
-	
 	/** The instance. */
 	private static ApplicationKey instance;
+
+	/** The cache. */
+	private ConcurrentMap<Object, Object> cache;
 	
 	/**
 	 * Instantiates a new application key.
 	 */
-	private ApplicationKey(){}
+	private ApplicationKey(){
+		cache = CacheBuilder.newBuilder().maximumSize(1).concurrencyLevel(4).expireAfterAccess(5, TimeUnit.MINUTES).expireAfterWrite(5, TimeUnit.MINUTES).build().asMap();
+	}
 	
 	/**
 	 * Sets the key.
@@ -89,7 +99,7 @@ public class ApplicationKey {
 	 * @return the box key
 	 */
 	public String getBoxKey() {
-		return boxKey;
+		return (String) cache.get(API_BOX_KEY);
 	}
 
 	/**
@@ -98,7 +108,7 @@ public class ApplicationKey {
 	 * @param boxKey the new box key
 	 */
 	public void setBoxKey(String boxKey) {
-		this.boxKey = boxKey;
+		cache.put(API_BOX_KEY, boxKey);
 	}
 
 

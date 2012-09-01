@@ -1,14 +1,13 @@
 package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response;
 
-import java.io.Serializable;
-
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.AbstractResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.CodeResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.Item;
 
 /**
  * The Class CreateTokenResponse.
  */
-public class CreateTokenResponse implements Serializable {
+public class CreateTokenResponse extends AbstractResponse {
 	
 	/** The has previous account. */
 	private boolean previousAccount;
@@ -21,7 +20,6 @@ public class CreateTokenResponse implements Serializable {
 
 	/** The error. */
 	private ErrorResponse error;
-
 	/** The item. */
 	private Item item;
 
@@ -65,24 +63,6 @@ public class CreateTokenResponse implements Serializable {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	/**
-	 * Gets the error.
-	 *
-	 * @return the error
-	 */
-	public ErrorResponse getError() {
-		return error;
-	}
-
-	/**
-	 * Sets the error.
-	 *
-	 * @param error the new error
-	 */
-	public void setError(ErrorResponse error) {
-		this.error = error;
 	}
 
 	/**
@@ -138,6 +118,24 @@ public class CreateTokenResponse implements Serializable {
 	 */
 	public boolean alreadyExist() {
 		return error!=null && CodeResponse.USER_ALREADY_EXIST.getMessage().equals(error.getMessage());
+	}
+	
+	/**
+	 * Sets the error.
+	 *
+	 * @param error the new error
+	 */
+	public void setError(ErrorResponse error) {
+		this.error = error;
+	}
+	
+	/**
+	 * Gets the error.
+	 *
+	 * @return the error
+	 */
+	public ErrorResponse getError() {
+		return error;
 	}
 
 }
