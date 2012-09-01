@@ -15,7 +15,28 @@ public class HeaderAuthorization {
 	 * @return the app key from header
 	 */
 	public static String getAppKeyFromHeader(String header){
-		Pattern compile = Pattern.compile("mxHeroApi app_key=(.+)");
+		return getFromHeader("mxHeroApi app_key=(.+)", header);
+	}
+
+	/**
+	 * Gets the box key from header.
+	 *
+	 * @param header the header
+	 * @return the box key from header
+	 */
+	public static String getBoxKeyFromHeader(String header) {
+		return getFromHeader("module_key=(.+)", header);
+	}
+
+	/**
+	 * Gets the from header.
+	 *
+	 * @param regex the regex
+	 * @param header the header
+	 * @return the from header
+	 */
+	private static String getFromHeader(String regex, String header) {
+		Pattern compile = Pattern.compile(regex);
 		Matcher matches = compile.matcher(header);
 		String appKey = null;
 		if(matches.find()){

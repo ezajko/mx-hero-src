@@ -12,6 +12,7 @@ import org.mxhero.engine.plugin.boxserver.service.UserBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -116,6 +117,22 @@ public class BoxStoragePersistence implements StoragePersistence {
 		HashMap<String, String> params = new HashMap<String, String>();
 		params.put("name", name);
 		jdbc.update("INSERT INTO attachments_box_service.applications (name, enabled) values(:name, true)", params);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.mxhero.engine.plugin.boxserver.dataaccess.persistence.StoragePersistence#authenticateModule(java.lang.String)
+	 */
+	@Override
+	public boolean authenticateModule(String moduleName) {
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("name", moduleName);
+		List<Boolean> query = jdbc
+				.query("SELECT enabled from attachments_box_service.storage_version where storage_name = :name",
+						params, new SingleColumnRowMapper<Boolean>(Boolean.class));
+		if (query.isEmpty()) {
+			return false;
+		}
+		return query.get(0);
 	}
 
 	/**

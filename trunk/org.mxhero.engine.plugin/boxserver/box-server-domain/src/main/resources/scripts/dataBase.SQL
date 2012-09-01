@@ -10,6 +10,7 @@ USE attachments_box_service;
 
 DROP TABLE IF EXISTS user_box_token;
 DROP TABLE IF EXISTS applications;
+DROP TABLE IF EXISTS storage_version;
 
 CREATE TABLE user_box_token
 (
@@ -28,6 +29,14 @@ CREATE TABLE applications
 	PRIMARY KEY (name)
 )ENGINE=InnoDB;
 
+CREATE TABLE storage_version
+(
+	storage_name VARCHAR(255) NOT NULL,
+	enabled TINYINT(1) NOT NULL DEFAULT true,
+	PRIMARY KEY (storage_name)
+)ENGINE=InnoDB;
+
+INSERT INTO storage_version (storage_name) values('org.mxhero.engine.plugin.boxstorage-1.8.0.jar');
 
 SET FOREIGN_KEY_CHECKS=1;
 

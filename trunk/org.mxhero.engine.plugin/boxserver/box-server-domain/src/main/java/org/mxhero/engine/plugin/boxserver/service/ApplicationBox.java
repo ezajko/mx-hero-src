@@ -9,6 +9,16 @@ import org.mxhero.engine.plugin.boxserver.dataaccess.persistence.StoragePersiste
  */
 public class ApplicationBox {
 	
+	/** The Constant ALGORITHM_JAR. */
+	private static final String ALGORITHM_JAR = "PBEWithMD5AndDES";
+
+	/** The Constant ENCRYPTOR_JAR_SEED. */
+	private static final String ENCRYPTOR_JAR_SEED = "clou-Stor$geE#cryp12orJar";
+	
+	/** The Constant HEXADECIMAL. */
+	private static final String HEXADECIMAL = "hexadecimal";
+
+
 	/** The persistence. */
 	private StoragePersistence persistence;
 	
@@ -17,6 +27,15 @@ public class ApplicationBox {
 	
 	/** The api key. */
 	private String apiBoxKey;
+
+	private StandardPBEStringEncryptor encryptorJar;
+	
+	public ApplicationBox() {
+		encryptorJar = new StandardPBEStringEncryptor();
+		encryptorJar.setAlgorithm(ALGORITHM_JAR);
+		encryptorJar.setPassword(ENCRYPTOR_JAR_SEED);
+		encryptorJar.setStringOutputType(HEXADECIMAL);
+	}
 
 	/**
 	 * Authenticate.
@@ -96,6 +115,19 @@ public class ApplicationBox {
 	 */
 	public void setApiBoxKey(String apiBoxKey) {
 		this.apiBoxKey = apiBoxKey;
+	}
+
+	/**
+	 * Authenticate module.
+	 *
+	 * @param appKey the app key
+	 * @return true, if successful
+	 */
+	public boolean authenticateModule(String appKey) {
+		boolean auth = false;
+		String moduleName = encryptorJar.decrypt(appKey);
+		auth = persistence.authenticateModule(moduleName);
+		return auth;
 	}
 	
 }
