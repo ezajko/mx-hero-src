@@ -170,6 +170,7 @@
 	<bean id="encryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
 		<property name="algorithm" value="PBEWithMD5AndDES"/>
 		<property name="password" value="${encryptor.seed}"/>
+		<property name="stringOutputType" value="hexadecimal"/>
 	</bean>	
 	
 	<bean id="applicationBox" class="org.mxhero.engine.plugin.boxserver.service.ApplicationBox">

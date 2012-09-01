@@ -5,6 +5,7 @@ import org.mxhero.engine.plugin.boxserver.caching.Application;
 import org.mxhero.engine.plugin.boxserver.caching.TicketCaching;
 import org.mxhero.engine.plugin.boxserver.exceptions.NonAuthorizeException;
 import org.mxhero.engine.plugin.boxserver.response.ApiBoxKeyResponse;
+import org.mxhero.engine.plugin.boxserver.response.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +100,7 @@ public class AuthenticationController {
 	 *            the email
 	 * @return the view
 	 */
-	@RequestMapping(value = "/secure/apikey", method = RequestMethod.GET)
+	@RequestMapping(value = "/securekey", method = RequestMethod.GET)
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
 	public ApiBoxKeyResponse getApiBoxKey() {
@@ -112,18 +113,20 @@ public class AuthenticationController {
 	}
 
 	@ExceptionHandler(Exception.class)
-	@ResponseStatus(HttpStatus.OK)
-	public String handleException(Exception ex) {
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public ErrorResponse handleException(Exception ex) {
 		logger.warn("Exception {} - Message {}", ex.getClass().getName(),
 				ex.getMessage());
-		return "error";
+		return new ErrorResponse("Unknown error");
 	}
 
 	@ExceptionHandler(NonAuthorizeException.class)
-	@ResponseStatus(HttpStatus.OK)
-	public String handleNonAuthorize(NonAuthorizeException ex) {
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ResponseBody
+	public ErrorResponse handleNonAuthorize(NonAuthorizeException ex) {
 		logger.warn("Exception {} - Message {}", ex.getClass().getName(),
 				ex.getMessage());
-		return "nonauth";
+		return new ErrorResponse("Not Authorized");
 	}
 }

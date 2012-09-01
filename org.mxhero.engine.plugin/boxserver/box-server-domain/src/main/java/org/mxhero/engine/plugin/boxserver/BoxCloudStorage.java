@@ -72,8 +72,8 @@ public class BoxCloudStorage implements BeanFactoryAware{
 	 *
 	 * @param ticket the ticket
 	 * @param token the token
-	 * @param appKey 
-	 * @return 
+	 * @param appKey the app key
+	 * @return the string
 	 */
 	public String registerToken(String ticket, String token, String appKey) {
 		return getTicketBox().registerToken(ticket,token, appKey);
@@ -133,6 +133,17 @@ public class BoxCloudStorage implements BeanFactoryAware{
 	 */
 	public String getApiBoxKey() {
 		return getAppBox().getApiBoxKey();
+	}
+
+
+	/**
+	 * Authenticate module.
+	 *
+	 * @param appKey the app key
+	 * @return true, if successful
+	 */
+	public boolean authenticateModule(String appKey) {
+		return getAppBox().authenticateModule(appKey);
 	}
 
 }

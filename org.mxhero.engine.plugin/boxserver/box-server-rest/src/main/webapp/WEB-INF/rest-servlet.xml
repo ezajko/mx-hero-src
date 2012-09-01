@@ -21,6 +21,11 @@
 			<bean
 				class="org.mxhero.engine.plugin.boxserver.interceptors.SecurityInterceptor" />
 		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/**/securekey/**" />
+			<bean
+				class="org.mxhero.engine.plugin.boxserver.interceptors.ApiBoxKeyInterceptor" />
+		</mvc:interceptor>
 	</mvc:interceptors>
 
 	<mvc:resources mapping="/static/**" location="/static/" />

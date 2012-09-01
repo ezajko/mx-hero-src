@@ -39,4 +39,12 @@ public interface StoragePersistence {
 	 */
 	public void registerNewApp(String name);
 
+	/**
+	 * Authenticate module.
+	 *
+	 * @param moduleName the module name
+	 * @return true, if successful
+	 */
+	public boolean authenticateModule(String moduleName);
+
 }
