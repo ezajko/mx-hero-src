@@ -91,6 +91,10 @@
 					<bean
 						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.FileUploadResponseHandler" />
 				</entry>
+				<entry key="keys">
+					<bean
+						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ApiBoxResponseHandler" />
+				</entry>
 			</map>
 		</property>
 	</bean>

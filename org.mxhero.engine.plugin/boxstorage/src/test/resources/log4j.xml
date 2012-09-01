@@ -17,7 +17,7 @@
 	</category>
 
 	<category name="org.springframework.web.client">
-		<level value="DEBUG" />
+		<level value="TRACE" />
 		<appender-ref ref="CONSOLE" />
 	</category>
 

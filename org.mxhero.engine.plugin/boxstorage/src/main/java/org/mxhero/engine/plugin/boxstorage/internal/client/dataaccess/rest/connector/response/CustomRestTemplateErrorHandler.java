@@ -2,6 +2,8 @@ package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.conn
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
 
@@ -9,6 +11,9 @@ import org.springframework.web.client.ResponseErrorHandler;
  * The Class CustomRestTemplateErrorHandler is to trap exception and not let them pass.
  */
 public class CustomRestTemplateErrorHandler implements ResponseErrorHandler{
+	
+	/** The logger. */
+	private static Logger logger = LoggerFactory.getLogger(CustomRestTemplateErrorHandler.class);
 
 	/* (non-Javadoc)
 	 * @see org.springframework.web.client.ResponseErrorHandler#hasError(org.springframework.http.client.ClientHttpResponse)
@@ -23,6 +28,7 @@ public class CustomRestTemplateErrorHandler implements ResponseErrorHandler{
 	 */
 	@Override
 	public void handleError(ClientHttpResponse response) throws IOException {
+		logger.debug("Handler http error {}", response.getStatusText());
 	}
 
 }

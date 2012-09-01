@@ -1,6 +1,7 @@
 package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain;
 
 import org.codehaus.jackson.annotate.JsonAnySetter;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,10 @@ public abstract class AbstractResponse {
 	
 	/** The response. */
 	private CodeResponse response;
+	
+	/** The error. */
+	@JsonProperty(value = "message")
+	private String errorMessage;
 	
 	/**
 	 * Sets the any.
@@ -52,6 +57,24 @@ public abstract class AbstractResponse {
 	 */
 	public boolean wasResponseOk() {
 		return CodeResponse.OK.equals(getResponse());
+	}
+
+	/**
+	 * Gets the message.
+	 *
+	 * @return the message
+	 */
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	/**
+	 * Sets the message.
+	 *
+	 * @param message the new message
+	 */
+	public void setErrorMessage(String error) {
+		this.errorMessage = error;
 	}
 
 }

@@ -28,7 +28,6 @@
 		<prop key="upload.files.url">https://api.box.com/2.0/files/data</prop>
 		<prop key="shared.files.url">https://api.box.com/2.0/files</prop>
 		<prop key="folders.url">https://api.box.com/2.0/folders/0</prop>
-		<prop key="encryptor.seed">clo#d$tore8ox</prop>
 		<prop key="queue.max.capacity">100</prop>
 		<prop key="synchronizer.threads.amount">10</prop>
 	</osgix:cm-properties>
@@ -80,6 +79,10 @@
 				<entry key="store">
 					<bean
 						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.FileUploadResponseHandler" />
+				</entry>
+				<entry key="keys">
+					<bean
+						class="org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ApiBoxResponseHandler" />
 				</entry>
 			</map>
 		</property>

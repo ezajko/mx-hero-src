@@ -2,6 +2,7 @@ package org.mxhero.engine.plugin.boxstorage.internal.client.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi;
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.CreateKeyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,21 +47,12 @@ public class ApplicationService {
 		String appKey = ApplicationKey.getKey();
 		if(StringUtils.isEmpty(appKey)){
 			logger.debug("Application key is not cached. Requesting app key to server");
-			appKey = connector.getAppKey(getApplicationId());
+			CreateKeyResponse appKeyResp = connector.getAppKey(getApplicationId());
+			if(!appKeyResp.wasResponseOk()){
+				throw new RuntimeException("Server mxhero Box could not retrieve App key to interact with it.");
+			}
+			appKey = appKeyResp.getAppKey();
 			ApplicationKey.setKey(appKey);
-		}
-	}
-
-	/**
-	 * Inits the api box key.
-	 */
-	public void initApiBoxKey() {
-		logger.debug("Init box api key to interact with box");
-		String apiKey = ApplicationKey.getBoxApiKey();
-		if(StringUtils.isEmpty(apiKey)){
-			logger.debug("Box api key is not cached. Requesting api key to server");
-			apiKey = connector.getBoxApiKey();
-			ApplicationKey.setBoxApiKey(apiKey);
 		}
 	}
 
@@ -80,6 +72,13 @@ public class ApplicationService {
 	 */
 	public void setApplicationId(String applicationId) {
 		this.applicationId = applicationId;
+	}
+
+	/**
+	 * Inits the api box key.
+	 */
+	public void initApiBoxKey() {
+		connector.getApiKey();
 	}
 
 

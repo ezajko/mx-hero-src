@@ -2,10 +2,12 @@ package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.conn
 
 import java.io.Serializable;
 
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.AbstractResponse;
+
 /**
  * The Class CreateKeyResponse.
  */
-public class CreateKeyResponse implements Serializable{
+public class CreateKeyResponse extends AbstractResponse{
 	
 	/** The app key. */
 	private String appKey;
@@ -54,7 +56,6 @@ public class CreateKeyResponse implements Serializable{
 	public ErrorResponse getError() {
 		return error;
 	}
-
 	/**
 	 * Sets the error.
 	 *
