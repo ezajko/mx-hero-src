@@ -47,10 +47,18 @@ public class AttachmentServiceImpl implements AttachmentService {
 		String query = "SELECT " +
 				"ex.message_attach_ex_storage_id as idMessageAttach, " +
 				"ex.email_to_synchro as email, " +
-				"a.path as filePath " +
+				"ex.is_sender as isSender, " +
+				"ex.is_recipient as isRecipient, " +
+				"a.path as filePath, " +
+				"a.file_name as originalFileName, " +
+				"msg.email_date as emailDate, " +
+				"msg.sender_email as sender, " +
+				"m.recipient_email as recipient, " +
+				"msg.subject as subject " +
 				"from attachments.message_attach_ex_storage ex " +
 				"inner join attachments.message_attach m on m.message_attach_id = ex.message_attach_id " +
-				"inner join attachments.attach a on a.attach_id = m.attach_id " + 
+				"inner join attachments.attach a on a.attach_id = m.attach_id " +
+				"inner join attachments.message msg on msg.message_id = m.message_id " + 
 				"where ex.was_proccessed = false " +
 				"order by m.creation_date asc " +
 				"limit :limit";

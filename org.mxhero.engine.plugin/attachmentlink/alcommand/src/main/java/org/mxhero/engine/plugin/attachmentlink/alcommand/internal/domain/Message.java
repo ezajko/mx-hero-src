@@ -2,6 +2,7 @@ package org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -498,5 +499,9 @@ public class Message {
 	
 	public UserResult getResultCloudStorageRecipient() {
 		return getResultCloudStorage().get(UserResulType.RECIPIENT);
+	}
+
+	public Timestamp getEmailDate() {
+		return getMail()!=null ? getMail().getTime() : null;
 	}
 }
