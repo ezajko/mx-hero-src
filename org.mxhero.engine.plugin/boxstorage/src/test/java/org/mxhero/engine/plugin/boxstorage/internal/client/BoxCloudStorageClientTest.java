@@ -14,8 +14,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
 import org.mxhero.engine.plugin.storageapi.UserResulType;
 import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.mxhero.engine.plugin.storageapi.UserResultMessage;
@@ -70,8 +70,11 @@ public class BoxCloudStorageClientTest {
 	public void test_store(){
 		UserBoxClient client = mock(UserBoxClient.class);
 		when(this.beanFactory.getBean(anyString(), any())).thenReturn(client);
-		when(client.store(anyString())).thenReturn(new StorageResult(false));
-		StorageResult store = target.store("pepe@pepe.com", "/tmp/algo.txt");
+		when(client.store(any(TransactionAttachment.class))).thenReturn(new StorageResult(false));
+		TransactionAttachment tx = new TransactionAttachment();
+		tx.setEmail("pepe@pepe.com");
+		tx.setFilePath("/tmp/algo.txt");
+		StorageResult store = target.store(tx);
 		assertNotNull(store);
 	}
 }

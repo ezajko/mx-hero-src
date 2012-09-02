@@ -36,16 +36,18 @@ public class ItemCollection {
 
 	/**
 	 * Gets the mx hero folder.
+	 * @param folderName 
 	 *
 	 * @return the mx hero folder
 	 */
-	public Item getMxHeroFolder() {
+	public Item getFolder(final String folderName) {
 		if(getEntries()==null)return null;
+		final String regex = String.format("(?i)%s", folderName);
 		return (Item) CollectionUtils.find(getEntries(), new Predicate() {
 			@Override
 			public boolean evaluate(Object arg0) {
 				Item item = (Item) arg0;
-				return Pattern.matches("(?i)mxhero", item.getName());
+				return Pattern.matches(regex, item.getName());
 			}
 		});
 	}

@@ -8,14 +8,16 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
+import org.mxhero.engine.plugin.boxstorage.internal.client.StorageResult;
 import org.mxhero.engine.plugin.storageapi.UserResulType;
 import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.mxhero.engine.plugin.storageapi.UserResultMessage;
@@ -77,7 +79,14 @@ public class IntegrationTest {
 				e.printStackTrace();
 			}
 		}
-		StorageResult result = target.store("jproyo@mxhero.com", createTempFile.getAbsolutePath());
+		TransactionAttachment tx = new TransactionAttachment();
+		tx.setEmail("jproyo@mxhero.com");
+		tx.setFilePath(createTempFile.getAbsolutePath());
+		tx.setEmailDate(new Timestamp(System.currentTimeMillis()));
+		tx.setIdMessageAttach(123l);
+		tx.setOriginalFileName("MyFile.txt");
+		tx.setSender(true);
+		StorageResult result = target.store(tx);
 		assertNotNull(result);
 		assertTrue(result.isSuccess());
 	}

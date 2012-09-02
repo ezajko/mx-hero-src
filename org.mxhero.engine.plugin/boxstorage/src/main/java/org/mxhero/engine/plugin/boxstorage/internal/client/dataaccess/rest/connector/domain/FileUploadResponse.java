@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
+import org.mxhero.engine.plugin.boxstorage.internal.client.StorageResult;
 
 /**
  * The Class FileUploadResponse.

@@ -1,21 +1,13 @@
 package org.mxhero.engine.plugin.boxstorage.internal.sinchro;
 
-import java.util.Map;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
+import org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient;
+import org.mxhero.engine.plugin.boxstorage.internal.client.StorageResult;
 
-import org.mxhero.engine.plugin.storageapi.CloudStorage;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
-import org.mxhero.engine.plugin.storageapi.UserResulType;
-import org.mxhero.engine.plugin.storageapi.UserResult;
-
-public class CloudStorageMock implements CloudStorage {
+public class CloudStorageMock extends BoxCloudStorageClient {
 
 	@Override
-	public Map<UserResulType, UserResult> process(Map<String, Object> params) {
-		return null;
-	}
-
-	@Override
-	public StorageResult store(String email, String filePath) {
+	public StorageResult store(TransactionAttachment tx) {
 		return new StorageResult(true);
 	}
 

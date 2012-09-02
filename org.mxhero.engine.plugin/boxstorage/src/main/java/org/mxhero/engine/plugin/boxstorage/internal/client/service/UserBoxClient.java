@@ -3,6 +3,9 @@ package org.mxhero.engine.plugin.boxstorage.internal.client.service;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
+import org.mxhero.engine.plugin.boxstorage.internal.client.FileStored;
+import org.mxhero.engine.plugin.boxstorage.internal.client.StorageResult;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.persistence.ClientStoragePersistence;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.Entry;
@@ -13,8 +16,6 @@ import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.conne
 import org.mxhero.engine.plugin.boxstorage.internal.client.domain.UserRequest;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.strategy.AlreadyAccountStrategy;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.strategy.AlreadyAccountStrategyFactory;
-import org.mxhero.engine.plugin.storageapi.FileStored;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
 import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,26 +125,26 @@ public class UserBoxClient{
 	/**
 	 * Store.
 	 *
-	 * @param filePath the files path
+	 * @param tx the files path
 	 * @return the storage result
 	 */
 	@Transactional
-	public StorageResult store(String filePath) {
+	public StorageResult store(TransactionAttachment tx) {
 		logger.debug("Store file for user {}", getEmail());
 		StorageResult result = new StorageResult(false);
 		try {
-			boolean hasBeenProccessed = persistence.hasBeenProccessed(filePath);
+			boolean hasBeenProccessed = persistence.hasBeenProccessed(tx.getFilePath());
 			if(hasBeenProccessed){
 				result.setAlreadyProccessed(true);
 			}else{
-				loadAccount();
-				setFileStored(connector.store(this, filePath));
+				loadAccount(tx);
+				setFileStored(connector.store(this, tx.getFilePath()));
 				result = getFileStored().getResult();
 				if(!result.isSuccess()){
 					throw new RuntimeException("Could not store file. "+getFileStored().getResponse());
 				}
-				logger.debug("Sharing file to get public link to mxhero");
-				connector.shareFile(this);
+				logger.debug("Sharing file to get public link to mxhero and Change file name");
+				connector.updateFileInfo(this, tx.getOriginalFileName());
 				if(getFileStored().couldCreateSharedLink()){
 					Entry entry = this.getFileStored().getEntries().get(0);
 					FileStored stored = new FileStored(entry.getShared_link().getUrl());
@@ -151,7 +152,7 @@ public class UserBoxClient{
 				}else{
 					logger.warn("File could be upload to user but could not be shared to be access in a public way");
 				}
-				persistence.registerStoreFile(this, filePath);
+				persistence.registerStoreFile(this, tx.getFilePath());
 			}
 		} catch (Exception e) {
 			logger.error("Exception Class {}", e.getClass());
@@ -164,25 +165,87 @@ public class UserBoxClient{
 
 	/**
 	 * Load account.
+	 * @param tx 
 	 */
-	private void loadAccount() {
+	public void loadAccount(TransactionAttachment tx) {
 		logger.debug("Getting account token from storage");
 		CreateTokenResponse accountFromStorage = persistence.getAccountFromStorage(getEmail());
 		if(accountFromStorage == null){
 			throw new RuntimeException("No account in storage with email "+getEmail());
 		}
 		setAccount(accountFromStorage);
-		logger.debug("Getting folder mxhero to store remote file");
-		ItemResponse folderMxHero = connector.getFolderMxHero(this);
-		Item mxHeroFolder = folderMxHero.getMxHeroFolder();
-		if(mxHeroFolder==null){
-			logger.debug("Mxhero folder is not present in user box. Creating mxhero folder");
-			mxHeroFolder = connector.createMxHeroFolder(this);
+		Item mxHeroFolder = createMxheroFolderIfNotExist();
+		Item inboxFolder = createInboxFolderIfNotExist(mxHeroFolder);
+		Item sentFolder = createSentFolderIfNotExist(mxHeroFolder);
+		Item emailFolder = null;
+		if(tx.isSender()){
+			emailFolder = createEmailFolderIfNotExist(tx, sentFolder);
+		}else if(tx.isRecipient()){
+			emailFolder = createEmailFolderIfNotExist(tx, inboxFolder);
+		}else{
+			throw new RuntimeException("Could not identify sender or recipient to create folder");
 		}
-		if(StringUtils.isEmpty(mxHeroFolder.getId())){
-			throw new RuntimeException("Could not store file because folder mxhero doesnt not exist and could not be created");
+		this.getAccount().setItem(emailFolder);
+	}
+
+	/**
+	 * Creates the email folder if not exist.
+	 * @param inboxFolder 
+	 *
+	 * @return the item
+	 */
+	private Item createEmailFolderIfNotExist(TransactionAttachment tx, Item parentFolder) {
+		return createFolderIfNotExist(tx.getFolderName(), parentFolder.getId());
+	}
+
+	/**
+	 * Creates the sent folder if not exist.
+	 * @param mxHeroFolder 
+	 *
+	 * @return the item
+	 */
+	private Item createSentFolderIfNotExist(Item mxHeroFolder) {
+		return createFolderIfNotExist("Sent", mxHeroFolder.getId());
+	}
+
+	/**
+	 * Creates the inbox folder if not exist.
+	 * @param mxHeroFolder 
+	 *
+	 * @return the item
+	 */
+	private Item createInboxFolderIfNotExist(Item mxHeroFolder) {
+		return createFolderIfNotExist("Inbox", mxHeroFolder.getId());
+	}
+
+	/**
+	 * Creates the mxhero folder if not exist.
+	 *
+	 * @return the item
+	 */
+	private Item createMxheroFolderIfNotExist() {
+		return createFolderIfNotExist("mxHero", "0");
+	}
+
+	/**
+	 * Creates the folder if not exist.
+	 *
+	 * @param folderName the folder name
+	 * @param folderParentId the folder parent id
+	 * @return the item
+	 */
+	public Item createFolderIfNotExist(String folderName, String folderParentId) {
+		logger.debug("Getting folder {} to store remote file", folderName);
+		ItemResponse folder = connector.getFolder(this, folderParentId);
+		Item itemFolder = folder.getFolder(folderName);
+		if(itemFolder==null){
+			logger.debug("{} folder is not present in user box. Creating {} folder", folderName, folderName);
+			itemFolder = connector.createFolder(this, folderName, folderParentId);
 		}
-		this.getAccount().setItem(mxHeroFolder);
+		if(StringUtils.isEmpty(itemFolder.getId())){
+			throw new RuntimeException("Could not store file because folder "+ folderName +" doesnt not exist and could not be created");
+		}
+		return itemFolder;
 	}
 
 

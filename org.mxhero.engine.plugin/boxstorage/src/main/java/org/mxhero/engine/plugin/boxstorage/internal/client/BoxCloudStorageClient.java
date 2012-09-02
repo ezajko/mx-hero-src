@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.mxhero.engine.plugin.boxstorage.BoxCloudStorage;
 import org.mxhero.engine.plugin.boxstorage.internal.client.domain.UserRequest;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService;
 import org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient;
 import org.mxhero.engine.plugin.storageapi.CloudStorage;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
 import org.mxhero.engine.plugin.storageapi.UserResulType;
 import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.mxhero.engine.plugin.storageapi.UserResultMessage;
@@ -63,20 +63,6 @@ public class BoxCloudStorageClient implements BeanFactoryAware, CloudStorage, Bo
 		getApplicationService().initAppKey();
 	}
 
-	/**
-	 * Store.
-	 *
-	 * @param email the email
-	 * @param filePath the file path
-	 * @return the storage result
-	 */
-	@Override
-	public StorageResult store(String email, String filePath) {
-		UserBoxClient user = getUserBoxInstance(email);
-		StorageResult result = user.store(filePath);
-		return result;
-	}
-	
 	/**
 	 * Gets the user box instance.
 	 *
@@ -161,5 +147,17 @@ public class BoxCloudStorageClient implements BeanFactoryAware, CloudStorage, Bo
 	 */
 	private ApplicationService getApplicationService(){
 		return this.beanFactory.getBean(ApplicationService.class);
+	}
+
+	/**
+	 * Store.
+	 *
+	 * @param tx the tx
+	 * @return the storage result
+	 */
+	public StorageResult store(TransactionAttachment tx) {
+		UserBoxClient user = getUserBoxInstance(tx.getEmail());
+		StorageResult result = user.store(tx);
+		return result;
 	}
 }

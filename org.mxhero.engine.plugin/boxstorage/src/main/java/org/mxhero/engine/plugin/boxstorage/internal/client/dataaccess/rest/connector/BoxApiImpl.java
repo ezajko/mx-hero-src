@@ -69,6 +69,9 @@ public class BoxApiImpl implements BoxApi{
 	private static final String HEXADECIMAL = "hexadecimal";
 
 	
+	/**
+	 * Instantiates a new box api impl.
+	 */
 	public BoxApiImpl() {
 		encryptorJar = new StandardPBEStringEncryptor();
 		encryptorJar.setAlgorithm(ALGORITHM_JAR);
@@ -190,7 +193,8 @@ public class BoxApiImpl implements BoxApi{
 	
 	/**
 	 * Inits the api box key.
-	 * @return 
+	 *
+	 * @return the api key
 	 */
 	public String getApiKey() {
 		logger.debug("Getting box api key to interact with box");
@@ -212,15 +216,16 @@ public class BoxApiImpl implements BoxApi{
 	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#shareFile(org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient)
 	 */
 	@Override
-	public void shareFile(UserBoxClient userBoxClient) {
+	public void updateFileInfo(UserBoxClient userBoxClient, String originalFileName) {
 		logger.debug("Shared file for user {}", userBoxClient);
 		Map<String , Object> postParameters = new HashMap<String, Object>();
+		postParameters.put("name", originalFileName);
 		postParameters.put("shared_link", new SharedLinkRequest());
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		requestHeaders.add("Authorization", getAuthorizationHeaderBox(userBoxClient));
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(postParameters, requestHeaders);
-		String url = getSharedFileUrl()+"/"+userBoxClient.getFileStored().getEntries().get(0).getId();
-		ResponseEntity<Entry> userResponse = getTemplate().exchange(url, HttpMethod.PUT, requestEntity, Entry.class);
+		String idFile = userBoxClient.getFileStored().getEntries().get(0).getId();
+		ResponseEntity<Entry> userResponse = getTemplate().exchange(getSharedFileUrl(), HttpMethod.PUT, requestEntity, Entry.class, idFile);
 		if(userResponse.getStatusCode().value()<300){
 			userBoxClient.getFileStored().setResponseSharedLink(CodeResponse.OK);
 			userBoxClient.getFileStored().getEntries().clear();
@@ -231,34 +236,38 @@ public class BoxApiImpl implements BoxApi{
 		logger.debug("Response uploadFiles from Box {}", userResponse);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.mxhero.engine.plugin.boxstorage.internal.service.internal.box.dataaccess.rest.UserAccountAccess#getFolderMxHero(org.mxhero.engine.plugin.boxstorage.internal.service.internal.box.service.UserBox)
+	/**
+	 * Gets the folder.
+	 *
+	 * @param userBox the user box
+	 * @param folderId the folder id
+	 * @return the folder
 	 */
-	@Override
-	public ItemResponse getFolderMxHero(UserBoxClient userBox) {
+	public ItemResponse getFolder(UserBoxClient userBox, String folderId) {
 		logger.debug("Getting folder item mxhero account for user {}", userBox);
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		requestHeaders.add("Authorization", getAuthorizationHeaderBox(userBox));
 		HttpEntity requestEntity = new HttpEntity(requestHeaders);
-		ResponseEntity<ItemResponse> itemResposne = getTemplate().exchange(getFoldersUrl(), HttpMethod.GET, requestEntity, ItemResponse.class);
+		ResponseEntity<ItemResponse> itemResposne = getTemplate().exchange(getFoldersUrl(), HttpMethod.GET, requestEntity, ItemResponse.class, folderId);
 		ItemResponse response = (ItemResponse) handler.get("createAccount").handleReponse(itemResposne);
 		logger.debug("Response getFolderMxHero from Box {}", response.getResponse());
 		return response;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.mxhero.engine.plugin.boxstorage.internal.service.internal.box.dataaccess.rest.UserAccountAccess#createMxHeroFolder(org.mxhero.engine.plugin.boxstorage.internal.service.internal.box.service.UserBox)
+	 * @see org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi#createFolder(org.mxhero.engine.plugin.boxstorage.internal.client.service.UserBoxClient, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Item createMxHeroFolder(UserBoxClient userBox) {
-		logger.debug("Create folder mxHero for account user {}", userBox);
+	public Item createFolder(UserBoxClient userBox, String folderName,
+			String folderParentId) {
+		logger.debug("Create folder {} for account user {}", folderName, userBox);
 		Map<String , String> postParameters = new HashMap<String, String>();
-		postParameters.put("name", "mxHero");
+		postParameters.put("name", folderName);
 		MultiValueMap<String, String> requestHeaders = new LinkedMultiValueMap<String, String>();
 		requestHeaders.add("Authorization", getAuthorizationHeaderBox(userBox));
 		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(postParameters, requestHeaders);
-		ResponseEntity<Item> userResponse = getTemplate().postForEntity(getFoldersUrl(), requestEntity, Item.class);
-		logger.debug("Folder mxHero created from Box account {}", userBox);
+		ResponseEntity<Item> userResponse = getTemplate().postForEntity(getFoldersUrl(), requestEntity, Item.class, folderParentId);
+		logger.debug("Folder {} created from Box account {}", folderName, userBox);
 		return userResponse.getBody();
 	}
 

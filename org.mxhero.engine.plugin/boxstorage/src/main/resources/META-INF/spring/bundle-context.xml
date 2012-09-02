@@ -26,8 +26,8 @@
 		<prop key="url.to.retrieve.token">http://localhost:8080/boxstoragerest/register/token</prop>
 		<prop key="host.mxhero.server">http://localhost:8080/box-server-rest</prop>
 		<prop key="upload.files.url">https://api.box.com/2.0/files/data</prop>
-		<prop key="shared.files.url">https://api.box.com/2.0/files</prop>
-		<prop key="folders.url">https://api.box.com/2.0/folders/0</prop>
+		<prop key="shared.files.url">https://api.box.com/2.0/files/{id}</prop>
+		<prop key="folders.url">https://api.box.com/2.0/folders/{id}</prop>
 		<prop key="queue.max.capacity">100</prop>
 		<prop key="synchronizer.threads.amount">10</prop>
 	</osgix:cm-properties>
