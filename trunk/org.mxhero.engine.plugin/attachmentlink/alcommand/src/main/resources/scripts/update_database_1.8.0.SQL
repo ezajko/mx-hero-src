@@ -13,6 +13,8 @@ CREATE TABLE message_attach_ex_storage
 	email_to_synchro VARCHAR(255) NOT NULL,
 	attach_cloud_url VARCHAR(255) NULL,
 	was_proccessed TINYINT NOT NULL DEFAULT false,
+	is_sender TINYINT NOT NULL DEFAULT false,
+	is_recipient TINYINT NOT NULL DEFAULT true,
 	PRIMARY KEY (message_attach_ex_storage_id),
 	CONSTRAINT FOREIGN KEY(message_attach_id) REFERENCES message_attach(message_attach_id),
 	UNIQUE (message_attach_id,email_to_synchro),
@@ -20,6 +22,8 @@ CREATE TABLE message_attach_ex_storage
 	KEY (attach_cloud_url)
 )ENGINE=InnoDB;
 
+
+ALTER TABLE message ADD COLUMN email_date timestamp null;
 
 SET FOREIGN_KEY_CHECKS=1;
 
