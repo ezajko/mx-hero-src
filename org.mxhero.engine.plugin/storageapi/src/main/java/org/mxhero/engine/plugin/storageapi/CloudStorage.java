@@ -15,13 +15,4 @@ public interface CloudStorage {
 	 * @return the result
 	 */
 	public Map<UserResulType, UserResult> process(Map<String, Object> params);
-	
-	/**
-	 * Store.
-	 *
-	 * @param email the email
-	 * @param filePaths the file paths
-	 * @return the storage result
-	 */
-	public StorageResult store(String email, String filePath);
 }
