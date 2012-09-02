@@ -5,8 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.AttachmentService;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
-import org.mxhero.engine.plugin.storageapi.CloudStorage;
-import org.mxhero.engine.plugin.storageapi.StorageResult;
+import org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient;
+import org.mxhero.engine.plugin.boxstorage.internal.client.StorageResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +22,7 @@ public class ConsumerQueue implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(ConsumerQueue.class);
 
 	/** The storage. */
-	private CloudStorage storage;
+	private BoxCloudStorageClient storage;
 
 	/** The service. */
 	private AttachmentService service;
@@ -55,7 +55,7 @@ public class ConsumerQueue implements Runnable {
 					if(tx != null){
 						try {
 							logger.debug("Uploading transaction {}", tx);
-							StorageResult store = getStorage().store(tx.getEmail(), tx.getFilePath());
+							StorageResult store = getStorage().store(tx);
 							if(store.isSuccess()){
 								logger.debug("Tx uploaded success. Notify attachmentlinks");
 								if(store.getFileStored()!=null){
@@ -83,7 +83,7 @@ public class ConsumerQueue implements Runnable {
 	 *
 	 * @return the storage
 	 */
-	public CloudStorage getStorage() {
+	public BoxCloudStorageClient getStorage() {
 		return storage;
 	}
 
@@ -92,7 +92,7 @@ public class ConsumerQueue implements Runnable {
 	 *
 	 * @param storage the new storage
 	 */
-	public void setStorage(CloudStorage storage) {
+	public void setStorage(BoxCloudStorageClient storage) {
 		this.storage = storage;
 	}
 

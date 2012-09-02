@@ -32,22 +32,6 @@ public interface BoxApi {
 	public FileUploadResponse store(UserBoxClient userBox, String filePath);
 
 	/**
-	 * Gets the folder mx hero.
-	 *
-	 * @param userBox the user box
-	 * @return the folder mx hero
-	 */
-	public ItemResponse getFolderMxHero(UserBoxClient userBox);
-
-	/**
-	 * Creates the mx hero folder.
-	 *
-	 * @param userBox the user box
-	 * @return the item
-	 */
-	public Item createMxHeroFolder(UserBoxClient userBox);
-
-	/**
 	 * Gets the app key.
 	 *
 	 * @param applicationId the application id
@@ -59,8 +43,9 @@ public interface BoxApi {
 	 * Share file.
 	 *
 	 * @param userBoxClient the user box client
+	 * @param fileName 
 	 */
-	public void shareFile(UserBoxClient userBoxClient);
+	public void updateFileInfo(UserBoxClient userBoxClient, String fileName);
 
 	/**
 	 * Gets the box api key.
@@ -75,5 +60,25 @@ public interface BoxApi {
 	 * @return the api key
 	 */
 	String getApiKey();
+
+	/**
+	 * Gets the folder.
+	 *
+	 * @param userBox the user box
+	 * @param folderParentId the folder id
+	 * @return the folder
+	 */
+	ItemResponse getFolder(UserBoxClient userBox, String folderParentId);
+
+	/**
+	 * Creates the folder.
+	 *
+	 * @param userBoxClient the user box client
+	 * @param folderName the folder name
+	 * @param folderParentId the folder parent id
+	 * @return the item
+	 */
+	public Item createFolder(UserBoxClient userBoxClient, String folderName,
+			String folderParentId);
 
 }

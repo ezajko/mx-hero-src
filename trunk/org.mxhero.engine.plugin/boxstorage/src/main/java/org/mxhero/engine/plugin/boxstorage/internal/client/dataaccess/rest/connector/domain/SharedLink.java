@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * The Class SharedLink.
+ * The Class SharedLinkRequest.
  */
 public class SharedLink implements Serializable{
 	

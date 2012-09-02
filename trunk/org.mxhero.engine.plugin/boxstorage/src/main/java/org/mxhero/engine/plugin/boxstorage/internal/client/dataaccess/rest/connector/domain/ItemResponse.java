@@ -32,12 +32,13 @@ public class ItemResponse extends AbstractResponse{
 
 	/**
 	 * Gets the mx hero folder.
+	 * @param folderName 
 	 *
 	 * @return the mx hero folder
 	 */
-	public Item getMxHeroFolder() {
+	public Item getFolder(String folderName) {
 		if(getItem_collection()==null)return null;
-		return getItem_collection().getMxHeroFolder();
+		return getItem_collection().getFolder(folderName);
 	}
 	
 	@Override
