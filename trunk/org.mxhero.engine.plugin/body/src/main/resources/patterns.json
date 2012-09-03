@@ -1,0 +1,54 @@
+{
+  "htmlPatterns" : [ {
+    "priority" : 0,
+    "header" : null,
+    "headerOnly" : false,
+    "select" : "div[class=gmail_quote]",
+    "pattern" : "(?s).*"
+  },{
+    "priority" : 1,
+    "header" : "(?i)Zimbra.*",
+    "headerOnly" : true,
+    "select" : "hr#zwchr",
+    "pattern" : "(?s).*"
+  },{
+    "priority" : 1,
+    "header" : "(?i)Microsoft Outlook.*",
+    "headerOnly" : true,
+    "select" : "p.MsoNormal:has(b span[lang=ES]:contains(De:))",
+    "pattern" : "(?s).*"
+  },{
+    "priority" : 1,
+    "header" : "(?i)Microsoft Outlook.*",
+    "headerOnly" : true,
+    "select" : "p.MsoNormal:has(b span[lang=PT]:contains(De:))",
+    "pattern" : "(?s).*"
+  },{
+    "priority" : 1,
+    "header" : "(?i)Microsoft Outlook.*",
+    "headerOnly" : true,
+    "select" : "p.MsoNormal:has(b span[lang=EN]:contains(From:))",
+    "pattern" : "(?s).*"
+  }],
+  "plainPatterns" : [ {
+    "priority" : 0,
+    "header" : null,
+    "headerOnly" : false,
+    "pattern" : "(?m)^\\s*\\d{4}/\\d{1,2}/\\d{1,2}.*<.*@.*>\\s*$"
+  },{
+    "priority" : 1,
+    "header" : null,
+    "headerOnly" : false,
+    "pattern" : "(?m)^----------\\s.*\\s----------$"
+  },{
+    "priority" : 2,
+    "header" : "(?i)Zimbra.*",
+    "headerOnly" : true,
+    "pattern" : "(?m)^-----\\s.*\\s-----$"
+  },{
+    "priority" : 3,
+    "header" : "(?i)Microsoft Outlook.*",
+    "headerOnly" : true,
+    "pattern" : "(?m)^\\w*\\:[\\w\\d\\s]*\\[.*@.*\\]\\s*$"
+  } ]
+}

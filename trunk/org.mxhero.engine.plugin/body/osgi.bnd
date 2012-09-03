@@ -1,0 +1,6 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+Embed-Dependency:\
+jackson-mapper-asl;groupId=org.codehaus.jackson;inline=false \
+jackson-core-asl;groupId=org.codehaus.jackson;inline=false 
