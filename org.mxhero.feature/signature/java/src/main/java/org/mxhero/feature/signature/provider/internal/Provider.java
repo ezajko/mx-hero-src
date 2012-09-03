@@ -6,12 +6,13 @@ import java.util.regex.Pattern;
 
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
-import org.mxhero.engine.commons.mail.api.Body;
 import org.mxhero.engine.commons.mail.api.Mail;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.body.command.AppendCurrentCommand;
+import org.mxhero.engine.plugin.body.command.AppendCurrentParameters;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommandParameters;
 import org.slf4j.Logger;
@@ -74,16 +75,9 @@ public class Provider extends RulesByFeature{
 
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.signature."+group, ruleId.toString());
-			log.debug("returnMessage:"+returnMessage);
-			log.debug("sender:"+mail.getSender().toString());
-			log.debug("sender properties:"+mail.getSender().getProperties().toString());
 			String processedReturnMessage = replaceTextVars(mail.getSender().getProperties(),returnMessage);
-			log.debug("processedReturnMessage:"+processedReturnMessage);
-			mail.getBody().addText("</p></p>"+processedReturnMessage, Body.AddTextPosition.botton, Body.AddTextPartType.html);
-			log.debug("returnMessagePlain:"+returnMessagePlain);
 			String processedReturnMessagePlain = replaceTextVars(mail.getSender().getProperties(),returnMessagePlain);
-			log.debug("processedReturnMessagePlain:"+processedReturnMessagePlain);
-			mail.getBody().addText("\n\n"+replaceTextVars(mail.getSender().getProperties(),processedReturnMessagePlain), Body.AddTextPosition.botton, Body.AddTextPartType.plain);
+			mail.cmd(AppendCurrentCommand.class.getName(), new AppendCurrentParameters("\n\n"+processedReturnMessagePlain,"</p></p>"+ processedReturnMessage));
 			mail.getHeaders().addHeader("X-mxHero-Signature", "ruleId="+ruleId);
 			mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.signature", Boolean.TRUE.toString()));
 		}
