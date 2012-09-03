@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:test-bundle-context.xml")
-public class Exchange2012Reply {
+public class Exchange2010Forward {
 
 	private static Logger log = LoggerFactory.getLogger(GmailReply.class);
 
@@ -33,7 +33,7 @@ public class Exchange2012Reply {
 	private MimeMail readGmail() throws MessagingException {
 		return new MimeMail("sender@example.com", "recipient@example.com", this
 				.getClass().getClassLoader()
-				.getResourceAsStream("outlook2012reply.eml"), "service");
+				.getResourceAsStream("outlook2010forward.eml"), "service");
 	}
 
 	@Test

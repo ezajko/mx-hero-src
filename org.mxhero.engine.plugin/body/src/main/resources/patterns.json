@@ -29,6 +29,12 @@
     "headerOnly" : true,
     "select" : "p.MsoNormal:has(b span[lang=EN]:contains(From:))",
     "pattern" : "(?s).*"
+  },{
+    "priority" : 2,
+    "header" : "(?i)Microsoft Outlook.*",
+    "headerOnly" : true,
+    "select" : "p:has(font:matches(--------[\\w\\d\\s]*---------))",
+    "pattern" : "(?s).*"
   }],
   "plainPatterns" : [ {
     "priority" : 0,
@@ -39,16 +45,21 @@
     "priority" : 1,
     "header" : null,
     "headerOnly" : false,
-    "pattern" : "(?m)^----------\\s.*\\s----------$"
+    "pattern" : "(?m)^----------\\s[\\w\\d\\s]*\\s----------$"
   },{
     "priority" : 2,
     "header" : "(?i)Zimbra.*",
     "headerOnly" : true,
-    "pattern" : "(?m)^-----\\s.*\\s-----$"
+    "pattern" : "(?m)^-----\\s[\\w\\d\\s]*\\s-----$"
   },{
     "priority" : 3,
     "header" : "(?i)Microsoft Outlook.*",
     "headerOnly" : true,
     "pattern" : "(?m)^\\w*\\:[\\w\\d\\s]*\\[.*@.*\\]\\s*$"
+  },{
+    "priority" : 4,
+    "header" : "(?i)Microsoft Outlook.*",
+    "headerOnly" : true,
+    "pattern" : "(?m)^--------[\\w\\d\\s]*---------$"
   } ]
 }
