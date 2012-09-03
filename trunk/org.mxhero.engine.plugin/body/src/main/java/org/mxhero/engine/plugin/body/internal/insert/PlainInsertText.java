@@ -18,18 +18,24 @@ public class PlainInsertText implements InsertText{
 	public String insert(String text, String insert, String header) {
 		StringBuilder sb = new StringBuilder(text);
 		List<PlainPattern> patternsByHeader = config.getPlainPatternByHeader(header);
+		boolean found=false;
 		if(patternsByHeader!=null && patternsByHeader.size()>0){
 			for(PlainPattern plainPattern: patternsByHeader){
 				if(insert(sb, insert, plainPattern)){
+					found=true;
 					break;
 				}
 			}
 		}else{
 			for(PlainPattern plainPattern: config.getPlainPatterns()){
 				if(insert(sb, insert, plainPattern)){
+					found=true;
 					break;
 				}
 			}
+		}
+		if(!found){
+			sb.append(insert);
 		}
 		return sb.toString();
 	}

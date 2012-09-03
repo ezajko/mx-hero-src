@@ -21,18 +21,24 @@ public class HtmlInsertText implements InsertText{
 	public String insert(String text, String insert, String header) {
 		Document doc = Jsoup.parse(text);
 		List<HtmlPattern> patternsByHeader = config.getHtmlPatternByHeader(header);
+		boolean found=false;
 		if(patternsByHeader!=null && patternsByHeader.size()>0){
 			for(HtmlPattern htmlPattern: patternsByHeader){
 				if(insert(doc, insert, htmlPattern)){
+					found=true;
 					break;
 				}
 			}
 		}else{
 			for(HtmlPattern htmlPattern: config.getHtmlPatterns()){
 				if(insert(doc, insert, htmlPattern)){
+					found=true;
 					break;
 				}
 			}
+		}
+		if(!found){
+			doc.body().append(insert);
 		}
 		return doc.toString();
 	}
