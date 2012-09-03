@@ -68,7 +68,7 @@ public class PatternsLoader implements Runnable, PatternsConfig{
 		if(filePath!=null && !filePath.trim().isEmpty()){
 			try{
 				File file = new File(filePath);
-				if(file.lastModified()>fileLastModified){
+				if(fileLastModified == null || file.lastModified()>fileLastModified){
 					fileLastModified=file.lastModified();
 					patternsRaw = mapper.readValue(file, Patterns.class);
 					isClassPath=false;
