@@ -375,7 +375,7 @@
 					<mx:itemRenderer>
 						<fx:Component>
 							<mx:HBox width="100%" horizontalAlign="center">
-								<mx:CheckBox selected="{(data.saturday == true)?true:false}" click="{data.@saturday = (data.saturday != true) ? true : false;}"/>
+								<mx:CheckBox selected="{(data.saturday == true)?true:false}" click="{data.saturday = (data.saturday != true) ? true : false;}"/>
 							</mx:HBox>
 						</fx:Component>
 					</mx:itemRenderer>

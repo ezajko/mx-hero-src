@@ -25,6 +25,8 @@
 	
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
+		<mx:EmailValidator id="emailV" required="true" source="{redirectTi}" property="text" />
+		<mx:EmailValidator id="copyEmailV" required="true" source="{copyTi}" property="text" />
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -40,12 +42,14 @@
 			import mx.events.FlexEvent;
 			import mx.managers.DragManager;
 			import mx.utils.StringUtil;
+			import mx.validators.ValidationResult;
 			
 			import org.mxhero.console.commons.feature.FeatureRuleProperty;
 			import org.mxhero.console.commons.feature.IApplicationContext;
 			import org.mxhero.console.commons.feature.IFeature;
 			import org.mxhero.console.commons.feature.PropertyHelper;
 			import org.mxhero.console.commons.utils.RteHtmlParser;
+			import org.mxhero.console.commons.utils.StringUtils;
 			
 			[Bindable]
 			private var _ap:IApplicationContext;
@@ -161,6 +165,7 @@
 
 			
 			public function isValid():Boolean{
+				var valArray:Array;
 				if(extensions.length<1){
 					validationError=resourceManager.getString("attachmentblock","error.extensions.list.empty");
 					extensionsDg.errorString=resourceManager.getString("attachmentblock","error.extensions.list.empty");
@@ -178,6 +183,25 @@
 					validationError=resourceManager.getString("attachmentblock","");
 					editor.errorString=resourceManager.getString("attachmentblock","");					
 				}
+				if(redirectRb.selected){
+					valArray=emailV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						validationError= (valArray[0] as ValidationResult).errorMessage;
+						redirectTi.errorString=validationError;
+						return false;
+					}
+				}
+				redirectTi.errorString="";
+				
+				if(copyRb.selected){
+					valArray=copyEmailV.validate().results;
+					if(valArray!=null && valArray.length>0){
+						validationError= (valArray[0] as ValidationResult).errorMessage;
+						copyTi.errorString=validationError;
+						return false;
+					}
+				}
+				copyTi.errorString="";
 				return true;
 			}
 			
@@ -212,11 +236,22 @@
 					}else{
 						editor.textFlow  = TextConverter.importToFlow(PropertyHelper.getProperty(this.properties,"return.action.text.plain").propertyValue,TextConverter.PLAIN_TEXT_FORMAT);
 					}
-				} else {
-					property = PropertyHelper.getProperty(this.properties,"discard.action");
-					if(property!=null && property.propertyValue=="true"){
-						discardRb.selected=true;
-					}
+				} 
+				property = PropertyHelper.getProperty(this.properties,"discard.action");
+				if(property!=null && property.propertyValue=="true"){
+					discardRb.selected=true;
+				}
+				
+				property = PropertyHelper.getProperty(this.properties,"redirect.action");
+				if(property!=null){
+					redirectRb.selected=true;
+					redirectTi.text=PropertyHelper.getProperty(this.properties,"redirect.email").propertyValue;
+				}
+				
+				property = PropertyHelper.getProperty(this.properties,"copy.action");
+				if(property!=null){
+					copyRb.selected=true;
+					copyTi.text=PropertyHelper.getProperty(this.properties,"copy.email").propertyValue;
 				}
 			}
 			
@@ -257,7 +292,7 @@
 					properties.addItem(property);	
 					property = new FeatureRuleProperty();
 					property.propertyKey = "return.action.text.rte";
-					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.TEXT_FIELD_HTML_FORMAT,ConversionType.STRING_TYPE).toString();
+					property.propertyValue = TextConverter.export(editor.textFlow,TextConverter.TEXT_LAYOUT_FORMAT,ConversionType.STRING_TYPE).toString();
 					properties.addItem(property);
 					
 					
@@ -265,6 +300,26 @@
 					property = new FeatureRuleProperty();
 					property.propertyKey = "discard.action";
 					property.propertyValue = "true";
+					properties.addItem(property);
+				} else if(redirectRb.selected){
+					property = new FeatureRuleProperty();
+					property.propertyKey = "redirect.action";
+					property.propertyValue = "true";
+					properties.addItem(property);	
+					
+					property = new FeatureRuleProperty();
+					property.propertyKey = "redirect.email";
+					property.propertyValue = redirectTi.text;
+					properties.addItem(property);
+				} else if(copyRb.selected){
+					property = new FeatureRuleProperty();
+					property.propertyKey = "copy.action";
+					property.propertyValue = "true";
+					properties.addItem(property);	
+					
+					property = new FeatureRuleProperty();
+					property.propertyKey = "copy.email";
+					property.propertyValue = copyTi.text;
 					properties.addItem(property);
 				}
 				
@@ -444,12 +499,32 @@
 				<tlf:TLFTextEditor id="editor" width="470" height="240" 
 								   automaticallyExpand="false"
 								   textAreaBackgroundColor="#FFFFFF"
-								   color="#00000"/>	
+								   color="#00000"
+								   enabled="{returnRb.selected}"/>	
 			</s:VGroup>
 		</s:VGroup>
 
+		<s:VGroup>
+			<s:RadioButton id="redirectRb" 
+						   groupName="blockType"
+						   label="{resourceManager.getString('attachmentblock','action.redirect.label')}"/>
+			<s:VGroup paddingLeft="18">
+				<s:TextInput  id="redirectTi" width="240" enabled="{redirectRb.selected}"/>
+			</s:VGroup>
+		</s:VGroup>
+		
+		<s:VGroup>
+			<s:RadioButton id="copyRb" 
+						   groupName="blockType"
+						   label="{resourceManager.getString('attachmentblock','action.copy.label')}"/>
+			<s:VGroup paddingLeft="18">
+				<s:TextInput  id="copyTi" width="240" enabled="{copyRb.selected}"/>
+			</s:VGroup>
+		</s:VGroup>
+		
 		<s:RadioButton id="discardRb" 
 					   groupName="blockType"
 					   label="{resourceManager.getString('attachmentblock','action.discard.label')}"/>
+		
 	</s:VGroup>
 </mx:Module>
