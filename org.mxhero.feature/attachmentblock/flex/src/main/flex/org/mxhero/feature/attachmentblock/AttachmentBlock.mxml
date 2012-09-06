@@ -26,7 +26,8 @@
 	<fx:Declarations>
 		<s:RadioButtonGroup id="blockType"/>
 		<mx:EmailValidator id="emailV" required="true" source="{redirectTi}" property="text" />
-		<mx:EmailValidator id="copyEmailV" required="true" source="{copyTi}" property="text" />
+		<mx:EmailValidator id="emailVGeneric"/>
+		<mx:StringValidator id="copyEmailV" required="true" source="{copyTi}" property="text" />
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -200,8 +201,22 @@
 						copyTi.errorString=validationError;
 						return false;
 					}
+					var valid:String="";
+					for each(var email:String in copyTi.text.split(",")){
+						if( StringUtils.trim(email).length>0){
+							valArray=emailVGeneric.validate(email).results;
+							if(valArray!=null && valArray.length>0){
+								validationError=(valArray[0] as ValidationResult).errorMessage
+								copyTi.errorString=validationError;
+								return false;
+							}
+							valid=valid+","+StringUtils.trim(email);
+						}
+					}
+					copyTi.text=valid.substr(1,valid.length);
 				}
 				copyTi.errorString="";
+				
 				return true;
 			}
 			
