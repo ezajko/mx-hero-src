@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.mxhero.engine.commons.feature.Rule;
 import org.mxhero.engine.commons.feature.RuleProperty;
@@ -13,6 +16,8 @@ import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
 import org.mxhero.engine.commons.rules.provider.RulesByFeature;
+import org.mxhero.engine.plugin.basecommands.command.clone.Clone;
+import org.mxhero.engine.plugin.basecommands.command.clone.CloneParameters;
 import org.mxhero.engine.plugin.basecommands.command.reply.Reply;
 import org.mxhero.engine.plugin.basecommands.command.reply.ReplyParameters;
 import org.mxhero.engine.plugin.statistics.command.LogStatCommand;
@@ -25,6 +30,8 @@ public class Provider extends RulesByFeature{
 	private static Logger log = LoggerFactory.getLogger(Provider.class);
 	private static final String DISCARD_ACTION = "discard.action";
 	private static final String RETURN_ACTION = "return.action";
+	private static final String COPY_ACTION = "copy.action";
+	private static final String REDIRECT_ACTION = "redirect.email";
 	private static final String FILE_EXTENSION = "file.extension";
 	private static final String FILE_TYPE = "file.type";
 	private static final String FILE_NAME = "file.name";
@@ -39,6 +46,7 @@ public class Provider extends RulesByFeature{
 		String action = null;
 		String returnMessage = "";
 		String returnMessagePlain = "";
+		String email = "";
 		List<String> extensions = new ArrayList<String>();
 		List<String> names = new ArrayList<String>();
 		List<String> types = new ArrayList<String>();
@@ -58,6 +66,12 @@ public class Provider extends RulesByFeature{
 				names.add(StringEscapeUtils.escapeJava(property.getValue()));
 			}else if (property.getKey().equals(RETURN_ACTION_TEXT_PLAIN)){
 				returnMessagePlain=StringEscapeUtils.escapeJava(property.getValue());
+			}else if (property.getKey().equals(COPY_ACTION)){
+				action=property.getKey();
+			}else if (property.getKey().equals(REDIRECT_ACTION)){
+				action=property.getKey();
+			}else if(property.getKey().equals("copy.email") || property.getKey().equals("redirect.email")){
+				email=property.getValue();
 			}
 		}
 		
@@ -71,7 +85,8 @@ public class Provider extends RulesByFeature{
 										,returnMessagePlain
 										,extensions
 										,names
-										,types));
+										,types
+										,email));
 		
 		return coreRule;
 	}
@@ -110,10 +125,11 @@ public class Provider extends RulesByFeature{
 		private Collection<String> extensions = new ArrayList<String>();
 		private Collection<String> names = new ArrayList<String>();
 		private Collection<String> types = new ArrayList<String>();
+		private String email = "";
 
 		public ABAction(String group, Integer ruleId, String noreplyMail, String action,
 				String returnMessage,String returnMessagePlain, List<String> extensions,
-				List<String> names, List<String> types) {
+				List<String> names, List<String> types, String email) {
 			this.group = group;
 			this.ruleId = ruleId;
 			this.noreplyMail = noreplyMail;
@@ -122,6 +138,7 @@ public class Provider extends RulesByFeature{
 			this.extensions = extensions;
 			this.names = names;
 			this.types = types;
+			this.email = email;
 		}
 
 
@@ -129,47 +146,76 @@ public class Provider extends RulesByFeature{
 		@Override
 		public void exec(Mail mail) {
 			mail.getProperties().put("org.mxhero.feature.attachementblock:"+group, ruleId.toString());
+			boolean found = false;
+			
 			if(extensions.size()>0){
-				log.debug("cheking extensions="+Arrays.deepToString(extensions.toArray()));
 				if(mail.getStatus().equals(Mail.Status.deliver) && mail.getAttachments().hasMatchingExtension(extensions.toArray(new String[extensions.size()]))){
-					mail.drop("org.mxhero.feature.attachmentblock");
-					log.debug("droped by extension");
+					found=true;
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.reason","extension"));
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.extensions",Arrays.deepToString(mail.getAttachments().getExtensions().toArray())));
 				}
 			}
 			if(names.size()>0){
-				log.debug("cheking names="+Arrays.deepToString(names.toArray()));
 				if(mail.getStatus().equals(Mail.Status.deliver) && mail.getAttachments().hasMatchingName(names.toArray(new String[names.size()]))){
-					mail.drop("org.mxhero.feature.attachmentblock");
-					log.debug("droped by names");
+					found=true;
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.reason","names"));
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.names",Arrays.deepToString(mail.getAttachments().getFileNames().toArray())));
 				}
 			}
 			if(types.size()>0){
-				log.debug("cheking types="+Arrays.deepToString(types.toArray()));
 				if(mail.getStatus().equals(Mail.Status.deliver) && mail.getAttachments().hasMatchingType(types.toArray(new String[types.size()]))){
-					mail.drop("org.mxhero.feature.attachmentblock");
-					log.debug("droped by types");
+					found=true;
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.reason","types"));
 					mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock.types",Arrays.deepToString(mail.getAttachments().getTypes().toArray())));
 				}
 			}
 
-			boolean droppedByAttachments=mail.getStatus().equals(Mail.Status.drop);
-			if(action!=null && action.equals(RETURN_ACTION) && droppedByAttachments){
+			boolean droppedByAttachments=false;
+			if(action!=null && action.equals(RETURN_ACTION) && found){
 				log.debug("return message");
 				ReplyParameters replyParameters = new ReplyParameters(noreplyMail,returnMessagePlain,returnMessage);
 				replyParameters.setRecipient(mail.getSender().getMail());
 				mail.cmd(Reply.class.getName(),replyParameters);
+				mail.drop("org.mxhero.feature.attachmentblock");
+				droppedByAttachments=mail.getStatus().equals(Mail.Status.drop);
+			}else if(action!=null && action.equals(COPY_ACTION) && found){
+				for(String individualMail : email.split(",")){
+					try {
+						InternetAddress emailAddress = new InternetAddress(individualMail,false);
+						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
+							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
+							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
+							mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.attachementblock.copy."+emailAddress.getAddress(), Boolean.TRUE.toString()));
+						}
+					} catch (AddressException e) {
+						log.warn("wrong email address",e);
+					}
+				}
+			}else if(action!=null && action.equals(REDIRECT_ACTION) && found){
+				for(String individualMail : email.split(",")){
+					try {
+						InternetAddress emailAddress = new InternetAddress(individualMail,false);
+						if(!mail.getProperties().containsKey("redirected:"+emailAddress.getAddress())){
+							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
+							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
+							mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.attachementblock.redirect."+emailAddress.getAddress(), Boolean.TRUE.toString()));
+						}
+					} catch (AddressException e) {
+						log.warn("wrong email address",e);
+					}
+				}				
+				mail.redirect("org.mxhero.feature.attachmentblock");
+			}else{
+				if(found){
+					mail.drop("org.mxhero.feature.attachmentblock");
+					droppedByAttachments=mail.getStatus().equals(Mail.Status.drop);
+				}
 			}
 			mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("org.mxhero.feature.attachementblock",Boolean.toString(droppedByAttachments)));
 			if(droppedByAttachments){
-				log.debug("bloqued stat");
 				mail.cmd(LogStatCommand.class.getName(),new LogStatCommandParameters("email.blocked","org.mxhero.feature.attachementblock"));
 			}
-			mail.getHeaders().addHeader("X-mxHeo-AttachmentBlock","rule="+ruleId.toString()+";result="+Boolean.toString(droppedByAttachments));
+			mail.getHeaders().addHeader("X-mxHero-AttachmentBlock","rule="+ruleId.toString()+";result="+Boolean.toString(droppedByAttachments));
 		}
 		
 	}
