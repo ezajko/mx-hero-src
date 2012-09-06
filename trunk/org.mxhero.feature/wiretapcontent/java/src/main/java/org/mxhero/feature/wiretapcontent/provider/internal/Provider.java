@@ -2,6 +2,7 @@ package org.mxhero.feature.wiretapcontent.provider.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -64,12 +65,15 @@ public class Provider extends RulesByFeature{
 	private class WCEvaluate implements Evaluable{
 
 		private String andor;
-		private List<String> words;
+		private String[] words;
 		
 		public WCEvaluate(String andor, List<String> words) {
 			super();
 			this.andor = andor;
-			this.words = words;
+			if(words!=null){
+				this.words = words.toArray(new String[words.size()]);
+			}
+			
 		}
 
 		@Override
@@ -77,10 +81,30 @@ public class Provider extends RulesByFeature{
 			return mail.getStatus().equals(Mail.Status.deliver)
 			&& mail.getHeaders()!=null
 			&& mail.getBody()!=null
-			&&(andor!=null && ((andor.equals(AND_VALUE)&&(mail.getBody().textHasAll(words.toArray(new String[words.size()]))||mail.getBody().htmlTextHasAll(words.toArray(new String[words.size()]))))
-								||(andor.equals(OR_VALUE)&&(mail.getBody().textHasAny(words.toArray(new String[words.size()]))||mail.getBody().textHasAny(words.toArray(new String[words.size()]))))));
+			&&(andor!=null && 
+				((andor.equals(AND_VALUE) && subjectHasAll(mail.getSubject(),words))
+				||(andor.equals(OR_VALUE) && subjectHasAny(mail.getSubject(),words))
+				||(andor.equals(AND_VALUE)&&(mail.getBody().textHasAll(words))||mail.getBody().htmlTextHasAll(words))
+				||(andor.equals(OR_VALUE)&&(mail.getBody().textHasAny(words))||mail.getBody().textHasAny(words))));
 		}
 		
+		public boolean subjectHasAll(String subject, String... words) {
+			for (String word : words){
+				if(!Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(subject).find()){
+					return false;
+				}
+			}
+			return true;
+		}
+		
+		public boolean subjectHasAny(String subject, String... words) {
+			for (String word : words){
+				if(Pattern.compile("(\\W|^)"+word+"(\\W|$)", Pattern.CASE_INSENSITIVE).matcher(subject).find()){
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 	
 	private class WCAction implements Actionable{
@@ -119,6 +143,7 @@ public class Provider extends RulesByFeature{
 							mail.getProperties().put("redirected:"+emailAddress.getAddress(),ruleId.toString());
 							mail.cmd(Clone.class.getName(), new CloneParameters(mail.getSender().getMail(), emailAddress.getAddress()));
 							mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.wiretapcontent.redirect."+emailAddress.getAddress(), Boolean.TRUE.toString()));
+							mail.getHeaders().addHeader("X-mxHero-WiretapContent","rule:"+ruleId);
 						}
 					} catch (AddressException e) {
 						log.warn("wrong email address",e);

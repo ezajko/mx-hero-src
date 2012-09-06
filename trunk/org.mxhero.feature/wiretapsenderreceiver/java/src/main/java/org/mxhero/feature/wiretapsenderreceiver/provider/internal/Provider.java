@@ -72,7 +72,6 @@ public class Provider extends RulesByFeature{
 
 		@Override
 		public void exec(Mail mail) {
-			mail.getHeaders().addHeader("X-mxHero-WiretapSenderReceiver","rule:"+ruleId+";hidden_copied:"+backupRecipient);
 			mail.getProperties().put("org.mxhero.feature.wiretapsenderreceiver:"+group,ruleId.toString());
 			for(String individualMail : backupRecipient.split(",")){
 				try {
