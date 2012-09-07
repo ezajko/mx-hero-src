@@ -502,6 +502,6 @@ public class Message {
 	}
 
 	public Timestamp getEmailDate() {
-		return getMail()!=null ? getMail().getTime() : null;
+		return getMail()!=null ? getMail().getTime() : new Timestamp(System.currentTimeMillis());
 	}
 }

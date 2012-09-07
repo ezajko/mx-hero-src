@@ -73,8 +73,8 @@ public class ALCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		DatabaseOperation.DELETE_ALL.execute(getConnection(), new XmlDataSet(
-				this.getClass().getResourceAsStream("/dataset.xml")));
+//		DatabaseOperation.DELETE_ALL.execute(getConnection(), new XmlDataSet(
+//				this.getClass().getResourceAsStream("/dataset.xml")));
 	}
 
 	private IDatabaseConnection getConnection() throws Exception {
@@ -494,7 +494,7 @@ public class ALCommandTest {
 
 //	@Test
 	public void testAllEmailsPlatform(){
-		String file = "C:\\$USER\\Personales\\mxhero\\Attachment Links\\emails";
+		String file = "/home/juan/Downloads/mails";
 		File dirEmails = new File(file);
 		File[] listFiles = dirEmails.listFiles();
 		for (int i = 0; i < listFiles.length; i++) {
