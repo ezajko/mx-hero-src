@@ -34,7 +34,7 @@ CREATE TABLE attach
 (
 	attach_id BIGINT NOT NULL auto_increment,
 	md5_checksum VARCHAR(255) NOT NULL,
-	file_name VARCHAR(100) NOT NULL,
+	file_name VARCHAR(255) NOT NULL,
 	size BIGINT NOT NULL,
 	mime_type VARCHAR(255) NOT NULL,
 	path VARCHAR(100) NOT NULL,

@@ -10,7 +10,6 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>classpath:box_client.properties</value>
 				<value>classpath:spring.properties</value>
 			</list>
 		</property>
@@ -55,6 +54,6 @@
 		<property name="password" value="${encryptor.seed}" />
 	</bean>
 	
-	<import resource="classpath:box_context_client.xml"/>
+	<bean id="cloudStorageExecutor" class="org.mxhero.engine.plugin.attachmentlink.alcommand.mock.CloudStorageExecutorMock"/>
 
 </beans>

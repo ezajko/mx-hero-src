@@ -61,5 +61,5 @@ public class AlCommandImpl implements AlCommand{
 		}
 		return result;
 	}
-
+	
 }
