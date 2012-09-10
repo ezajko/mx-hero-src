@@ -48,20 +48,18 @@ public class ProducerQueue implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while(true){
-				if(getQueue().isEmpty()){
-					try {
-						logger.debug("Refilling queue");
-						List<TransactionAttachment> transactions = getService().getTransactionToProcess(getTransactionsToRetrieve());
-						this.getQueue().addAll(transactions);
-						logger.debug("Notify consumer to start process transactions");
-					} catch (Exception e) {
-						logger.error("Error message {}", e.getMessage());
-						logger.error("Error class {}", e.getClass().getName());
-					}
-				}else{
-					Thread.sleep(5000);
+			if(getQueue().isEmpty()){
+				try {
+					logger.debug("Refilling queue");
+					List<TransactionAttachment> transactions = getService().getTransactionToProcess(getTransactionsToRetrieve());
+					this.getQueue().addAll(transactions);
+					logger.debug("Notify consumer to start process transactions");
+				} catch (Exception e) {
+					logger.error("Error message {}", e.getMessage());
+					logger.error("Error class {}", e.getClass().getName());
 				}
+			}else{
+				Thread.sleep(1000);
 			}
 		} catch (InterruptedException e) {
 			logger.info("Shuting down producer thread {}", Thread.currentThread().getName());

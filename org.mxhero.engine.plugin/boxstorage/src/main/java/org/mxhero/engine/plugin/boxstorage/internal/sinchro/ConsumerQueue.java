@@ -46,30 +46,24 @@ public class ConsumerQueue implements Runnable {
 	@Override
 	public void run() {
 		try {
-			while(true){
-				logger.debug("Thread {} executing", Thread.currentThread().getName());
-				logger.debug("Wait for Producer to put new transactions..");
-				if(!this.getQueue().isEmpty()){
-					logger.debug("Getting Tx from queue");
-					TransactionAttachment tx = this.getQueue().poll(1, TimeUnit.SECONDS);
-					if(tx != null){
-						try {
-							logger.debug("Uploading transaction {}", tx);
-							StorageResult store = getStorage().store(tx);
-							if(store.isSuccess()){
-								logger.debug("Tx uploaded success. Notify attachmentlinks");
-								if(store.getFileStored()!=null){
-									tx.setPublicUrl(store.getFileStored().getUrl());
-								}
-								getService().sendMessage(tx, true);
+			while(!this.getQueue().isEmpty()){
+				logger.debug("Getting Tx from queue");
+				TransactionAttachment tx = this.getQueue().poll(1, TimeUnit.SECONDS);
+				if(tx != null){
+					try {
+						logger.debug("Uploading transaction {}", tx);
+						StorageResult store = getStorage().store(tx);
+						if(store.isSuccess()){
+							logger.debug("Tx uploaded success. Notify attachmentlinks");
+							if(store.getFileStored()!=null){
+								tx.setPublicUrl(store.getFileStored().getUrl());
 							}
-						} catch (Exception e) {
-							logger.error("Error message {}", e.getMessage());
-							logger.error("Error class {}", e.getClass().getName());
+							getService().sendMessage(tx, true);
 						}
+					} catch (Exception e) {
+						logger.error("Error message {}", e.getMessage());
+						logger.error("Error class {}", e.getClass().getName());
 					}
-				}else{
-					Thread.sleep(5000);
 				}
 			}
 		} catch (InterruptedException e) {

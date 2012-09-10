@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@Ignore
+//@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:box_context_client_test.xml"})
+@ContextConfiguration(locations = {"classpath:sinchro_test.xml"})
 public class SynchronizerTest {
 	
 	@Autowired
@@ -22,15 +22,7 @@ public class SynchronizerTest {
 
 	@Test
 	public void testSynchronize() {
-		try {
-			target.start();
-			Thread.sleep(1000);
-			target.stop();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		while(true);
 	}
 
 }

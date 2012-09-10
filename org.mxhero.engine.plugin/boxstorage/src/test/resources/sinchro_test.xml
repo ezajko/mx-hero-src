@@ -1,0 +1,89 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:osgi="http://www.eclipse.org/gemini/blueprint/schema/blueprint"
+	xmlns:osgix="http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint http://www.eclipse.org/gemini/blueprint/schema/blueprint/gemini-blueprint.xsd
+		http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium http://www.eclipse.org/gemini/blueprint/schema/blueprint-compendium/gemini-blueprint-compendium.xsd">
+
+	<!-- ####################################################################################### -->
+	<!-- Added only to support transaction annotation config -->
+	<!-- ####################################################################################### -->
+	<context:annotation-config />
+
+	<context:component-scan base-package="org.mxhero.engine.plugin.boxstorage" />
+	<!-- ####################################################################################### -->
+
+
+	<!-- ####################################################################################### -->
+	<!-- Common properties, pool and other infrastructure configuration -->
+	<!-- ####################################################################################### -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:box_client.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- ####################################################################################### -->
+	<!-- Synchronizer -->
+	<!-- ####################################################################################### -->
+
+	<bean id="consumer"
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
+		scope="prototype">
+		<property name="service">
+			<bean
+				class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.AttachmentServiceMock" />
+		</property>
+		<property name="storage">
+			<bean
+				class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.CloudStorageMock" />
+		</property>
+	</bean>
+
+	<bean id="producer"
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
+		scope="prototype">
+		<property name="transactionsToRetrieve" value="${queue.max.capacity}" />
+		<property name="service">
+			<bean
+				class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.AttachmentServiceMock" />
+		</property>
+	</bean>
+
+	<bean id="synchronizer"
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
+		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}" />
+		<property name="queueCapacity" value="${queue.max.capacity}" />
+	</bean>
+
+	<bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+		<!-- wait 10 seconds before starting repeated execution -->
+		<property name="delay" value="${sinchro.delay.after.start.in.millis}"/>
+		<!-- run every 50 seconds -->
+		<property name="period" value="${sinchro.period.execution.in.millis}" />
+		<property name="timerTask" ref="synchronizerTask" />
+	</bean>
+
+	<bean id="synchronizerTask"
+		class="org.springframework.scheduling.timer.MethodInvokingTimerTaskFactoryBean">
+		<property name="targetObject" ref="synchronizer" />
+		<property name="targetMethod" value="start" />
+	</bean>
+
+	<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+		<property name="scheduledTimerTasks">
+			<list>
+				<ref bean="scheduledTask" />
+			</list>
+		</property>
+	</bean>
+
+</beans>
