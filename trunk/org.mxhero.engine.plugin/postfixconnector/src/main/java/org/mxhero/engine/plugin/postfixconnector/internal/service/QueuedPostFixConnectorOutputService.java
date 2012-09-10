@@ -28,8 +28,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 
 
 	private static Logger log = LoggerFactory.getLogger(QueuedPostFixConnectorOutputService.class);
-
-	private Properties props;
 	
 	private ConnectorProperties properties;
 	
@@ -41,7 +39,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 	 */
 	public void addOutMail(MimeMail mail) {
 		boolean hasDsn = false;
-		props = new Properties();
+		Properties props = new Properties();
 	    props.put("mail.smtp.host", getProperties().getMailSmtpHost());
 	    props.put("mail.smtp.port", getProperties().getMailSmtpPort().toString());
 	    props.put("mail.mime.address.strict","false");
@@ -110,7 +108,8 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 			}catch(Exception e){
 				if(hasDsn){
 					log.warn("DSN error for ret="+props.get("mail.smtp.dsn.ret")
-							+" notify="+props.get("mail.smtp.dsn.notify"));
+							+" notify="+props.get("mail.smtp.dsn.notify")
+							+" from:"+mail.getSender()+" to:"+mail.getRecipient());
 					props.remove("mail.smtp.dsn.ret");
 					props.remove("mail.smtp.dsn.notify");
 					log.debug("send without DSN");
@@ -142,14 +141,6 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 	    t.close();
 	}
 	
-	public Properties getProps() {
-		return props;
-	}
-
-	public void setProps(Properties props) {
-		this.props = props;
-	}
-
 	public ConnectorProperties getProperties() {
 		return properties;
 	}
