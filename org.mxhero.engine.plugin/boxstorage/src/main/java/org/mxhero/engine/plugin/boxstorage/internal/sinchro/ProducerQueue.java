@@ -53,7 +53,7 @@ public class ProducerQueue implements Runnable {
 					logger.debug("Refilling queue");
 					List<TransactionAttachment> transactions = getService().getTransactionToProcess(getTransactionsToRetrieve());
 					this.getQueue().addAll(transactions);
-					logger.debug("Notify consumer to start process transactions");
+					logger.debug("Notify consumer to start process transactions amount {}", this.getQueue().size());
 				} catch (Exception e) {
 					logger.error("Error message {}", e.getMessage());
 					logger.error("Error class {}", e.getClass().getName());
