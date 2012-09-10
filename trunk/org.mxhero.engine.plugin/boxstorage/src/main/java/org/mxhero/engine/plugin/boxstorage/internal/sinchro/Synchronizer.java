@@ -4,6 +4,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.mxhero.engine.plugin.attachmentlink.alcommand.service.TransactionAttachment;
 import org.slf4j.Logger;
@@ -35,27 +37,43 @@ public class Synchronizer implements BeanFactoryAware {
 
 	/** The producer threads. */
 	private ExecutorService producerThreads;
+	
+	/** The request more. */
+	private AtomicBoolean requestMore = new AtomicBoolean(true);
 
 	/**
 	 * Synchronize.
 	 */
 	public void start(){
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				logger.debug("Start new synchronization running....");
-				BlockingQueue<TransactionAttachment> queue = new LinkedBlockingDeque<TransactionAttachment>(getQueueCapacity());
-				producerThreads = Executors.newSingleThreadExecutor();
-				producerThreads.execute(getProducer(queue));
-				logger.debug("Producer finishing filling the queue");
-				consumerThreads = Executors.newFixedThreadPool(getAmountConsumerThreads());
-				for (int i = 0; i < getAmountConsumerThreads(); i++) {
-					Runnable consumer = getConsumer(queue);
-					consumerThreads.execute(consumer);
+		if(requestMore.get()){
+			Thread thread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					requestMore.set(false);
+					logger.debug("Start new synchronization running....");
+					BlockingQueue<TransactionAttachment> queue = new LinkedBlockingDeque<TransactionAttachment>(getQueueCapacity());
+					producerThreads = Executors.newSingleThreadExecutor();
+					producerThreads.execute(getProducer(queue));
+					producerThreads.shutdown();
+					try {
+						producerThreads.awaitTermination(2, TimeUnit.SECONDS);
+						logger.debug("Producer finishing filling the queue");
+						consumerThreads = Executors.newFixedThreadPool(getAmountConsumerThreads());
+						for (int i = 0; i < getAmountConsumerThreads(); i++) {
+							Runnable consumer = getConsumer(queue);
+							consumerThreads.execute(consumer);
+						}
+						consumerThreads.shutdown();
+						consumerThreads.awaitTermination(5, TimeUnit.MINUTES);
+					} catch (InterruptedException e) {
+						logger.warn("SHUTING DOWN SYNCHRONIZER. SYNCHRONIZATION MUST BE RECALL IN NEXT PERIOD ACCORDING CONFIGURATION");
+					}finally{
+						requestMore.set(true);	
+					}
 				}
-			}
-		});
+			});
 		thread.start();
+		}
 	}
 	
 	/**

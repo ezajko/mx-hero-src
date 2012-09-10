@@ -46,7 +46,7 @@
 		<property name="partitionCount" value="${initial.partitionCount}" />
 		<property name="acquireIncrement" value="${initial.acquireIncrement}" />
 		<property name="releaseHelperThreads" value="${initial.releaseHelperThreads}" />
-	</bean>	
+	</bean>
 
 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -62,7 +62,7 @@
 		factory-method="createUser" scope="prototype">
 		<property name="connector" ref="connector" />
 		<property name="persistence" ref="boxStoragePersistence" />
-		<property name="urlToRetrieveToken" value="${url.to.retrieve.token}"/>
+		<property name="urlToRetrieveToken" value="${url.to.retrieve.token}" />
 		<property name="hostMxheroServer" value="${host.mxhero.server}" />
 	</bean>
 
@@ -101,12 +101,13 @@
 
 	<bean id="storage"
 		class="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient" init-method="init"/>
-		
-	<bean id="applicationService" class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
-		<property name="connector" ref="connector"/>
+
+	<bean id="applicationService"
+		class="org.mxhero.engine.plugin.boxstorage.internal.client.service.ApplicationService">
+		<property name="connector" ref="connector" />
 		<property name="applicationId" value="${app.instance.id}" />
 	</bean>
-		
+
 
 	<bean id="httpClientParams" class="org.apache.commons.httpclient.params.HttpClientParams">
 		<property name="connectionManagerClass"
@@ -139,35 +140,4 @@
 	<bean id="mappingJacksonHttpMessageConverter"
 		class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
 	<!-- ####################################################################################### -->
-
-	<!-- ####################################################################################### -->
-	<!-- Synchronizer -->
-	<!-- ####################################################################################### -->
-
-	<bean id="consumer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ConsumerQueue"
-		scope="prototype" >
-		<property name="service">
-			<bean class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.AttachmentServiceMock"/>
-		</property>
-		<property name="storage">
-			<bean class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.CloudStorageMock"/>
-		</property>
-	</bean>		
-
-	<bean id="producer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.ProducerQueue"
-		scope="prototype">
-		<property name="transactionsToRetrieve" value="${queue.max.capacity}"/>
-		<property name="service">
-			<bean class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.AttachmentServiceMock"/>
-		</property>
-	</bean>
-
-	<bean id="synchronizer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
-		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"/>
-		<property name="queueCapacity" value="${queue.max.capacity}"/>
-	</bean>
-
 </beans>

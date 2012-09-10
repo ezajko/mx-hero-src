@@ -30,6 +30,8 @@
 		<prop key="folders.url">https://api.box.com/2.0/folders/{id}</prop>
 		<prop key="queue.max.capacity">100</prop>
 		<prop key="synchronizer.threads.amount">10</prop>
+		<prop key="sinchro.delay.after.start.in.millis">10000</prop>
+		<prop key="sinchro.period.execution.in.millis">50000</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder properties-ref="jdbcCmProps" />
@@ -149,6 +151,28 @@
 		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer" init-method="start" destroy-method="stop">
 		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"/>
 		<property name="queueCapacity" value="${queue.max.capacity}"/>
+	</bean>
+
+	<bean id="scheduledTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+		<!-- wait 10 seconds before starting repeated execution -->
+		<property name="delay" value="${sinchro.delay.after.start.in.millis}"/>
+		<!-- run every 50 seconds -->
+		<property name="period" value="${sinchro.period.execution.in.millis}" />
+		<property name="timerTask" ref="synchronizerTask" />
+	</bean>
+
+	<bean id="synchronizerTask"
+		class="org.springframework.scheduling.timer.MethodInvokingTimerTaskFactoryBean">
+		<property name="targetObject" ref="synchronizer" />
+		<property name="targetMethod" value="start" />
+	</bean>
+
+	<bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+		<property name="scheduledTimerTasks">
+			<list>
+				<ref bean="scheduledTask" />
+			</list>
+		</property>
 	</bean>
 
 </beans>
