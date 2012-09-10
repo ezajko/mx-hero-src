@@ -148,7 +148,7 @@
 	</bean>
 
 	<bean id="synchronizer"
-		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer">
+		class="org.mxhero.engine.plugin.boxstorage.internal.sinchro.Synchronizer" destroy-method="stop">
 		<property name="amountConsumerThreads" value="${synchronizer.threads.amount}"/>
 		<property name="queueCapacity" value="${queue.max.capacity}"/>
 	</bean>
