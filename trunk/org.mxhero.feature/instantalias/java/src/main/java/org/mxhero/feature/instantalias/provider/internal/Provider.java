@@ -45,7 +45,8 @@ public class Provider extends RulesByFeatureWithFixed {
 			return mail.getStatus().equals(Mail.Status.deliver)
 					&& (separationCharacter != null
 							&& !separationCharacter.trim().isEmpty() 
-							&& mail.getRecipient().getMail().contains(separationCharacter.trim())
+							&& mail.getRecipient().getMail().contains("@")
+							&& mail.getRecipient().getMail().substring(0,mail.getRecipient().getMail().indexOf('@')).contains(separationCharacter.trim())
 							&& !mail.getRecipient().getMail().startsWith(REPLY_START));
 		}
 	}
