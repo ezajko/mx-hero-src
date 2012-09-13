@@ -1,11 +1,13 @@
 package org.mxhero.feature.instantalias.provider.internal;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.mxhero.engine.commons.mail.api.Mail;
+import org.mxhero.engine.commons.mail.api.Recipients.RecipientType;
 import org.mxhero.engine.commons.rules.Actionable;
 import org.mxhero.engine.commons.rules.CoreRule;
 import org.mxhero.engine.commons.rules.Evaluable;
@@ -55,14 +57,29 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 		coreRule.addAction(new IAFixedAction());
 		return coreRule;
 	}
-	
+
 	private class IAFixedEval implements Evaluable{
 		@Override
 		public boolean eval(Mail mail) {
-			boolean result = mail.getStatus().equals(Mail.Status.deliver) &&
-					mail.getRecipient().getMail().startsWith(REPLY_START)
+			log.debug("analize recipient:"+mail.getRecipient().getMail()+", TO:"+Arrays.deepToString(mail.getRecipients().getRecipients(RecipientType.to).toArray()));
+			boolean result = mail.getStatus().equals(Mail.Status.deliver)
 					&& mail.getSender().getDomain().getManaged();
-			log.debug("result:"+result);
+			
+			if(result){
+				if(mail.getRecipient().getMail().startsWith(REPLY_START)){
+					log.debug("is recipient");
+					return true;
+				}
+				
+				for(String recipient : mail.getRecipients().getRecipients(RecipientType.to)){
+					log.debug("cheking TO:"+recipient);
+					if(recipient.startsWith(REPLY_START)){
+						log.debug("process");
+						return true;
+					}
+				}
+			}
+			
 			return result;
 		}
 	}
@@ -70,26 +87,41 @@ public abstract class RulesByFeatureWithFixed extends RulesByFeature {
 	private class IAFixedAction implements Actionable{
 		@Override
 		public void exec(Mail mail) {
-			String[] emailComposition = mail.getRecipient().getMail().split(REPLY_ALIAS);
-			String senderDomain=emailComposition[2];
-			String senderAccount=emailComposition[1];
-			log.debug("senderDomain:"+senderDomain);
-			log.debug("senderAccount:"+senderAccount);
-			//if sender is from the domain of the alias and the account is in the alias
-			if(mail.getSender().getDomain().hasAlias(senderDomain)
-					&& senderAccount.startsWith(mail.getSender().getMail().split("@")[0])){
-					String sender = senderAccount+"@"+senderDomain;
-					String recipient = mail.getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
-					log.debug("sender:"+sender+", recipient:"+recipient);
-					CloneParameters cloneParameters = new CloneParameters(sender, recipient);
-					cloneParameters.setGenerateId(false);
-					cloneParameters.setOverride("both");
-					mail.cmd(Clone.class.getName(), cloneParameters);
-					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected", recipient));
-					mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected.sender", sender));
-					mail.redirect("org.mxhero.feature.redirect");
-			} else{
-				log.debug("no match");
+			
+			if(mail.getRecipient().getMail().startsWith(REPLY_START)){
+				String[] emailComposition = mail.getRecipient().getMail().split(REPLY_ALIAS);
+				String senderDomain=emailComposition[2];
+				String senderAccount=emailComposition[1];
+				log.debug("senderDomain:"+senderDomain);
+				log.debug("senderAccount:"+senderAccount);
+				//if sender is from the domain of the alias and the account is in the alias
+				if(mail.getSender().getDomain().hasAlias(senderDomain)
+						&& senderAccount.startsWith(mail.getSender().getMail().split("@")[0])){
+						String sender = senderAccount+"@"+senderDomain;
+						String recipient = mail.getRecipient().getMail().substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
+						log.debug("sender:"+sender+", recipient:"+recipient);
+						CloneParameters cloneParameters = new CloneParameters(sender, recipient);
+						cloneParameters.setGenerateId(false);
+						cloneParameters.setOverride("both");
+						mail.getHeaders().removeHeader("Reply-To");
+						mail.cmd(Clone.class.getName(), cloneParameters);
+						mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected", recipient));
+						mail.cmd(LogStatCommand.class.getName(), new LogStatCommandParameters("org.mxhero.feature.instantalias.redirected.sender", sender));
+						mail.redirect("org.mxhero.feature.redirect");
+				} else{
+					log.debug("no match");
+				}
+			}else{
+				for(String recipient : mail.getRecipients().getRecipients(RecipientType.to)){
+					log.debug("cheking="+recipient);
+					if(recipient.startsWith(REPLY_START)){
+						log.debug("fixing:"+recipient);
+						mail.getRecipients().removeRecipient(RecipientType.to, recipient);
+						String[] emailComposition = recipient.split(REPLY_ALIAS);
+						String recipientOriginal = recipient.substring(emailComposition[0].length()+emailComposition[1].length()+emailComposition[2].length()+(REPLY_ALIAS.length()*3));
+						mail.getRecipients().addRecipient(RecipientType.to, recipientOriginal);
+					}
+				}
 			}
 		}
 	}
