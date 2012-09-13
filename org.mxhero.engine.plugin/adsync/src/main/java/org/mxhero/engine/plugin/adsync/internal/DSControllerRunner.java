@@ -12,7 +12,7 @@ public class DSControllerRunner {
 
 	private static Logger log = LoggerFactory.getLogger(DSControllerRunner.class);
 	
-	private static final long CHECK_TIME = 30000;
+	private static final long CHECK_TIME = 10000;
 	
 	private Thread runnerThread=null;
 	
