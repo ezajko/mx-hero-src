@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin</groupId>
 	<artifactId>body</artifactId>
-	<version>1.8.0</version>
+	<version>1.7.2</version>
 
 	<properties>
 		<bundle.symbolicName>org.mxhero.engine.plugin.body</bundle.symbolicName>

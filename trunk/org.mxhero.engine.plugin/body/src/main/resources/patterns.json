@@ -35,6 +35,12 @@
     "headerOnly" : true,
     "select" : "p:has(font:matches(--------[\\w\\d\\s]*---------))",
     "pattern" : "(?s).*"
+  },{
+    "priority" : 2,
+    "header" : "(?i)sparrow.*",
+    "headerOnly" : true,
+    "select" : "p , blockquote[type=cite]",
+    "pattern" : "(?s).*"
   }],
   "plainPatterns" : [ {
     "priority" : 0,
@@ -61,5 +67,10 @@
     "header" : "(?i)Microsoft Outlook.*",
     "headerOnly" : true,
     "pattern" : "(?m)^--------[\\w\\d\\s]*---------$"
-  } ]
+  },{
+    "priority" : 5,
+    "header" : "(?i)sparrow.*",
+    "headerOnly" : false,
+    "pattern" : "[\\n\\r].*:[\\n\\r]\\s*?>.*[\\n\\r]\\s*?>.*[\\n\\r]"
+  }]
 }

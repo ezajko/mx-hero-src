@@ -1,0 +1,352 @@
+Delivered-To: mmarmol@mxhero.com
+Received: by 10.58.196.241 with SMTP id ip17csp794282vec;
+        Mon, 3 Sep 2012 20:27:22 -0700 (PDT)
+Received: by 10.224.199.135 with SMTP id es7mr38254557qab.6.1346729242618;
+        Mon, 03 Sep 2012 20:27:22 -0700 (PDT)
+Return-Path: <charles@mxhero.com>
+Received: from gmail.mxhero.com (gmail-out.mxhero.com. [23.21.209.93])
+        by mx.google.com with ESMTP id u9si6567530qcv.141.2012.09.03.20.27.22;
+        Mon, 03 Sep 2012 20:27:22 -0700 (PDT)
+Received-SPF: pass (google.com: domain of charles@mxhero.com designates 209.85.160.53 as permitted sender) client-ip=209.85.160.53;
+Authentication-Results: mx.google.com; spf=pass (google.com: domain of charles@mxhero.com designates 209.85.160.53 as permitted sender) smtp.mail=charles@mxhero.com
+Received: from ip-10-140-83-187.ec2.internal (localhost [127.0.0.1])
+	by gmail.mxhero.com (Postfix) with ESMTP id 12553209B1
+	for <mmarmol@mxhero.com>; Tue,  4 Sep 2012 03:28:21 +0000 (UTC)
+Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com [209.85.160.53])
+	by gmail.mxhero.com (Postfix) with ESMTPS
+	for <mmarmol@mxhero.com>; Tue,  4 Sep 2012 03:28:20 +0000 (UTC)
+Received: by pbbro2 with SMTP id ro2so10628741pbb.26
+        for <mmarmol@mxhero.com>; Mon, 03 Sep 2012 20:27:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=date:from:to:message-id:in-reply-to:references:subject:x-mailer
+         :mime-version:content-type:x-gm-message-state;
+        bh=DHhhjVU93Q3kofz17PQ6qpiAeoZDPY1ZepWYlG6DxQY=;
+        b=Vmb34iy4fKq1cXdm4gvBH1VjUwtbdfmS01cL0S7MBPUYU+b4W0GwVvEh6az/acMcVT
+         ZOFv42sFS3PW8FZqV6Uzg3nLKKP2hljtZRHpXM9Kk8GIbSvdCmWmn0eRFSJIfDWeF1/M
+         Q3c10upFie6EvRH7T86uPtshp3CEOVXrV0aRWk05JroB1UxLJqI4bMnoF3myXS7w2jcO
+         n/SUt8fK8zQW9uyjYwbI68kL1tO+ryye2OrkfBt7PpepJFJU4PYz3HAlOFZDF0HgFNv3
+         Xktg5RIIsGFoXhcSh76eKpVC/WxhOE3uDMIybMFwAg8CLW3LBCY6PhHInVnsu+2Jddp4
+         /R+A==
+Received: by 10.66.78.195 with SMTP id d3mr38122800pax.17.1346729241189;
+        Mon, 03 Sep 2012 20:27:21 -0700 (PDT)
+Received: from [192.168.1.10] (c-67-169-40-128.hsd1.ca.comcast.net. [67.169.40.128])
+        by mx.google.com with ESMTPS id mr2sm11211768pbb.16.2012.09.03.20.27.18
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Mon, 03 Sep 2012 20:27:19 -0700 (PDT)
+Date: Mon, 3 Sep 2012 20:27:17 -0700
+From: Charles Stewart <charles@mxhero.com>
+To: Marcelo Marmol <mmarmol@mxhero.com>
+Message-ID: <587AADAA429C4F6BBBCA185D9EC59CB7@mxhero.com>
+In-Reply-To: <9ADFFD7AFB284DB9B757B327146CF0BC@mxhero.com>
+References: <CANn3SQWwbjTe-+wJ2g1_Zor7Bj8iVx5JwONBO6Si-_Wcv2v9-Q@mail.gmail.com>
+ <9ADFFD7AFB284DB9B757B327146CF0BC@mxhero.com>
+Subject: Fw: Patterns to match?
+X-Mailer: sparrow 1.6.3 (build 1164)
+MIME-Version: 1.0
+Content-Type: multipart/alternative; boundary="50457515_79e2a9e3_893"
+X-Gm-Message-State: ALoCoQn7bv7r2lgdFUnYpJTOk3NPVyXGNMnTeS9j4sw99dC8yZWV6/JOCZw/eadZwqsTsxvUHrFd
+X-mxHero-Disclaimer: ruleId=2420
+Sender: charles@mxhero.com
+
+--50457515_79e2a9e3_893
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+This is a =46ORWARD from SPARROW =20
+
+Charles Stewart
+VP Business Development
+mxHero
+
+cell:       415 350 1406
+skype:   crstewart
+twitter    Stewart=5FChas
+
+
+www.mxhero.com
+Sent with Sparrow (http://www.sparrowmailapp.com/=3Fsig)
+
+
+=46orwarded message:
+
+> =46rom: Charles Stewart <charles=40mxhero.com>
+> To: Marcelo Marmol <mmarmol=40mxhero.com>
+> Date: Monday, September 3, 2012 8:26:36 PM
+> Subject: Re: Patterns to match=3F
+> =20
+> This is a REPLY from SPARROW
+> =20
+> Charles Stewart
+> VP Business Development
+> mxHero
+> =20
+> cell:       415 350 1406
+> skype:   crstewart
+> twitter    Stewart=5FChas
+> =20
+> =20
+> www.mxhero.com (http://www.mxhero.com)
+> Sent with Sparrow (http://www.sparrowmailapp.com/=3Fsig)
+> =20
+> =20
+> On Monday, September 3, 2012 at 3:20 PM, Marcelo Marmol wrote:
+> =20
+> > I am making the interparsing, i had made parsings for reply and forwa=
+rd for this clients: =20
+> > =20
+> > GAMIL =20
+> > ZIMBRA =20
+> > OUTLOOK 210 =20
+> > =20
+> > Can you guys send me reply and forward from different clients so I ca=
+n make the proper regex=3F I need the whole email, with headers and all s=
+ince I check the X-Mailer to know wich client is sending the email if pos=
+sible, it looks like is working well, but more testing is needed. =20
+> > =20
+> > Thanks guys, =20
+> > =20
+> > ------------------------------------------------------- =20
+> >   Marcelo Angel M=C3=A1rmol =20
+> > web: http://www.mxhero.com =20
+> > phone: (+1)347-745-90994
+> > =20
+> > =20
+> > =20
+> > Think before you print and save a tree. =20
+> =20
+
+
+--50457515_79e2a9e3_893
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+
+                <div>
+                    This is a =46ORWARD from SPARROW
+                </div>
+                <div><div><br></div><div><b style=3D=22color: rgb(0, 0, 0=
+); font-family: arial; font-size: small; font-style: normal; font-variant=
+: normal; letter-spacing: normal; line-height: normal; orphans: 2; text-a=
+lign: -webkit-auto; text-indent: 0px; text-transform: none; white-space: =
+normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -we=
+bkit-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>Charles St=
+ewart</font></b><div style=3D=22color: rgb(0, 0, 0); font-family: arial; =
+font-size: small; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; orphans: 2; text-ali=
+gn: -webkit-auto; text-indent: 0px; text-transform: none; white-space: no=
+rmal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webk=
+it-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>VP Business =
+Development</font></div><div style=3D=22color: rgb(0, 0, 0); font-family:=
+ arial; font-size: small; font-style: normal; font-variant: normal; font-=
+weight: normal; letter-spacing: normal; line-height: normal; orphans: 2; =
+text-align: -webkit-auto; text-indent: 0px; text-transform: none; white-s=
+pace: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: aut=
+o; -webkit-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>mxHe=
+ro</font></div><div style=3D=22color: rgb(0, 0, 0); font-family: arial; f=
+ont-size: small; font-style: normal; font-variant: normal; font-weight: n=
+ormal; letter-spacing: normal; line-height: normal; orphans: 2; text-alig=
+n: -webkit-auto; text-indent: 0px; text-transform: none; white-space: nor=
+mal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webki=
+t-text-stroke-width: 0px; =22><font color=3D=22=23666666=22><br></font></=
+div><div style=3D=22color: rgb(0, 0, 0); font-family: arial; font-size: s=
+mall; font-style: normal; font-variant: normal; font-weight: normal; lett=
+er-spacing: normal; line-height: normal; orphans: 2; text-align: -webkit-=
+auto; text-indent: 0px; text-transform: none; white-space: normal; widows=
+: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stro=
+ke-width: 0px; =22><font color=3D=22=23666666=22>cell: &nbsp; &nbsp; &nbs=
+p; 415 350 1406</font></div><div style=3D=22color: rgb(0, 0, 0); font-fam=
+ily: arial; font-size: small; font-style: normal; font-variant: normal; f=
+ont-weight: normal; letter-spacing: normal; line-height: normal; orphans:=
+ 2; text-align: -webkit-auto; text-indent: 0px; text-transform: none; whi=
+te-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust:=
+ auto; -webkit-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>=
+skype: &nbsp; crstewart</font></div><div style=3D=22color: rgb(0, 0, 0); =
+font-family: arial; font-size: small; font-style: normal; font-variant: n=
+ormal; font-weight: normal; letter-spacing: normal; line-height: normal; =
+orphans: 2; text-align: -webkit-auto; text-indent: 0px; text-transform: n=
+one; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size=
+-adjust: auto; -webkit-text-stroke-width: 0px; =22><font color=3D=22=2366=
+6666=22>twitter &nbsp; &nbsp;Stewart=5FChas</font></div></div><div style=3D=
+=22color: rgb(0, 0, 0); font-family: arial; font-size: small; font-style:=
+ normal; font-variant: normal; font-weight: normal; letter-spacing: norma=
+l; line-height: normal; orphans: 2; text-align: -webkit-auto; text-indent=
+: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing=
+: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; =22=
+><font color=3D=22=23666666=22><br></font></div><div style=3D=22color: rg=
+b(0, 0, 0); font-family: arial; font-size: small; font-style: normal; fon=
+t-variant: normal; font-weight: normal; letter-spacing: normal; line-heig=
+ht: normal; orphans: 2; text-align: -webkit-auto; text-indent: 0px; text-=
+transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webk=
+it-text-size-adjust: auto; -webkit-text-stroke-width: 0px; =22><font colo=
+r=3D=22=23666666=22>www.mxhero.com</font></div><div>Sent with <a href=3D=22=
+http://www.sparrowmailapp.com/=3Fsig=22>Sparrow</a></div><div><br></div><=
+/div>
+                =20
+                <p style=3D=22color: =23A0A0A8;=22>=46orwarded message:</=
+p>
+                <blockquote type=3D=22cite=22 style=3D=22border-left-styl=
+e:solid;border-width:1px;margin-left:0px;padding-left:10px;=22>
+                    <div>
+                        =20
+                        <b>=46rom:</b> Charles Stewart &lt;charles=40mxhe=
+ro.com&gt;<br>
+                        =20
+                        =20
+                        =20
+                        <b>To:</b> Marcelo Marmol &lt;mmarmol=40mxhero.co=
+m&gt;<br>
+                        =20
+                        =20
+                        <b>Date:</b> Monday, September 3, 2012 8:26:36 PM=
+<br>
+                        <b>Subject:</b> Re: Patterns to match=3F<br>
+                    </div>
+                    =20
+                    <br>
+                    =20
+                    <div><div><div>
+                <div style=3D=22font-family: Helvetica; font-size: 13px; =
+=22>This is a REPLY from SPARROW<br></div>
+                <div><div><br></div><div><b style=3D=22color: rgb(0, 0, 0=
+); font-family: arial; font-size: small; font-style: normal; font-variant=
+: normal; letter-spacing: normal; line-height: normal; orphans: 2; text-a=
+lign: -webkit-auto; text-indent: 0px; text-transform: none; white-space: =
+normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -we=
+bkit-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>Charles St=
+ewart</font></b><div style=3D=22color: rgb(0, 0, 0); font-family: arial; =
+font-size: small; font-style: normal; font-variant: normal; font-weight: =
+normal; letter-spacing: normal; line-height: normal; orphans: 2; text-ali=
+gn: -webkit-auto; text-indent: 0px; text-transform: none; white-space: no=
+rmal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webk=
+it-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>VP Business =
+Development</font></div><div style=3D=22color: rgb(0, 0, 0); font-family:=
+ arial; font-size: small; font-style: normal; font-variant: normal; font-=
+weight: normal; letter-spacing: normal; line-height: normal; orphans: 2; =
+text-align: -webkit-auto; text-indent: 0px; text-transform: none; white-s=
+pace: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: aut=
+o; -webkit-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>mxHe=
+ro</font></div><div style=3D=22color: rgb(0, 0, 0); font-family: arial; f=
+ont-size: small; font-style: normal; font-variant: normal; font-weight: n=
+ormal; letter-spacing: normal; line-height: normal; orphans: 2; text-alig=
+n: -webkit-auto; text-indent: 0px; text-transform: none; white-space: nor=
+mal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webki=
+t-text-stroke-width: 0px; =22><font color=3D=22=23666666=22><br></font></=
+div><div style=3D=22color: rgb(0, 0, 0); font-family: arial; font-size: s=
+mall; font-style: normal; font-variant: normal; font-weight: normal; lett=
+er-spacing: normal; line-height: normal; orphans: 2; text-align: -webkit-=
+auto; text-indent: 0px; text-transform: none; white-space: normal; widows=
+: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stro=
+ke-width: 0px; =22><font color=3D=22=23666666=22>cell: &nbsp; &nbsp; &nbs=
+p; 415 350 1406</font></div><div style=3D=22color: rgb(0, 0, 0); font-fam=
+ily: arial; font-size: small; font-style: normal; font-variant: normal; f=
+ont-weight: normal; letter-spacing: normal; line-height: normal; orphans:=
+ 2; text-align: -webkit-auto; text-indent: 0px; text-transform: none; whi=
+te-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust:=
+ auto; -webkit-text-stroke-width: 0px; =22><font color=3D=22=23666666=22>=
+skype: &nbsp; crstewart</font></div><div style=3D=22color: rgb(0, 0, 0); =
+font-family: arial; font-size: small; font-style: normal; font-variant: n=
+ormal; font-weight: normal; letter-spacing: normal; line-height: normal; =
+orphans: 2; text-align: -webkit-auto; text-indent: 0px; text-transform: n=
+one; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size=
+-adjust: auto; -webkit-text-stroke-width: 0px; =22><font color=3D=22=2366=
+6666=22>twitter &nbsp; &nbsp;Stewart=5FChas</font></div></div><div style=3D=
+=22color: rgb(0, 0, 0); font-family: arial; font-size: small; font-style:=
+ normal; font-variant: normal; font-weight: normal; letter-spacing: norma=
+l; line-height: normal; orphans: 2; text-align: -webkit-auto; text-indent=
+: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing=
+: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; =22=
+><font color=3D=22=23666666=22><br></font></div><div style=3D=22color: rg=
+b(0, 0, 0); font-family: arial; font-size: small; font-style: normal; fon=
+t-variant: normal; font-weight: normal; letter-spacing: normal; line-heig=
+ht: normal; orphans: 2; text-align: -webkit-auto; text-indent: 0px; text-=
+transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webk=
+it-text-size-adjust: auto; -webkit-text-stroke-width: 0px; =22><font colo=
+r=3D=22=23666666=22><a href=3D=22http://www.mxhero.com=22>www.mxhero.com<=
+/a></font></div><div>Sent with <a href=3D=22http://www.sparrowmailapp.com=
+/=3Fsig=22>Sparrow</a></div><div><br></div></div>
+                 =20
+                <p style=3D=22color: =23A0A0A8;=22>On Monday, September 3=
+, 2012 at 3:20 PM, Marcelo Marmol wrote:</p><blockquote type=3D=22cite=22=
+><div>
+                    <span><div><div>
+  =20
+  =20
+  I am making the interparsing, i had made parsings for reply and forward=
+ for this clients:
+  <div>
+   <br>
+  </div>
+  <div>
+   GAMIL
+  </div>
+  <div>
+   ZIMBRA
+  </div>
+  <div>
+   OUTLOOK 210
+   <br clear=3D=22all=22>
+   <br>Can you guys send me reply and forward from different clients so I=
+ can make the proper regex=3F I need the whole email, with headers and al=
+l since I check the X-Mailer to know wich client is sending the email if =
+possible, it looks like is working well, but more testing is needed.
+  </div>  =20
+  <div>
+   <br>
+  </div>
+  <div>
+   Thanks guys,
+   <br>
+   <br>
+   <div>
+    -------------------------------------------------------
+   </div>
+   <div>
+    <a href=3D=22http://www.linkedin.com/in/mmarmol=22 target=3D=22=5Fbla=
+nk=22><img src=3D=22http://press.linkedin.com/sites/all/themes/presslinke=
+din/images/follow=5Flinkedin.gif=22></a>&nbsp;  =20
+    <b><font face=3D=22arial black, sans-serif=22>Marcelo Angel M=C3=A1rm=
+ol</font></b>
+   </div>
+   <div>
+    <b>web: <a href=3D=22http://www.mxhero.com=22 target=3D=22=5Fblank=22=
+>http://www.mxhero.com</a></b>
+   </div>
+   <div>
+    <b>phone: (+1)347-745-90994<br></b>
+    <div>
+     <b><br> </b>
+    </div>
+   </div>
+   <div>
+    <b><br></b>
+   </div>
+   <br>  =20
+  </div>  =20
+  <p></p>
+  <p></p>
+  <div>
+   <hr>
+  </div>
+  <div style=3D=22color: green; font-style:italic=22>
+   Think before you print and save a tree.
+  </div>
+  =20
+</div></div></span>
+                 =20
+                 =20
+                 =20
+                 =20
+                </div></blockquote><div>
+                    <br>
+                </div>
+            </div></div></div>
+                </blockquote>
+                =20
+                <div>
+                    <br>
+                </div>
+            
+--50457515_79e2a9e3_893--
