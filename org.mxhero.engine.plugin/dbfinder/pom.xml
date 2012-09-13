@@ -12,7 +12,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.engine.plugin</groupId>
 	<artifactId>dbfinder</artifactId>
-	<version>1.7.1</version>
+	<version>1.7.2</version>
 
 	<name>${bundle.symbolicName}</name>
 

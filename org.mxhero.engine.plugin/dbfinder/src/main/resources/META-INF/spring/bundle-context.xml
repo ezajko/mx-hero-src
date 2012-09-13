@@ -22,7 +22,7 @@
 
 	<osgix:cm-properties id="cmProps"
 		persistent-id="org.mxhero.engine.plugin.dbfinder">
-		<prop key="updateTime">60000</prop>
+		<prop key="updateTime">30000</prop>
 	</osgix:cm-properties>
 
 	<context:property-placeholder
