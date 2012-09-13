@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mxhero.feature.emailsizelimiter</groupId>
 	<artifactId>provider</artifactId>
-	<version>1.7.0</version>
+	<version>1.7.2</version>
 
 	<name>${bundle.symbolicName}</name>
 

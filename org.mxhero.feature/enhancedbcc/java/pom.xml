@@ -9,7 +9,7 @@
 
 	<groupId>org.mxhero.feature.enhancedbcc</groupId>
 	<artifactId>provider</artifactId>
-	<version>1.7.0</version>
+	<version>1.7.2</version>
 
 	<name>${bundle.symbolicName}</name>
 
