@@ -4,7 +4,7 @@
 	<groupId>org.mxhero.engine.plugin.attachmentlink</groupId>
 	<artifactId>fileserver</artifactId>
 	<packaging>war</packaging>
-	<version>1.7.0</version>
+	<version>1.7.2</version>
 	<name>fileserver</name>
 
 	<dependencies>
