@@ -1,0 +1,57 @@
+Delivered-To: mmarmol@mxhero.com
+Received: by 10.220.8.196 with SMTP id i4csp287805vci;
+        Tue, 14 Aug 2012 10:37:57 -0700 (PDT)
+Received: by 10.229.106.20 with SMTP id v20mr9427702qco.30.1344965877584;
+        Tue, 14 Aug 2012 10:37:57 -0700 (PDT)
+Return-Path: <marcelo.marmol@gmail.com>
+Received: from gmail.mxhero.com (gmail-out.mxhero.com. [23.21.209.93])
+        by mx.google.com with ESMTP id gn4si3961218qab.104.2012.08.14.10.37.57;
+        Tue, 14 Aug 2012 10:37:57 -0700 (PDT)
+Received-SPF: pass (google.com: domain of marcelo.marmol@gmail.com designates 209.85.212.173 as permitted sender) client-ip=209.85.212.173;
+Authentication-Results: mx.google.com; spf=pass (google.com: domain of marcelo.marmol@gmail.com designates 209.85.212.173 as permitted sender) smtp.mail=marcelo.marmol@gmail.com; dkim=pass header.i=@gmail.com
+Received: from ip-10-140-83-187.ec2.internal (localhost [127.0.0.1])
+	by gmail.mxhero.com (Postfix) with ESMTP id 355A4227D1
+	for <mmarmol@mxhero.com>; Tue, 14 Aug 2012 17:38:32 +0000 (UTC)
+Received: from mail-wi0-f173.google.com (mail-wi0-f173.google.com [209.85.212.173])
+	by gmail.mxhero.com (Postfix) with ESMTPS
+	for <mmarmol@mxhero.com>; Tue, 14 Aug 2012 17:38:31 +0000 (UTC)
+Received: by wibhm6 with SMTP id hm6so3919834wib.8
+        for <mmarmol@mxhero.com>; Tue, 14 Aug 2012 10:37:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :content-type;
+        bh=iL+21D6yE1mfrHY42O0Hm25JAF2yuEbETVOfpS0alOI=;
+        b=BH2lfTNHjXWSzvpClD9G+uVzP8HF8Qvv+06wAYwglxdki2AXEJflx5YUqhGJuNRQ1p
+         SWZLad6MKyHoMT94Iz2WwgLZBhL5JpuB0+qEUPCPkrMsYlVyxXWnrVs0F0/mLVeHsACm
+         zI2pfKIurQomSGLYmAJPGDWVcgc930X+j9LWGn1lYxjYs8TDMzazNVW5U5AFZ3yaaxGN
+         uY/IwtYuzN0Y7/n+7lUWyj8aDM43aXOvoqjtweEJdY2hHPekJTm1Q4wWuWzc0NenvWWx
+         NtCshUWWrgtQZ4NuwEJ2UTurX0fIkWjaNiuWOfcIO2OXVrL2Z3l7cGcJDZ4/lw3WfbJW
+         6Cvw==
+Received: by 10.216.243.203 with SMTP id k53mr9124224wer.90.1344965876162;
+ Tue, 14 Aug 2012 10:37:56 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.216.56.1 with HTTP; Tue, 14 Aug 2012 10:37:35 -0700 (PDT)
+In-Reply-To: <CANn3SQWja1UWz8AwRyr00d-GCGrkSb0LEaXDViMbmmdvFAp84g@mail.gmail.com>
+References: <CANn3SQWja1UWz8AwRyr00d-GCGrkSb0LEaXDViMbmmdvFAp84g@mail.gmail.com>
+From: Marcelo Marmol <marcelo.marmol@gmail.com>
+Date: Tue, 14 Aug 2012 14:37:35 -0300
+Message-ID: <CABzcvTKzW9go+m-uSiCvGW9j3PPtHzCpRhFWPst0_6QJRWG7xQ@mail.gmail.com>
+Subject: Re: Reply Test
+To: Marcelo Marmol <mmarmol@mxhero.com>
+Content-Type: multipart/alternative; boundary=00248c0ee57a489f5704c73d45ec
+Sender: marcelo.marmol@gmail.com
+
+--00248c0ee57a489f5704c73d45ec
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+TEXT CONTENT
+
+--00248c0ee57a489f5704c73d45ec
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+HTML CONTENT
+
+--00248c0ee57a489f5704c73d45ec--
