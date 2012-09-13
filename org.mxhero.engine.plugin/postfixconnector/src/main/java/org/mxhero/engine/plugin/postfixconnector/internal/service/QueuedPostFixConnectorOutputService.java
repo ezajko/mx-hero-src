@@ -44,7 +44,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 	    props.put("mail.smtp.port", getProperties().getMailSmtpPort().toString());
 	    props.put("mail.mime.address.strict","false");
 		
-		log.debug("Email received:" + mail);
+		log.trace("Email received:" + mail);
 
 		String from = (mail.getSender()!=null && mail.getSender().trim().length()>0)?mail.getSender():"<>";
 		props.put("mail.smtp.from", from);
@@ -74,10 +74,13 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 				if(mailId.trim().equalsIgnoreCase(id[0].trim())){
 					notifyValue=notifyHeaders[0].trim();
 					if(!Pattern.compile("^\\s*DELAY", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
-							&& !Pattern.compile("^\\s*FALIURE", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
+							&& !Pattern.compile("^\\s*FAILURE", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
 							&& !Pattern.compile("^\\s*SUCCESS", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()
 							&& !Pattern.compile("^\\s*NEVER", Pattern.CASE_INSENSITIVE).matcher(notifyValue).find()){
-						notifyValue= "NEVER "+notifyValue;
+						notifyValue= "NEVER ";
+					}
+					if(notifyValue.contains("ORCPT")){
+						notifyValue=notifyValue.split("ORCPT")[0];
 					}
 					notifyValue=notifyValue+" ORCPT=rfc822;"+mail.getRecipient();
 					
@@ -95,7 +98,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 			try{
 				msg.saveChanges();
 			}catch (Exception e){
-				if(log.isDebugEnabled()){
+				if(log.isTraceEnabled()){
 					LogMail.saveErrorMail(msg, 
 							getProperties().getErrorPrefix(),
 							getProperties().getErrorSuffix(),
@@ -116,7 +119,7 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 					send(mail,msg,props);
 				}
 			}
-		    if(log.isDebugEnabled()){
+		    if(log.isTraceEnabled()){
 		    	log.debug("Message sent:"+mail);
 		    }
 
@@ -139,6 +142,14 @@ public final class QueuedPostFixConnectorOutputService implements PostFixConnect
 	    }
 	    t.sendMessage(msg, new InternetAddress[] { recipient });
 	    t.close();
+	    if(log.isDebugEnabled() && props.contains("mail.smtp.dsn.notify")){
+	    	String mailSender = ((mail.getMessage().getHeader("Sender")!=null)?"Sender:"+mail.getMessage().getHeader("Sender")[0]+" ":"")
+					+((mail.getMessage().getHeader("From")!=null)?"From:"+mail.getMessage().getHeader("From")[0]:"");
+			log.debug("\n\tDSN [mxHeroSender="+((mail.getSender()!=null && mail.getSender().trim().length()>0)?mail.getSender():"<>")
+					+"]\n\tDSN [mxHeroRecipient="+mail.getRecipient()
+					+"]\n\tDSN [mailSender="+mailSender
+					+"]\n\tDSN [properties="+props.toString()+"]");
+	    }
 	}
 	
 	public ConnectorProperties getProperties() {
