@@ -78,6 +78,7 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+			List<String> domainAliases = repository.findDomainAliases(domain);
 			List<Account> accounts = source.getAllPersonNames(filter,domainAd.getAccountProperties());
 			if(accounts!=null){
 				List<String> managedList = repository.getManagedAccounts(domain);
@@ -103,8 +104,12 @@ public class JdbcDomainsSynchronizer implements DomainsSynchronizer{
 				}
 
 				for(Account account : accounts){
-					if(!account.getMails().contains(account.getUid()+"@"+domain)){
-						account.getMails().add(account.getUid()+"@"+domain);
+					if(domainAliases!=null){
+						for(String domainAlias : domainAliases){
+							if(!account.getMails().contains(account.getUid()+"@"+domainAlias)){
+								account.getMails().add(account.getUid()+"@"+domainAlias);
+							}
+						}
 					}
 					try{
 						if(managedSet.contains(account.getUid())){

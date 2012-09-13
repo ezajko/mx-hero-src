@@ -213,6 +213,11 @@ public class JDBCDomainAdLdapRepository implements DomainAdLdapRepository {
 		template.update(updateAccount, accountParamMap);
 	}
 	
+	
+	public List<String> findDomainAliases(String domainId){
+		return template.getJdbcOperations().queryForList("SELECT alias FROM mxhero.domains_aliases WHERE domain = ?",new Object[]{domainId}, String.class);	
+	}
+	
 	public void insertAccount(String account, String domainId, List<String> aliases){
 		String sql = " INSERT INTO mxhero.email_accounts (account, domain_id, created, data_source, updated, group_name) " +
 				" VALUES (?,?,NOW(),?,NOW(),null) ";
