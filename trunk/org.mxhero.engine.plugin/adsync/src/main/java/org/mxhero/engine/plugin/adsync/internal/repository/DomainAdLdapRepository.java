@@ -11,6 +11,8 @@ public interface DomainAdLdapRepository {
 	
 	public List<String> findDomainsToSync();
 	
+	public List<String> findDomainAliases(String domainId);
+	
 	public void updateNextAdLdapCheck(String domainId);
 	
 	public void updateErrorAdLdapCheck(String domainId, String lastError);
