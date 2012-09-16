@@ -9,6 +9,7 @@ use Term::ReadLine;
 
 use mxHero::Config;
 use mxHero::Locale;
+use mxHero::Tools;
 
 my $defaultMax = 256; # in MB
 
@@ -96,8 +97,7 @@ sub install
 		exit;
 	}
 
-	# Change templates
-	`/usr/bin/perl -i -pe 's|\%FILE_SERVER\%|http://$reply:8080|g' $myConfig{MXHERO_PATH}/attachments/templates/attach_*.vm`;
+	&_fillTemplate ("http://$reply:8080");
 
 	return 1;
 }
@@ -105,7 +105,20 @@ sub install
 sub upgrade
 {
 	my $errorRef = $_[0];
-	
+
+	my $oldVersion = &mxHero::Tools::mxHeroVersion();
+
+	rename ("$myConfig{MXHERO_PATH}/attachments/templates", "$myConfig{MXHERO_PATH}/attachments/$oldVersion-templates");
+	system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/attachments/templates $myConfig{MXHERO_PATH}/attachments");
+
+	my %properties;
+	&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
+
+	$properties{'org.mxhero.engine.plugin.attachmentlink.cfg'}->{'http.file.server.attach'} =~ m|(https?://.+?)/|i;
+	$url = $1;
+
+	&_fillTemplate ($url);
+
 	return 1;
 }
 
@@ -115,6 +128,14 @@ sub configure
 	my $errorRef = $_[0];
 
 	return 1;
+}
+
+sub _fillTemplate
+{
+	my $url = $_[0];
+
+	# Change templates
+	`/usr/bin/perl -i -pe 's|\%FILE_SERVER\%|$url|g' $myConfig{MXHERO_PATH}/attachments/templates/attach_*.vm`;
 }
 
 1;

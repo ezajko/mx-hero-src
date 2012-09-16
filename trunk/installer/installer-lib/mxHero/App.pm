@@ -109,8 +109,18 @@ sub upgrade
 	rename ("$myConfig{MXHERO_PATH}/plugins", "$myConfig{MXHERO_PATH}/$oldVersion-plugins");
 	system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/plugins $myConfig{MXHERO_PATH}");
 
-	rename ("$myConfig{MXHERO_PATH}/configuration/config.ini", "$myConfig{MXHERO_PATH}/configuration/$oldVersion-config.ini");
+	rename ("$myConfig{MXHERO_PATH}/configuration", "$myConfig{MXHERO_PATH}/$oldVersion-configuration");
+
+	mkdir ("$myConfig{MXHERO_PATH}/configuration");
+	mkdir ("$myConfig{MXHERO_PATH}/configuration/properties");
+
 	system ("cp -f $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/configuration/config.ini $myConfig{MXHERO_PATH}/configuration/config.ini");
+
+	return 0 if (!&_upgradeProperties ($errorRef, {
+		newPath => "$myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/configuration/properties",
+		origPath => "$myConfig{MXHERO_PATH}/$oldVersion-configuration/properties",
+		saveTo => "$myConfig{MXHERO_PATH}/configuration/properties"
+	}));
 
 	return 0 if (!&_cascadeUpgrade ($errorRef, $oldVersion));
 
@@ -156,29 +166,41 @@ sub configureFE
 
 ## PRIVATE SUBS
 
+sub _upgradeProperties
+{
+	my $errorRef = $_[0];
+	my $pathMap = $_[1];
+
+	my %properties;
+
+	# load what should exist (configs for the new version)
+	&mxHero::Tools::loadProperties ($pathMap->{newPath}, \%properties);
+	# save over defaults what previously was changed by the admin
+	&mxHero::Tools::loadProperties ($pathMap->{origPath}, \%properties);
+
+	# save new confs
+	for my $file (keys %properties)
+	{
+		open (F, '>' . $pathMap->{saveTo} . '/' . $file);
+
+		for my $key (sort keys %{$properties{$file}})
+		{
+			print F $key . ' = ' . $properties{$file}->{$key} . "\n";
+		}
+
+		close (F);
+	}
+
+	return 1;
+}
+
 sub _cascadeUpgrade
 {
 	my $errorRef = $_[0];
 	my $oldVersion = $_[1];
 
-	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.2.0.RELEASE') <= 0)
-	{
-		my %entry = ( "serverName" => "MXHERO" );
-
-		if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{MXHERO_STATISTICS_CONFIG}, \%entry, '=' ) ) {
-			$$errorRef = T("Failed to upgrade stats config file.");
-			return 0;
-		}
-	}
-
 	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.3.1.RELEASE') <= 0)
 	{
-		my @filesToCopy = ('org.mxhero.engine.plugin.gsync.cfg', 'org.mxhero.engine.plugin.threadlight.cfg', 'org.mxhero.feature.replytimeout.provider.cfg');
-		for my $file (@filesToCopy)
-		{
-			copy ("$myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/configuration/properties/$file", "$myConfig{MXHERO_PATH}/configuration/properties/$file");
-		}
-
 		system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/replytimeout $myConfig{MXHERO_PATH}");
 	}
 

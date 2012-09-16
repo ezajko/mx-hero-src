@@ -432,6 +432,38 @@ sub alterSimpleConfigFile
 	return 1;
 }
 
+sub loadProperties
+{
+	my $path = $_[0];
+	my $properties = $_[1];
+
+	#my $hasEntries = scalar keys %{$properties};
+
+	opendir (P, $path);
+
+	for my $file (readdir (P))
+	{
+		next unless (-f $path . '/' . $file);
+		#next if ($hasEntries && !exists ($properties->{$file})); # we don't want old config files (but gsync etc should exists)
+
+		open (F, $path . '/' . $file);
+
+		while (my $line = <F>)
+		{
+			chomp ($line);
+			next if ($line =~ /^#/ || $line =~ /^\s*$/);
+			
+			$line =~ s/[\r\n]//g;
+			$line =~ /(\S+)\s*\=\s*(\S?.*)$/i;
+			$properties->{$file}->{$1} = $2;			
+		}
+
+		close (F);
+	}
+
+	closedir (P);
+}
+
 ## PRIVATE
 
 sub _getVersion
