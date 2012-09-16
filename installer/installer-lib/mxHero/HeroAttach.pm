@@ -115,7 +115,7 @@ sub upgrade
 	&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
 
 	$properties{'org.mxhero.engine.plugin.attachmentlink.cfg'}->{'http.file.server.attach'} =~ m|(https?://.+?)/|i;
-	$url = $1;
+	my $url = $1;
 
 	&_fillTemplate ($url);
 
