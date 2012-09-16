@@ -180,8 +180,7 @@ sub packageInstall
 			if ( ($ret >> 8) == 0 ) {
 				return 1;
 			} else {
-				warn "Failed to start $service\n";
-				return 0;
+				warn "Failed to start $service. Please try to start it later...\n";
 			}
 		} else {
 			return 0;
