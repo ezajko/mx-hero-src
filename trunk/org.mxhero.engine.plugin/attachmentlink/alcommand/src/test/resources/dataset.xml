@@ -1,6 +1,0 @@
-<dataset>
-	<table name="history_access_attach"/>
-	<table name="message_attach"/>
-	<table name="attach"/>
-	<table name="message"/>
-</dataset>
