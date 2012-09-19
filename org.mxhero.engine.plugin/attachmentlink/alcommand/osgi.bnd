@@ -1,0 +1,10 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Import-Package: \
+com.mysql.jdbc, \
+org.aopalliance.aop, \
+org.springframework.aop, \
+org.mxhero.engine.plugin.dbpool, \
+org.springframework.aop.framework, *

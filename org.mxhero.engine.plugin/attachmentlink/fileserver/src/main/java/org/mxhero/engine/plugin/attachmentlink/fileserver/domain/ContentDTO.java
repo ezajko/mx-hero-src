@@ -27,6 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author royojp
  * 
@@ -50,6 +52,7 @@ public class ContentDTO implements Serializable {
 	private boolean accessed;
 	private String messageId;
 	private String subject;
+	private String publicUrl;
 
 	private InputStream in;
 
@@ -192,6 +195,18 @@ public class ContentDTO implements Serializable {
 
 	public void setSubject(String subject) {
 		this.subject = subject;
+	}
+
+	public void setPublicUrl(String url) {
+		this.publicUrl = url;
+	}
+	
+	public String getPublicUrl() {
+		return publicUrl;
+	}
+
+	public boolean hasPublicUrl() {
+		return !StringUtils.isEmpty(publicUrl);
 	}
 
 }

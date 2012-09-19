@@ -34,6 +34,7 @@ import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Attach;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.Message;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.domain.MessageAttachRecipient;
 import org.mxhero.engine.plugin.attachmentlink.alcommand.internal.repository.AttachmentRepository;
+import org.mxhero.engine.plugin.storageapi.UserResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -120,7 +121,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 			saveOrUpdateAttachments(attach,attach.getMessageAttachRecipient());
 			toReturn = attach;
 		} catch (DataIntegrityViolationException e) {
-			log.debug("Two or more threads became at the same time together. Requeueing....");
+			log.warn("Two or more threads became at the same time together. Requeueing....",e);
 			attach.requeueMessage();
 		}
 		return toReturn;
@@ -143,7 +144,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 
 
 	private void saveNewMessage(Message attach) {
-		String insertMsg = "insert into attachments.message (message_platform_id,sender_email,process_ack_download,msg_ack_download,msg_ack_download_html,subject) values (:msgPlatId,:sendEmail,:pAck,:msgAck,:msgAckHtml,:sub)";
+		String insertMsg = "insert into attachments.message (message_platform_id,sender_email,process_ack_download,msg_ack_download,msg_ack_download_html,subject,email_date) values (:msgPlatId,:sendEmail,:pAck,:msgAck,:msgAckHtml,:sub,:emailDate)";
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("msgPlatId", attach.getMessagePlatformId());
 		values.put("sendEmail", attach.getSender());
@@ -151,6 +152,7 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 		values.put("msgAck", attach.getMessageAckDownloadMail());
 		values.put("msgAckHtml", attach.getMessageAckDownloadMailHtml());
 		values.put("sub", attach.getSubject());
+		values.put("emailDate", attach.getEmailDate());
 		SqlParameterSource params = new MapSqlParameterSource(values);
 		KeyHolder key = new GeneratedKeyHolder();
 		template.update(insertMsg, params, key);
@@ -188,6 +190,31 @@ public class AttachmentJdbcRepository implements AttachmentRepository {
 		KeyHolder key = new GeneratedKeyHolder();
 		template.update(sql, params, key);
 		attach.setId(key.getKey().longValue());
+		saveMessageAttachStorage(attach);
+	}
+
+
+	private void saveMessageAttachStorage(MessageAttachRecipient attach) {
+		UserResult recipient = attach.getMessage().getResultCloudStorageRecipient();
+		if(recipient!=null){
+			saveMessageAttachStorage(attach, recipient.getEmail(), false, true);
+		}
+		UserResult sender = attach.getMessage().getResultCloudStorageSender();
+		if(sender!=null){
+			saveMessageAttachStorage(attach, sender.getEmail(), true, false);
+		}
+	}
+
+
+	private void saveMessageAttachStorage(MessageAttachRecipient attach, String email, boolean isSender, boolean isRecipient) {
+		String sql = "insert into attachments.message_attach_ex_storage (message_attach_id, email_to_synchro, is_sender, is_recipient) values(:msg,:email,:isSender,:isRecipient)";
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("msg", attach.getId());
+		values.put("email", email);
+		values.put("isSender", isSender);
+		values.put("isRecipient", isRecipient);
+		SqlParameterSource params = new MapSqlParameterSource(values);
+		template.update(sql, params);
 	}
 
 

@@ -60,8 +60,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeMessage.RecipientType;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.SharedFileInputStream;
 
 import org.dbunit.database.DatabaseConfig;
@@ -435,6 +435,9 @@ public class ALCommandTest {
 			parameters.setNotify(true);
 			parameters.setNotifyMessage("some message");
 			parameters.setNotifyMessageHtml("some html message");
+			parameters.setStorageId("boxStorage");
+			parameters.setSenderStorage("juanpablo.royo@gmail.com");
+			parameters.setRecipientStorage("mxhero12test@mxhero.com");
 			result = command.exec(mail, parameters);
 //			sendMail(mail.getMessage());
 			if (result.isConditionTrue()) {

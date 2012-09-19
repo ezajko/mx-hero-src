@@ -91,15 +91,10 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
 	        template.append(".vm");
 			Template t = ve.getTemplate(template.toString(),"UTF-8");
 			log.debug("template:"+t.getName());
-	        VelocityContext context = new VelocityContext();
 	        createLinks(mail);
 	        Set<MessageAttachRecipient> messageAttachRecipientForRecipient = mail.getMessageAttachRecipient();
 	        if(messageAttachRecipientForRecipient.isEmpty())throw new RuntimeException("ERRORRRRRRRRR!!!!!!!!!!!!!!!!!!");
-			context.put("files", messageAttachRecipientForRecipient);
-			
-			context.put("recipientEmail",URLEncoder.encode(new ArrayList<MessageAttachRecipient>(messageAttachRecipientForRecipient).get(0).getRecipient(),"ASCII"));
-	        context.put("messageId", URLEncoder.encode(encryptor.encrypt(mail.getId().toString()),"ASCII"));
-			context.put("esc", new EscapeTool());
+	        VelocityContext context = getContextVelocity(mail, messageAttachRecipientForRecipient);
 	        StringWriter writer = new StringWriter();
 	        t.merge( context, writer );
         	part = new MimeBodyPart();
@@ -115,6 +110,18 @@ public class HtmlAttachmentGenerator implements AttachmentGenerator {
 			throw new RuntimeException("Could not generate HTML attachment for email "+mail.getMessagePlatformId());
 		}
         return (BodyPart)part;
+	}
+
+	private VelocityContext getContextVelocity(Message mail, Set<MessageAttachRecipient> messageAttachRecipientForRecipient) throws Exception{
+		VelocityContext context = new VelocityContext();
+		context.put("files", messageAttachRecipientForRecipient);
+		context.put("recipientEmail",URLEncoder.encode(new ArrayList<MessageAttachRecipient>(messageAttachRecipientForRecipient).get(0).getRecipient(),"ASCII"));
+        context.put("messageId", URLEncoder.encode(encryptor.encrypt(mail.getId().toString()),"ASCII"));
+		context.put("esc", new EscapeTool());
+		if(mail.hasToProcessRecipient()){
+			context.put("urlStorage", mail.getResultCloudStorageRecipient().getBody());
+		}
+		return context;
 	}
 
 	private void createLinks(Message mail) {

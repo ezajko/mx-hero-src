@@ -55,13 +55,21 @@ public class SMTPMailService implements MailService{
 	public void sendMailToSender(ContentDTO contentDTO) {
 		try{
 			
+<<<<<<< HEAD
 			SMTPSender.send(contentDTO.getSubject(), getContent(contentDTO,contentDTO.getMsgMail(),false), getContent(contentDTO,contentDTO.getMsgMailHtml(),true), contentDTO.getSenderMail(), contentDTO.getMessageId(), config);
+=======
+			SMTPSender.send(contentDTO.getSubject(), getContent(contentDTO,contentDTO.getMsgMail()), getContent(contentDTO,contentDTO.getMsgMailHtml()), contentDTO.getSenderMail(), contentDTO.getMessageId(), config);
+>>>>>>> local-box
 		}catch(Exception e){
 			log.error("error sending message to "+contentDTO.getSenderMail(),e);
 		}
 	}
 	
+<<<<<<< HEAD
 	private String getContent(ContentDTO contentDTO, String messageContent, boolean isHtml){
+=======
+	private String getContent(ContentDTO contentDTO, String messageContent){
+>>>>>>> local-box
 		String content = messageContent;
 		if(content!=null){
 			
@@ -85,12 +93,17 @@ public class SMTPMailService implements MailService{
 				  m2.appendReplacement(sb, Calendar.getInstance().getTime().toString());
 			  }else if(key.equalsIgnoreCase(UNSUBSCRIVE_LINK)){
 				  try {
+<<<<<<< HEAD
 						String url = config.getExternalUrl()+"/unsubscribe?id="+ URLEncoder.encode(encryptor.encrypt(contentDTO.getIdMessage().toString()),"ASCII");
 						if(!isHtml){
 							m2.appendReplacement(sb, url);
 						}else{
 							m2.appendReplacement(sb, "<a href=\""+url+"\">link</a>");
 						}
+=======
+						String id = encryptor.encrypt(contentDTO.getIdMessage().toString());
+						m2.appendReplacement(sb, config.getExternalUrl()+"/unsubscribe?id="+ URLEncoder.encode(id,"ASCII"));
+>>>>>>> local-box
 					} catch (UnsupportedEncodingException e) {
 						log.error("Error URL Link for HTML attach. MailId: "+contentDTO.getIdMessage()+" - "+e.getClass().getName()+" - "+e.getMessage());
 					}
