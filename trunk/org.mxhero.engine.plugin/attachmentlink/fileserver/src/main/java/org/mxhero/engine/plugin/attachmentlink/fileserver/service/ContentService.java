@@ -29,7 +29,7 @@ import org.mxhero.engine.plugin.attachmentlink.fileserver.exceptions.NotAllowedT
 
 public interface ContentService {
 	
-	public ContentDTO getContent(Long idMessageAttach)throws NotAllowedToSeeContentException;
+	public ContentDTO getContent(Long idMessageAttach, String email)throws NotAllowedToSeeContentException;
 	
 	public void successContent(Long idMessageAttach);
 

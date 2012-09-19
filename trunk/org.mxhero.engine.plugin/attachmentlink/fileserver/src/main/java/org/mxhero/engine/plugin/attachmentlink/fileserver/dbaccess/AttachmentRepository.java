@@ -39,5 +39,7 @@ public interface AttachmentRepository {
 	public void unsubscribe(Long messageId);
 	
 	public List<ContentDTO> getContentList(Long messageId, String recipient);
+
+	public String getPulicUrl(Long idMessageAttach, String email);
 	
 }
