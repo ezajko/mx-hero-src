@@ -125,15 +125,7 @@
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
-			</plugin><!-- <plugin> <groupId>org.mortbay.jetty</groupId> <artifactId>maven-jetty-plugin</artifactId> 
-				<configuration> <webAppSourceDirectory>${project.build.outputDirectory}/webapps</webAppSourceDirectory> 
-				<scanIntervalSeconds>10</scanIntervalSeconds> <contextPath>/fileServer</contextPath> 
-				configure the container <jettyConfig>/my/special/jetty.xml</jettyConfig> 
-				<connectors> <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector"> 
-				<port>8080</port> <maxIdleTime>60000</maxIdleTime> </connector> </connectors> 
-				<requestLog implementation="org.mortbay.jetty.NCSARequestLog"> <filename>target/yyyy_mm_dd.request.log</filename> 
-				<retainDays>90</retainDays> <append>true</append> <extended>false</extended> 
-				<logTimeZone>GMT</logTimeZone> </requestLog> </configuration> </plugin> -->
+			</plugin>
 		</plugins>
 	</build>
 </project>
