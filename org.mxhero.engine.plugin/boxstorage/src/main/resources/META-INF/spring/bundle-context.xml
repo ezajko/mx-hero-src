@@ -44,6 +44,10 @@
      		<entry key="service.pid" value="org.mxhero.engine.plugin.boxstorage.BoxCloudStorage"/>
    		</osgi:service-properties>
 	</osgi:service>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:bundle-version.properties"/>
+	</bean>
 
 	<!-- ####################################################################################### -->
 	<!-- UserBox Service configuration with their dependencies -->
@@ -72,6 +76,7 @@
 		<property name="foldersUrl" value="${folders.url}" />
 		<property name="sharedFileUrl" value="${shared.files.url}" />
 		<property name="hostMxheroBoxServer" value="${host.mxhero.server}" />
+		<property name="bundleJarName" value="${bundle.name}" />
 		<property name="handler">
 			<map>
 				<entry key="createAccount">

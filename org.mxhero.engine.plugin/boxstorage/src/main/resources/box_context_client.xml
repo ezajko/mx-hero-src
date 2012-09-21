@@ -28,6 +28,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:box_client.properties</value>
+				<value>classpath:bundle-version.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -81,6 +82,7 @@
 		<property name="foldersUrl" value="${folders.url}" />
 		<property name="sharedFileUrl" value="${shared.files.url}" />
 		<property name="hostMxheroBoxServer" value="${host.mxhero.server}" />
+		<property name="bundleJarName" value="${bundle.name}" />
 		<property name="handler">
 			<map>
 				<entry key="createAccount">
