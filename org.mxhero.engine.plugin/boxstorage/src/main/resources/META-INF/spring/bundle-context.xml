@@ -34,21 +34,18 @@
 		<prop key="sinchro.period.execution.in.millis">50000</prop>
 	</osgix:cm-properties>
 
-	<context:property-placeholder properties-ref="jdbcCmProps" />
+	<context:property-placeholder properties-ref="jdbcCmProps" location="classpath:bundle-version.properties"/>
 
 	<osgi:service ref="boxStorage">
 	  	<osgi:interfaces>
 	  		<value>org.mxhero.engine.plugin.storageapi.CloudStorage</value>
+	  		<value>org.mxhero.engine.plugin.boxstorage.BoxCloudStorage</value>
 	  	</osgi:interfaces>
 	  	<osgi:service-properties>
-     		<entry key="service.pid" value="org.mxhero.engine.plugin.boxstorage.BoxCloudStorage"/>
+     		<entry key="service.pid" value="org.mxhero.engine.plugin.boxstorage.internal.client.BoxCloudStorageClient"/>
    		</osgi:service-properties>
 	</osgi:service>
 	
-	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:bundle-version.properties"/>
-	</bean>
-
 	<!-- ####################################################################################### -->
 	<!-- UserBox Service configuration with their dependencies -->
 	<!-- ####################################################################################### -->
