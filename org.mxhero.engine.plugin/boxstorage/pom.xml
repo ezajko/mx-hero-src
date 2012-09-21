@@ -27,11 +27,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mxhero.engine.plugin.attachmentlink</groupId>
 			<artifactId>alcommand</artifactId>
 			<version>1.8.0</version>
