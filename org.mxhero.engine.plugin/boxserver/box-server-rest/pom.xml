@@ -71,6 +71,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>box-server-rest</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
