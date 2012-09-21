@@ -1,6 +1,5 @@
 package org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,10 +7,10 @@ import org.apache.commons.lang.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.BoxApi;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.AbstractResponse;
-import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.CodeResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.Entry;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.FileUploadResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.Item;
+import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.CodeResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.domain.ItemResponse;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.request.SharedLinkRequest;
 import org.mxhero.engine.plugin.boxstorage.internal.client.dataaccess.rest.connector.response.ApiBoxKeyResponse;
@@ -58,6 +57,9 @@ public class BoxApiImpl implements BoxApi{
 
 	/** The encryptor jar. */
 	private StandardPBEStringEncryptor encryptorJar;
+
+	/** The bundle jar name. */
+	private String bundleJarName;
 	
 	/** The Constant ALGORITHM_JAR. */
 	private static final String ALGORITHM_JAR = "PBEWithMD5AndDES";
@@ -115,11 +117,29 @@ public class BoxApiImpl implements BoxApi{
 	 * @return the api box auth header
 	 */
 	private String getApiBoxAuthHeader() {
-    	String fileName = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-    	File file  = new File(fileName);
-		String key = encryptorJar.encrypt(file.getName());
+		String key = encryptorJar.encrypt(getBundleJarName());
 		return String.format("%s&amp;module_key=%s",getAuthorizationMxheroHeader(), key);
 	}
+
+	
+	/**
+	 * Gets the bundle jar name.
+	 *
+	 * @return the bundle jar name
+	 */
+	public String getBundleJarName() {
+		return this.bundleJarName;
+	}
+	
+	/**
+	 * Sets the bundle jar name.
+	 *
+	 * @param bundleJarName the new bundle jar name
+	 */
+	public void setBundleJarName(String bundleJarName) {
+		this.bundleJarName = bundleJarName;
+	}
+
 
 	/**
 	 * Gets the box api key url.

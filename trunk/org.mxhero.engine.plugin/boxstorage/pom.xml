@@ -15,7 +15,7 @@
 
 	<name>${bundle.symbolicName}</name>
 
-	<packaging>bundle</packaging>
+	<packaging>jar</packaging>
 
 	<distributionManagement>
 		<repository>
@@ -106,17 +106,12 @@
 		<finalName>${bundle.symbolicName}-${pom.version}</finalName>
 		<resources>
 			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-			<resource>
 				<directory>src/main/resources</directory>
-				<excludes>
-					<exclude>**/*.SQL</exclude>
-					<exclude>**/templates/*.*</exclude>
-					<exclude>**/*.properties</exclude>
-					<exclude>**/log4j.xml</exclude>
-					<exclude>**/box_context_client.xml</exclude>
-				</excludes>
+				<filtering>true</filtering>
+				<includes>
+					<include>bundle-version.properties</include>
+					<include>**/META-INF/**/*.*</include>
+				</includes>
 			</resource>
 		</resources>
 		<plugins>
@@ -127,15 +122,6 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.ops4j</groupId>
-				<artifactId>maven-pax-plugin</artifactId>
-				<version>1.5</version>
-				<!-- | enable improved OSGi compilation support for the bundle life-cycle. 
-					| to switch back to the standard bundle life-cycle, move this setting | down 
-					to the maven-bundle-plugin section -->
-				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
