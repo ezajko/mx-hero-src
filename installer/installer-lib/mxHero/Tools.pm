@@ -343,7 +343,7 @@ sub adjustRedhat
 	
 	# Set selinux to permissive
 	if ( ! &alterSimpleConfigFile( "/etc/sysconfig/selinux", { 'SELINUX' => 'disabled' }, '=' ) ) {
-		warn "Failed to disable SELINUX. Aboring installation.\n";
+		warn "Failed to disable SELINUX. Please check manually if it exists and if yes, it is disabled.\n";
 		exit;
 	}
 }

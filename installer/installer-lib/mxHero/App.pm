@@ -33,6 +33,18 @@ sub install
 		return 0;
 	}
 
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/scripts/libexec/ $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero libexec files");
+		return 0;
+	}
+
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/installer-lib/ $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero installer-lib files");
+		return 0;
+	}
+
 	# Creating system user
 	myPrint T("Creating mxHero user..."), "\n";
 
@@ -108,6 +120,18 @@ sub upgrade
 
 	rename ("$myConfig{MXHERO_PATH}/plugins", "$myConfig{MXHERO_PATH}/$oldVersion-plugins");
 	system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/plugins $myConfig{MXHERO_PATH}");
+
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/scripts/libexec/ $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero libexec files");
+		return 0;
+	}
+
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/installer-lib/ $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero installer-lib files");
+		return 0;
+	}
 
 	rename ("$myConfig{MXHERO_PATH}/configuration", "$myConfig{MXHERO_PATH}/$oldVersion-configuration");
 

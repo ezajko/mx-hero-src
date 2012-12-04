@@ -90,14 +90,18 @@ sub install
 					prompt => T("What is the external address or IP of this mxHero installation. Hit enter to use the auto-detected ip address "),
 					default  => $ip );
 
-	%entry = ( "http.file.server.attach" => "http://$reply:8080/fileserver/download" );
+	%entry = (
+		"http.file.server.attach"		=> "http://$reply:8080/fileserver/download",
+		"url.file.server"			=> "http://$reply:8080/fileserver",
+		"url.static.content.images.attach.html"	=> "http://$reply:8080/fileserver/images"
+	);
 
 	if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{MXHERO_HEROATTACH_CONFIG}, \%entry, '=' ) ) {
 		warn "Failed to add Hero Attach link config. Aborting installation.\n";
 		exit;
 	}
 
-	&_fillTemplate ("http://$reply:8080");
+#	&_fillTemplate ("http://$reply:8080");
 
 	return 1;
 }
@@ -111,13 +115,13 @@ sub upgrade
 	rename ("$myConfig{MXHERO_PATH}/attachments/templates", "$myConfig{MXHERO_PATH}/attachments/$oldVersion-templates");
 	system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/attachments/templates $myConfig{MXHERO_PATH}/attachments");
 
-	my %properties;
-	&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
+	#my %properties;
+	#&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
 
-	$properties{'org.mxhero.engine.plugin.attachmentlink.cfg'}->{'http.file.server.attach'} =~ m|(https?://.+?)/|i;
-	my $url = $1;
+	#$properties{'org.mxhero.engine.plugin.attachmentlink.cfg'}->{'http.file.server.attach'} =~ m|(https?://.+?)/|i;
+	#my $url = $1;
 
-	&_fillTemplate ($url);
+	#&_fillTemplate ($url);
 
 	return 1;
 }
@@ -130,12 +134,12 @@ sub configure
 	return 1;
 }
 
-sub _fillTemplate
-{
-	my $url = $_[0];
-
-	# Change templates
-	`/usr/bin/perl -i -pe 's|\%FILE_SERVER\%|$url|g' $myConfig{MXHERO_PATH}/attachments/templates/attach_*.vm`;
-}
+#sub _fillTemplate
+#{
+#	my $url = $_[0];
+#
+#	# Change templates
+#	`/usr/bin/perl -i -pe 's|\%FILE_SERVER\%|$url|g' $myConfig{MXHERO_PATH}/attachments/templates/attach_*.vm`;
+#}
 
 1;

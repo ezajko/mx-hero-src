@@ -173,7 +173,7 @@ sub _alterPostfixMasterCf {
 	my $file = $_[0]; # master.cf path
 
 	my $mxHero = <<END;
-smtp      inet  n       -       -       -       -       smtpd
+smtp      inet  n       -       n       -       -       smtpd
 	-o smtpd_proxy_filter=127.0.0.1:5555
 127.0.0.1:5556 inet     n       -       n       -       -       smtpd
 	-o smtpd_authorized_xforward_hosts=127.0.0.0/8
