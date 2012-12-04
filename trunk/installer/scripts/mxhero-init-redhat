@@ -22,7 +22,7 @@ case "$1" in
 	start)
 		echo 'Starting' $SYSNAME
 		# XXX: Should not be here but is ok for now
-		mysql statistics --user=mxhero --password=mxhero -e "ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE;"
+		mysql statistics --user=mxhero --password=mxhero -e "ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE; ALTER EVENT update_bandwidth_event ON SCHEDULE EVERY 1 DAY;"
 
 #		su - mxhero -c "cd $MXHERO_PATH ; valgrind --trace-children=yes --leak-check=full --log-file=/tmp/valgrind.out java $MXHERO_JMX \
 		su - mxhero -c "cd $MXHERO_PATH ; nohup java $MXHERO_JMX \
