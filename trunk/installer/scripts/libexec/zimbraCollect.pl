@@ -30,8 +30,37 @@ use mxHero::Config;
 use mxHero::Tools;
 
 #
+## Definitions
+#
+
+# If at least one flag match, the version will be considered
+my %zimbraEditionsFlags = (
+	'Professional' => {
+		'zimbraFeatureMobileSyncEnabled' => 'TRUE',
+		'zimbraFeatureMAPIConnectorEnabled' => 'TRUE',
+		'zimbraArchiveEnabled' => 'TRUE'
+	},
+	'Standard' => {
+		'zimbraFeatureAdvancedSearchEnabled' => 'TRUE',
+		'zimbraFeatureSharingEnabled' => 'TRUE',
+		'zimbraFeatureTaggingEnabled' => 'TRUE'
+	},
+	'BusinessEmailPlus' => {
+		'zimbraFeatureCalendarEnabled' => 'TRUE',
+		'zimbraFeatureManageZimlets' => 'TRUE'
+	},
+	'BusinessEmail' => {
+	}
+);
+
+# From the most specific going down
+my @zimbraEditionsHierarchy = ('Professional', 'Standard', 'BusinessEmailPlus', 'BusinessEmail');
+
+#
 ## Actions
 #
+
+print "mxHero Zimbra SP Edition - collecting Zimbra data...\n";
 
 my %properties;
 
@@ -47,14 +76,22 @@ my %dbInfo = (
 
 my $dbh = &connectToDatabase(\%dbInfo);
 my $zProp = &getZimbraProperties($dbh);
+
 my $mailboxes = &getMailboxServers($zProp);
 my $ldapProp = &getLdapProperties($zProp);
 my $zCos = &getCosInformation($zProp);
-my $zData = &getAccountsAndQuotaUsage($zProp, $mailboxes);
-&loadAccountsCosAndType ($zProp, $ldapProp, $zData, $zCos);
-&saveZDataToDatabase($zProp, $zData);
 
-print Dumper ($zData);
+my $zData = &getAccountsCosAndType ($ldapProp, $zCos, \%zimbraEditionsFlags, \@zimbraEditionsHierarchy);
+&loadAccountsAndQuotaUsage($zProp, $mailboxes, $zData);
+
+&saveZDataToDatabase($dbh, $zData);
+
+#print Dumper ($zData);
+
+print "Deleting Zimbra private key temporary file.\n";
+unlink ($zProp->{pkFilePath});
+
+print "Finished!\n";
 
 #
 ## Subs
@@ -64,6 +101,8 @@ sub connectToDatabase
 {
 	my $dbInfo = shift;
 
+	print "Connecting to mxHero database.\n";
+
 	my $dbi = $dbInfo->{type} . ':' . $dbInfo->{name} . ';' . 'host=' . $dbInfo->{host};
 	return DBI->connect ('DBI:' . $dbi, $dbInfo->{username}, $dbInfo->{password}) || die "Could not connect to database: $DBI::errstr";
 }
@@ -71,7 +110,7 @@ sub connectToDatabase
 sub getZimbraProperties
 {
 	my $dbh = shift;
-	
+
 	my %zimbra = (pkFilePath => '/tmp/mxhero.zk');
 
 	my $sql = "SELECT property_key, property_value FROM system_properties WHERE property_key LIKE 'zimbra.%'";
@@ -83,7 +122,15 @@ sub getZimbraProperties
 		$zimbra{$result->{property_key}} = $result->{property_value};
 	}
 
+	if (!exists ($zimbra{'zimbra.installation'}) || $zimbra{'zimbra.installation'} ne 'true')
+	{
+		print "Not a Zimbra SP Edition install, exiting.\n";
+		exit;
+	}
+
 	# Save zimbra.private.key for this session; will be deleted on exit
+
+	print "Creating Zimbra private key temporary file.\n";
 
 	umask (0077);
 	open (PK, '>' . $zimbra{pkFilePath});
@@ -104,40 +151,32 @@ sub getMailboxServers
 	my $zProp = shift;
 
 	my $cmd = &getSSHCmd($zProp) . 'zmprov getAllServers mailbox';
+	print "Getting mailbox servers ($cmd).\n";
 
 	my @servers = map {s/^\s+|\s+$//g; $_} `$cmd`;
 	return \@servers;
 }
 
-sub getAccountsAndQuotaUsage
+sub loadAccountsAndQuotaUsage
 {
 	my $zProp = shift;
 	my $mailboxes = shift;
-
-	my %data;
+	my $zData = shift;
 
 	for my $mailbox (@{$mailboxes})
 	{
 		my $cmd = &getSSHCmd($zProp) . "zmprov -s $mailbox getQuotaUsage $mailbox";
+		print "Getting quota usage ($cmd).\n";
 		my @output = map {s/^\s+|\s+$//g; $_} `$cmd`;
 
 		for my $entry (@output)
 		{
 			my @values = split (/\s/, $entry);
-			my @email = split (/\@/, $values[0]);
 
-			my %info = (
-				account => $email[0],
-				domain => $email[1],
-				totalQuota => $values[1],
-				usedQuota => $values[2]
-			);
-
-			$data{$values[0]} = \%info;
+			${$zData->{$values[0]}}{totalQuota} = $values[1];
+			${$zData->{$values[0]}}{usedQuota} = $values[2];
 		}
 	}
-
-	return \%data;
 }
 
 sub getCosInformation
@@ -147,11 +186,13 @@ sub getCosInformation
 	my %zCos;
 
 	my $cmd = &getSSHCmd($zProp) . 'zmprov getAllCos';
+	print "Getting COS list ($cmd).\n";
 	my @coses = map {s/^\s+|\s+$//g; $_} `$cmd`;
 	
 	for my $cos (@coses)
 	{
 		my $cmd = &getSSHCmd($zProp) . "zmprov getCos $cos";
+		print "Getting COS information ($cmd).\n";
 		my @output = map {s/^\s+|\s+$//g; $_} `$cmd`;
 
 		for my $entry (@output)
@@ -175,6 +216,7 @@ sub getLdapProperties
 	my %ldapProp;
 
 	my $cmd = &getSSHCmd($zProp) . 'zmlocalconfig -s | grep ldap';
+	print "Getting Zimbra LDAP properties ($cmd).\n";
 	my @output = map {s/^\s+|\s+$//g; $_} `$cmd`;
 
 	for my $entry (@output)
@@ -186,45 +228,141 @@ sub getLdapProperties
 	return \%ldapProp;
 }
 
-sub saveZDataToDatabase
+sub getZimbraEdition
 {
-	my $zProp = shift;
-	my $zData = shift;
+	my $zFlags = shift;
+	my $zimbraEditionsFlags = shift;
+	my $zimbraEditionsHierarchy = shift;
+
+	for my $edition (@{$zimbraEditionsHierarchy})
+	{
+		for my $flag (keys %{$zimbraEditionsFlags->{$edition}})
+		{
+			if (exists ($zFlags->{$flag}) && $zFlags->{$flag} eq $zimbraEditionsFlags->{$edition}->{$flag})
+			{
+				#print "Matched $flag = $zFlags->{$flag}, so edition is $edition\n";
+				return $edition;
+			}
+		}
+	}
+
+	# If nothing matches, it's the last in the hierarchy
+	return $zimbraEditionsHierarchy[-1];
 }
 
-sub loadAccountsCosAndType
+sub saveZDataToDatabase
 {
-	my $zProp = shift;
-	my $ldapProp = shift;
+	my $dbh = shift;
 	my $zData = shift;
-	my $zCos = shift;
 
+	print "Saving information on mxHero database.\n";
+
+	for my $entry (values %{$zData})
+	{
+		$entry->{totalQuota} = 0 unless (exists ($entry->{totalQuota}));
+		$entry->{usedQuota} = 0 unless (exists ($entry->{usedQuota}));
+
+		my $sql = 'INSERT INTO zimbra_provider_data SET ' .
+			"insert_date = NOW(), " .
+			"account = '$entry->{account}', " .
+			"domain = '$entry->{domain}', " .
+			"totalQuota = $entry->{totalQuota}, " .
+			"usedQuota = $entry->{usedQuota}, " .
+			"accountType = '$entry->{accountType}', " .
+			"cos = '$entry->{cos}'";
+
+		my $sth = $dbh->do ($sql);
+	}
+}
+
+sub getZimbraEditionsAttrs
+{
+	my $zimbraEditionsFlags = shift;
+	my @attrs;
+
+	for my $entry (values %{$zimbraEditionsFlags})
+	{
+		for my $flag (keys %{$entry})
+		{
+			push (@attrs, $flag);
+		}
+	}
+
+	return \@attrs;
+}
+
+sub getAccountFlags
+{
+	my $cosObj = shift;
+	my $entryObj = shift;
+	my $zimbraEditionsFlags = shift;
+
+	my %zFlags = %{$cosObj};
+	my $zAttrs = &getZimbraEditionsAttrs ($zimbraEditionsFlags);
+
+	for my $attr (@{$zAttrs})
+	{
+		if ($entryObj->get_value($attr))
+		{
+			# Overload COS entries with account specific entries
+			$zFlags{$attr} = $entryObj->get_value($attr);
+			#print "Overloaded: $attr\n";
+		}
+	}
+
+	return \%zFlags;
+}
+
+sub getAccountsCosAndType
+{
+	my $ldapProp = shift;
+	my $zCos = shift;
+	my $zimbraEditionsFlags = shift;
+	my $zimbraEditionsHierarchy = shift;
+
+	my %data;
+
+	print "Getting COS and Type information.\n";
+
+	# LDAP query is way faster than zmprov getAccount by each one
 	my $ldap = Net::LDAP->new($ldapProp->{ldap_host}) || die "$@";
 	$ldap->bind($ldapProp->{zimbra_ldap_userdn} , password => $ldapProp->{zimbra_ldap_password});
+
+	my @attrs = ('zimbraMailDeliveryAddress', 'zimbraCOSId');
+	push (@attrs, @{&getZimbraEditionsAttrs ($zimbraEditionsFlags)});
 
 	my $ldapSearch = $ldap->search (
 		scope => 'sub',
 		filter => '(&(uid=*)(objectClass=zimbraAccount))',
-		attrs => "mail,zimbraCOSId",
+		attrs => \@attrs
 	);
 
-	my @entries = $ldapSearch->entries if $ldapSearch->entries;
 	# if error
 	$ldapSearch->code && die $ldapSearch->error;
 	
+	my @entries = $ldapSearch->entries if $ldapSearch->entries;
 	return unless @entries;
-	
+
 	foreach my $entry (@entries)
 	{
-		next if (!$entry->get_value('mail') && !$entry->get_value('zimbraCOSId'));
-		
+		next if (!$entry->get_value('zimbraMailDeliveryAddress') && !$entry->get_value('zimbraCOSId'));
+
 		my $cos = 'default';
 		$cos = $zCos->{$entry->get_value('zimbraCOSId')} if ($entry->get_value('zimbraCOSId'));
-		${$zData->{$entry->get_value('mail')}}{cos} = $cos;
-        }
-}
 
-END
-{
-	unlink ($zProp->{pkFilePath}) if (defined ($zProp));
+		my @email = split (/\@/, $entry->get_value('zimbraMailDeliveryAddress'));
+		
+		my %info = (
+			account => $email[0],
+			domain => $email[1],
+			cos => $cos,
+			accountType => &getZimbraEdition(&getAccountFlags ($zCos->{$cos}, $entry, $zimbraEditionsFlags), $zimbraEditionsFlags, $zimbraEditionsHierarchy)
+		);
+		
+		$data{$entry->get_value('zimbraMailDeliveryAddress')} = \%info;
+		
+		print 'Account: ' . $entry->get_value('zimbraMailDeliveryAddress') . ", COS: $cos, Edition: " . $data{$entry->get_value('zimbraMailDeliveryAddress')}{accountType} . ".\n";
+        }
+
+	return \%data;
 }

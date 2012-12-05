@@ -1,0 +1,1 @@
+0 5 * * *	mxhero	/opt/zimbra/libexec/zimbraCollect.pl 2>&1 > /dev/null
