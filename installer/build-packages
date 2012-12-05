@@ -10,35 +10,48 @@ use mxHero::Config;
 
 # Config
 
+my @editions = (
+	{name => 'mxHero-Installable', extraFiles => '' },
+	{name => 'mxHero-ZimbraSP-Installable', extraFiles => 'ZIMBRA_SP_EDITION' },
+);
+
 my $name = "mxHero-Installable";
 my $rootFiles = "*.txt VERSION mxhero-installer conf installer-lib scripts binaries/$myConfig{MXHERO_INSTALL_VERSION}"; # Except JDK
 
 # Action
 
-print "Generating VERSION file...\n";
-open (V, ">$myConfig{INSTALLER_PATH}/VERSION");
-print V "# DO NOT REMOVE OR ALTER THIS FILE\n$myConfig{MXHERO_INSTALL_VERSION}";
-close (V);
-
-if (! -d "$myConfig{INSTALLER_PATH}/binaries")
+for my $edition (@editions)
 {
-	die ("Could not find 'binaries' directory.");
-}
+	print "Building $edition->{name}...\n";
 
-print "Building 32-bit version...\n";
+	my $rootFiles = "*.txt VERSION mxhero-installer conf installer-lib scripts binaries/$myConfig{MXHERO_INSTALL_VERSION} "; # Except JDK
+	$rootFiles .= $edition->{extraFiles};
 
-my $name32 = $name."32-$myConfig{MXHERO_INSTALL_VERSION}";
-if ((system ("tar --transform 's,^,$name32/,S' --exclude-vcs -czf $name32.tar.gz $rootFiles binaries/$myConfig{JDK_X86_DIRNAME}")) != 0)
-{
-	die ("Error building 32-bit package");
-}
+	print "Generating VERSION file...\n";
+	open (V, ">$myConfig{INSTALLER_PATH}/VERSION");
+	print V "# DO NOT REMOVE OR ALTER THIS FILE\n$myConfig{MXHERO_INSTALL_VERSION}";
+	close (V);
 
-print "Building 64-bit version...\n";
+	if (! -d "$myConfig{INSTALLER_PATH}/binaries")
+	{
+		die ("Could not find 'binaries' directory.");
+	}
 
-my $name64 = $name."64-$myConfig{MXHERO_INSTALL_VERSION}";
-if ((system ("tar --transform 's,^,$name64/,S' --exclude-vcs -czf $name64.tar.gz $rootFiles binaries/$myConfig{JDK_X64_DIRNAME}")) != 0)
-{
-	die ("Error building 64-bit package");
+	print "Building 32-bit version...\n";
+
+	my $name32 = $edition->{name}."32-$myConfig{MXHERO_INSTALL_VERSION}";
+	if ((system ("tar --transform 's,^,$name32/,S' --exclude-vcs -czf $name32.tar.gz $rootFiles binaries/$myConfig{JDK_X86_DIRNAME}")) != 0)
+	{
+		die ("Error building 32-bit package");
+	}
+
+	print "Building 64-bit version...\n";
+
+	my $name64 = $edition->{name}."64-$myConfig{MXHERO_INSTALL_VERSION}";
+	if ((system ("tar --transform 's,^,$name64/,S' --exclude-vcs -czf $name64.tar.gz $rootFiles binaries/$myConfig{JDK_X64_DIRNAME}")) != 0)
+	{
+		die ("Error building 64-bit package");
+	}
 }
 
 print "Done!\n";
