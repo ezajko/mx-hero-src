@@ -189,6 +189,11 @@ sub createDatabase
 		$$errorRef = "Failed to find SQL files.";
 		return 0;
 	}
+
+	if (-f "$myConfig{MXHERO_PATH}/ZIMBRA_SP_EDITION")
+	{
+		system( "/usr/bin/mysql $DBPASS -e \"INSERT INTO system_properties VALUES ('zimbra.installation', 'true');\" mxhero" );
+	}
 	
 	return 1;
 }
