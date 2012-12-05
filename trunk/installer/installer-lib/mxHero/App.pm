@@ -45,6 +45,8 @@ sub install
 		return 0;
 	}
 
+	system ("cp -a $myConfig{INSTALLER_PATH}/scripts/mxhero-cron-jobs /etc/cron.d/");
+
 	# Creating system user
 	myPrint T("Creating mxHero user..."), "\n";
 
@@ -132,6 +134,8 @@ sub upgrade
 		$$errorRef = T("Failed to copy mxhero installer-lib files");
 		return 0;
 	}
+
+	system ("cp -a $myConfig{INSTALLER_PATH}/scripts/mxhero-cron-jobs /etc/cron.d/");
 
 	rename ("$myConfig{MXHERO_PATH}/configuration", "$myConfig{MXHERO_PATH}/$oldVersion-configuration");
 
@@ -226,6 +230,11 @@ sub _cascadeUpgrade
 	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.3.1.RELEASE') <= 0)
 	{
 		system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/replytimeout $myConfig{MXHERO_PATH}");
+	}
+
+	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.7.2.RELEASE') <= 0)
+	{
+		system ("perl -i -pe 's/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE;\"/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE; ALTER EVENT update_bandwidth_event ON SCHEDULE EVERY 1 DAY;\"/' /etc/init.d/mxhero");
 	}
 
 	return 1;
