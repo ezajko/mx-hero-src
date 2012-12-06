@@ -13,8 +13,8 @@ use mxHero::Locale;
 
 # distribution => package name
 my %PKG_NAME = (
-	"debian" => "mysql-server",
-	"ubuntu" => "mysql-server",
+	"debian" => "mysql-server libnet-ldap-perl",
+	"ubuntu" => "mysql-server libnet-ldap-perl",
 	"redhat" => "mysql-server"
 	# TODO: redhat, suse
 );
@@ -190,7 +190,7 @@ sub createDatabase
 		return 0;
 	}
 
-	if (-f "$myConfig{MXHERO_PATH}/ZIMBRA_SP_EDITION")
+	if (-f "$myConfig{INSTALLER_PATH}/ZIMBRA_SP_EDITION")
 	{
 		system( "/usr/bin/mysql $DBPASS -e \"INSERT INTO system_properties VALUES ('zimbra.installation', 'true');\" mxhero" );
 	}
