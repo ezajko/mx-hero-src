@@ -234,7 +234,7 @@ sub _cascadeUpgrade
 
 	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.7.2.RELEASE') <= 0)
 	{
-		system ("perl -i -pe 's/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE;\"/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE; ALTER EVENT update_bandwidth_event ON SCHEDULE EVERY 1 DAY;\"/' /etc/init.d/mxhero");
+		system ("perl -i -pe 's/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE;\"/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE; USE mxhero; ALTER EVENT update_bandwidth_event ON SCHEDULE EVERY 1 DAY;\"/' /etc/init.d/mxhero");
 	}
 
 	return 1;

@@ -19,12 +19,12 @@
 use strict;
 use warnings;
 
-use lib '../../installer-lib';
-#use lib '/opt/mxhero/installer-lib';
+#use lib '../../installer-lib';
+use lib '/opt/mxhero/installer-lib';
 
 use DBI;
 use Net::LDAP;
-use Data::Dumper;
+#use Data::Dumper;
 
 use mxHero::Config;
 use mxHero::Tools;
@@ -64,8 +64,8 @@ print "mxHero Zimbra SP Edition - collecting Zimbra data...\n";
 
 my %properties;
 
-#&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
-&mxHero::Tools::loadProperties ("/home/bruno/mxhero/svn/trunk/installer/binaries/1.8.0.RELEASE/mxhero/configuration/properties", \%properties);
+&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
+#&mxHero::Tools::loadProperties ("/home/bruno/mxhero/svn/trunk/installer/binaries/1.8.0.RELEASE/mxhero/configuration/properties", \%properties);
 
 $properties{'org.mxhero.engine.plugin.dbpool.cfg'}->{jdbcUrl} =~ m|jdbc\:(.+?)\://(.+?)/(.+)|;
 my %dbInfo = (
@@ -75,7 +75,7 @@ my %dbInfo = (
 );
 
 my $dbh = &connectToDatabase(\%dbInfo);
-my $zProp = &getZimbraProperties($dbh);
+my $zProp = &getZimbraProperties($dbh); # will exit if not Zimbra SP Edition
 
 my $mailboxes = &getMailboxServers($zProp);
 my $ldapProp = &getLdapProperties($zProp);
@@ -85,17 +85,23 @@ my $zData = &getAccountsCosAndType ($ldapProp, $zCos, \%zimbraEditionsFlags, \@z
 &loadAccountsAndQuotaUsage($zProp, $mailboxes, $zData);
 
 &saveZDataToDatabase($dbh, $zData);
-
-#print Dumper ($zData);
-
-print "Deleting Zimbra private key temporary file.\n";
-unlink ($zProp->{pkFilePath});
+&cleanupTasks($zProp);
 
 print "Finished!\n";
+
+#print Dumper ($zData);
 
 #
 ## Subs
 #
+
+sub cleanupTasks
+{
+	my $zProp = shift;
+
+	print "Deleting Zimbra private key temporary file.\n";
+	unlink ($zProp->{pkFilePath});
+}
 
 sub connectToDatabase
 {
@@ -125,6 +131,18 @@ sub getZimbraProperties
 	if (!exists ($zimbra{'zimbra.installation'}) || $zimbra{'zimbra.installation'} ne 'true')
 	{
 		print "Not a Zimbra SP Edition install, exiting.\n";
+		exit;
+	}
+
+	if (!exists ($zimbra{'zimbra.ldap.host'}) || $zimbra{'zimbra.ldap.host'} eq '')
+	{
+		print "LDAP host not given, exiting.\n";
+		exit;
+	}
+
+	if (!exists ($zimbra{'zimbra.private.key'}) || $zimbra{'zimbra.private.key'} eq '')
+	{
+		print "Private key not given, exiting.\n";
 		exit;
 	}
 
@@ -173,8 +191,15 @@ sub loadAccountsAndQuotaUsage
 		{
 			my @values = split (/\s/, $entry);
 
-			${$zData->{$values[0]}}{totalQuota} = $values[1];
-			${$zData->{$values[0]}}{usedQuota} = $values[2];
+			if (exists ($zData->{$values[0]}))
+			{
+				${$zData->{$values[0]}}{totalQuota} = $values[1];
+				${$zData->{$values[0]}}{usedQuota} = $values[2];
+			}
+			else
+			{
+				print "Ignoring quota data for $values[0], system or invalid account!\n";
+			}
 		}
 	}
 }
@@ -333,7 +358,7 @@ sub getAccountsCosAndType
 
 	my $ldapSearch = $ldap->search (
 		scope => 'sub',
-		filter => '(&(uid=*)(objectClass=zimbraAccount))',
+		filter => '(&(uid=*)(objectClass=zimbraAccount)(!(objectClass=zimbraCalendarResource))(!(zimbraIsSystemResource=TRUE)))',
 		attrs => \@attrs
 	);
 
