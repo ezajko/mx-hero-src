@@ -115,11 +115,26 @@ sub upgrade
 	rename ("$myConfig{MXHERO_PATH}/attachments/templates", "$myConfig{MXHERO_PATH}/attachments/$oldVersion-templates");
 	system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/attachments/templates $myConfig{MXHERO_PATH}/attachments");
 
-	#my %properties;
-	#&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
-
-	#$properties{'org.mxhero.engine.plugin.attachmentlink.cfg'}->{'http.file.server.attach'} =~ m|(https?://.+?)/|i;
-	#my $url = $1;
+	# new flags on 1.8.0
+	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.7.2.RELEASE') <= 0)
+	{
+		my %properties;
+		&mxHero::Tools::loadProperties ("$myConfig{MXHERO_PATH}/configuration/properties", \%properties);
+		
+		$properties{'org.mxhero.engine.plugin.attachmentlink.cfg'}->{'http.file.server.attach'} =~ m|(https?://.+?)/|i;
+		my $url = $1;
+		
+		my %entry = (
+			"http.file.server.attach"		=> "$url/fileserver/download",
+			"url.file.server"			=> "$url/fileserver",
+			"url.static.content.images.attach.html"	=> "$url/fileserver/images"
+		);
+		
+		if ( ! &mxHero::Tools::alterSimpleConfigFile( $myConfig{MXHERO_HEROATTACH_CONFIG}, \%entry, '=' ) ) {
+			warn "Failed to add Hero Attach link config. Aborting installation.\n";
+			exit;
+		}
+	}
 
 	#&_fillTemplate ($url);
 

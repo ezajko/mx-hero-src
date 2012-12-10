@@ -294,6 +294,11 @@ sub saveZDataToDatabase
 			"totalQuota = $entry->{totalQuota}, " .
 			"usedQuota = $entry->{usedQuota}, " .
 			"accountType = '$entry->{accountType}', " .
+			"cos = '$entry->{cos}' " .
+			"ON DUPLICATE KEY UPDATE " .
+			"totalQuota = $entry->{totalQuota}, " .
+			"usedQuota = $entry->{usedQuota}, " .
+			"accountType = '$entry->{accountType}', " .
 			"cos = '$entry->{cos}'";
 
 		my $sth = $dbh->do ($sql);

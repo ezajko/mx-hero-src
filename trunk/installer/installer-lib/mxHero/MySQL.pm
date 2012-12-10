@@ -15,7 +15,7 @@ use mxHero::Locale;
 my %PKG_NAME = (
 	"debian" => "mysql-server libnet-ldap-perl",
 	"ubuntu" => "mysql-server libnet-ldap-perl",
-	"redhat" => "mysql-server"
+	"redhat" => "mysql-server perl-LDAP"
 	# TODO: redhat, suse
 );
 
@@ -68,6 +68,27 @@ sub upgrade
 	if ( ! $mxHeroVersion ) {
 		$$errorRef = "mxHero Version information incomplete.";
 		return 0;
+	}
+
+	# new package starting from 1.8.0
+	if (&mxHero::Tools::mxheroVersionCompare($mxHeroVersion, '1.7.2.RELEASE') <= 0)
+	{
+		my %LDAP_PKG_NAME = (
+			"debian" => "libnet-ldap-perl",
+			"ubuntu" => "libnet-ldap-perl",
+			"redhat" => "perl-LDAP"
+			# TODO: redhat, suse
+		);
+
+		my $distri = lc( &mxHero::Tools::getDistri() );
+	
+		# Install binary if needed
+		if ( ! &mxHero::Tools::packageCheck( $LDAP_PKG_NAME{$distri} ) ) {
+			if ( ! &mxHero::Tools::packageInstall( $LDAP_PKG_NAME{$distri} ) ) {
+				$$errorRef = "Failed to install $LDAP_PKG_NAME{$distri} package";
+				return 0;
+			}
+		}
 	}
 
 	# Check database connectivity (permissions)
