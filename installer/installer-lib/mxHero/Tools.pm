@@ -168,7 +168,7 @@ sub packageInstall
 		if ( ($ret >> 8) == 0 ) {
 			myPrint "'$package' ... INSTALLED\n";
 			my $service;
-			if ( $package eq "mysql-server") {
+			if ( $package =~ /mysql-server/) { # TODO: fix this
 				$service = "mysqld";
 			} elsif ($package eq "clamav clamd") { # TODO: fix this
 				$service = "clamd";
