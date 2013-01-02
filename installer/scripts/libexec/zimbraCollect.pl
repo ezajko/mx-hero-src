@@ -378,7 +378,7 @@ sub getAccountsCosAndType
 		next if (!$entry->get_value('zimbraMailDeliveryAddress') && !$entry->get_value('zimbraCOSId'));
 
 		my $cos = 'default';
-		$cos = $zCos->{$entry->get_value('zimbraCOSId')} if ($entry->get_value('zimbraCOSId'));
+		$cos = $zCos->{$entry->get_value('zimbraCOSId')} if ($entry->get_value('zimbraCOSId') && exists ($zCos->{$entry->get_value('zimbraCOSId')}));
 
 		my @email = split (/\@/, $entry->get_value('zimbraMailDeliveryAddress'));
 		

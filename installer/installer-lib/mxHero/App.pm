@@ -46,6 +46,7 @@ sub install
 	}
 
 	system ("cp -a $myConfig{INSTALLER_PATH}/scripts/mxhero-cron-jobs /etc/cron.d/");
+	system ("chown root:root /etc/cron.d/mxhero-cron-jobs");
 
 	# Creating system user
 	myPrint T("Creating mxHero user..."), "\n";
@@ -136,6 +137,7 @@ sub upgrade
 	}
 
 	system ("cp -a $myConfig{INSTALLER_PATH}/scripts/mxhero-cron-jobs /etc/cron.d/");
+	system ("chown root:root /etc/cron.d/mxhero-cron-jobs");
 
 	rename ("$myConfig{MXHERO_PATH}/configuration", "$myConfig{MXHERO_PATH}/$oldVersion-configuration");
 
