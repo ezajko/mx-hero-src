@@ -40,7 +40,7 @@ for my $edition (@editions)
 	print "Building 32-bit version...\n";
 
 	my $name32 = $edition->{name}."32-$myConfig{MXHERO_INSTALL_VERSION}";
-	if ((system ("tar --transform 's,^,$name32/,S' --exclude-vcs -czf $name32.tar.gz $rootFiles binaries/$myConfig{JDK_X86_DIRNAME}")) != 0)
+	if ((system ("tar --transform 's,^,$name32/,S' --exclude-vcs -czf $name32.tar.gz $rootFiles binaries/$myConfig{JDK_X86_DIRNAME} 32-bit")) != 0)
 	{
 		die ("Error building 32-bit package");
 	}
@@ -48,7 +48,7 @@ for my $edition (@editions)
 	print "Building 64-bit version...\n";
 
 	my $name64 = $edition->{name}."64-$myConfig{MXHERO_INSTALL_VERSION}";
-	if ((system ("tar --transform 's,^,$name64/,S' --exclude-vcs -czf $name64.tar.gz $rootFiles binaries/$myConfig{JDK_X64_DIRNAME}")) != 0)
+	if ((system ("tar --transform 's,^,$name64/,S' --exclude-vcs -czf $name64.tar.gz $rootFiles binaries/$myConfig{JDK_X64_DIRNAME} 64-bit")) != 0)
 	{
 		die ("Error building 64-bit package");
 	}
