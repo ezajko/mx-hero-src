@@ -172,6 +172,8 @@ sub packageInstall
 				$service = "mysqld";
 			} elsif ($package eq "clamav clamd") { # TODO: fix this
 				$service = "clamd";
+			} elsif ($package =~ /tomcat6/) { # TODO: fix this
+				$service = "tomcat6";
 			} else {
 				$service = $package;
 			}

@@ -45,6 +45,14 @@ sub install
 		return 0;
 	}
 
+	my $arch = '32-bit';
+	$arch = '64-bit' if ($Config{archname} =~ m/x86_64/);
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/$arch/* $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero $arch files");
+		return 0;
+	}
+
 	system ("cp -a $myConfig{INSTALLER_PATH}/scripts/mxhero-cron-jobs /etc/cron.d/");
 	system ("chown root:root /etc/cron.d/mxhero-cron-jobs");
 
@@ -133,6 +141,14 @@ sub upgrade
 	if ((system ("cp -a $myConfig{INSTALLER_PATH}/installer-lib/ $myConfig{MXHERO_PATH}")) != 0)
 	{
 		$$errorRef = T("Failed to copy mxhero installer-lib files");
+		return 0;
+	}
+
+	my $arch = '32-bit';
+	$arch = '64-bit' if ($Config{archname} =~ m/x86_64/);
+	if ((system ("cp -a $myConfig{INSTALLER_PATH}/$arch/* $myConfig{MXHERO_PATH}")) != 0)
+	{
+		$$errorRef = T("Failed to copy mxhero $arch files");
 		return 0;
 	}
 
@@ -237,6 +253,11 @@ sub _cascadeUpgrade
 	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.7.2.RELEASE') <= 0)
 	{
 		system ("perl -i -pe 's/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE;\"/mysql statistics --user=mxhero --password=mxhero -e \"ALTER EVENT drop_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT drop_records_parts ON SCHEDULE EVERY 1 DAY;ALTER EVENT add_stats_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT add_records_parts ON SCHEDULE EVERY 1 DAY; ALTER EVENT group_all_stats ON SCHEDULE EVERY 5 MINUTE; USE mxhero; ALTER EVENT update_bandwidth_event ON SCHEDULE EVERY 1 DAY;\"/' /etc/init.d/mxhero");
+	}
+
+	if (&mxHero::Tools::mxheroVersionCompare($oldVersion, '1.8.0.RELEASE') <= 0)
+	{
+		system ("cp -a $myConfig{INSTALLER_PATH}/binaries/$myConfig{MXHERO_INSTALL_VERSION}/mxhero/readonce $myConfig{MXHERO_PATH}");
 	}
 
 	return 1;
